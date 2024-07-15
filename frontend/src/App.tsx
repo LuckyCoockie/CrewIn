@@ -1,7 +1,12 @@
 import "./App.css";
+import ImageEditor from "./components/Html2canvasTest";
 
 function App() {
-  return <></>;
+  return (
+    <>
+      <ImageEditor />
+    </>
+  );
 }
 
 export default App;
