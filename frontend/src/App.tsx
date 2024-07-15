@@ -1,7 +1,12 @@
-import "./App.css";
+import React from 'react';
+import CropperTest from './cropper/CropperTest';
 
-function App() {
-  return <></>;
-}
+const App: React.FC = () => {
+  return (
+    <div className="App">
+      <CropperTest />
+    </div>
+  );
+};
 
 export default App;
