@@ -5,19 +5,23 @@ import { Dispatch } from "react";
 const INIT = "naver/maps/INIT" as const;
 const ADD_MARKER = "naver/maps/ADD_MARKER" as const;
 const REMOVE_MARKER = "naver/maps/REMOVE_MARKER" as const;
+const UPDATE_MARKER = "naver/maps/UPDATE_MARKER" as const;
+const UPDATE_MARKER_LIST = "naver/maps/UPDATE_MARKER_LIST" as const;
 const CLEAR_MARKER = "naver/maps/CLEAR_MARKER" as const;
-const UPDATE_MARKER = "nvaer/maps/UPDATE_MARKER" as const;
 const ADD_POLYLINE = "naver/maps/ADD_POLYLINE" as const;
 const REMOVE_POLYLINE = "naver/maps/REMOVE_POLYLINE" as const;
 const CLEAR_POLYLINE = "naver/maps/CLEAR_POLYLINE" as const;
-const UPDATE_POLYLINE = "naver/maps/UPDATE_POLYLINE" as const;
 
 /* ----------------- 액션 생성 함수 ------------------ */
 export const init = (map: naver.maps.Map) => ({ type: INIT, map });
 
-export const addMarker = (latlng: { longitude: number; latitude: number }) => ({
+export const addMarker = (data: {
+  latitude: number;
+  longitude: number;
+  title: string;
+}) => ({
   type: ADD_MARKER,
-  latlng: latlng,
+  data: data,
 });
 
 export const removeMarker = (index?: number, marker?: naver.maps.Marker) => ({
@@ -26,11 +30,21 @@ export const removeMarker = (index?: number, marker?: naver.maps.Marker) => ({
   marker,
 });
 
-export const clearMarker = () => ({ type: CLEAR_MARKER });
-
 export const updateMarker = (
-  latlngs: { longitude: number; latitude: number }[]
-) => ({ type: UPDATE_MARKER, latlngs: latlngs });
+  index: number,
+  data: { latitude: number; longitude: number; title: string }
+) => ({
+  type: UPDATE_MARKER,
+  index,
+  data,
+});
+
+export const updateMarkerList = (list: naver.maps.Marker[]) => ({
+  type: UPDATE_MARKER_LIST,
+  list,
+});
+
+export const clearMarker = () => ({ type: CLEAR_MARKER });
 
 export const addPolyline = (
   latlngs: { longitude: number; latitude: number }[]
@@ -50,14 +64,13 @@ export const removePolyline = (
 
 export const clearPolyline = () => ({ type: CLEAR_POLYLINE });
 
-export const updatePolyline = () => ({ type: UPDATE_POLYLINE });
-
 type NaverMapAction =
   | ReturnType<typeof init>
   | ReturnType<typeof addMarker>
   | ReturnType<typeof removeMarker>
-  | ReturnType<typeof clearMarker>
   | ReturnType<typeof updateMarker>
+  | ReturnType<typeof clearMarker>
+  | ReturnType<typeof updateMarkerList>
   | ReturnType<typeof addPolyline>
   | ReturnType<typeof removePolyline>
   | ReturnType<typeof clearPolyline>;
@@ -90,9 +103,10 @@ export default function NaverMapReducer(
     case ADD_MARKER: {
       const marker = new naver.maps.Marker({
         position: new naver.maps.LatLng(
-          action.latlng.latitude,
-          action.latlng.longitude
+          action.data.latitude,
+          action.data.longitude
         ),
+        title: action.data.title,
         map: state.map,
       });
       return {
@@ -116,24 +130,28 @@ export default function NaverMapReducer(
       } else {
         return state;
       }
-    case CLEAR_MARKER:
+    case UPDATE_MARKER: {
+      const marker = state.markers[action.index];
+      marker.setTitle(action.data.title);
+      marker.setPosition(
+        new naver.maps.LatLng(action.data.latitude, action.data.longitude)
+      );
+      return {
+        ...state,
+        marker: state.markers,
+      };
+    }
+    case CLEAR_MARKER: {
       state.markers.forEach((marker) => marker.setMap(null));
       return {
         ...state,
         markers: [],
       };
-    case UPDATE_MARKER: {
-      state.markers.forEach((marker) => marker.setMap(null));
-      const markers = action.latlngs.map(
-        (latlng) =>
-          new naver.maps.Marker({
-            position: new naver.maps.LatLng(latlng.latitude, latlng.longitude),
-            map: state.map,
-          })
-      );
+    }
+    case UPDATE_MARKER_LIST: {
       return {
         ...state,
-        markers: markers,
+        markers: [...action.list],
       };
     }
     case ADD_POLYLINE: {
@@ -146,7 +164,7 @@ export default function NaverMapReducer(
       });
       return {
         ...state,
-        polyline: state.polylines.concat(polyline),
+        polylines: state.polylines.concat(polyline),
       };
     }
     case REMOVE_POLYLINE: {
@@ -172,7 +190,7 @@ export default function NaverMapReducer(
       state.polylines.forEach((polyline) => polyline.setMap(null));
       return {
         ...state,
-        polyline: [],
+        polylines: [],
       };
     }
     default:

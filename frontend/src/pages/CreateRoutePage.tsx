@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { NaverMapProvider } from "../../util/maps/naver_map/context";
-import NaverMap from "../../util/maps/naver_map/NaverMap";
-import MarkerList from "./MarkerList";
+import { NaverMapProvider } from "../util/maps/naver_map/context";
+import NaverMap from "../util/maps/naver_map/NaverMap";
+import MarkerList from "../components/organisms/MarkerList";
 
 export const CreateRoutePage: React.FC = () => {
   const [coord, setCoord] = useState<{ latitude: number; longitude: number }>();

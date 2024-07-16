@@ -29,7 +29,13 @@ const NaverMap = ({ lat, lng, zoom }: props) => {
 
     map.addListener("click", (event) => {
       const { y, x } = event.coord;
-      dispatch(addMarker({ latitude: x, longitude: y }));
+      dispatch(
+        addMarker({
+          longitude: x,
+          latitude: y,
+          title: `새로운 경유지`,
+        })
+      );
     });
   }, [dispatch, lat, lng, zoom]);
 
@@ -40,7 +46,7 @@ const NaverMap = ({ lat, lng, zoom }: props) => {
 
       const polyline = markers.map((marker) => {
         const coord = marker.getPosition();
-        return { longitude: coord.y, latitude: coord.x };
+        return { longitude: coord.x, latitude: coord.y };
       });
 
       dispatch(addPolyline(polyline));
