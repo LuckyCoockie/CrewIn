@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Coordinate } from "../../util/maps/geolocation/Coordinate";
 import { NaverMapProvider } from "../../util/maps/naver_map/context";
 import NaverMap from "../../util/maps/naver_map/NaverMap";
+import MarkerList from "./MarkerList";
 
 export const CreateRoutePage: React.FC = () => {
-  const [coord, setCoord] = useState<Coordinate>();
+  const [coord, setCoord] = useState<{ latitude: number; longitude: number }>();
 
   const handleSuccess = (pos: GeolocationPosition) => {
     const { latitude, longitude } = pos.coords;
-    const location: Coordinate = { latitude: latitude, longitude: longitude };
+    const location = { latitude: latitude, longitude: longitude };
     setCoord(location);
   };
 
@@ -24,7 +24,7 @@ export const CreateRoutePage: React.FC = () => {
   return (
     <NaverMapProvider>
       {coord && <NaverMap lng={coord.longitude} lat={coord.latitude} />}
-      
+      <MarkerList />
     </NaverMapProvider>
   );
 };

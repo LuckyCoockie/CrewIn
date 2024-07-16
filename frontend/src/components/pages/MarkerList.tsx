@@ -3,7 +3,6 @@ import {
   DropDownComponent,
   ItemComponentProps,
 } from "../../util/beautiful_dnd/DropDownComponent";
-import { Coordinate } from "../../util/maps/geolocation/Coordinate";
 
 const initialItems = [
   { latitude: 1, longitude: 2 },
@@ -25,7 +24,9 @@ const MarkerList: React.FC = () => {
   );
 };
 
-const ItemComponent = ({ item }: ItemComponentProps<Coordinate>) => {
+const ItemComponent = ({
+  item,
+}: ItemComponentProps<{ longitude: number; latitude: number }>) => {
   return (
     <h3>
       {item.latitude} {item.longitude}

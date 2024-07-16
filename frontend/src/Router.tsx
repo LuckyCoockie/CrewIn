@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 import ImageEditor from "./components/Html2canvasTest";
 import App from "./App";
+import { CreateRoutePage } from "./components/pages/CreateRoutePage";
 
 export const router = createBrowserRouter([
   {
@@ -14,5 +15,9 @@ export const router = createBrowserRouter([
         element: <ImageEditor />,
       },
     ],
+  },
+  {
+    path: "/maps",
+    element: <CreateRoutePage />,
   },
 ]);

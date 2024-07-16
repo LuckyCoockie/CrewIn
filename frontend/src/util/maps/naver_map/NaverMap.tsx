@@ -29,8 +29,7 @@ const NaverMap = ({ lat, lng, zoom }: props) => {
 
     map.addListener("click", (event) => {
       const { y, x } = event.coord;
-      const newLatlng = new naver.maps.LatLng(y, x);
-      dispatch(addMarker(newLatlng));
+      dispatch(addMarker({ latitude: x, longitude: y }));
     });
   }, [dispatch, lat, lng, zoom]);
 
@@ -41,7 +40,7 @@ const NaverMap = ({ lat, lng, zoom }: props) => {
 
       const polyline = markers.map((marker) => {
         const coord = marker.getPosition();
-        return new naver.maps.LatLng(coord.y, coord.x);
+        return { longitude: coord.y, latitude: coord.x };
       });
 
       dispatch(addPolyline(polyline));

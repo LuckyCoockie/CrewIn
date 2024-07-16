@@ -9,17 +9,17 @@ export interface ItemComponentProps<T> {
   item: T;
 }
 
-export type OwnProps<M> = {
-  onDragEndCallback: (items: M[]) => void;
-  items: M[];
-  ItemComponent: React.ComponentType<ItemComponentProps<M>>;
+export type OwnProps<T> = {
+  onDragEndCallback: (items: T[]) => void;
+  items: T[];
+  ItemComponent: React.ComponentType<ItemComponentProps<T>>;
 };
 
-export const DropDownComponent = <M,>({
+export const DropDownComponent = <T,>({
   onDragEndCallback,
   items,
   ItemComponent,
-}: OwnProps<M>) => {
+}: OwnProps<T>) => {
   const handleOnDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 

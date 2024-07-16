@@ -6,26 +6,39 @@ const INIT = "naver/maps/INIT" as const;
 const ADD_MARKER = "naver/maps/ADD_MARKER" as const;
 const REMOVE_MARKER = "naver/maps/REMOVE_MARKER" as const;
 const CLEAR_MARKER = "naver/maps/CLEAR_MARKER" as const;
+const UPDATE_MARKER = "nvaer/maps/UPDATE_MARKER" as const;
 const ADD_POLYLINE = "naver/maps/ADD_POLYLINE" as const;
 const REMOVE_POLYLINE = "naver/maps/REMOVE_POLYLINE" as const;
 const CLEAR_POLYLINE = "naver/maps/CLEAR_POLYLINE" as const;
+const UPDATE_POLYLINE = "naver/maps/UPDATE_POLYLINE" as const;
 
 /* ----------------- 액션 생성 함수 ------------------ */
 export const init = (map: naver.maps.Map) => ({ type: INIT, map });
-export const addMarker = (latlng: naver.maps.LatLng) => ({
+
+export const addMarker = (latlng: { longitude: number; latitude: number }) => ({
   type: ADD_MARKER,
   latlng: latlng,
 });
+
 export const removeMarker = (index?: number, marker?: naver.maps.Marker) => ({
   type: REMOVE_MARKER,
   index,
   marker,
 });
+
 export const clearMarker = () => ({ type: CLEAR_MARKER });
-export const addPolyline = (latlngs: naver.maps.LatLng[]) => ({
+
+export const updateMarker = (
+  latlngs: { longitude: number; latitude: number }[]
+) => ({ type: UPDATE_MARKER, latlngs: latlngs });
+
+export const addPolyline = (
+  latlngs: { longitude: number; latitude: number }[]
+) => ({
   type: ADD_POLYLINE,
   latlngs: latlngs,
 });
+
 export const removePolyline = (
   index?: number,
   polyline?: naver.maps.Polyline
@@ -34,13 +47,17 @@ export const removePolyline = (
   index,
   polyline,
 });
+
 export const clearPolyline = () => ({ type: CLEAR_POLYLINE });
+
+export const updatePolyline = () => ({ type: UPDATE_POLYLINE });
 
 type NaverMapAction =
   | ReturnType<typeof init>
   | ReturnType<typeof addMarker>
   | ReturnType<typeof removeMarker>
   | ReturnType<typeof clearMarker>
+  | ReturnType<typeof updateMarker>
   | ReturnType<typeof addPolyline>
   | ReturnType<typeof removePolyline>
   | ReturnType<typeof clearPolyline>;
@@ -72,7 +89,10 @@ export default function NaverMapReducer(
       };
     case ADD_MARKER: {
       const marker = new naver.maps.Marker({
-        position: action.latlng,
+        position: new naver.maps.LatLng(
+          action.latlng.latitude,
+          action.latlng.longitude
+        ),
         map: state.map,
       });
       return {
@@ -97,13 +117,31 @@ export default function NaverMapReducer(
         return state;
       }
     case CLEAR_MARKER:
+      state.markers.forEach((marker) => marker.setMap(null));
       return {
         ...state,
         markers: [],
       };
+    case UPDATE_MARKER: {
+      state.markers.forEach((marker) => marker.setMap(null));
+      const markers = action.latlngs.map(
+        (latlng) =>
+          new naver.maps.Marker({
+            position: new naver.maps.LatLng(latlng.latitude, latlng.longitude),
+            map: state.map,
+          })
+      );
+      return {
+        ...state,
+        markers: markers,
+      };
+    }
     case ADD_POLYLINE: {
       const polyline = new naver.maps.Polyline({
-        path: action.latlngs,
+        path: action.latlngs.map(
+          ({ latitude, longitude }) =>
+            new naver.maps.LatLng(latitude, longitude)
+        ),
         map: state.map,
       });
       return {
@@ -111,7 +149,7 @@ export default function NaverMapReducer(
         polyline: state.polylines.concat(polyline),
       };
     }
-    case REMOVE_POLYLINE:
+    case REMOVE_POLYLINE: {
       if (action.index) {
         state.polylines[action.index].setMap(null);
         return {
@@ -129,11 +167,14 @@ export default function NaverMapReducer(
       } else {
         return state;
       }
-    case CLEAR_POLYLINE:
+    }
+    case CLEAR_POLYLINE: {
+      state.polylines.forEach((polyline) => polyline.setMap(null));
       return {
         ...state,
         polyline: [],
       };
+    }
     default:
       return state;
   }
@@ -155,8 +196,9 @@ export const NaverMapProvider = ({
   useEffect(() => {
     const script = document.createElement("script");
     script.type = "text/javascript";
-    script.src =
-      `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${import.meta.env.VITE_NAVER_MAPS_API_KEY}`;
+    script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${
+      import.meta.env.VITE_NAVER_MAPS_API_KEY
+    }`;
     script.onload = () => setIsScriptLoad(true);
     document.body.appendChild(script);
   }, []);
