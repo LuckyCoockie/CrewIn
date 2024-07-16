@@ -2,9 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Roboto", sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -18,14 +17,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
+/* 폰트 굵기 예시
+
+400(기본값) : Normal
+600 : Semi Bold
+700 : Bold
+800 : Extra Bold */
 
 body {
   margin: 0;
@@ -33,6 +30,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  font-family: "Roboto", sans-serif;
 }
 
 h1 {
@@ -40,23 +38,28 @@ h1 {
   line-height: 1.1;
 }
 
+/* 라벨 전역 설정 */
+label {
+  font-weight: 600;
+}
+
 button {
-  border-radius: 8px;
+  border-radius: 8px !important;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: hsla(229, 20%, 21%, 0.9) !important;
   cursor: pointer;
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: hsla(229, 20%, 21%, 0.3);
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 4px auto -webkit-focus-ring-color !important;
 }
 
 @media (prefers-color-scheme: light) {

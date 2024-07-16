@@ -1,6 +1,52 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+interface IFormInput {
+  username: string;
+  email: string;
+}
+
+const schema = yup.object().shape({
+  username: yup
+    .string()
+    .required("Username is required")
+    .min(3, "Username must be at least 3 characters long"),
+  email: yup.string().required("Email is required").email("Email is not valid"),
+});
 
 const CrewCreatePage: React.FC = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+    trigger,
+  } = useForm<IFormInput>({
+    resolver: yupResolver(schema),
+  });
+
+  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+
+  const watchedUsername = watch("username");
+  const watchedEmail = watch("email");
+
+  useEffect(() => {
+    setUsername(watchedUsername);
+    trigger("username"); // Trigger validation on username field
+  }, [watchedUsername, trigger]);
+
+  useEffect(() => {
+    setEmail(watchedEmail);
+    trigger("email"); // Trigger validation on email field
+  }, [watchedEmail, trigger]);
+
+  const onSubmit: SubmitHandler<IFormInput> = (data) => {
+    console.log(data);
+  };
+
   return (
     <>
       <form action="">
@@ -51,44 +97,35 @@ const CrewCreatePage: React.FC = () => {
             <div className="-mx-3 flex flex-wrap">
               <div className="w-full px-3 sm:w-1/2">
                 <div className="mb-5">
-                  <label
-                    htmlFor="fName"
-                    className="mb-3 block text-base font-medium text-[#07074D]"
-                  >
-                    First Name
+                  <label htmlFor="fName" className="mb-3 block">
+                    크루명
                   </label>
                   <input
                     type="text"
                     name="fName"
                     id="fName"
-                    placeholder="First Name"
-                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                    placeholder="크루명"
+                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
                 </div>
               </div>
               <div className="w-full px-3 sm:w-1/2">
                 <div className="mb-5">
-                  <label
-                    htmlFor="lName"
-                    className="mb-3 block text-base font-medium text-[#07074D]"
-                  >
-                    Last Name
+                  <label htmlFor="lName" className="mb-3 block">
+                    슬로건
                   </label>
                   <input
                     type="text"
                     name="lName"
                     id="lName"
-                    placeholder="Last Name"
-                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                    placeholder="슬로건"
+                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
                 </div>
               </div>
             </div>
             <div className="mb-5">
-              <label
-                htmlFor="guest"
-                className="mb-3 block text-base font-medium text-[#07074D]"
-              >
+              <label htmlFor="guest" className="mb-3 block">
                 How many guest are you bringing?
               </label>
               <input
@@ -97,49 +134,41 @@ const CrewCreatePage: React.FC = () => {
                 id="guest"
                 placeholder="5"
                 min="0"
-                className="w-full appearance-none rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                className="w-full appearance-none rounded-md border border-[#e0e0e0] bg-white py-3 px-6 outline-none focus:border-[#6A64F1] focus:shadow-md"
               />
             </div>
 
             <div className="-mx-3 flex flex-wrap">
               <div className="w-full px-3 sm:w-1/2">
                 <div className="mb-5">
-                  <label
-                    htmlFor="date"
-                    className="mb-3 block text-base font-medium text-[#07074D]"
-                  >
+                  <label htmlFor="date" className="mb-3 block">
                     Date
                   </label>
                   <input
                     type="date"
                     name="date"
                     id="date"
-                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
                 </div>
               </div>
               <div className="w-full px-3 sm:w-1/2">
                 <div className="mb-5">
-                  <label
-                    htmlFor="time"
-                    className="mb-3 block text-base font-medium text-[#07074D]"
-                  >
+                  <label htmlFor="time" className="mb-3 block">
                     Time
                   </label>
                   <input
                     type="time"
                     name="time"
                     id="time"
-                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
                 </div>
               </div>
             </div>
 
             <div className="mb-5">
-              <label className="mb-3 block text-base font-medium text-[#07074D]">
-                Are you coming to the event?
-              </label>
+              <label className="mb-3 block">Are you coming to the event?</label>
               <div className="flex items-center space-x-6">
                 <div className="flex items-center">
                   <input
@@ -148,10 +177,7 @@ const CrewCreatePage: React.FC = () => {
                     id="radioButton1"
                     className="h-5 w-5"
                   />
-                  <label
-                    htmlFor="radioButton1"
-                    className="pl-3 text-base font-medium text-[#07074D]"
-                  >
+                  <label htmlFor="radioButton1" className="pl-3">
                     Yes
                   </label>
                 </div>
@@ -162,10 +188,7 @@ const CrewCreatePage: React.FC = () => {
                     id="radioButton2"
                     className="h-5 w-5"
                   />
-                  <label
-                    htmlFor="radioButton2"
-                    className="pl-3 text-base font-medium text-[#07074D]"
-                  >
+                  <label htmlFor="radioButton2" className="pl-3">
                     No
                   </label>
                 </div>
@@ -173,12 +196,29 @@ const CrewCreatePage: React.FC = () => {
             </div>
 
             <div>
-              <button className="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none">
+              <button className="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-centerutline-none">
                 Submit
               </button>
             </div>
           </form>
         </div>
+      </div>
+      <div className="">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div>
+            <label htmlFor="username">Username</label>
+            <input id="username" {...register("username")} />
+            {username && errors.username && <p>{errors.username.message}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="email">Email</label>
+            <input id="email" {...register("email")} />
+            {email && errors.email && <p>{errors.email.message}</p>}
+          </div>
+
+          <button type="submit">Submit</button>
+        </form>
       </div>
     </>
   );
