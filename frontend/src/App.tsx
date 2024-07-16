@@ -1,10 +1,13 @@
-import React from 'react';
-import UploadImage from './components/pages/UploadImage';
+import React from "react";
+import { Outlet } from "react-router-dom";
 
 const App: React.FC = () => {
   return (
-    <UploadImage />
-  )
+    <div className="App">
+      <h1>Crew-In</h1>
+      <Outlet />
+    </div>
+  );
 };
 
 export default App;
