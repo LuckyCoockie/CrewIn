@@ -1,10 +1,11 @@
-import List from "./components/pages/MarkerList";
 import React from "react";
+import { Outlet } from "react-router-dom";
 
 const App: React.FC = () => {
   return (
     <div className="App">
-      <List></List>
+      <h1>Crew-In</h1>
+      <Outlet />
     </div>
   );
 };
