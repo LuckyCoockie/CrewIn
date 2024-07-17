@@ -24,15 +24,15 @@ public class Crew {
 
     private String name;
 
-    private String captainName;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "captain_id")
+    private Member captain;
 
     private String slogan;
 
     private String area;
 
     private String introduction;
-
-    private int memberCount;
 
     @Column(columnDefinition = "TEXT")
     private String mainLogo;

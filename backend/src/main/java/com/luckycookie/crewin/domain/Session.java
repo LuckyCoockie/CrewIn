@@ -35,7 +35,7 @@ public class Session {
     @JoinColumn(name = "crew_id")
     private Crew crew;
 
-    private SessionType type;
+    private SessionType sessionType;
 
     private String name;
 

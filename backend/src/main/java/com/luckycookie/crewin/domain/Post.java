@@ -55,7 +55,7 @@ public class Post {
     private boolean isPublic;
 
     @Enumerated(EnumType.STRING)
-    private PostType type;
+    private PostType postType;
 
     private String title;
 
