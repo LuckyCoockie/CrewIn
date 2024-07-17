@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import ImageEditor from "./components/Html2canvasTest";
+// import ImageEditor from "./components/Html2canvasTest";
 import App from "./App";
-import { CreateRoutePage } from "./pages/RouteCreatePage";
+import { RouteCreatePage } from "./pages/RouteCreatePage";
 import UploadImage from "./pages/UploadImage";
 import CrewCreatePage from "./pages/CrewCreatePage";
 
@@ -14,13 +14,13 @@ export const router = createBrowserRouter([
       {
         index: true,
         path: "",
-        element: <ImageEditor />,
+        element: <RouteCreatePage />,
       },
     ],
   },
   {
     path: "/maps",
-    element: <CreateRoutePage />,
+    element: <RouteCreatePage />,
   },
   {
     path: "uploadImage/",

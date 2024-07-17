@@ -6,21 +6,16 @@ export const directionApi = async (
 ): Promise<{ latitude: number; longitude: number }[]> => {
   let result: { latitude: number; longitude: number }[] = [];
   const response = await axios.post(
-    "https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&format=json&callback=result",
+    "http://limnyn.asuscomm.com:19980/tmap-pedestrian/",
     {
-      header: {
-        appKey: import.meta.env.VITE_TMAP_API_KEY,
-      },
-      body: {
-        startX: start.longitude,
-        startY: start.latitude,
-        endX: end.longitude,
-        endY: end.latitude,
-        reqCoordType: "WGS84GEO",
-        resCoordType: "WGS84GEO",
-        startName: "출발지",
-        endName: "도착지",
-      },
+      startX: start.longitude,
+      startY: start.latitude,
+      startName: "출발지",
+      endX: end.longitude,
+      endY: end.latitude,
+      endName: "도착지",
+      reqCoordType: "WGS84GEO",
+      resCoordType: "WGS84GEO",
     }
   );
 

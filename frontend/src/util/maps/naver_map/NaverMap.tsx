@@ -15,7 +15,7 @@ type props = {
   zoom?: number;
 };
 
-const NaverMap = ({ lat, lng, zoom }: props) => {
+const NaverMap: React.FC<props> = ({ lat, lng, zoom }: props) => {
   const { markers } = useNaverMapState();
   const dispatch = useNaverMapDispatch();
 

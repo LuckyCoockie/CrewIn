@@ -3,7 +3,7 @@ import {
   Draggable,
   Droppable,
   DropResult,
-} from "react-beautiful-dnd";
+} from "@hello-pangea/dnd";
 
 export interface ItemComponentProps<T> {
   index: number;
