@@ -123,13 +123,13 @@ export default function NaverMapReducer(
       };
     }
     case REMOVE_MARKER:
-      if (action.index) {
+      if (action.index !== undefined) {
         state.markers[action.index].setMap(null);
         return {
           ...state,
           markers: state.markers.filter((_, index) => index != action.index),
         };
-      } else if (action.marker) {
+      } else if (action.marker !== undefined) {
         action.marker.setMap(null);
         return {
           ...state,
@@ -178,13 +178,13 @@ export default function NaverMapReducer(
       };
     }
     case REMOVE_POLYLINE: {
-      if (action.index) {
+      if (action.index !== undefined) {
         state.polylines[action.index].setMap(null);
         return {
           ...state,
           number: state.polylines.filter((_, index) => index != action.index),
         };
-      } else if (action.polyline) {
+      } else if (action.polyline !== undefined) {
         action.polyline.setMap(null);
         return {
           ...state,

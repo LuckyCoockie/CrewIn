@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import html2canvas from "html2canvas";
-import alarmWhite from "../images/alarm-clockwhite.png";
-import meterWhite from "../images/meterwhite.png";
+import alarmWhite from "../assets/images/alarm-clockwhite.png";
+import meterWhite from "../assets/images/meterwhite.png";
 
 interface EditorStepProps {
   image: string;

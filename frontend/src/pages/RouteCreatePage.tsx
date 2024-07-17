@@ -27,6 +27,7 @@ export const RouteCreatePage: React.FC = () => {
       <div style={{ position: "relative" }}>
         {coord && <NaverMap lng={coord.longitude} lat={coord.latitude}/>}
         <MapToggleButton />
+        <h2>경로 정보</h2>
         <MarkerList />
       </div>
     </NaverMapProvider>

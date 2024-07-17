@@ -43,9 +43,8 @@ const NaverMap: React.FC<props> = ({ lat, lng, zoom }: props) => {
 
   // update polyline on markers update
   useEffect(() => {
+    dispatch(clearPolyline());
     if (markers.length > 1) {
-      dispatch(clearPolyline());
-
       const polyline = markers.map((marker) => {
         const coord = marker.getPosition();
         return { longitude: coord.x, latitude: coord.y };
@@ -58,8 +57,8 @@ const NaverMap: React.FC<props> = ({ lat, lng, zoom }: props) => {
   useEffect(initMap, [initMap]);
 
   const mapStyle = {
-    width: "100vh",
-    height: "100vh",
+    width: "500px",
+    height: "500px",
   };
 
   return <div id="map" style={mapStyle} />;

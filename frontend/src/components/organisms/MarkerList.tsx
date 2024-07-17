@@ -2,6 +2,7 @@ import React from "react";
 import { DropDownComponent } from "../../util/beautiful_dnd/DropDownComponent";
 import { MarkerListItem } from "../molecules/MarkerListItem";
 import {
+  removeMarker,
   updateMarkerList,
   useNaverMapDispatch,
   useNaverMapState,
@@ -15,6 +16,10 @@ const MarkerList: React.FC = () => {
     map?.panTo(markers[index].getPosition());
   };
 
+  const onListItemDelete = (index: number) => {
+    dispatch(removeMarker(index));
+  };
+
   return (
     <DropDownComponent
       onDragEndCallback={(markers) => dispatch(updateMarkerList(markers))}
@@ -23,8 +28,9 @@ const MarkerList: React.FC = () => {
       {({ index, item }) => (
         <MarkerListItem
           title={item.getTitle()}
-          index={index}
+          marker={"./images/alarm-clockblack.png"}
           onClick={() => onListItemClick(index)}
+          onDelete={() => onListItemDelete(index)}
         />
       )}
     </DropDownComponent>
