@@ -4,7 +4,7 @@ import {
   addPolyline,
   clearPolyline,
   init,
-  updateMarker,
+  updateMarkerList,
   useNaverMapDispatch,
   useNaverMapState,
 } from "./context";
@@ -35,15 +35,11 @@ const NaverMap = ({ lat, lng, zoom }: props) => {
           longitude: x,
           latitude: y,
           title: `새로운 경유지`,
-          ondragend: onMarkerDragEnd,
+          ondragend: () => dispatch(updateMarkerList()),
         })
       );
     });
   }, [dispatch, lat, lng, zoom]);
-
-  const onMarkerDragEnd = (marker: naver.maps.Marker) => {
-    // TODO : update polyline when marker drag end
-  };
 
   // update polyline on markers update
   useEffect(() => {

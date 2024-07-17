@@ -40,7 +40,7 @@ export const updateMarker = (
   data,
 });
 
-export const updateMarkerList = (list: naver.maps.Marker[]) => ({
+export const updateMarkerList = (list?: naver.maps.Marker[]) => ({
   type: UPDATE_MARKER_LIST,
   list,
 });
@@ -158,7 +158,7 @@ export default function NaverMapReducer(
     case UPDATE_MARKER_LIST: {
       return {
         ...state,
-        markers: [...action.list],
+        markers: [...(action.list ?? state.markers)],
       };
     }
     case ADD_POLYLINE: {
