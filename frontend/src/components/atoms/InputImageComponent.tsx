@@ -7,7 +7,7 @@ type InputImage = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const ImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
+const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
   (props, ref) => {
     return (
       <>
@@ -25,4 +25,4 @@ const ImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
   }
 );
 
-export default ImageComponent;
+export default InputImageComponent;
