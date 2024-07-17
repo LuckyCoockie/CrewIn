@@ -1,11 +1,14 @@
 package com.luckycookie.crewin.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -40,5 +43,7 @@ public class Crew {
     @Column(columnDefinition = "TEXT")
     private String banner;
 
-    private LocalDateTime crewBirth;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate crewBirth;
 }

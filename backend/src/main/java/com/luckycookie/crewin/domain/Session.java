@@ -1,5 +1,6 @@
 package com.luckycookie.crewin.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.luckycookie.crewin.domain.enums.SessionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.internal.IgnoreForbiddenApisErrors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -41,8 +43,12 @@ public class Session {
 
     private String spot;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startAt;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endAt;
 
     @Column(columnDefinition = "TEXT")
