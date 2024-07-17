@@ -114,6 +114,9 @@ export default function NaverMapReducer(
       naver.maps.Event.addListener(marker, "dragend", () => {
         action.data.ondragend!(marker);
       });
+      naver.maps.Event.addListener(marker, "click", () => {
+        state.map?.panTo(marker.getPosition());
+      });
       return {
         ...state,
         markers: state.markers.concat(marker),
