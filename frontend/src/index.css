@@ -62,6 +62,41 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color !important;
 }
 
+/* 일부 페이지 main 패딩 설정 */
+main {
+  padding: 0px 16px;
+}
+
+/* Data input css */
+.data-input {
+  width: 100%;
+  border-radius: 8px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 14px;
+  outline: none;
+}
+
+.data-input:focus {
+  border-color: hsla(229, 20%, 21%, 0.9);
+}
+
+/* Image file input css */
+.image-file-input {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 14px;
+  border: 1px solid #d1d5db; /* Tailwind's border-gray-300 */
+  cursor: pointer;
+}
+
+.image-file-input::file-selector-button {
+  display: none;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
