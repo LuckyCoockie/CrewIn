@@ -25,6 +25,10 @@ const MarkerList: React.FC = () => {
     }
   }, [isDetail]);
 
+  useEffect(() => {
+    setIsDetail(false);
+  }, [markers]);
+
   return (
     <>
       <button onClick={() => setIsDetail(!isDetail)}>
