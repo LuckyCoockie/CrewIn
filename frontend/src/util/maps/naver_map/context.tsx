@@ -19,6 +19,7 @@ export const addMarker = (data: {
   latitude: number;
   longitude: number;
   title: string;
+  ondragend?: (marker: naver.maps.Marker) => void;
 }) => ({
   type: ADD_MARKER,
   data: data,
@@ -32,7 +33,7 @@ export const removeMarker = (index?: number, marker?: naver.maps.Marker) => ({
 
 export const updateMarker = (
   index: number,
-  data: { latitude: number; longitude: number; title: string }
+  data?: { latitude?: number; longitude?: number; title?: string }
 ) => ({
   type: UPDATE_MARKER,
   index,
@@ -108,6 +109,10 @@ export default function NaverMapReducer(
         ),
         title: action.data.title,
         map: state.map,
+        draggable: action.data.ondragend ? true : false,
+      });
+      naver.maps.Event.addListener(marker, "dragend", () => {
+        action.data.ondragend!(marker);
       });
       return {
         ...state,
@@ -132,13 +137,15 @@ export default function NaverMapReducer(
       }
     case UPDATE_MARKER: {
       const marker = state.markers[action.index];
-      marker.setTitle(action.data.title);
-      marker.setPosition(
-        new naver.maps.LatLng(action.data.latitude, action.data.longitude)
-      );
+      if (action.data?.title) marker.setTitle(action.data.title);
+      if (action.data?.latitude && action.data?.longitude) {
+        marker.setPosition(
+          new naver.maps.LatLng(action.data.latitude, action.data.longitude)
+        );
+      }
       return {
         ...state,
-        marker: state.markers,
+        marker: [...state.markers],
       };
     }
     case CLEAR_MARKER: {
