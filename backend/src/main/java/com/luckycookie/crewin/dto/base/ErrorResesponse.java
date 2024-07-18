@@ -6,12 +6,12 @@ import java.time.LocalDateTime;
 
 @Getter
 @RequiredArgsConstructor
-public class ErrorRes {
+public class ErrorResesponse {
     private LocalDateTime timeStamp;
     private String errorCode;
     private String message;
 
-    public ErrorRes(String errorCode, String message) {
+    public ErrorResesponse(String errorCode, String message) {
         this.timeStamp = LocalDateTime.now().withNano(0);
         this.errorCode = errorCode;
         this.message = message;

@@ -3,10 +3,10 @@ package com.luckycookie.crewin.service;
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import com.luckycookie.crewin.dto.ImageReq.PresignedUrlReq;
-import com.luckycookie.crewin.dto.ImageRes.PresignedUrlRes;
+import com.luckycookie.crewin.dto.ImageRequest.PresignedUrlReq;
+import com.luckycookie.crewin.dto.ImageResponse.PresignedUrlRes;
 import lombok.RequiredArgsConstructor;
-import com.luckycookie.crewin.dto.ImageRes;
+import com.luckycookie.crewin.dto.ImageResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +31,7 @@ public class S3Service {
     private String folder;
 
     // 발급
-    public ImageRes.PresignedUrlRes issuePresignedUrl(PresignedUrlReq presignedUrlReq){
+    public ImageResponse.PresignedUrlRes issuePresignedUrl(PresignedUrlReq presignedUrlReq){
 
         String imageName = folder + UUID.randomUUID() + "." + presignedUrlReq.getImageExtension().getUploadExtension();
 

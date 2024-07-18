@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class ImageRes {
+public class ImageResponse {
 
     @Getter
     @Builder

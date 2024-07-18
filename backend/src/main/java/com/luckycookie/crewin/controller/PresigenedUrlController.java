@@ -1,8 +1,8 @@
 package com.luckycookie.crewin.controller;
 
-import com.luckycookie.crewin.dto.ImageRes;
-import com.luckycookie.crewin.dto.ImageReq.PresignedUrlReq;
-import com.luckycookie.crewin.dto.base.BaseRes;
+import com.luckycookie.crewin.dto.ImageResponse;
+import com.luckycookie.crewin.dto.ImageRequest.PresignedUrlReq;
+import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,8 +20,8 @@ public class PresigenedUrlController {
     private final S3Service s3Service;
 
     @PostMapping()
-    public ResponseEntity<BaseRes<ImageRes.PresignedUrlRes>> uploadImage(@RequestBody PresignedUrlReq presignedUrlReq) {
-        return ResponseEntity.ok(BaseRes.create(HttpStatus.OK.value(), "presignedUrl 생성에 성공했습니다.", s3Service.issuePresignedUrl(presignedUrlReq)));
+    public ResponseEntity<BaseResponse<ImageResponse.PresignedUrlRes>> uploadImage(@RequestBody PresignedUrlReq presignedUrlReq) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "presignedUrl 생성에 성공했습니다.", s3Service.issuePresignedUrl(presignedUrlReq)));
     }
 
 }
