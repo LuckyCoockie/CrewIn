@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import crewinlogo from "../../images/crewinlogo.png";
+import crewinbanner from "../../images/crewinbanner.png";
 
 type InputImage = {
   id: string;
@@ -39,11 +39,12 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
         ></input>
         {preview ? (
           <>
-            <div className="w-full text-center">
+            <div className="w-full">
               <img
                 src={preview}
                 alt="Preview"
-                className="mx-auto border-2 w-32 h-32 rounded-full object-cover"
+                className="border-2 w-60 h-40
+               mx-auto"
               />
             </div>
           </>
@@ -51,9 +52,10 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
           <>
             <div className="w-full text-center">
               <img
-                src={crewinlogo}
-                alt="crewinlogo"
-                className="mx-auto border-2 w-32 h-32 rounded-full object-cover"
+                src={crewinbanner}
+                alt="crewinbanner"
+                className="border-2 w-60 h-40
+                 mx-auto"
               />
               <p className="mt-2 font-bold text-gray-color">예시</p>
             </div>
