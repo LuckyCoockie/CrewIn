@@ -59,7 +59,7 @@ main {
 }
 
 .data-input:focus {
-  border-color: hsla(229, 20%, 21%, 0.9);
+  border-color: hsla(229, 20%, 21%, 0.902);
 }
 
 .large-data-input {
@@ -90,6 +90,11 @@ main {
 
 .image-file-input::file-selector-button {
   display: none;
+}
+
+/* text gray */
+.text-gray-color {
+  color: hsla(229, 20%, 21%, 0.4);
 }
 
 @media (prefers-color-scheme: light) {
