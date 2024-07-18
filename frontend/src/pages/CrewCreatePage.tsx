@@ -1,225 +1,253 @@
-import React, { useEffect, useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import React, { useState } from "react";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import InputTextTypeMolecule from "../components/molecules/InputTextTypeMolecule";
+import ImageTypeMolecule from "../components/molecules/ImageTypeMolecule";
+import InputDateTypeMolecule from "../components/molecules/InputDateTypeMolecule";
+import InputTextAreaTypeMolecule from "../components/molecules/InputTextAreaTypeMolecule";
+import ImageTypeBannerMolecule from "../components/molecules/ImageTypeBannerMolecule";
+import InputDropdonwTypeMolecule from "../components/molecules/InputDropdonwTypeMolecule";
+import { regions } from "../regions";
+import LargeDisableButton from "../components/atoms/Button/LargeDisableButton";
 
-interface IFormInput {
-  username: string;
-  email: string;
-}
-
-const schema = yup.object().shape({
-  username: yup
+// 유효성 검사 스키마 정의
+const schema = yup.object({
+  crewname: yup
     .string()
-    .required("Username is required")
-    .min(3, "Username must be at least 3 characters long"),
-  email: yup.string().required("Email is required").email("Email is not valid"),
+    .max(20, "20글자 이내로 입력해주세요.")
+    .required("크루명을 입력해주세요."),
+  crewslogan: yup
+    .string()
+    .max(50, "50글자 이내로 입력해주세요.")
+    .required("슬로건을 입력해주세요."),
+  crewmainlogo: yup.mixed(),
+  crewsublogo: yup.mixed(),
+  crewbanner: yup.mixed(),
+  crewcreatedat: yup.date().nullable(),
+  crewintroduce: yup
+    .string()
+    .max(255, "255글자를 초과할 수 없습니다.")
+    .required("크루 소개를 입력해주세요."),
+  city: yup.string().required("도시를 선택해주세요."),
+  district: yup.string().required("시/군/구를 선택해주세요."),
 });
+type FormValues = {
+  crewname: string;
+  crewslogan: string;
+  crewmainlogo?: FileList;
+  crewsublogo?: FileList;
+  crewbanner?: FileList;
+  crewcreatedat?: Date | null;
+  crewintroduce: string;
+  city: string;
+  district: string;
+};
 
 const CrewCreatePage: React.FC = () => {
+  const [selectedCity, setSelectedCity] = useState<string>("");
+
+  // react-hook-form 훅 사용
   const {
-    register,
+    control,
     handleSubmit,
+    setValue,
     watch,
     formState: { errors },
-    trigger,
-  } = useForm<IFormInput>({
+  } = useForm<FormValues>({
     resolver: yupResolver(schema),
+    // 유효성 검사 mode
+    mode: "onChange",
+    defaultValues: {
+      crewcreatedat: new Date(),
+    },
   });
 
-  const [username, setUsername] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-
-  const watchedUsername = watch("username");
-  const watchedEmail = watch("email");
-
-  useEffect(() => {
-    setUsername(watchedUsername);
-    trigger("username"); // Trigger validation on username field
-  }, [watchedUsername, trigger]);
-
-  useEffect(() => {
-    setEmail(watchedEmail);
-    trigger("email"); // Trigger validation on email field
-  }, [watchedEmail, trigger]);
-
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
+  const onSubmit: SubmitHandler<FormValues> = (data) => {
     console.log(data);
   };
 
+  // 도시 선택 시 호출되는 함수
+  const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const city = event.target.value;
+    setSelectedCity(city);
+    setValue("city", city);
+    setValue("district", ""); // 도시가 변경되면 구/군/구 필드를 초기화
+  };
+
+  // watch 함수를 사용하여 실시간으로 city 필드 값 모니터링
+  const watchedCity = watch("city", selectedCity);
+
   return (
     <>
-      <form action="">
-        <p>
-          {/* 크루명 */}
-          <label htmlFor="crew_name">크루명</label>
-          <input type="text" id="crew_name" />
-        </p>
-        <p>
-          {/* 슬로건 */}
-          <label htmlFor="slogan">슬로건</label>
-          <input type="text" id="slogan" />
-        </p>
-        <p>
-          {/* 활동 지역 */}
-          <label htmlFor="area">활동 지역</label>
-          <input type="text" id="area" />
-        </p>
-        <p>
-          {/* 크루 생성일 */}
-          <label htmlFor="crew_birth">크루 생성일</label>
-          <input type="text" id="crew_birth" />
-        </p>
-        <p>
-          {/* 소개 문구 */}
-          <label htmlFor="introduction">소개 문구</label>
-          <input type="text" id="introduction" />
-        </p>
-        <p>
-          {/* 메인 로고 */}
-          <label htmlFor="main_logo">메인 로고</label>
-          <input type="text" id="main_logo" />
-        </p>
-        <p>
-          {/* 서브 로고 */}
-          <label htmlFor="sub_logo">서브 로고</label>
-          <input type="text" id="sub_logo" />
-        </p>
-        <p>
-          {/* 배너 */}
-          <label htmlFor="banner">배너</label>
-          <input type="text" id="banner" />
-        </p>
-      </form>
-      <div className="flex items-center justify-center p-4">
-        <div className="mx-auto w-full max-w-[550px]">
-          <form action="" method="POST">
-            <div className="-mx-3 flex flex-wrap">
-              <div className="w-full px-3 sm:w-1/2">
-                <div className="mb-5">
-                  <label htmlFor="fName" className="mb-3 block">
-                    크루명
-                  </label>
-                  <input
-                    type="text"
-                    name="fName"
-                    id="fName"
-                    placeholder="크루명"
-                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  />
-                </div>
-              </div>
-              <div className="w-full px-3 sm:w-1/2">
-                <div className="mb-5">
-                  <label htmlFor="lName" className="mb-3 block">
-                    슬로건
-                  </label>
-                  <input
-                    type="text"
-                    name="lName"
-                    id="lName"
-                    placeholder="슬로건"
-                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="mb-5">
-              <label htmlFor="guest" className="mb-3 block">
-                How many guest are you bringing?
-              </label>
-              <input
-                type="number"
-                name="guest"
-                id="guest"
-                placeholder="5"
-                min="0"
-                className="w-full appearance-none rounded-md border border-[#e0e0e0] bg-white py-3 px-6 outline-none focus:border-[#6A64F1] focus:shadow-md"
-              />
-            </div>
+      {/* 헤더 파트 */}
 
-            <div className="-mx-3 flex flex-wrap">
-              <div className="w-full px-3 sm:w-1/2">
-                <div className="mb-5">
-                  <label htmlFor="date" className="mb-3 block">
-                    Date
-                  </label>
-                  <input
-                    type="date"
-                    name="date"
-                    id="date"
-                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  />
-                </div>
+      {/* 본문 파트 */}
+      <main className="flex items-center justify-center">
+        <div className="mx-auto w-full max-w-[550px] pt-4 pb-10">
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {/* 이하 크루 생성 컴포넌트 */}
+            <div className="flex flex-wrap">
+              <div className="w-full">
+                <Controller
+                  name="crewname"
+                  control={control}
+                  render={({ field }) => (
+                    <InputTextTypeMolecule
+                      id="crewname"
+                      title="크루명*"
+                      placeholder="멋진 크루명을 입력해주세요!"
+                      {...field}
+                      error={errors.crewname?.message}
+                      hasError={!!errors.crewname}
+                    />
+                  )}
+                />
               </div>
-              <div className="w-full px-3 sm:w-1/2">
-                <div className="mb-5">
-                  <label htmlFor="time" className="mb-3 block">
-                    Time
-                  </label>
-                  <input
-                    type="time"
-                    name="time"
-                    id="time"
-                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  />
-                </div>
+              <div className="w-full">
+                <Controller
+                  name="crewslogan"
+                  control={control}
+                  render={({ field }) => (
+                    <InputTextTypeMolecule
+                      id="crewslogan"
+                      title="슬로건*"
+                      placeholder="ex) 같이의 가치"
+                      {...field}
+                      error={errors.crewslogan?.message}
+                      hasError={!!errors.crewslogan}
+                    />
+                  )}
+                />
+              </div>
+              <div className="w-full">
+                <Controller
+                  name="crewmainlogo"
+                  control={control}
+                  render={({ field }) => (
+                    <ImageTypeMolecule
+                      id="crewmainlogo"
+                      title="메인로고"
+                      placeholder="1:1 비율이 가장 적합합니다."
+                      {...field}
+                    />
+                  )}
+                />
+              </div>
+              <div className="w-full">
+                <Controller
+                  name="crewsublogo"
+                  control={control}
+                  render={({ field }) => (
+                    <ImageTypeMolecule
+                      id="crewsublogo"
+                      title="서브로고"
+                      placeholder="1:1 비율이 가장 적합합니다."
+                      {...field}
+                    />
+                  )}
+                />
+              </div>
+              <div className="w-full">
+                <Controller
+                  name="crewbanner"
+                  control={control}
+                  render={({ field }) => (
+                    <ImageTypeBannerMolecule
+                      id="crewbanner"
+                      title="배너"
+                      placeholder="3:2 비율이 가장 적합합니다."
+                      {...field}
+                    />
+                  )}
+                />
+              </div>
+              <div className="w-full">
+                <Controller
+                  name="crewcreatedat"
+                  control={control}
+                  render={({ field }) => (
+                    <InputDateTypeMolecule
+                      id="crewcreatedat"
+                      title="크루 창립일"
+                      selected={field.value ?? new Date()}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+              </div>
+              <div className="w-full">
+                <Controller
+                  name="crewintroduce"
+                  control={control}
+                  render={({ field }) => (
+                    <InputTextAreaTypeMolecule
+                      id="crewintroduce"
+                      title="크루 소개*"
+                      placeholder="크루에 대한 설명을 입력해주세요."
+                      {...field}
+                      error={errors.crewintroduce?.message}
+                      hasError={!!errors.crewintroduce}
+                    />
+                  )}
+                />
+              </div>
+              {/* 도시 */}
+              <div className="w-2/5 me-auto">
+                <Controller
+                  name="city"
+                  control={control}
+                  render={({ field }) => (
+                    <InputDropdonwTypeMolecule
+                      id="city"
+                      title="도시*"
+                      options={regions.map((region) => ({
+                        label: region.city,
+                        value: region.city,
+                      }))}
+                      value={field.value}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        handleCityChange(e);
+                      }}
+                      error={errors.city?.message}
+                      hasError={!!errors.city}
+                    />
+                  )}
+                />
+              </div>
+              {/* 시/군/구 */}
+              <div className="w-2/5">
+                <Controller
+                  name="district"
+                  control={control}
+                  render={({ field }) => (
+                    <InputDropdonwTypeMolecule
+                      id="district"
+                      title="시/군/구*"
+                      options={
+                        regions
+                          .find((region) => region.city === watchedCity)
+                          ?.districts.map((district) => ({
+                            label: district,
+                            value: district,
+                          })) || []
+                      }
+                      {...field}
+                      error={errors.district?.message}
+                      hasError={!!errors.district}
+                      disabled={!watchedCity}
+                    />
+                  )}
+                />
               </div>
             </div>
-
-            <div className="mb-5">
-              <label className="mb-3 block">Are you coming to the event?</label>
-              <div className="flex items-center space-x-6">
-                <div className="flex items-center">
-                  <input
-                    type="radio"
-                    name="radio1"
-                    id="radioButton1"
-                    className="h-5 w-5"
-                  />
-                  <label htmlFor="radioButton1" className="pl-3">
-                    Yes
-                  </label>
-                </div>
-                <div className="flex items-center">
-                  <input
-                    type="radio"
-                    name="radio1"
-                    id="radioButton2"
-                    className="h-5 w-5"
-                  />
-                  <label htmlFor="radioButton2" className="pl-3">
-                    No
-                  </label>
-                </div>
-              </div>
-            </div>
-
             <div>
-              <button className="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-centerutline-none">
-                Submit
-              </button>
+              <LargeDisableButton text="제출하기" />
             </div>
           </form>
         </div>
-      </div>
-      <div className="">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div>
-            <label htmlFor="username">Username</label>
-            <input id="username" {...register("username")} />
-            {username && errors.username && <p>{errors.username.message}</p>}
-          </div>
-
-          <div>
-            <label htmlFor="email">Email</label>
-            <input id="email" {...register("email")} />
-            {email && errors.email && <p>{errors.email.message}</p>}
-          </div>
-
-          <button type="submit">Submit</button>
-        </form>
-      </div>
+      </main>
     </>
   );
 };

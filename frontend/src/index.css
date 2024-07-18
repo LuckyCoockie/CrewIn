@@ -49,23 +49,58 @@ label {
   font-weight: 600;
 }
 
-button {
-  border-radius: 8px !important;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: hsla(229, 20%, 21%, 0.9) !important;
+/* 일부 페이지 main 패딩 설정 */
+main {
+  padding: 0px 16px;
+}
+
+/* Data input css */
+.data-input {
+  width: 100%;
+  border-radius: 8px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 14px;
+  outline: none;
+}
+
+.data-input:focus {
+  border-color: hsla(229, 20%, 21%, 0.902);
+}
+
+.large-data-input {
+  width: 100%;
+  border-radius: 8px;
+  padding-top: 12px;
+  padding-bottom: 50px;
+  padding-left: 14px;
+  padding-right: 14px;
+  outline: none;
+}
+
+.large-data-input:focus {
+  border-color: hsla(229, 20%, 21%, 0.9);
+}
+
+/* Image file input css */
+.image-file-input {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 14px;
+  border: 1px solid #d1d5db; /* Tailwind's border-gray-300 */
   cursor: pointer;
-  transition: border-color 0.25s;
 }
-button:hover {
-  border-color: hsla(229, 20%, 21%, 0.3);
+
+.image-file-input::file-selector-button {
+  display: none;
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color !important;
+
+/* text gray */
+.text-gray-color {
+  color: hsla(229, 20%, 21%, 0.4);
 }
 
 @media (prefers-color-scheme: light) {

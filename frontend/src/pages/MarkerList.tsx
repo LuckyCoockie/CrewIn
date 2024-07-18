@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import {
   DropDownComponent,
   ItemComponentProps,
-} from "../../util/beautiful_dnd/DropDownComponent";
-import { Coordinate } from "../../util/maps/geolocation/Coordinate";
+} from "../util/beautiful_dnd/DropDownComponent";
+import { Coordinate } from "../util/maps/geolocation/Coordinate";
 
 const initialItems = [
   { latitude: 1, longitude: 2 },
