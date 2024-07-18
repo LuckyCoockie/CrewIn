@@ -11,10 +11,6 @@ export const router = createBrowserRouter([
     element: <App />,
   },
   {
-    path: "uploadImage/",
-    element: <UploadImage />,
-  },
-  {
     path: "crewcreatepage/",
     element: <CrewCreatePage />,
   },
