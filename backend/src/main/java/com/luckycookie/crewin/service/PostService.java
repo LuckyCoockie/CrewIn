@@ -7,6 +7,8 @@ import com.luckycookie.crewin.domain.PostImage;
 import com.luckycookie.crewin.domain.enums.PostType;
 import com.luckycookie.crewin.dto.PostRequest;
 import com.luckycookie.crewin.dto.PostResponse;
+import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
+import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,10 +30,10 @@ public class PostService {
     public void writePost(PostRequest.WritePostRequest writePostRequest) {
 
         Member member = memberRepository.findByEmail(writePostRequest.getAuthorEmail())
-                .orElseThrow(() -> new RuntimeException("해당 작성자를 찾을 수 없습니다: " + writePostRequest.getAuthorEmail()));
+                .orElseThrow(NotFoundMemberException::new);
 
         Crew crew = crewRepository.findById(writePostRequest.getCrewId())
-                .orElseThrow(() -> new RuntimeException("해당 크루를 찾을 수 없습니다: " + writePostRequest.getCrewId()));
+                .orElseThrow(NotFoundCrewException::new);
 
         Post post = Post.builder()
                 .crew(crew)

@@ -1,6 +1,5 @@
 package com.luckycookie.crewin.controller;
 
-import com.luckycookie.crewin.domain.Post;
 import com.luckycookie.crewin.dto.PostRequest;
 import com.luckycookie.crewin.dto.base.BaseRes;
 import com.luckycookie.crewin.dto.PostResponse;
