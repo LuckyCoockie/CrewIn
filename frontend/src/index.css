@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  img {
+    @apply inline-block;
+  }
+}
+
 :root {
   font-family: "Roboto", sans-serif;
   line-height: 1.5;
@@ -41,6 +47,60 @@ body {
 /* 라벨 전역 설정 */
 label {
   font-weight: 600;
+}
+
+/* 일부 페이지 main 패딩 설정 */
+main {
+  padding: 0px 16px;
+}
+
+/* Data input css */
+.data-input {
+  width: 100%;
+  border-radius: 8px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 14px;
+  outline: none;
+}
+
+.data-input:focus {
+  border-color: hsla(229, 20%, 21%, 0.902);
+}
+
+.large-data-input {
+  width: 100%;
+  border-radius: 8px;
+  padding-top: 12px;
+  padding-bottom: 50px;
+  padding-left: 14px;
+  padding-right: 14px;
+  outline: none;
+}
+
+.large-data-input:focus {
+  border-color: hsla(229, 20%, 21%, 0.9);
+}
+
+/* Image file input css */
+.image-file-input {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 14px;
+  border: 1px solid #d1d5db; /* Tailwind's border-gray-300 */
+  cursor: pointer;
+}
+
+.image-file-input::file-selector-button {
+  display: none;
+}
+
+/* text gray */
+.text-gray-color {
+  color: hsla(229, 20%, 21%, 0.4);
 }
 
 @media (prefers-color-scheme: light) {
