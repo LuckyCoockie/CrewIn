@@ -5,11 +5,10 @@ import html2canvas from 'html2canvas';
 import { saveAs } from 'file-saver';
 import InputMask from 'react-input-mask';
 
-import alarmWhite from "../images/alarm-clockwhite.png";
-import alarmBlack from "../images/alarm-clockblack.png";
-import meterWhite from "../images/meterwhite.png";
-import meterBlack from "../images/meterblack.png";
-import distanceWhite from "../images/distancewlack.png";
+import alarmWhite from "../assets/images/alarm-clockwhite.png";
+import alarmBlack from "../assets/images/alarm-clockblack.png";
+import meterWhite from "../assets/images/meterwhite.png";
+import meterBlack from "../assets/images/meterblack.png";
 
 interface EditorStepProps {
   images: string[];
