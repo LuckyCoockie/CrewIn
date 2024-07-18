@@ -39,10 +39,10 @@ body {
   font-family: "Roboto", sans-serif;
 }
 
-h1 {
+/* h1 {
   font-size: 3.2em;
   line-height: 1.1;
-}
+} */
 
 /* 라벨 전역 설정 */
 label {

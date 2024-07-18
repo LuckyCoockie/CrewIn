@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import crewinbanner from "../../images/crewinbanner.png";
+import crewinbanner from "../../../assets/images/crewinbanner.png"
 
 type InputImage = {
   id: string;
