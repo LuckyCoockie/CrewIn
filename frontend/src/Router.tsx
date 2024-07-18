@@ -1,9 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import App from "./App";
-import UploadImage from "./pages/UploadImage";
 import CrewCreatePage from "./pages/CrewCreatePage";
 import PostCreatePage from "./pages/PostCreatePage";
+import RouteCreatePage from "./pages/RouteCreatePage";
 
 export const router = createBrowserRouter([
   {
@@ -11,8 +11,8 @@ export const router = createBrowserRouter([
     element: <App />,
   },
   {
-    path: "uploadImage/",
-    element: <UploadImage />,
+    path: "maps/",
+    element: <RouteCreatePage />,
   },
   {
     path: "crewcreatepage/",
