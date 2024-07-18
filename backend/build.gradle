@@ -39,6 +39,11 @@ dependencies {
 
 	// P6Spy 의존성 추가
 	implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.1")
+
+	// AWS S3 의존성 추가
+	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
+	implementation 'io.awspring.cloud:spring-cloud-starter-aws-secrets-manager-config:2.4.4'
+
 }
 
 tasks.named('test') {
