@@ -122,12 +122,36 @@ export default function NaverMapReducer(
 
       const infowindow = new naver.maps.InfoWindow({
         // TODO : infowindow 꾸미기
-        content: action.data.title,
-        maxWidth: 140,
-        borderColor: "#2F96FC",
-        borderWidth: 3,
-        anchorSize: new naver.maps.Size(5, 15),
-        anchorSkew: true,
+        content: `
+          <style>
+            .balloon {
+              position: relative;
+              background-color: #ffffff;
+              border-radius: 10px;
+              padding: 15px;
+              max-width: 300px;
+              margin: 20px;
+              box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+            }
+
+            .balloon::after {
+              content: "";
+              position: absolute;
+              bottom: -10px;
+              left: 50%;
+              transform: translateX(-50%);
+              border-width: 10px 7px 0;
+              border-style: solid;
+              border-color: #ffffff transparent transparent;
+              display: block;
+              width: 0;
+            }
+          </style>
+          <div class="balloon">${action.data.title}</div>
+          `,
+        borderWidth: 0,
+        disableAnchor: true,
+        backgroundColor: "transparent",
       });
 
       naver.maps.Event.addListener(marker, "click", () => {
@@ -141,7 +165,7 @@ export default function NaverMapReducer(
       naver.maps.Event.addListener(marker, "dragend", () => {
         action.data.ondragend!(marker);
       });
-      
+
       naver.maps.Event.addListener(marker, "click", () => {
         state.map?.panTo(marker.getPosition());
       });
