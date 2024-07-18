@@ -6,7 +6,10 @@ import InputTextTypeMolecule from "../molecule/InputTextTypeMolecule";
 import ImageTypeMolecule from "../molecule/ImageTypeMolecule";
 import InputDateTypeMolecule from "../molecule/InputDateTypeMolecule";
 import InputTextAreaTypeMolecule from "../molecule/InputTextAreaTypeMolecule";
+import ImageTypeBannerMolecule from "../molecule/ImageTypeBannerMolecule";
+import InputDropdonwTypeMolecule from "../molecule/InputDropdonwTypeMolecule";
 import { regions } from "../../regions";
+import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({
@@ -26,6 +29,8 @@ const schema = yup.object({
     .string()
     .max(255, "255글자를 초과할 수 없습니다.")
     .required("크루 소개를 입력해주세요."),
+  city: yup.string().required("도시를 선택해주세요."),
+  district: yup.string().required("시/군/구를 선택해주세요."),
 });
 type FormValues = {
   crewname: string;
@@ -33,42 +38,45 @@ type FormValues = {
   crewmainlogo?: FileList;
   crewsublogo?: FileList;
   crewbanner?: FileList;
-  crewcreatedat?: Date | null; // Date 타입이 null을 허용하도록 변경
+  crewcreatedat?: Date | null;
   crewintroduce: string;
+  city: string;
+  district: string;
 };
 
 const CrewCreatePage: React.FC = () => {
+  const [selectedCity, setSelectedCity] = useState<string>("");
+
   // react-hook-form 훅 사용
   const {
     control,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     // 유효성 검사 mode
     mode: "onChange",
+    defaultValues: {
+      crewcreatedat: new Date(),
+    },
   });
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     console.log(data);
   };
 
-  // 지역
-  const [selectedCity, setSelectedCity] = useState<string>("");
-  const [selectedDistrict, setSelectedDistrict] = useState<string>("");
+  // 도시 선택 시 호출되는 함수
   const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCity(event.target.value);
-    setSelectedDistrict(""); // Reset district when city changes
+    const city = event.target.value;
+    setSelectedCity(city);
+    setValue("city", city);
+    setValue("district", ""); // 도시가 변경되면 구/군/구 필드를 초기화
   };
 
-  const handleDistrictChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setSelectedDistrict(event.target.value);
-  };
-
-  const districts =
-    regions.find((region) => region.city === selectedCity)?.districts || [];
+  // watch 함수를 사용하여 실시간으로 city 필드 값 모니터링
+  const watchedCity = watch("city", selectedCity);
 
   return (
     <>
@@ -76,7 +84,7 @@ const CrewCreatePage: React.FC = () => {
 
       {/* 본문 파트 */}
       <main className="flex items-center justify-center">
-        <div className="mx-auto w-full max-w-[550px] pt-4">
+        <div className="mx-auto w-full max-w-[550px] pt-4 pb-10">
           <form onSubmit={handleSubmit(onSubmit)}>
             {/* 이하 크루 생성 컴포넌트 */}
             <div className="flex flex-wrap">
@@ -145,7 +153,7 @@ const CrewCreatePage: React.FC = () => {
                   name="crewbanner"
                   control={control}
                   render={({ field }) => (
-                    <ImageTypeMolecule
+                    <ImageTypeBannerMolecule
                       id="crewbanner"
                       title="배너"
                       placeholder="3:2 비율이 가장 적합합니다."
@@ -162,8 +170,8 @@ const CrewCreatePage: React.FC = () => {
                     <InputDateTypeMolecule
                       id="crewcreatedat"
                       title="크루 창립일"
-                      selected={field.value ?? null} // undefined를 null로 변환
-                      onChange={field.onChange} // onChange 핸들러 추가
+                      selected={field.value ?? new Date()}
+                      onChange={field.onChange}
                     />
                   )}
                 />
@@ -184,46 +192,58 @@ const CrewCreatePage: React.FC = () => {
                   )}
                 />
               </div>
-              {/* 지역 */}
-              <div>
-                <div>
-                  <label htmlFor="city">도시:</label>
-                  <select
-                    id="city"
-                    value={selectedCity}
-                    onChange={handleCityChange}
-                  >
-                    <option value="">도시를 선택하세요</option>
-                    {regions.map((region) => (
-                      <option key={region.city} value={region.city}>
-                        {region.city}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="district">구:</label>
-                  <select
-                    id="district"
-                    value={selectedDistrict}
-                    onChange={handleDistrictChange}
-                    disabled={!selectedCity}
-                  >
-                    <option value="">구를 선택하세요</option>
-                    {districts.map((district) => (
-                      <option key={district} value={district}>
-                        {district}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              {/* 도시 */}
+              <div className="w-2/5 me-auto">
+                <Controller
+                  name="city"
+                  control={control}
+                  render={({ field }) => (
+                    <InputDropdonwTypeMolecule
+                      id="city"
+                      title="도시*"
+                      options={regions.map((region) => ({
+                        label: region.city,
+                        value: region.city,
+                      }))}
+                      value={field.value}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        handleCityChange(e);
+                      }}
+                      error={errors.city?.message}
+                      hasError={!!errors.city}
+                    />
+                  )}
+                />
+              </div>
+              {/* 시/군/구 */}
+              <div className="w-2/5">
+                <Controller
+                  name="district"
+                  control={control}
+                  render={({ field }) => (
+                    <InputDropdonwTypeMolecule
+                      id="district"
+                      title="시/군/구*"
+                      options={
+                        regions
+                          .find((region) => region.city === watchedCity)
+                          ?.districts.map((district) => ({
+                            label: district,
+                            value: district,
+                          })) || []
+                      }
+                      {...field}
+                      error={errors.district?.message}
+                      hasError={!!errors.district}
+                      disabled={!watchedCity}
+                    />
+                  )}
+                />
               </div>
             </div>
             <div>
-              <button className="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-center outline-none">
-                제출하기
-              </button>
+              <LargeDisableButton text="제출하기" />
             </div>
           </form>
         </div>
