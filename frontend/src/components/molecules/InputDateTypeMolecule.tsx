@@ -1,6 +1,6 @@
 import React from "react";
-import InputLabelComponent from "../atoms/InputLabelComponent";
-import InputDateComponent from "../atoms/InputDateComponent";
+import InputLabelComponent from "../atoms/Input/InputLabelComponent";
+import InputDateComponent from "../atoms/Input/InputDateComponent";
 import DatePicker from "react-datepicker";
 
 type InputData = {

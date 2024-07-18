@@ -1,6 +1,6 @@
 import React from "react";
-import InputLabelComponent from "../atoms/InputLabelComponent";
-import InputTextTypeComponent from "../atoms/InputTextTypeComponent";
+import InputLabelComponent from "../atoms/Input/InputLabelComponent";
+import InputTextTypeComponent from "../atoms/Input/InputTextTypeComponent";
 
 type InputData = {
   id: string;

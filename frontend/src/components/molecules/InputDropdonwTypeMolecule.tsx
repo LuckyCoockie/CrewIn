@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
-import InputLabelComponent from "../atoms/InputLabelComponent";
-import InputDropdownTypeComponent from "../atoms/InputDropdownTypeComponent";
+import InputLabelComponent from "../atoms/Input/InputLabelComponent";
+import InputDropdownTypeComponent from "../atoms/Input/InputDropdownTypeComponent";
 
 type Option = {
   label: string;

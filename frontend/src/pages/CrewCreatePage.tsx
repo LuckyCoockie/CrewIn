@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import InputTextTypeMolecule from "../molecule/InputTextTypeMolecule";
-import ImageTypeMolecule from "../molecule/ImageTypeMolecule";
-import InputDateTypeMolecule from "../molecule/InputDateTypeMolecule";
-import InputTextAreaTypeMolecule from "../molecule/InputTextAreaTypeMolecule";
-import ImageTypeBannerMolecule from "../molecule/ImageTypeBannerMolecule";
-import InputDropdonwTypeMolecule from "../molecule/InputDropdonwTypeMolecule";
-import { regions } from "../../regions";
-import LargeDisableButton from "../atoms/Button/LargeDisableButton";
+import InputTextTypeMolecule from "../components/molecules/InputTextTypeMolecule";
+import ImageTypeMolecule from "../components/molecules/ImageTypeMolecule";
+import InputDateTypeMolecule from "../components/molecules/InputDateTypeMolecule";
+import InputTextAreaTypeMolecule from "../components/molecules/InputTextAreaTypeMolecule";
+import ImageTypeBannerMolecule from "../components/molecules/ImageTypeBannerMolecule";
+import InputDropdonwTypeMolecule from "../components/molecules/InputDropdonwTypeMolecule";
+import { regions } from "../regions";
+import LargeDisableButton from "../components/atoms/Button/LargeDisableButton";
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({

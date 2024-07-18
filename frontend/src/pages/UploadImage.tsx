@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import ImageCrop from '../ImageCrop';
-import ImageEditSave from '../ImageEditSave';
+import React, { useState } from "react";
+import ImageCrop from "../components/ImageCrop";
+import ImageEditSave from "../components/ImageEditSave";
 
 const UploadImage: React.FC = () => {
   const [step, setStep] = useState(1);
@@ -18,7 +18,9 @@ const UploadImage: React.FC = () => {
   return (
     <div className="App">
       {step === 1 && <ImageCrop onNext={handleNextStep} />}
-      {step === 2 && croppedImage && <ImageEditSave image={croppedImage} onPrevious={handlePreviousStep} />}
+      {step === 2 && croppedImage && (
+        <ImageEditSave image={croppedImage} onPrevious={handlePreviousStep} />
+      )}
     </div>
   );
 };

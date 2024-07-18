@@ -39,7 +39,7 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
         ></input>
         {preview ? (
           <>
-            <div className="w-full">
+            <div className="w-full text-center">
               <img
                 src={preview}
                 alt="Preview"

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import InputLabelComponent from "../atoms/InputLabelComponent";
-import InputTextAreaTypeComponent from "../atoms/InputTextAreaTypeComponent";
+import InputLabelComponent from "../atoms/Input/InputLabelComponent";
+import InputTextAreaTypeComponent from "../atoms/Input/InputTextAreaTypeComponent";
 
 type InputData = {
   id: string;
