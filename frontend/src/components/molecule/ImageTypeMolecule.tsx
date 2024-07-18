@@ -1,6 +1,6 @@
 import React from "react";
 import InputImageComponent from "../atoms/InputImageComponent";
-import InputLabelCompoent from "../atoms/InputLabelCompoent";
+import InputLabelComponent from "../atoms/InputLabelComponent";
 
 type InputData = {
   id: string;
@@ -14,14 +14,16 @@ const ImageTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
   (props, ref) => {
     return (
       <>
-        <InputLabelCompoent id={props.id} title={props.title} />
-        <InputImageComponent
-          placeholder={props.placeholder}
-          id={props.id}
-          name={props.name}
-          ref={ref}
-          onChange={props.onChange}
-        />
+        <div className="mb-4">
+          <InputLabelComponent id={props.id} title={props.title} />
+          <InputImageComponent
+            placeholder={props.placeholder}
+            id={props.id}
+            name={props.name}
+            ref={ref}
+            onChange={props.onChange}
+          />
+        </div>
       </>
     );
   }

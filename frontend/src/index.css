@@ -43,25 +43,6 @@ label {
   font-weight: 600;
 }
 
-button {
-  border-radius: 8px !important;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: hsla(229, 20%, 21%, 0.9) !important;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: hsla(229, 20%, 21%, 0.3);
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color !important;
-}
-
 /* 일부 페이지 main 패딩 설정 */
 main {
   padding: 0px 16px;
@@ -78,6 +59,20 @@ main {
 }
 
 .data-input:focus {
+  border-color: hsla(229, 20%, 21%, 0.9);
+}
+
+.large-data-input {
+  width: 100%;
+  border-radius: 8px;
+  padding-top: 12px;
+  padding-bottom: 50px;
+  padding-left: 14px;
+  padding-right: 14px;
+  outline: none;
+}
+
+.large-data-input:focus {
   border-color: hsla(229, 20%, 21%, 0.9);
 }
 
