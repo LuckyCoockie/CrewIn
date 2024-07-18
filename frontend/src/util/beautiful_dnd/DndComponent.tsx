@@ -3,23 +3,24 @@ import {
   Draggable,
   Droppable,
   DropResult,
-} from "react-beautiful-dnd";
+} from "@hello-pangea/dnd";
 
 export interface ItemComponentProps<T> {
+  index: number;
   item: T;
 }
 
-export type OwnProps<M> = {
-  onDragEndCallback: (items: M[]) => void;
-  items: M[];
-  ItemComponent: React.ComponentType<ItemComponentProps<M>>;
+export type OwnProps<T> = {
+  onDragEndCallback: (items: T[]) => void;
+  items: T[];
+  children: (props: ItemComponentProps<T>) => React.ReactElement<HTMLElement>;
 };
 
-export const DropDownComponent = <M,>({
+export const DndComponent = <T,>({
   onDragEndCallback,
   items,
-  ItemComponent,
-}: OwnProps<M>) => {
+  children: ItemComponent,
+}: OwnProps<T>) => {
   const handleOnDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
@@ -43,7 +44,7 @@ export const DropDownComponent = <M,>({
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                   >
-                    <ItemComponent item={item}/>
+                    <ItemComponent index={index} item={item} />
                   </div>
                 )}
               </Draggable>
