@@ -1,19 +1,21 @@
 import React from "react";
-import { DropDownComponent } from "../../util/beautiful_dnd/DropDownComponent";
+import { DndComponent } from "../../util/beautiful_dnd/DndComponent";
 import { MarkerListItem } from "../molecules/MarkerListItem";
 import {
+  focusMarker,
   removeMarker,
+  updateMarker,
   updateMarkerList,
   useNaverMapDispatch,
   useNaverMapState,
 } from "../../util/maps/naver_map/context";
 
 const MarkerList: React.FC = () => {
-  const { markers, map } = useNaverMapState();
+  const { markers } = useNaverMapState();
   const dispatch = useNaverMapDispatch();
 
   const onListItemClick = (index: number) => {
-    map?.panTo(markers[index].getPosition());
+    dispatch(focusMarker(index));
   };
 
   const onListItemDelete = (index: number) => {
@@ -21,19 +23,22 @@ const MarkerList: React.FC = () => {
   };
 
   return (
-    <DropDownComponent
+    <DndComponent
       onDragEndCallback={(markers) => dispatch(updateMarkerList(markers))}
       items={markers}
     >
       {({ index, item }) => (
         <MarkerListItem
           title={item.getTitle()}
-          marker={"./images/alarm-clockblack.png"}
+          marker={"./src/assets/icons/marker-default.png"}
+          first={index === 0}
+          last={index === markers.length - 1}
           onClick={() => onListItemClick(index)}
+          onChange={(title) => dispatch(updateMarker(index, { title }))}
           onDelete={() => onListItemDelete(index)}
         />
       )}
-    </DropDownComponent>
+    </DndComponent>
   );
 };
 

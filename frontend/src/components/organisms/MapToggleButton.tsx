@@ -10,7 +10,9 @@ import {
 import { ToggleSwitch } from "flowbite-react";
 import { directionApi } from "../../util/maps/tmap/api";
 
-const MapToggleButton: React.FC = () => {
+type OwnProps = { style?: React.CSSProperties };
+
+const MapToggleButton: React.FC<OwnProps> = ({ style }: OwnProps) => {
   const [isDetail, setIsDetail] = useState<boolean>(false);
 
   const { markers } = useNaverMapState();
@@ -41,7 +43,13 @@ const MapToggleButton: React.FC = () => {
   }, [markers]);
 
   return (
-    <ToggleSwitch checked={isDetail} label="상세보기" onChange={setIsDetail} />
+    <div style={style}>
+      <ToggleSwitch
+        checked={isDetail}
+        label="상세보기"
+        onChange={setIsDetail}
+      />
+    </div>
   );
 };
 

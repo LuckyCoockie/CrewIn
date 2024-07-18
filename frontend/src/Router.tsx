@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 // import ImageEditor from "./components/Html2canvasTest";
 import App from "./App";
-import { RouteCreatePage } from "./pages/RouteCreatePage";
+import RouteCreatePage from "./pages/RouteCreatePage";
 import UploadImage from "./pages/UploadImage";
 import CrewCreatePage from "./pages/CrewCreatePage";
 

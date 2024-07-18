@@ -16,7 +16,7 @@ export type OwnProps<T> = {
   children: (props: ItemComponentProps<T>) => React.ReactElement<HTMLElement>;
 };
 
-export const DropDownComponent = <T,>({
+export const DndComponent = <T,>({
   onDragEndCallback,
   items,
   children: ItemComponent,

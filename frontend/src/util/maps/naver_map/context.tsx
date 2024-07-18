@@ -8,6 +8,7 @@ const REMOVE_MARKER = "naver/maps/REMOVE_MARKER" as const;
 const UPDATE_MARKER = "naver/maps/UPDATE_MARKER" as const;
 const UPDATE_MARKER_LIST = "naver/maps/UPDATE_MARKER_LIST" as const;
 const CLEAR_MARKER = "naver/maps/CLEAR_MARKER" as const;
+const FOCUS_MARKER = "naver/maps/FOCUS_MARKER" as const;
 const ADD_POLYLINE = "naver/maps/ADD_POLYLINE" as const;
 const REMOVE_POLYLINE = "naver/maps/REMOVE_POLYLINE" as const;
 const CLEAR_POLYLINE = "naver/maps/CLEAR_POLYLINE" as const;
@@ -25,10 +26,9 @@ export const addMarker = (data: {
   data: data,
 });
 
-export const removeMarker = (index?: number, marker?: naver.maps.Marker) => ({
+export const removeMarker = (index: number) => ({
   type: REMOVE_MARKER,
   index,
-  marker,
 });
 
 export const updateMarker = (
@@ -47,6 +47,11 @@ export const updateMarkerList = (list?: naver.maps.Marker[]) => ({
 
 export const clearMarker = () => ({ type: CLEAR_MARKER });
 
+export const focusMarker = (index: number) => ({
+  type: FOCUS_MARKER,
+  index: index,
+});
+
 export const addPolyline = (
   latlngs: { longitude: number; latitude: number }[]
 ) => ({
@@ -54,13 +59,9 @@ export const addPolyline = (
   latlngs: latlngs,
 });
 
-export const removePolyline = (
-  index?: number,
-  polyline?: naver.maps.Polyline
-) => ({
+export const removePolyline = (index: number) => ({
   type: REMOVE_POLYLINE,
   index,
-  polyline,
 });
 
 export const clearPolyline = () => ({ type: CLEAR_POLYLINE });
@@ -71,6 +72,7 @@ type NaverMapAction =
   | ReturnType<typeof removeMarker>
   | ReturnType<typeof updateMarker>
   | ReturnType<typeof clearMarker>
+  | ReturnType<typeof focusMarker>
   | ReturnType<typeof updateMarkerList>
   | ReturnType<typeof addPolyline>
   | ReturnType<typeof removePolyline>
@@ -82,11 +84,13 @@ type NaverMapDispatch = Dispatch<NaverMapAction>;
 type NaverMapStateType = {
   map?: naver.maps.Map;
   markers: naver.maps.Marker[];
+  infoWindows: naver.maps.InfoWindow[];
   polylines: naver.maps.Polyline[];
 };
 
 const initialState: NaverMapStateType = {
   markers: [],
+  infoWindows: [],
   polylines: [],
 };
 
@@ -110,37 +114,60 @@ export default function NaverMapReducer(
         title: action.data.title,
         map: state.map,
         draggable: action.data.ondragend ? true : false,
+        icon: {
+          url: "./src/assets/icons/marker-default.png",
+          scaledSize: new naver.maps.Size(22, 33),
+        },
       });
+
+      const infowindow = new naver.maps.InfoWindow({
+        // TODO : infowindow 꾸미기
+        content: action.data.title,
+        maxWidth: 140,
+        borderColor: "#2F96FC",
+        borderWidth: 3,
+        anchorSize: new naver.maps.Size(5, 15),
+        anchorSkew: true,
+      });
+
+      naver.maps.Event.addListener(marker, "click", () => {
+        if (infowindow.getMap()) {
+          infowindow.close();
+        } else {
+          infowindow.open(state.map!, marker);
+        }
+      });
+
       naver.maps.Event.addListener(marker, "dragend", () => {
         action.data.ondragend!(marker);
       });
+      
       naver.maps.Event.addListener(marker, "click", () => {
         state.map?.panTo(marker.getPosition());
       });
+
       return {
         ...state,
         markers: state.markers.concat(marker),
+        infoWindows: state.infoWindows.concat(infowindow),
       };
     }
-    case REMOVE_MARKER:
-      if (action.index !== undefined) {
-        state.markers[action.index].setMap(null);
-        return {
-          ...state,
-          markers: state.markers.filter((_, index) => index != action.index),
-        };
-      } else if (action.marker !== undefined) {
-        action.marker.setMap(null);
-        return {
-          ...state,
-          markers: state.markers.filter((marker) => marker === action.marker),
-        };
-      } else {
-        return state;
-      }
+    case REMOVE_MARKER: {
+      state.markers[action.index].setMap(null);
+      return {
+        ...state,
+        markers: state.markers.filter((_, index) => index != action.index),
+        infoWindows: state.infoWindows.filter(
+          (_, index) => index != action.index
+        ),
+      };
+    }
     case UPDATE_MARKER: {
       const marker = state.markers[action.index];
-      if (action.data?.title) marker.setTitle(action.data.title);
+      if (action.data?.title) {
+        marker.setTitle(action.data.title);
+        state.infoWindows[action.index].setContent(action.data.title);
+      }
       if (action.data?.latitude && action.data?.longitude) {
         marker.setPosition(
           new naver.maps.LatLng(action.data.latitude, action.data.longitude)
@@ -148,7 +175,7 @@ export default function NaverMapReducer(
       }
       return {
         ...state,
-        marker: [...state.markers],
+        markers: [...state.markers],
       };
     }
     case CLEAR_MARKER: {
@@ -157,6 +184,14 @@ export default function NaverMapReducer(
         ...state,
         markers: [],
       };
+    }
+    case FOCUS_MARKER: {
+      state.map?.panTo(state.markers[action.index].getPosition());
+      state.infoWindows[action.index].open(
+        state.map!,
+        state.markers[action.index]
+      );
+      return state;
     }
     case UPDATE_MARKER_LIST: {
       return {
@@ -178,23 +213,11 @@ export default function NaverMapReducer(
       };
     }
     case REMOVE_POLYLINE: {
-      if (action.index !== undefined) {
-        state.polylines[action.index].setMap(null);
-        return {
-          ...state,
-          number: state.polylines.filter((_, index) => index != action.index),
-        };
-      } else if (action.polyline !== undefined) {
-        action.polyline.setMap(null);
-        return {
-          ...state,
-          number: state.polylines.filter(
-            (polyline) => polyline === action.polyline
-          ),
-        };
-      } else {
-        return state;
-      }
+      state.polylines[action.index].setMap(null);
+      return {
+        ...state,
+        number: state.polylines.filter((_, index) => index != action.index),
+      };
     }
     case CLEAR_POLYLINE: {
       state.polylines.forEach((polyline) => polyline.setMap(null));

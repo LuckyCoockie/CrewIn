@@ -23,7 +23,7 @@ const NaverMap: React.FC<props> = ({ lat, lng, zoom }: props) => {
   const initMap = useCallback(() => {
     const map = new naver.maps.Map("map", {
       center: new naver.maps.LatLng(lat, lng),
-      zoom: zoom ?? 17,
+      zoom: zoom ?? 14,
     });
 
     dispatch(init(map));
