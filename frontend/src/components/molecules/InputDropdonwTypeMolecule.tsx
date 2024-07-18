@@ -32,7 +32,11 @@ const InputDropdonwTypeMolecule = forwardRef<HTMLSelectElement, InputData>(
           hasError={props.hasError}
           disabled={props.disabled}
         />
-        {props.error && <p className="text-red-500">{props.error}</p>}
+        {props.error && (
+          <p className="ps-3 pt-1 text-sm font-light text-red-500">
+            {props.error}
+          </p>
+        )}
       </div>
     );
   }

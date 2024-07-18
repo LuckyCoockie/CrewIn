@@ -49,9 +49,11 @@ const InputTextAreaTypeMolecule = React.forwardRef<
         hasError={props.hasError}
       />
       {props.error ? (
-        <p className="text-red-500">{props.error}</p>
+        <p className="ps-4 pt-1 text-sm font-light text-red-500">
+          {props.error}
+        </p>
       ) : (
-        <p className="text-gray-500">{charCount}/255 글자</p>
+        <p className="text-gray-500 text-end">{charCount}/255 글자</p>
       )}
     </div>
   );
