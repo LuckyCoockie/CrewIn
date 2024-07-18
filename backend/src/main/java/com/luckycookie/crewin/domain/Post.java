@@ -36,10 +36,7 @@ public class Post {
     private Member author;
 
     private String nickname;
-
     private String content;
-
-    private int heartCount;
 
     @CreatedDate
     @Column(updatable = false)
