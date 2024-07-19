@@ -55,60 +55,58 @@ const RouteCreateTemplate: React.FC<OwnProps> = ({
 
   return (
     <NaverMapProvider>
-      <main className="flex items-center justify-center p-0">
-        <div className="mx-auto w-full max-w-[550px] pb-10">
-          <div className="flex justify-end relative">
-            <NaverMap
-              lng={initPosition.longitude}
-              lat={initPosition.latitude}
-              onChange={setPolyline}
-            />
-            <div className="absolute bottom-4 right-0 p-4">
-              <MapToggleButton />
-            </div>
-          </div>
-          <div className="p-4">
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Controller
-                name="polyline"
-                control={control}
-                render={() => (
-                  <>
-                    <div className="flex justify-between">
-                      <div className="flex">
-                        <InputLabelComponent id={""} title={"경로 정보"} />
-                        <p className="ps-4 pt-1 text-sm font-light text-red-500">
-                          {errors.polyline?.message}
-                        </p>
-                      </div>
-                    </div>
-                    <MarkerList />
-                  </>
-                )}
-              />
-              <div className="mt-8 mb-4">
-                <Controller
-                  name="title"
-                  control={control}
-                  render={({ field }) => (
-                    <InputTextTypeMolecule
-                      id="title"
-                      title="제목*"
-                      placeholder="ex) 한강 러닝"
-                      {...field}
-                      error={errors.title?.message}
-                      hasError={!!errors.title}
-                    />
-                  )}
-                />
-              </div>
-              <div>
-                <LargeDisableButton text="저장하기" />
-              </div>
-            </form>
+      <div className="mx-auto w-full max-w-[550px] pb-10">
+        <div className="flex justify-center relative">
+          <NaverMap
+            lng={initPosition.longitude}
+            lat={initPosition.latitude}
+            onChange={setPolyline}
+          />
+          <div className="absolute bottom-4 right-0 p-4">
+            <MapToggleButton />
           </div>
         </div>
-      </main>
+        <div className="p-4">
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Controller
+              name="polyline"
+              control={control}
+              render={() => (
+                <>
+                  <div className="flex justify-between">
+                    <div className="flex">
+                      <InputLabelComponent id={""} title={"경로 정보"} />
+                      <p className="ps-4 pt-1 text-sm font-light text-red-500">
+                        {errors.polyline?.message}
+                      </p>
+                    </div>
+                  </div>
+                  <MarkerList />
+                </>
+              )}
+            />
+            <div className="mt-8 mb-4">
+              <Controller
+                name="title"
+                control={control}
+                render={({ field }) => (
+                  <InputTextTypeMolecule
+                    id="title"
+                    title="제목*"
+                    placeholder="ex) 한강 러닝"
+                    {...field}
+                    error={errors.title?.message}
+                    hasError={!!errors.title}
+                  />
+                )}
+              />
+            </div>
+            <div>
+              <LargeDisableButton text="저장하기" />
+            </div>
+          </form>
+        </div>
+      </div>
     </NaverMapProvider>
   );
 };

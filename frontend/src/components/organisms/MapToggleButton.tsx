@@ -48,6 +48,8 @@ const MapToggleButton: React.FC<OwnProps> = ({ style }: OwnProps) => {
         checked={isDetail}
         label="상세보기"
         onChange={setIsDetail}
+        color="primary"
+        className="p-2 rounded-full"
       />
     </div>
   );

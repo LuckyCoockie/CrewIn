@@ -2,7 +2,7 @@ import RouteCreateTemplate from "../components/templates/RouteCreateTemplate.tsx
 import useGeolocation from "../util/geolocation/gelocation.ts";
 
 const RouteCreatePage: React.FC = () => {
-  const {location} = useGeolocation();
+  const { location } = useGeolocation();
 
   return (
     <>

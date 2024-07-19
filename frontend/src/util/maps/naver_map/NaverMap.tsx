@@ -59,8 +59,9 @@ const NaverMap: React.FC<props> = ({ lat, lng, zoom, onChange }: props) => {
   useEffect(initMap, [initMap]);
 
   const mapStyle = {
-    width: "500px",
-    height: "500px",
+    width: "100vh",
+    height: "70vh",
+    "max-height": "550px"
   };
 
   return <div id="map" style={mapStyle} />;

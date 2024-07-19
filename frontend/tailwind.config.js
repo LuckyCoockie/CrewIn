@@ -20,6 +20,13 @@ export default {
           "sans-serif",
         ],
       },
+      colors: {
+        primary: {
+          light: "#2B2F40",
+          DEFAULT: "#2B2F40",
+          dark: "#2B2F40",
+        },
+      },
     },
   },
   plugins: [flowbite.plugin(), require("flowbite/plugin")],
