@@ -16,7 +16,7 @@ type props = {
   onChange?: (polyline: { latitude: number; longitude: number }[]) => void;
 };
 
-const NaverMap: React.FC<props> = ({ lat, lng, zoom, onChange }: props) => {
+const NaverMap: React.FC<props> = ({ lat, lng, zoom }: props) => {
   const { markers } = useNaverMapState();
   const dispatch = useNaverMapDispatch();
 
@@ -59,9 +59,8 @@ const NaverMap: React.FC<props> = ({ lat, lng, zoom, onChange }: props) => {
   useEffect(initMap, [initMap]);
 
   const mapStyle = {
-    width: "100vh",
-    height: "70vh",
-    "max-height": "550px"
+    width: "500px",
+    height: "500px",
   };
 
   return <div id="map" style={mapStyle} />;
