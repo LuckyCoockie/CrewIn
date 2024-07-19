@@ -4,14 +4,14 @@ import InputDropdownTypeComponent from "../atoms/Input/InputDropdownTypeComponen
 
 type Option = {
   label: string;
-  value: string;
+  value: string | number;
 };
 
 type InputData = {
   id: string;
   title: string;
   options: Option[];
-  value: string;
+  value: string | number;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   error?: string;
   hasError?: boolean;
