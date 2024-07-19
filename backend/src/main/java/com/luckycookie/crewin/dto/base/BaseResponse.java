@@ -21,5 +21,4 @@ public class BaseResponse<T> {
     public static <T> BaseResponse<T> create(int statusCode, String message, T dto) {
         return new BaseResponse<>(statusCode, message, dto);
     }
-
 }
