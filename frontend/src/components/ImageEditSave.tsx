@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from 'react-responsive-carousel';
 import html2canvas from 'html2canvas';
@@ -33,10 +33,48 @@ const ImageEditSave: React.FC<EditorStepProps> = ({
   const [showLogoInput, setShowLogoInput] = useState(false);
   const [showDistanceInput, setShowDistanceInput] = useState(false);
   const [showTimeInput, setShowTimeInput] = useState(false);
-  const [showPaceInput, setShowPaceInput] = useState(false);
+  const [showPaceInput, setShowPaceInput] = useState(false); // State for showing/hiding pace input
   const [showColorInput, setShowColorInput] = useState(false);
 
   const captureRef = useRef<HTMLDivElement>(null);
+
+  // Effect to update pace whenever total distance or total time changes
+  useEffect(() => {
+    // Calculate pace only if both distance and time are valid
+    if (isValidTime(overlayTotalTime) && isValidDistance(overlayTotalDistance)) {
+      const timeInSeconds = calculateTimeInSeconds(overlayTotalTime);
+      const distanceInKm = parseFloat(overlayTotalDistance);
+
+      if (timeInSeconds > 0 && distanceInKm > 0) {
+        const paceInSeconds = timeInSeconds / distanceInKm;
+        const paceMinutes = Math.floor(paceInSeconds / 60);
+        const paceSeconds = Math.floor(paceInSeconds % 60);
+        setOverlayPace(`${paceMinutes}'${paceSeconds}''`);
+      } else {
+        setOverlayPace("0'0''");
+      }
+    } else {
+      setOverlayPace("0'0''");
+    }
+  }, [overlayTotalTime, overlayTotalDistance]);
+
+  // Helper function to validate time format (HH:MM:SS)
+  const isValidTime = (time: string): boolean => {
+    const regex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/;
+    return regex.test(time);
+  };
+
+  // Helper function to validate distance format (XX.XX)
+  const isValidDistance = (distance: string): boolean => {
+    const regex = /^\d+(\.\d{1,2})?$/;
+    return regex.test(distance);
+  };
+
+  // Helper function to convert time string (HH:MM:SS) to total seconds
+  const calculateTimeInSeconds = (time: string): number => {
+    const [hours, minutes, seconds] = time.split(':').map(parseFloat);
+    return hours * 3600 + minutes * 60 + seconds;
+  };
 
   const handleTopLeftImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -51,7 +89,7 @@ const ImageEditSave: React.FC<EditorStepProps> = ({
 
   const handleFinish = async () => {
     if (captureRef.current) {
-      const canvas = await html2canvas(captureRef.current, {scale : 4 });
+      const canvas = await html2canvas(captureRef.current, { scale: 4 });
       canvas.toBlob((blob) => {
         if (blob) {
           const finalImageUrl = URL.createObjectURL(blob);
@@ -63,7 +101,7 @@ const ImageEditSave: React.FC<EditorStepProps> = ({
 
   const handleSave = async () => {
     if (captureRef.current) {
-      const canvas = await html2canvas(captureRef.current, {scale : 4 });
+      const canvas = await html2canvas(captureRef.current, { scale: 4 });
       canvas.toBlob((blob) => {
         if (blob) {
           saveAs(blob, 'edited_image.jpg');
@@ -191,20 +229,14 @@ const ImageEditSave: React.FC<EditorStepProps> = ({
         className="relative w-full max-w-lg h-auto bg-white mt-4 overflow-hidden"
         style={{ maxWidth: "360px", maxHeight: "360px" }}
       >
-        <Carousel
-          showThumbs={false}
-          showIndicators={false}
-          showStatus={false}
-          infiniteLoop
-          autoPlay={false}
-          interval={5000}
-        >
+        
+         
           {images.map((image, index) => (
             <div key={index}>
               <img src={image} alt={`Cropped ${index}`} className="w-full h-full object-contain" />
             </div>
           ))}
-        </Carousel>
+        
 
         {showLogoInput && topLeftImage && (
           <div className="absolute top-2 left-2 overflow-hidden rounded-full w-16 h-16">
@@ -259,7 +291,7 @@ const ImageEditSave: React.FC<EditorStepProps> = ({
       >
         저장
       </button>
-    </div>
+    </div> 
   );
 };
 

@@ -23,7 +23,7 @@ const PostCreatePage: React.FC = () => {
 
   return (
     <main className="flex items-center justify-center">
-      <div className="max-w-4xl mx-auto p-6">
+      <div>
         {currentStep === 1 && <ImageCrop onComplete={handleImageCropComplete} />}
         {currentStep === 2 && croppedImages.length > 0 && (
           <ImageEditSave

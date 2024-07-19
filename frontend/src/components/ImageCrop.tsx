@@ -8,6 +8,9 @@ import Dropzone from 'react-dropzone';
 import { PlusOutlined } from '@ant-design/icons';
 import Modal from './Modal';
 import ImageEditSave from './ImageEditSave';
+import editButton from "../assets/images/editbutton.png";
+import cropButton from "../assets/images/cropbutton.png";
+import checkButton from "../assets/images/checkbutton.png";
 
 interface ImageCropProps {
   onComplete: (croppedImages: string[], crewName: string, visibility: string, content: string) => void;
@@ -73,8 +76,6 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
   };
 
   const handleFinishEdit = (finalImage: string) => {
-    console.log(finalImage);
-
     if (currentEditIndex !== null) {
       setCroppedImages((prevImages) => {
         const newImages = [...prevImages];
@@ -85,42 +86,46 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
     }
   };
 
+  const handlePost = () => {
+    onComplete(croppedImages, crewName, visibility, content);
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center h-screenp-4">
-      <div className="max-w-2xl w-full bg-white p-6 rounded-lg">
-        <h1 className="text-2xl font-bold mb-6">게시글 작성</h1>
+    <div className="flex flex-col items-center justify-center h-screen p-4">
+      <div className="bg-white" style={{ width: '360px' }}>
+        <h1 className="text-xl font-bold my-6 mx-3">게시글 작성</h1>
 
-        <Dropzone onDrop={handleDrop}>
-          {({ getRootProps, getInputProps }) => (
-            <section className="mb-4">
-              <div
-                {...getRootProps()}
-                style={{
-                  width: 300,
-                  height: 300,
-                  border: '1px solid lightgray',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                }}
-              >
-                <input {...getInputProps()} />
-                <PlusOutlined style={{ fontSize: '3rem' }} />
-              </div>
-            </section>
-          )}
-        </Dropzone>
-
-        {imagePaths.length > 0 && (
+        {imagePaths.length === 0 ? (
+          <Dropzone onDrop={handleDrop}>
+            {({ getRootProps, getInputProps }) => (
+              <section className="mb-4">
+                <div
+                  {...getRootProps()}
+                  style={{
+                    width: 360,
+                    height: 360,
+                    border: '1px solid lightgray',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <input {...getInputProps()} />
+                  <PlusOutlined style={{ fontSize: '3rem' }} />
+                </div>
+              </section>
+            )}
+          </Dropzone>
+        ) : (
           <>
-            <Carousel showThumbs={false} showIndicators={false} showStatus={false} infiniteLoop={false} className="mb-6">
+            <Carousel showThumbs={false} showIndicators={true} showStatus={false} infiniteLoop={false} className="mb-6">
               {imagePaths.map((imagePath, index) => (
                 <div key={index} className="relative">
                   {!isCropped ? (
                     <Cropper
                       src={imagePath}
-                      style={{ height: 300, width: 300 }}
+                      style={{ height: 360, width: 360 }}
                       aspectRatio={cropAspectRatio}
                       guides={true}
                       ref={(cropper) => {
@@ -131,66 +136,75 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
                     />
                   ) : (
                     <>
-                      <div style={{ width: 300, height: 300 }}>
+                      <div style={{ width: 360, height: 360 }}>
                         <img
                           src={croppedImages[index]}
                           alt={`Cropped ${index}`}
-                          style={{ width: 300, height: 300 }}
+                          style={{ width: 360, height: 360 }}
                         />
                       </div>
                       <button
                         onClick={() => setCurrentEditIndex(index)}
-                        className="absolute bottom-4 left-4 px-2 py-1 text-white rounded"
+                        className="absolute bottom-0.5 right-0.5 no-background transform translate-x-5 translate-y-2"
                       >
-                        사진 편집
+                        <img src={editButton} alt="edit Button" />
                       </button>
                     </>
                   )}
+                  <button
+                    onClick={handleCropAll}
+                    className="absolute top-0.5 right-0.5 no-background transform translate-x-5 translate-y-0"
+                  >
+                    {isCropped ? <img src={cropButton} alt="crop Button" /> : <img src={checkButton} alt="check Button" />}
+                  </button>
                 </div>
               ))}
             </Carousel>
-            <button
-              onClick={handleCropAll}
-              className="px-4 py-2 bg-blue-500 text-white rounded mb-4"
-            >
-              {isCropped ? '다시 크롭하기' : '전체 이미지 크롭'}
-            </button>
           </>
         )}
 
-        <div className="mb-4">
-          <label className="block mb-2 font-semibold">크루명:</label>
-          <input
-            type="text"
-            value={crewName}
-            onChange={(e) => setCrewName(e.target.value)}
-            placeholder="크루명"
-            className="border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
+        <div className="ml-4">
+          <div className="mb-4 flex items-center">
+            <label className="block font-semibold mr-3">크루명</label>
+            <input
+              type="text"
+              value={crewName}
+              onChange={(e) => setCrewName(e.target.value)}
+              placeholder="크루명을 입력하세요"
+              className="border border-gray-300 rounded px-3 py-2 flex"
+            />
+          </div>
 
-        <div className="mb-4">
-          <label className="block mb-2 font-semibold">공개범위:</label>
-          <select
-            value={visibility}
-            onChange={(e) => setVisibility(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2"
-          >
-            <option value="전체">전체</option>
-            <option value="크루">크루</option>
-          </select>
-        </div>
+          <div className="mb-4 flex items-center">
+            <label className="block mr-3 font-semibold">공개범위</label>
+            <select
+              value={visibility}
+              onChange={(e) => setVisibility(e.target.value)}
+              className="border border-gray-300 rounded px-3 py-2 flex"
+            >
+              <option value="전체">전체</option>
+              <option value="크루">크루</option>
+            </select>
+          </div>
 
-        <div className="mb-6">
-          <label className="block mb-2 font-semibold">내용:</label>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="내용 입력"
-            className="border border-gray-300 rounded px-3 py-2 h-32"
-          />
-        </div>
+          <div className="mb-6">
+            <label className="block mb-2 font-semibold">내용</label>
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="내용을 입력하세요"
+              className="border border-gray-300 rounded w-80 h-40 mx-auto px-4 py-3"
+            />
+          </div>
       </div>
+        <button
+          onClick={handlePost}
+          className="w-5/6 text-white px-4 py-3 rounded font-semibold mx-auto block"
+          style={{ width: 'calc(100% - 32px)' }}>
+          작성
+        </button>
+        </div>
+
 
       {currentEditIndex !== null && (
         <Modal onClose={() => setCurrentEditIndex(null)}>
