@@ -37,4 +37,7 @@ public class Member {
     private LocalDate birth;
 
     private boolean existNotification;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }
