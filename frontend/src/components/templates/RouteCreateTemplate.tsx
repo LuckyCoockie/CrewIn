@@ -8,7 +8,7 @@ import InputTextTypeMolecule from "../molecules/InputTextTypeMolecule";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import LargeDisableButton from "../atoms/Button/LargeDisableButton";
+import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 
 type OwnProps = {
   initPosition: { latitude: number; longitude: number };
@@ -102,7 +102,7 @@ const RouteCreateTemplate: React.FC<OwnProps> = ({
               />
             </div>
             <div>
-              <LargeDisableButton text="저장하기" />
+              <LargeAbleButton text="저장하기" />
             </div>
           </form>
         </div>
