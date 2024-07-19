@@ -29,7 +29,7 @@ const InputDateComponent = React.forwardRef<DatePicker, InputDate>(
         locale={ko}
         selected={startDate}
         onChange={handleChange}
-        dateFormat="yyyy-MM-dd"
+        dateFormat="yyyy.MM.dd"
         showYearDropdown
         dateFormatCalendar="MMMM"
         yearDropdownItemNumber={100}
