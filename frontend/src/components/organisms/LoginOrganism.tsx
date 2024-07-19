@@ -35,47 +35,45 @@ const LoginOrganism: React.FC = () => {
     console.log(data);
   };
   return (
-    <div className="mx-auto w-full max-w-[550px] pt-4 pb-10">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {/* 이메일 */}
-        <div className="w-full">
-          <Controller
-            name="email"
-            control={control}
-            render={({ field }) => (
-              <InputTextTypeMolecule
-                id="email"
-                title="이메일"
-                placeholder="ex) mycrew@crew.co.kr"
-                {...field}
-                error={errors.email?.message}
-                hasError={!!errors.email}
-              />
-            )}
-          />
-        </div>
-        {/* 비밀번호 */}
-        <div className="w-full">
-          <Controller
-            name="password"
-            control={control}
-            render={({ field }) => (
-              <InputPasswordTypeMolecule
-                id="password"
-                title="비밀번호"
-                placeholder=""
-                {...field}
-                error={errors.password?.message}
-                hasError={!!errors.password}
-              />
-            )}
-          />
-        </div>
-        <div>
-          <LargeDisableButton text="로그인" />
-        </div>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      {/* 이메일 */}
+      <div className="w-full">
+        <Controller
+          name="email"
+          control={control}
+          render={({ field }) => (
+            <InputTextTypeMolecule
+              id="email"
+              title="이메일"
+              placeholder="ex) mycrew@crew.co.kr"
+              {...field}
+              error={errors.email?.message}
+              hasError={!!errors.email}
+            />
+          )}
+        />
+      </div>
+      {/* 비밀번호 */}
+      <div className="w-full">
+        <Controller
+          name="password"
+          control={control}
+          render={({ field }) => (
+            <InputPasswordTypeMolecule
+              id="password"
+              title="비밀번호"
+              placeholder=""
+              {...field}
+              error={errors.password?.message}
+              hasError={!!errors.password}
+            />
+          )}
+        />
+      </div>
+      <div>
+        <LargeDisableButton text="로그인" />
+      </div>
+    </form>
   );
 };
 
