@@ -10,6 +10,7 @@ import InputTextAreaTypeMolecule from "../molecules/InputTextAreaTypeMolecule";
 import ImageTypeBannerMolecule from "../molecules/ImageTypeBannerMolecule";
 import InputDropdonwTypeMolecule from "../molecules/InputDropdonwTypeMolecule";
 import { regions } from "../../regions";
+import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 
 // 유효성 검사 스키마 정의
@@ -53,7 +54,7 @@ const CrewCreatePage: React.FC = () => {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     // 유효성 검사 mode
@@ -82,7 +83,6 @@ const CrewCreatePage: React.FC = () => {
     <>
       {/* 본문 파트 */}
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* 이하 크루 생성 컴포넌트 */}
         <div className="flex flex-wrap">
           <div className="w-full">
             <Controller
@@ -239,7 +239,12 @@ const CrewCreatePage: React.FC = () => {
           </div>
         </div>
         <div>
-          <LargeDisableButton text="제출하기" />
+          {/* 유효성 검사 통과 여부에 따라 버튼 교체 */}
+          {isValid ? (
+            <LargeAbleButton text="생성" />
+          ) : (
+            <LargeDisableButton text="생성" />
+          )}
         </div>
       </form>
     </>
