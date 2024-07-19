@@ -25,7 +25,7 @@ public class Member {
 
     private String nickname;
 
-    private String loginId;
+    private String email;
 
     private String password;
 
@@ -37,4 +37,7 @@ public class Member {
     private LocalDate birth;
 
     private boolean existNotification;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }
