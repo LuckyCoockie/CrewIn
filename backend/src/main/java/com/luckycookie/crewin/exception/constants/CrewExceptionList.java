@@ -7,7 +7,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum CrewExceptionList {
-    NOT_FOUND_CREW_ERROR("C0001", HttpStatus.NOT_FOUND, "크루를 찾는데 실패했습니다.");
+    NOT_FOUND_CREW_ERROR("C0001", HttpStatus.NOT_FOUND, "크루를 찾는데 실패했습니다."),
+    CREW_LIST_ERROR("C0002", HttpStatus.BAD_REQUEST, "크루 목록을 불러오지 못했습니다.");
 
     private final String errorCode;
     private final HttpStatus httpStatus;

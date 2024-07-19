@@ -69,7 +69,7 @@ public class PostService {
 
         return PostResponse.builder()
                 .id(post.getId())
-                .crewName(post.getCrew().getName())
+                .crewName(post.getCrew().getCrewName())
                 .authorEmail(post.getAuthor().getEmail())
                 .content(post.getContent())
                 .heartCount(heartCount)
