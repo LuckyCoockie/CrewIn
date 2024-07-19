@@ -1,15 +1,19 @@
 import React, { useState } from "react";
-import ImageCrop from "../components/ImageCrop";
-import ImageEditSave from "../components/ImageEditSave";
+import PostCreateTemplate from "../components/templates/PostCreateTemplate.tsx";
 
 const PostCreatePage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [croppedImages, setCroppedImages] = useState<string[]>([]);
-  const [crewName, setCrewName] = useState<string>('');
-  const [visibility, setVisibility] = useState<string>('전체');
-  const [content, setContent] = useState<string>('');
+  const [crewName, setCrewName] = useState<string>("");
+  const [visibility, setVisibility] = useState<string>("전체");
+  const [content, setContent] = useState<string>("");
 
-  const handleImageCropComplete = (croppedImages: string[], crewName: string, visibility: string, content: string) => {
+  const handleImageCropComplete = (
+    croppedImages: string[],
+    crewName: string,
+    visibility: string,
+    content: string
+  ) => {
     setCroppedImages(croppedImages);
     setCrewName(crewName);
     setVisibility(visibility);
@@ -22,21 +26,16 @@ const PostCreatePage: React.FC = () => {
   };
 
   return (
-    <main className="flex items-center justify-center">
-      <div>
-        {currentStep === 1 && <ImageCrop onComplete={handleImageCropComplete} />}
-        {currentStep === 2 && croppedImages.length > 0 && (
-          <ImageEditSave
-            images={croppedImages}
-            crewName={crewName}
-            visibility={visibility}
-            content={content}
-            onPrevious={() => setCurrentStep(1)}
-            onFinish={handleEditorFinish}
-          />
-        )}
-      </div>
-    </main>
+    <PostCreateTemplate
+      currentStep={currentStep}
+      croppedImages={croppedImages}
+      crewName={crewName}
+      visibility={visibility}
+      content={content}
+      onImageCropComplete={handleImageCropComplete}
+      onEditorFinish={handleEditorFinish}
+      onStepChange={setCurrentStep}
+    />
   );
 };
 
