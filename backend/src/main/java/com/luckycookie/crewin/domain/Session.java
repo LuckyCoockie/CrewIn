@@ -43,6 +43,8 @@ public class Session {
 
     private String spot;
 
+    private int maxPeople;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startAt;
