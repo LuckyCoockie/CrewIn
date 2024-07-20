@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name="postimage")
 public class PostImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
