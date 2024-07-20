@@ -3,9 +3,11 @@ import SessionCreateTemplate from "../components/templates/SessionCreateTemplate
 
 const SessionCreatePage: React.FC = () => {
   return (
-    <main>
-      <SessionCreateTemplate />
-    </main>
+    <>
+      <main>
+        <SessionCreateTemplate />
+      </main>
+    </>
   );
 };
 
