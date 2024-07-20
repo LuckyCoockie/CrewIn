@@ -13,6 +13,7 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name="course")
 public class Course {
 
     @Id
