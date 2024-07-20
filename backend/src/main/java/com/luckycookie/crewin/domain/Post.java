@@ -2,6 +2,8 @@ package com.luckycookie.crewin.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.luckycookie.crewin.domain.enums.PostType;
+import com.luckycookie.crewin.dto.PostRequest;
+import com.luckycookie.crewin.exception.post.InvalidPostTypeException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +15,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -53,5 +57,29 @@ public class Post {
 
     private String title;
 
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "post")
+    private List<PostImage> postImages = new ArrayList<>();
 
+
+    public void updatePost(PostRequest.UpdatePostRequest updatePostRequest) {
+        this.title = updatePostRequest.getTitle();
+        this.content = updatePostRequest.getContent();
+        this.isPublic = updatePostRequest.isPublic();
+
+        try {
+            this.postType = PostType.valueOf(updatePostRequest.getPostType());
+        } catch (Exception e) {
+            throw  new InvalidPostTypeException();
+        }
+
+        this.postImages.clear();
+        if (updatePostRequest.getPostImages() != null) {
+            for (String imageUrl : updatePostRequest.getPostImages()) {
+                this.postImages.add(PostImage.builder()
+                        .imageUrl(imageUrl)
+                        .post(this)
+                        .build());
+            }
+        }
+    }
 }

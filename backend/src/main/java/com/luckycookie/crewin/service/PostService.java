@@ -9,6 +9,7 @@ import com.luckycookie.crewin.dto.PostRequest;
 import com.luckycookie.crewin.dto.PostResponse;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
+import com.luckycookie.crewin.exception.post.NotFoundPostException;
 import com.luckycookie.crewin.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,13 @@ public class PostService {
                 postImageRepository.save(postImage);
             }
         }
+    }
+
+    @Transactional
+    public void updatePost(Long postId, PostRequest.UpdatePostRequest updatePostRequest) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(NotFoundPostException::new);
+        post.updatePost(updatePostRequest);
     }
 
     @Transactional(readOnly = true)
