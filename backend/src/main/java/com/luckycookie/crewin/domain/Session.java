@@ -57,7 +57,4 @@ public class Session {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    // 최대 인원
-    private int maxPeople;
-
 }

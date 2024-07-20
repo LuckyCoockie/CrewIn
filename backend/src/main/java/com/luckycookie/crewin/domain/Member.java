@@ -1,6 +1,7 @@
 package com.luckycookie.crewin.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.luckycookie.crewin.domain.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
