@@ -22,7 +22,6 @@ const MarkerList: React.FC = () => {
     dispatch(removeMarker(index));
   };
 
-  return (
   return markers.length == 0 ? (
     <p className="mt-4">지도를 사용해서 나만의 러닝 경로를 만들어보세요</p>
   ) : (
