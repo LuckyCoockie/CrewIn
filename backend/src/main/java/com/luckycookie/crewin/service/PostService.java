@@ -58,11 +58,17 @@ public class PostService {
         }
     }
 
-    @Transactional
     public void updatePost(Long postId, PostRequest.UpdatePostRequest updatePostRequest) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(NotFoundPostException::new);
+                .orElseThrow(() -> new NotFoundPostException(postId));
         post.updatePost(updatePostRequest);
+    }
+
+    public void deletePost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundPostException(postId));
+        postRepository.delete(post);
+
     }
 
     @Transactional(readOnly = true)

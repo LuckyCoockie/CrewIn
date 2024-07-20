@@ -40,7 +40,17 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(BaseResponse.create(HttpStatus.BAD_REQUEST.value(), "게시물 업데이트를 실패했습니다: " + e.getMessage()));
         }
+    }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse<Void>> deletePost(@PathVariable("id") Long postId) {
+        try {
+            postService.deletePost(postId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(BaseResponse.create(HttpStatus.BAD_REQUEST.value(), "게시물 삭제를 실패했습니다." + e.getMessage()));
+        }
     }
 
 }

@@ -60,6 +60,9 @@ public class Post {
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "post")
     private List<PostImage> postImages = new ArrayList<>();
 
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "post")
+    private List<Heart> hearts = new ArrayList<>();
+
 
     public void updatePost(PostRequest.UpdatePostRequest updatePostRequest) {
         this.title = updatePostRequest.getTitle();
