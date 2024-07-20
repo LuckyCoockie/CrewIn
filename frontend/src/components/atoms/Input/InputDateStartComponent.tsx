@@ -11,7 +11,7 @@ type InputDate = {
   onChange: (date: Date | null) => void;
 };
 
-const InputDateComponent = React.forwardRef<DatePicker, InputDate>(
+const InputDateStartComponent = React.forwardRef<DatePicker, InputDate>(
   (props, ref) => {
     const [startDate, setStartDate] = useState<Date | null>(props.selected);
 
@@ -29,21 +29,21 @@ const InputDateComponent = React.forwardRef<DatePicker, InputDate>(
         locale={ko}
         selected={startDate}
         onChange={handleChange}
-        dateFormat="yyyy.MM.dd"
-        showYearDropdown
-        dateFormatCalendar="MMMM"
-        yearDropdownItemNumber={100}
-        scrollableYearDropdown
-        disabledKeyboardNavigation
+        timeInputLabel="Time:"
+        dateFormat="MM/dd aa hh:mm"
+        showTimeInput
         className="custom-datepicker" // DatePicker 전체에 적용할 클래스
         calendarClassName="custom-calendar" // Calendar에 적용할 클래스
         wrapperClassName="custom-wrapper" // DatePicker wrapper에 적용할 클래스
         popperClassName="custom-popper" // Popper에 적용할 클래스
-        maxDate={addDays(new Date(), 0)}
+        minDate={addDays(new Date(), 0)}
+        maxDate={addDays(new Date(), 30)}
         ref={ref}
+        withPortal
+        portalId="root-portal"
       />
     );
   }
 );
 
-export default InputDateComponent;
+export default InputDateStartComponent;

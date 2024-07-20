@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import crewinlogo from "../../../assets/images/crewinlogo.png";
 
 type InputImage = {
   id: string;
@@ -8,7 +7,7 @@ type InputImage = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
+const InputImageMultiComponent = React.forwardRef<HTMLInputElement, InputImage>(
   (props, ref) => {
     const [preview, setPreview] = useState<string | null>(null);
 
@@ -37,6 +36,7 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
           onChange={handleChange}
           ref={ref}
           accept="image/*"
+          multiple
         ></input>
         {preview ? (
           <>
@@ -48,21 +48,10 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
               />
             </div>
           </>
-        ) : (
-          <>
-            <div className="w-full text-center">
-              <img
-                src={crewinlogo}
-                alt="crewinlogo"
-                className="mx-auto border-2 w-32 h-32 rounded-full object-cover"
-              />
-              <p className="mt-2 font-bold text-gray-color">예시</p>
-            </div>
-          </>
-        )}
+        ) : null}
       </>
     );
   }
 );
 
-export default InputImageComponent;
+export default InputImageMultiComponent;

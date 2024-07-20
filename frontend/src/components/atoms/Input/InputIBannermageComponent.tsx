@@ -36,6 +36,7 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
           placeholder={props.placeholder}
           onChange={handleChange}
           ref={ref}
+          accept="image/*"
         ></input>
         {preview ? (
           <>

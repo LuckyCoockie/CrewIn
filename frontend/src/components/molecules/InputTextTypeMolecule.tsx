@@ -16,7 +16,7 @@ type InputData = {
 const InputTextTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
   (props, ref) => {
     return (
-      <div className="mb-4">
+      <div className="mb-4 w-full">
         <InputLabelComponent id={props.id} title={props.title} />
         <InputTextTypeComponent
           id={props.id}

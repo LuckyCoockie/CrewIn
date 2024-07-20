@@ -1,7 +1,7 @@
-export interface Region {
+export type Region = {
   city: string;
   districts: string[];
-}
+};
 
 export const regions: Region[] = [
   {

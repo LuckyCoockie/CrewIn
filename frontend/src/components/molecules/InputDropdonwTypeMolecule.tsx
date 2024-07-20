@@ -4,18 +4,19 @@ import InputDropdownTypeComponent from "../atoms/Input/InputDropdownTypeComponen
 
 type Option = {
   label: string;
-  value: string;
+  value: string | number;
 };
 
 type InputData = {
   id: string;
   title: string;
   options: Option[];
-  value: string;
+  value: string | number;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   error?: string;
   hasError?: boolean;
   disabled?: boolean;
+  text: string;
 };
 
 const InputDropdonwTypeMolecule = forwardRef<HTMLSelectElement, InputData>(
@@ -31,6 +32,7 @@ const InputDropdonwTypeMolecule = forwardRef<HTMLSelectElement, InputData>(
           ref={ref}
           hasError={props.hasError}
           disabled={props.disabled}
+          text={props.text}
         />
         {props.error && (
           <p className="ps-3 pt-1 text-sm font-light text-red-500">
