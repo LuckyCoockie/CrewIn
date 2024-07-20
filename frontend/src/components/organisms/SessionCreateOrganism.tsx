@@ -12,9 +12,11 @@ import InputDateEndTypeMolecule from "../molecules/InputDateEndTypeMolecule";
 import { pace } from "../../pace";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
+import InputRadioTypeMolecule from "../molecules/InputRadioTypeMolecule";
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({
+  sessiontype: yup.string().required("세션 종류를 선택해주세요."),
   sessiontitle: yup
     .string()
     .max(30, "30글자 이내로 입력해주세요.")
@@ -38,6 +40,7 @@ const schema = yup.object({
   sessioninfo: yup.string().max(1000).required("상세내용을 작성해주세요."),
 });
 type FormValues = {
+  sessiontype: string;
   sessiontitle: string;
   sessionposter?: FileList;
   sessionspot: string;
@@ -99,6 +102,20 @@ const SessionCreateOrganism: React.FC = () => {
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-wrap w-full">
+          <Controller
+            name="sessiontype"
+            control={control}
+            render={({ field }) => (
+              <InputRadioTypeMolecule
+                id="sessiontype"
+                title="세션 종류"
+                {...field}
+                value={["번개런", "정규런", "오픈런"]}
+                error={errors.sessiontype?.message}
+                hasError={!!errors.sessiontype}
+              />
+            )}
+          />
           {/* 세션명 */}
           <Controller
             name="sessiontitle"
