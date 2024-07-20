@@ -1,2 +1,4 @@
-package com.luckycookie.crewin.dto;public class SessionResponse {
+package com.luckycookie.crewin.dto;
+
+public class SessionResponse {
 }
