@@ -1,4 +1,4 @@
-package com.luckycookie.crewin.domain;
+package com.luckycookie.crewin.domain.enums;
 
 import lombok.Getter;
 
