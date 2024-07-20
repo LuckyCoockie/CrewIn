@@ -1,13 +1,18 @@
 import React, { useState, useRef } from 'react';
+import { Carousel } from 'react-responsive-carousel';
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
-import { ReactCropperElement } from 'react-cropper';
-import { Carousel } from 'react-responsive-carousel';
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import Dropzone from 'react-dropzone';
 import { PlusOutlined } from '@ant-design/icons';
-import Modal from './Modal';
-import ImageEditSave from './ImageEditSave';
+import ModalMolecules from '../molecules/ModalMolecules';
+import ImageEditSave from './ImageEditSaveOrganism';
+import editButton from "../../assets/images/editbutton.png";
+import cropButton from "../../assets/images/cropbutton.png";
+import checkButton from "../../assets/images/checkbutton.png";
+import InputTextTypeMolecule from "../molecules/InputTextTypeMolecule";
+import InputTextAreaTypeMolecule from '../molecules/InputTextAreaTypeMolecule';
+import HeaderOrganism from './HeaderOrganism';
+import { Input } from 'antd';
 
 interface ImageCropProps {
   onComplete: (croppedImages: string[], crewName: string, visibility: string, content: string) => void;
@@ -43,8 +48,8 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
     if (cropperRef && cropperRef.cropper) {
       const cropper = cropperRef.cropper;
       const croppedCanvas = cropper.getCroppedCanvas({
-        width: 300,
-        height: 300,
+        width: 360,
+        height: 360,
         fillColor: '#fff',
         imageSmoothingEnabled: true,
         imageSmoothingQuality: 'high',
@@ -73,8 +78,6 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
   };
 
   const handleFinishEdit = (finalImage: string) => {
-    console.log(finalImage);
-
     if (currentEditIndex !== null) {
       setCroppedImages((prevImages) => {
         const newImages = [...prevImages];
@@ -85,19 +88,24 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
     }
   };
 
-  return (
-    <div className="flex flex-col items-center justify-center h-screenp-4">
-      <div className="max-w-2xl w-full bg-white p-6 rounded-lg">
-        <h1 className="text-2xl font-bold mb-6">게시글 작성</h1>
+  const handlePost = () => {
+    onComplete(croppedImages, crewName, visibility, content);
+  };
 
+  return (
+    <div className="flex flex-col items-center justify-center">
+      <div className='self-start'>
+        <HeaderOrganism text="게시글 작성" />
+      </div>
+      {imagePaths.length === 0 ? (
         <Dropzone onDrop={handleDrop}>
           {({ getRootProps, getInputProps }) => (
-            <section className="mb-4">
+            <section className="my-3">
               <div
                 {...getRootProps()}
                 style={{
-                  width: 300,
-                  height: 300,
+                  width: 360,
+                  height: 360,
                   border: '1px solid lightgray',
                   display: 'flex',
                   alignItems: 'center',
@@ -111,16 +119,23 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
             </section>
           )}
         </Dropzone>
-
-        {imagePaths.length > 0 && (
-          <>
-            <Carousel showThumbs={false} showIndicators={false} showStatus={false} infiniteLoop={false} className="mb-6">
+      ) : (
+        <>
+          <div className="relative w-full bg-white rounded-lg mb-6" style={{ width: 360, height: 360 }}>
+            <Carousel
+              showThumbs={false}
+              showIndicators={true}
+              showStatus={false}
+              infiniteLoop={false}
+              swipeable={false}
+              className="mb-6"
+            >
               {imagePaths.map((imagePath, index) => (
-                <div key={index} className="relative">
+                <div key={index} className="relative my-2">
                   {!isCropped ? (
                     <Cropper
                       src={imagePath}
-                      style={{ height: 300, width: 300 }}
+                      style={{ height: 360, width: 360 }}
                       aspectRatio={cropAspectRatio}
                       guides={true}
                       ref={(cropper) => {
@@ -131,69 +146,80 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
                     />
                   ) : (
                     <>
-                      <div style={{ width: 300, height: 300 }}>
+                      <div>
                         <img
                           src={croppedImages[index]}
                           alt={`Cropped ${index}`}
-                          style={{ width: 300, height: 300 }}
+                          style={{ width: 360, height: 360 }}
                         />
                       </div>
                       <button
                         onClick={() => setCurrentEditIndex(index)}
-                        className="absolute bottom-4 left-4 px-2 py-1 text-white rounded"
+                        className="absolute bottom-7 right-1 z-1 bg-transparent p-1"
                       >
-                        사진 편집
+                        <img src={editButton} alt="edit Button" className="w-10 h-10" />
                       </button>
                     </>
                   )}
+                  <button
+                    onClick={handleCropAll}
+                    className="absolute bottom-16 right-1 bg-transparent z-1 p-1"
+                  >
+                    {isCropped ? <img src={cropButton} alt="crop Button" className="w-10 h-10" /> : <img src={checkButton} alt="check Button" className="w-10 h-10" />}
+                  </button>
                 </div>
               ))}
             </Carousel>
-            <button
-              onClick={handleCropAll}
-              className="px-4 py-2 bg-blue-500 text-white rounded mb-4"
-            >
-              {isCropped ? '다시 크롭하기' : '전체 이미지 크롭'}
-            </button>
-          </>
-        )}
+          </div>
+        </>
+      )}
 
-        <div className="mb-4">
-          <label className="block mb-2 font-semibold">크루명:</label>
-          <input
-            type="text"
-            value={crewName}
-            onChange={(e) => setCrewName(e.target.value)}
-            placeholder="크루명"
-            className="border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
+      <div className="w-full">
+        <InputTextTypeMolecule
+          id="crewName"
+          title="크루명"
+          placeholder="크루명을 입력하세요"
+          onChange={(e) => setCrewName(e.target.value)}
+          onBlur={() => { }}
+          name="crewName"
+          hasError={false}
+        />
+      </div>
 
-        <div className="mb-4">
-          <label className="block mb-2 font-semibold">공개범위:</label>
-          <select
-            value={visibility}
-            onChange={(e) => setVisibility(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2"
-          >
-            <option value="전체">전체</option>
-            <option value="크루">크루</option>
-          </select>
-        </div>
+      <div className="mb-4 flex items-center">
+        <label className="block mr-3 font-semibold">공개범위</label>
+        <select
+          value={visibility}
+          onChange={(e) => setVisibility(e.target.value)}
+          className="border border-gray-300 rounded px-3 py-2 flex"
+        >
+          <option value="전체">전체</option>
+          <option value="크루">크루</option>
+        </select>
+      </div>
 
+      <div className="w-full">
         <div className="mb-6">
-          <label className="block mb-2 font-semibold">내용:</label>
-          <textarea
+          <InputTextAreaTypeMolecule
+            id="content"
+            title="내용"
+            name="content"
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="내용 입력"
-            className="border border-gray-300 rounded px-3 py-2 h-32"
+            placeholder="내용을 입력하세요"
+            hasError={false}
           />
         </div>
       </div>
 
+      <button
+        onClick={handlePost}
+        className="w-full bg-[#2b2f40e6] py-4 px-8 text-center rounded-lg disable text-white font-bold">
+        작성
+      </button>
+
       {currentEditIndex !== null && (
-        <Modal onClose={() => setCurrentEditIndex(null)}>
+        <ModalMolecules onClose={() => setCurrentEditIndex(null)}>
           <ImageEditSave
             images={[croppedImages[currentEditIndex]]}
             crewName={crewName}
@@ -201,7 +227,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
             content={content}
             onFinish={handleFinishEdit}
           />
-        </Modal>
+        </ModalMolecules>
       )}
     </div>
   );

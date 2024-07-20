@@ -2,7 +2,11 @@ import React from "react";
 import LoginTitleOrganism from "../organisms/LoginTitleOrganism";
 import LoginOrganism from "../organisms/LoginOrganism";
 
-const LoginTemplate: React.FC = () => {
+type OwnProps = {
+  login: (value: { email: string; password: string }) => Promise<void>;
+};
+
+const LoginTemplate: React.FC<OwnProps> = ({ login }: OwnProps) => {
   return (
     <>
       <div className="mx-auto w-full max-w-[550px] pt-4 pb-10">
@@ -10,7 +14,7 @@ const LoginTemplate: React.FC = () => {
           <LoginTitleOrganism />
         </div>
         <div className="flex items-center justify-center">
-          <LoginOrganism />
+          <LoginOrganism login={login} />
         </div>
       </div>
     </>
