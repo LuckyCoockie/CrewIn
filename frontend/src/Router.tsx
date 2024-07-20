@@ -6,6 +6,10 @@ import PostCreatePage from "./pages/PostCreatePage";
 import RouteCreatePage from "./pages/RouteCreatePage";
 import LoginPage from "./pages/LoginPage";
 import SessionCreatePage from "./pages/SessionCreatePage";
+import HomePage from "./pages/HomePage";
+import SessionPage from "./pages/SessionPage";
+import CrewPage from "./pages/CrewPage";
+import ProfilePage from "./pages/ProfilePage";
 
 export const router = createBrowserRouter([
   {
@@ -31,5 +35,21 @@ export const router = createBrowserRouter([
   {
     path: "createsession/",
     element: <SessionCreatePage />,
+  },
+  {
+    path: "createsession/",
+    element: <HomePage />,
+  },
+  {
+    path: "createsession/",
+    element: <SessionPage />,
+  },
+  {
+    path: "createsession/",
+    element: <CrewPage />,
+  },
+  {
+    path: "createsession/",
+    element: <ProfilePage />,
   },
 ]);
