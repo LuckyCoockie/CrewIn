@@ -215,7 +215,7 @@ const SessionCreateOrganism: React.FC = () => {
               render={({ field }) => (
                 <InputDateStartTypeMolecule
                   id="sessionstart"
-                  title="세션시작시간"
+                  title="세션 시작"
                   selected={field.value ?? new Date()}
                   onChange={field.onChange}
                 />
@@ -230,7 +230,7 @@ const SessionCreateOrganism: React.FC = () => {
               render={({ field }) => (
                 <InputDateEndTypeMolecule
                   id="sessionend"
-                  title="세션종료시간"
+                  title="세션 종료"
                   selected={field.value ?? new Date()}
                   onChange={field.onChange}
                   minDate={watchedSessionStart}
@@ -240,13 +240,15 @@ const SessionCreateOrganism: React.FC = () => {
           </div>
           {/* 시작시간 종료시간 error 출력 */}
           {errors.sessionend &&
-            watchedSessionStart &&
-            watchedSessionEnd &&
-            watchedSessionEnd < watchedSessionStart && (
-              <p className="ps-4 mb-4 text-sm font-light text-red-500">
-                종료시간은 시작시간보다 늦어야 합니다.
-              </p>
-            )}
+          watchedSessionStart &&
+          watchedSessionEnd &&
+          watchedSessionEnd < watchedSessionStart ? (
+            <p className="ps-4 mb-3 text-sm font-light text-red-500">
+              종료시간은 시작시간보다 늦어야 합니다.
+            </p>
+          ) : (
+            <div className="ps-4 mb-3"></div>
+          )}
         </div>
         <div>
           {/* 유효성 검사 통과 여부에 따라 버튼 교체 */}
