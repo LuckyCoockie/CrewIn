@@ -1,12 +1,25 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+import BottomBarOrganism from "./components/organisms/BottomBarOrganism";
 
 const App: React.FC = () => {
+  // 현 위치 파악 함수
+  const location = useLocation();
+
+  // 제외할 페이지
+  const hideBottomBarRoutes = ["/login"];
+  const shouldHideBottomBar = hideBottomBarRoutes.includes(location.pathname);
+
   return (
-      <div className="App">
+    <>
+      <header>
         <h1>Crew-In</h1>
+      </header>
+      <main className="">
         <Outlet />
-      </div>
+      </main>
+      {!shouldHideBottomBar && <BottomBarOrganism />}{" "}
+    </>
   );
 };
 

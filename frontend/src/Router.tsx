@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-
 import App from "./App";
 import CrewCreatePage from "./pages/CrewCreatePage";
 import PostCreatePage from "./pages/PostCreatePage";
@@ -15,41 +14,16 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-  },
-  {
-    path: "maps/",
-    element: <RouteCreatePage />,
-  },
-  {
-    path: "createcrew/",
-    element: <CrewCreatePage />,
-  },
-  {
-    path: "postcreatepage/",
-    element: <PostCreatePage />,
-  },
-  {
-    path: "login/",
-    element: <LoginPage />,
-  },
-  {
-    path: "createsession/",
-    element: <SessionCreatePage />,
-  },
-  {
-    path: "home/",
-    element: <HomePage />,
-  },
-  {
-    path: "session/",
-    element: <SessionPage />,
-  },
-  {
-    path: "crew/",
-    element: <CrewPage />,
-  },
-  {
-    path: "profile/",
-    element: <ProfilePage />,
+    children: [
+      { path: "home", element: <HomePage /> },
+      { path: "session", element: <SessionPage /> },
+      { path: "crew", element: <CrewPage /> },
+      { path: "profile", element: <ProfilePage /> },
+      { path: "maps", element: <RouteCreatePage /> },
+      { path: "createcrew", element: <CrewCreatePage /> },
+      { path: "postcreatepage", element: <PostCreatePage /> },
+      { path: "login", element: <LoginPage /> },
+      { path: "createsession", element: <SessionCreatePage /> },
+    ],
   },
 ]);
