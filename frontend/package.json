@@ -10,9 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@hello-pangea/dnd": "^16.6.0",
     "@ant-design/icons": "^5.3.7",
     "@headlessui/react": "^2.1.2",
+    "@hello-pangea/dnd": "^16.6.0",
     "@hookform/resolvers": "^3.9.0",
     "@types/navermaps": "^3.7.5",
     "@types/react-beautiful-dnd": "^13.1.8",
@@ -20,8 +20,9 @@
     "antd": "^5.19.2",
     "axios": "^1.7.2",
     "cropperjs": "^1.6.2",
-    "file-saver": "^2.0.5",
     "date-fns": "^3.6.0",
+    "dom-to-image": "^2.6.0",
+    "file-saver": "^2.0.5",
     "flowbite": "^2.4.1",
     "flowbite-react": "^0.10.1",
     "html2canvas": "^1.4.1",

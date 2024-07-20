@@ -5,6 +5,7 @@ import CrewCreatePage from "./pages/CrewCreatePage";
 import PostCreatePage from "./pages/PostCreatePage";
 import RouteCreatePage from "./pages/RouteCreatePage";
 import LoginPage from "./pages/LoginPage";
+import SessionCreatePage from "./pages/SessionCreatePage";
 
 export const router = createBrowserRouter([
   {
@@ -16,7 +17,7 @@ export const router = createBrowserRouter([
     element: <RouteCreatePage />,
   },
   {
-    path: "crewcreatepage/",
+    path: "createcrew/",
     element: <CrewCreatePage />,
   },
   {
@@ -26,5 +27,9 @@ export const router = createBrowserRouter([
   {
     path: "login/",
     element: <LoginPage />,
+  },
+  {
+    path: "createsession/",
+    element: <SessionCreatePage />,
   },
 ]);
