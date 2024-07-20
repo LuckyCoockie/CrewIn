@@ -49,11 +49,9 @@ const InputTextAreaNoLimitTypeMolecule = React.forwardRef<
         hasError={props.hasError}
       />
       {props.error ? (
-        <p className="ps-4 pt-1 text-sm font-light text-red-500">
-          {props.error}
-        </p>
+        <p className="ps-4 text-sm font-light text-red-500">{props.error}</p>
       ) : (
-        <p className="text-gray-500 text-end">{charCount}/1000 글자</p>
+        <p className="text-sm text-gray-500 text-end">{charCount}/1000 글자</p>
       )}
     </div>
   );
