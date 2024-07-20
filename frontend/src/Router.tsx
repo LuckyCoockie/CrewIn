@@ -37,19 +37,19 @@ export const router = createBrowserRouter([
     element: <SessionCreatePage />,
   },
   {
-    path: "createsession/",
+    path: "home/",
     element: <HomePage />,
   },
   {
-    path: "createsession/",
+    path: "session/",
     element: <SessionPage />,
   },
   {
-    path: "createsession/",
+    path: "crew/",
     element: <CrewPage />,
   },
   {
-    path: "createsession/",
+    path: "profile/",
     element: <ProfilePage />,
   },
 ]);
