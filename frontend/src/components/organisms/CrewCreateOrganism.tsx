@@ -125,6 +125,7 @@ const CrewCreatePage: React.FC = () => {
                 <InputDropdonwTypeMolecule
                   id="city"
                   title="도시*"
+                  text="---"
                   options={regions.map((region) => ({
                     label: region.city,
                     value: region.city,
@@ -149,6 +150,7 @@ const CrewCreatePage: React.FC = () => {
                 <InputDropdonwTypeMolecule
                   id="district"
                   title="시/군/구*"
+                  text="---"
                   options={
                     regions
                       .find((region) => region.city === watchedCity)
