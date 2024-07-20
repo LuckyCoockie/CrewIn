@@ -15,7 +15,6 @@ const BottomBarOrganism: React.FC = () => {
   const selectedTab = (tab: Tab) => {
     setcurrentTab(tab);
     navigator(`/${tab}`);
-    console.log(tab);
   };
 
   return (
