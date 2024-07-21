@@ -37,7 +37,7 @@ const InputTextAreaNoLimitTypeMolecule = React.forwardRef<
   };
 
   return (
-    <div className="mb-4 w-full">
+    <div className="mb-2 w-full">
       <InputLabelComponent id={props.id} title={props.title} />
       <InputTextAreaTypeComponent
         placeholder={props.placeholder}

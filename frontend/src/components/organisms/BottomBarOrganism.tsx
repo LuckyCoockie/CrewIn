@@ -15,12 +15,11 @@ const BottomBarOrganism: React.FC = () => {
   const selectedTab = (tab: Tab) => {
     setcurrentTab(tab);
     navigator(`/${tab}`);
-    console.log(tab);
   };
 
   return (
     <>
-      <div className="flex justify-center items-center border-gray-200 border-t">
+      <div className="bg-white fixed bottom-0 left-0 right-0 flex justify-center items-center border-gray-200 border-t">
         <div className="w-full h-full button">
           <HomeTabMolecule
             name="Home"

@@ -12,13 +12,10 @@ const App: React.FC = () => {
 
   return (
     <>
-      <header>
-        <h1>Crew-In</h1>
-      </header>
-      <main className="">
+      <div className="mx-auto w-full max-w-[550px]">
         <Outlet />
-      </main>
-      {!shouldHideBottomBar && <BottomBarOrganism />}{" "}
+        {!shouldHideBottomBar && <BottomBarOrganism />}{" "}
+      </div>
     </>
   );
 };

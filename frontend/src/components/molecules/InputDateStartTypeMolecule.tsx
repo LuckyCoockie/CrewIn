@@ -13,7 +13,7 @@ type InputData = {
 const InputDateStartTypeMolecule = React.forwardRef<DatePicker, InputData>(
   (props, ref) => {
     return (
-      <div className="mb-2">
+      <div className="mb-4">
         <InputLabelComponent id={props.id} title={props.title} />
         <InputDateStartComponent
           id={props.id}

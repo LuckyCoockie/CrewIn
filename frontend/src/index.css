@@ -53,15 +53,27 @@ body {
   font-family: "Roboto", sans-serif;
 }
 
+/* 버튼 컬러 */
+.button-color {
+  color: white;
+  background-color: hsla(229, 20%, 21%, 1);
+}
+
 /* 라벨 전역 설정 */
 label {
   font-weight: 600;
 }
 
-/* 일부 페이지 main 패딩 설정 */
+/* main 설정 */
 main {
   width: 100%;
   padding: 0px 16px;
+}
+
+/* header 설정 */
+header {
+  width: 100%;
+  padding: 8px 16px;
 }
 
 /* Data input css */

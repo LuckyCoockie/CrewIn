@@ -4,6 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
 import InputTextTypeMolecule from "../molecules/InputTextTypeMolecule";
+import InputNumberTypeMolecule from "../molecules/InputNumberTypeMolecule";
 import ImageMultiTypeMolecule from "../molecules/ImageMultiTypeMolecule";
 import InputDropdonwTypeMolecule from "../molecules/InputDropdonwTypeMolecule";
 import InputTextAreaNoLimitTypeMolecule from "../molecules/InputTextAreaNoLimitTypeMolecule";
@@ -12,13 +13,21 @@ import InputDateEndTypeMolecule from "../molecules/InputDateEndTypeMolecule";
 import { pace } from "../../pace";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
+import InputRadioTypeMolecule from "../molecules/InputRadioTypeMolecule";
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({
+  sessiontype: yup.string().required("세션 종류를 선택해주세요."),
   sessiontitle: yup
     .string()
     .max(30, "30글자 이내로 입력해주세요.")
     .required("세션명을 입력해주세요."),
+  sessionmembers: yup
+    .number()
+    .typeError("숫자만 입력 가능합니다.")
+    .min(1, "최소 본인 1명입니다.")
+    .max(200, "최대인원은 200명입니다.")
+    .required("인원수를 설정해주세요"),
   sessionposter: yup.mixed(),
   sessionstart: yup.date(),
   sessionend: yup
@@ -38,7 +47,9 @@ const schema = yup.object({
   sessioninfo: yup.string().max(1000).required("상세내용을 작성해주세요."),
 });
 type FormValues = {
+  sessiontype: string;
   sessiontitle: string;
+  sessionmembers: number;
   sessionposter?: FileList;
   sessionspot: string;
   sessionstart?: Date;
@@ -99,21 +110,54 @@ const SessionCreateOrganism: React.FC = () => {
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-wrap w-full">
-          {/* 세션명 */}
           <Controller
-            name="sessiontitle"
+            name="sessiontype"
             control={control}
             render={({ field }) => (
-              <InputTextTypeMolecule
-                id="sessiontitle"
-                title="세션명"
-                placeholder="러너들에게 보이는 세션명"
+              <InputRadioTypeMolecule
+                id="sessiontype"
+                title="세션 종류"
                 {...field}
-                error={errors.sessiontitle?.message}
-                hasError={!!errors.sessiontitle}
+                value={["번개런", "정규런", "오픈런"]}
+                error={errors.sessiontype?.message}
+                hasError={!!errors.sessiontype}
               />
             )}
           />
+          {/* 세션명 */}
+          <div className="w-7/12">
+            <Controller
+              name="sessiontitle"
+              control={control}
+              render={({ field }) => (
+                <InputTextTypeMolecule
+                  id="sessiontitle"
+                  title="세션명"
+                  placeholder="세션명"
+                  {...field}
+                  error={errors.sessiontitle?.message}
+                  hasError={!!errors.sessiontitle}
+                />
+              )}
+            />
+          </div>
+          {/* 인원수 */}
+          <div className="ms-auto w-3/12 me-auto">
+            <Controller
+              name="sessionmembers"
+              control={control}
+              render={({ field }) => (
+                <InputNumberTypeMolecule
+                  id="sessionmembers"
+                  title="참가 인원"
+                  placeholder="인원 수"
+                  {...field}
+                  error={errors.sessionmembers?.message}
+                  hasError={!!errors.sessionmembers}
+                />
+              )}
+            />
+          </div>
           {/* 페이스(분) */}
           <div className="w-1/3 me-4">
             <Controller
@@ -208,7 +252,7 @@ const SessionCreateOrganism: React.FC = () => {
             )}
           />
           {/* 시작시간 */}
-          <div className="w-1/2">
+          <div className="w-5/12">
             <Controller
               name="sessionstart"
               control={control}
@@ -223,7 +267,7 @@ const SessionCreateOrganism: React.FC = () => {
             />
           </div>
           {/* 종료시간 */}
-          <div className="w-1/2">
+          <div className="ms-auto me-auto w-5/12">
             <Controller
               name="sessionend"
               control={control}
