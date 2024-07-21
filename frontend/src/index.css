@@ -64,10 +64,16 @@ label {
   font-weight: 600;
 }
 
-/* 일부 페이지 main 패딩 설정 */
+/* main 설정 */
 main {
   width: 100%;
   padding: 0px 16px;
+}
+
+/* header 설정 */
+header {
+  width: 100%;
+  padding: 8px 16px;
 }
 
 /* Data input css */
