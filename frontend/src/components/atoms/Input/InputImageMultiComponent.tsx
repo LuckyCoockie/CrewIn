@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 type InputImage = {
   id: string;
@@ -9,46 +9,19 @@ type InputImage = {
 
 const InputImageMultiComponent = React.forwardRef<HTMLInputElement, InputImage>(
   (props, ref) => {
-    const [preview, setPreview] = useState<string | null>(null);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setPreview(reader.result as string);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        setPreview(null);
-      }
-      props.onChange(e);
-    };
-
     return (
       <>
         <input
-          className="image-file-input mb-3"
+          className="image-file-input"
           id={props.id}
           type="file"
           name={props.name}
           placeholder={props.placeholder}
-          onChange={handleChange}
+          onChange={props.onChange}
           ref={ref}
           accept="image/*"
           multiple
         ></input>
-        {preview ? (
-          <>
-            <div className="w-full text-center">
-              <img
-                src={preview}
-                alt="Preview"
-                className="mx-auto border-2 w-32 h-32 rounded-full object-cover"
-              />
-            </div>
-          </>
-        ) : null}
       </>
     );
   }
