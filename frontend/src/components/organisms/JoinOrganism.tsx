@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -56,13 +56,30 @@ const LoginOrganism: React.FC = () => {
     mode: "onChange",
   });
 
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
+  const [isCodeVerified, setIsCodeVerified] = useState(false);
+
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     console.log(data);
   };
 
+  const handleEmailVerification = () => {
+    setIsEmailValid(true);
+  };
+
+  const handleCodeVerification = () => {
+    if (verificationCode === "123456") {
+      console.log("인증번호 일치");
+      setIsCodeVerified(true);
+    } else {
+      console.log("인증번호 미일치");
+      setIsCodeVerified(false);
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      {/* 이메일 */}
       <div className="flex flex-wrap w-full">
         <div className="w-5/12">
           {/* 이름 */}
@@ -98,20 +115,55 @@ const LoginOrganism: React.FC = () => {
             )}
           />
         </div>
-        <Controller
-          name="email"
-          control={control}
-          render={({ field }) => (
-            <InputTextTypeMolecule
-              id="email"
-              title="이메일"
-              placeholder="ex) mycrew@crew.co.kr"
-              {...field}
-              error={errors.email?.message}
-              hasError={!!errors.email}
-            />
-          )}
-        />
+        {/* 이메일 */}
+        <div className="w-2/3">
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <InputTextTypeMolecule
+                id="email"
+                title="이메일"
+                placeholder="ex) mycrew@crew.co.kr"
+                {...field}
+                error={errors.email?.message}
+                hasError={!!errors.email}
+              />
+            )}
+          />
+        </div>
+        <div className="w-1/4 mt-8 mb-4 mx-auto text-center">
+          <button
+            type="button"
+            className="button-color w-full border-transparent"
+            onClick={handleEmailVerification}
+          >
+            인증
+          </button>
+        </div>
+        {/* 인증번호 확인 */}
+        {isEmailValid && (
+          <>
+            <div className="w-2/3 mb-4">
+              <input
+                type="text"
+                className="data-input border border-gray-300"
+                placeholder="인증번호"
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
+              />
+            </div>
+            <div className="w-1/4 mx-auto text-center">
+              <button
+                type="button"
+                className="button-color w-full border-transparent"
+                onClick={handleCodeVerification}
+              >
+                확인
+              </button>
+            </div>
+          </>
+        )}
         {/* 비밀번호 */}
         <Controller
           name="password"
@@ -145,8 +197,8 @@ const LoginOrganism: React.FC = () => {
       </div>
       {/* 버튼 영역 */}
       <div>
-        {/* 유효성 검사 통과 여부에 따라 버튼 교체 */}
-        {isValid ? (
+        {/* Form 유효성 검사 통과 + 이메일 인증 통과 여부에 따라 버튼 교체 */}
+        {isValid && isCodeVerified ? (
           <LargeAbleButton text="생성" />
         ) : (
           <LargeDisableButton text="생성" />
