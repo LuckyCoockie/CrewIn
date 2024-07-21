@@ -7,7 +7,7 @@ const App: React.FC = () => {
   const location = useLocation();
 
   // 제외할 페이지
-  const hideBottomBarRoutes = ["/login"];
+  const hideBottomBarRoutes = ["/login", "/join"];
   const shouldHideBottomBar = hideBottomBarRoutes.includes(location.pathname);
 
   return (
