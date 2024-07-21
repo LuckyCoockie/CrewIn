@@ -51,12 +51,21 @@ body {
   min-width: 320px;
   min-height: 100vh;
   font-family: "Roboto", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* 버튼 컬러 */
 .button-color {
   color: white;
   background-color: hsla(229, 20%, 21%, 1);
+  border-radius: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-top: 1px solid hsla(229, 20%, 21%, 1);
+  border-bottom: 1px solid hsla(229, 20%, 21%, 1);
+  font-weight: bold;
 }
 
 /* 라벨 전역 설정 */
