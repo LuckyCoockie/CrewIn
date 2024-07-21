@@ -34,10 +34,6 @@ public class Member {
     @Column(columnDefinition = "TEXT")
     private String imageUrl;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate birth;
-
     private boolean existNotification;
 
     @Enumerated(EnumType.STRING)
