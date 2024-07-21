@@ -24,7 +24,7 @@ const InputRadioComponent = React.forwardRef<HTMLInputElement, InputData>(
         />
         <label
           htmlFor={props.id}
-          className={`py-3 px-4 rounded-md border ${
+          className={`py-2 px-4 rounded-md border ${
             props.checked
               ? "button-color"
               : "bg-white text-gray-500 font-normal border-gray-300"
