@@ -10,11 +10,14 @@ type InputData = {
   name: string;
   hasError?: boolean;
   value: string[];
+  default: string;
 };
 
 const InputRadioTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
   (props, ref) => {
-    const [selectedValue, setSelectedValue] = useState<string | null>(null);
+    const [selectedValue, setSelectedValue] = useState<string>(
+      `${props.default}`
+    );
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setSelectedValue(e.target.value);
@@ -26,13 +29,13 @@ const InputRadioTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
         <div className="flex space-x-4">
           {props.value.map((value, index) => (
             <InputRadioComponent
-              key={index} // 각 컴포넌트에 고유한 키를 부여합니다.
-              id={`${props.id}-${index}`} // 각 InputRadioComponent에 고유한 id를 부여합니다.
+              key={index}
+              id={`${props.id}-${index}`}
               onChange={handleChange}
               name={props.name}
               hasError={props.hasError}
               ref={ref}
-              value={value} // value 속성을 전달합니다.
+              value={value}
               checked={selectedValue === value}
             />
           ))}
