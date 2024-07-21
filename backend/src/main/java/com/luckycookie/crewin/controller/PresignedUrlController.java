@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/presigned")
-public class PresigenedUrlController {
+public class PresignedUrlController {
 
     private final S3Service s3Service;
 
