@@ -5,7 +5,7 @@ type Title = {
 };
 
 const LargeTitle: React.FC<Title> = (props) => {
-  return <p className="text-[24px] font-black">{props.text}</p>;
+  return <p className="text-xl font-black">{props.text}</p>;
 };
 
 export default LargeTitle;
