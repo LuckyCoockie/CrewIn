@@ -1,0 +1,64 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Prepare Config') {
+            steps {
+                withCredentials([file(credentialsId: 'crewin-application-yml', variable: 'CONFIG_FILE')]) {
+                    sh '''
+                        mkdir -p backend/src/main/resources
+                        chmod -R 755 backend/src/main/resources
+                        # 환경 변수에 저장된 파일 내용을 읽어 application.yml로 저장
+                        cp $CONFIG_FILE backend/src/main/resources/application.yml
+                    '''
+                }
+            }
+        }
+        stage('Build & Test') {
+            steps {
+                sh 'cd backend && chmod +x gradlew && ./gradlew clean build'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                script {
+                    sshPublisher(
+                        publishers: [
+                            sshPublisherDesc(
+                                configName: 'Gumi-Spring-Server',
+                                transfers: [
+                                    sshTransfer(
+                                        sourceFiles: 'backend/build/libs/crewin-0.0.1-SNAPSHOT.jar',
+                                        removePrefix: 'backend/build/libs',
+                                        remoteDirectory: 'spring_server',
+                                        execCommand: '''#!/bin/bash
+                                            pkill -9 java
+                                            java -jar spring_server/crewin-0.0.1-SNAPSHOT.jar > spring_server/nohup.out 2>&1 &
+                                        '''
+                                    )
+                                ],
+                                usePromotionTimestamp: false,
+                                alwaysPublishFromMaster: false
+                            )
+                        ]
+                    )
+                }
+            }
+        }
+    }
+    post {
+        always {
+            echo "파이프라인 실행이 완료되었습니다."
+        }
+        success {
+            echo "파이프라인이 성공적으로 실행되었습니다."
+        }
+        failure {
+            echo "파이프라인 실행 중 오류가 발생했습니다."
+        }
+    }
+}
