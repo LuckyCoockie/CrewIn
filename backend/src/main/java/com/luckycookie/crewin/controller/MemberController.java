@@ -25,11 +25,12 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse<TokenResponse>> signUp(@RequestBody MemberRequest.LoginRequest loginRequest) {
+    public ResponseEntity<BaseResponse<TokenResponse>> signIn(@RequestBody MemberRequest.LoginRequest loginRequest) {
         Token token = memberService.login(loginRequest);
         ResponseCookie responseCookie = ResponseCookie.from("refreshToken", token.getRefreshToken()).httpOnly(true)
                 .secure(true).maxAge(Duration.ofDays(7L)).build();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .body(BaseResponse.create(HttpStatus.OK.value(), "로그인에 성공했습니다.", TokenResponse.builder().accessToken(token.getAccessToken()).build()));
     }
+
 }
