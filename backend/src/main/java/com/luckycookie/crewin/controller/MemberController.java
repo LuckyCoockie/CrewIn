@@ -6,6 +6,7 @@ import com.luckycookie.crewin.dto.TokenResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -18,6 +19,7 @@ import java.time.Duration;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;

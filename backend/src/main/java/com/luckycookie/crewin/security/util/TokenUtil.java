@@ -1,43 +1,48 @@
 package com.luckycookie.crewin.security.util;
 
+import com.amazonaws.util.DateUtils;
 import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.domain.Token;
-import com.luckycookie.crewin.dto.TokenResponse;
+import com.luckycookie.crewin.exception.constants.SecurityExceptionList;
+import com.luckycookie.crewin.exception.security.ExpiredTokenException;
+import com.luckycookie.crewin.exception.security.InvalidTokenException;
 import com.luckycookie.crewin.security.dto.CustomUser;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.spec.SecretKeySpec;
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.luckycookie.crewin.exception.constants.SecurityExceptionList.*;
+
 @Component
+@Slf4j
 public class TokenUtil {
 
     @Value("${security.secret-key}")
     private String secretKey;
     private final Long accessTokenExpireTime = 60 * 60L; // 1시간
     private final Long refreshTokenExpireTime = 60 * 60 * 24 * 7L; // 일주일
-    private Key key;
+    private SecretKey key;
 
     public void makeAuthentication(Member member) {
         // Authentication 만들기
@@ -52,13 +57,35 @@ public class TokenUtil {
     }
 
     public Authentication getAuthentication(CustomUser user) {
-
         List<GrantedAuthority> grantedAuthorities = user.getRoles().stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        return new UsernamePasswordAuthenticationToken(user.getEmail(), "",
+        return new UsernamePasswordAuthenticationToken(user, "",
                 grantedAuthorities);
+    }
+
+    public boolean validateToken(String token, HttpServletRequest request) {
+        try {
+            Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+            return true;
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            log.info("잘못된 JWT 서명입니다.");
+            request.setAttribute("exception", MALFORMED_TOKEN.getErrorCode());
+        } catch (ExpiredJwtException e) {
+            log.info("만료된 JWT 토큰입니다.");
+            request.setAttribute("exception", EXPIRED_TOKEN.getErrorCode());
+        } catch (UnsupportedJwtException e) {
+            log.info("지원되지 않는 JWT 토큰입니다.");
+            request.setAttribute("exception", UNSUPPORTED_TOKEN.getErrorCode());
+        } catch (IllegalArgumentException e) {
+            log.info("JWT 토큰이 잘못되었습니다.");
+            request.setAttribute("exception", ILLEGAL_TOKEN.getErrorCode());
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            request.setAttribute("exception", ACCESS_DENIED.getErrorCode());
+        }
+        return false;
     }
 
     public Token generateToken(Member member) {
@@ -87,5 +114,9 @@ public class TokenUtil {
     public void generateKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String getSubject(String token) {
+        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().getSubject();
     }
 }
