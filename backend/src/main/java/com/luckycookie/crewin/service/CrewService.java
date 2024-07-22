@@ -2,11 +2,14 @@ package com.luckycookie.crewin.service;
 
 import com.luckycookie.crewin.domain.Crew;
 import com.luckycookie.crewin.domain.Member;
+import com.luckycookie.crewin.domain.MemberCrew;
+import com.luckycookie.crewin.domain.enums.Position;
 import com.luckycookie.crewin.dto.CrewRequest;
 import com.luckycookie.crewin.dto.CrewResponse.CrewItem;
 import com.luckycookie.crewin.dto.CrewResponse.CrewItemResponse;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.repository.CrewRepository;
+import com.luckycookie.crewin.repository.MemberCrewRepository;
 import com.luckycookie.crewin.repository.MemberRepository;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ public class CrewService {
 
     private final CrewRepository crewRepository;
     private final MemberRepository memberRepository;
+    private final MemberCrewRepository memberCrewRepository;
 
     public void createCrew(CrewRequest.CreateCrewRequest createCrewRequest, CustomUser customUser) {
 
@@ -47,32 +51,55 @@ public class CrewService {
 
         crewRepository.save(crew);
 
+        // MemberCrew 에 CAPTAIN 지정
+        MemberCrew memberCrew = MemberCrew.builder()
+                .member(member)
+                .crew(crew)
+                .position(Position.CAPTAIN)
+                .isJoined(true)
+                .build();
+
+        memberCrewRepository.save(memberCrew);
+
     }
 
     @Transactional(readOnly = true)
-    public CrewItemResponse getCrewItem(int pageNo) {
+    public CrewItemResponse getCrewList(int pageNo, CustomUser customUser) {
         Pageable pageable = PageRequest.of(pageNo, 10); // pageNo 페이지 번호, 10 : 페이지 크기
 
         Page<Crew> crewsPage;
         List<Crew> crews;
         int lastPageNo;
 
-        crewsPage = crewRepository.findAllByCrew(pageable);
+        // 사용자 정보 가져오기
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+
+        // 가입 여부 확인
+        boolean isJoined = memberCrewRepository.existsByMemberAndIsJoinedTrue(member);
+
+        if (isJoined) {
+            crewsPage = crewRepository.findCrewsByMemberId(member.getId(), pageable);
+        } else {
+            crewsPage = crewRepository.findAllByCrew(pageable);
+        }
+
         crews = crewsPage.getContent();
         lastPageNo = Math.max(crewsPage.getTotalPages() - 1, 0);
 
         List<CrewItem> crewItems = crews.stream().map(crew -> {
             int crewCount = crewRepository.countMembersByCrewId(crew.getId());
             String captainName = crew.getCaptain().getName();
-            return new CrewItem(
-                    crew.getId(),
-                    crew.getCrewName(),
-                    crew.getSlogan(),
-                    crew.getArea(),
-                    crewCount,
-                    captainName,
-                    crew.getMainLogo()
-            );
+
+            return CrewItem.builder()
+                    .id(crew.getId())
+                    .name(crew.getCrewName())
+                    .slogan(crew.getSlogan())
+                    .area(crew.getArea())
+                    .crewCount(crewCount)
+                    .captainName(captainName)
+                    .imageUrl(crew.getMainLogo())
+                    .build();
         }).collect(Collectors.toList());
 
         return CrewItemResponse.builder()
@@ -81,5 +108,6 @@ public class CrewService {
                 .lastPageNo(lastPageNo)
                 .build();
     }
+
 
 }
