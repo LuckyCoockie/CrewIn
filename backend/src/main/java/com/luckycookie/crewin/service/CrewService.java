@@ -8,6 +8,7 @@ import com.luckycookie.crewin.dto.CrewResponse.CrewItemResponse;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.repository.CrewRepository;
 import com.luckycookie.crewin.repository.MemberRepository;
+import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,10 +27,9 @@ public class CrewService {
     private final CrewRepository crewRepository;
     private final MemberRepository memberRepository;
 
-    public void createCrew(CrewRequest.CreateCrewRequest createCrewRequest) {
+    public void createCrew(CrewRequest.CreateCrewRequest createCrewRequest, CustomUser customUser) {
 
-        // 작성자 ID (로그인 토큰 발급 이후 토큰으로 변경 해야 함)
-        Member member = memberRepository.findById(createCrewRequest.getCaptainId())
+        Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         Crew crew = Crew
