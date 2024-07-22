@@ -1,7 +1,8 @@
 package com.luckycookie.crewin.controller;
 
 import com.luckycookie.crewin.domain.Token;
-import com.luckycookie.crewin.dto.MemberRequest;
+import com.luckycookie.crewin.dto.MemberRequest.SignInRequest;
+import com.luckycookie.crewin.dto.MemberRequest.SignUpRequest;
 import com.luckycookie.crewin.dto.TokenResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.service.MemberService;
@@ -25,11 +26,17 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse<TokenResponse>> signUp(@RequestBody MemberRequest.LoginRequest loginRequest) {
-        Token token = memberService.login(loginRequest);
+    public ResponseEntity<BaseResponse<TokenResponse>> signIn(@RequestBody SignInRequest signInRequest) {
+        Token token = memberService.signIn(signInRequest);
         ResponseCookie responseCookie = ResponseCookie.from("refreshToken", token.getRefreshToken()).httpOnly(true)
                 .secure(true).maxAge(Duration.ofDays(7L)).build();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .body(BaseResponse.create(HttpStatus.OK.value(), "로그인에 성공했습니다.", TokenResponse.builder().accessToken(token.getAccessToken()).build()));
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<BaseResponse<Void>> signUp(@RequestBody SignUpRequest signUpRequest) {
+        memberService.signUp(signUpRequest);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "회원가입 되었습니다."));
     }
 }
