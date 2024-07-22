@@ -38,4 +38,11 @@ public class CrewController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "내가 속한 크루 목록 조회를 성공했습니다.", crewService.getCrewList(pageNo, customUser)));
     }
 
+
+    @PostMapping("/notice")
+    public ResponseEntity<BaseResponse<Void>> createCrewNotice(@AuthenticationPrincipal CustomUser customUser, @RequestBody CrewRequest.CreateCrewNoticeRequest createCrewNoticeRequest) {
+        crewService.createCrewNotice(createCrewNoticeRequest, customUser);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 공지를 생성하는데 성공했습니다."));
+    }
+
 }

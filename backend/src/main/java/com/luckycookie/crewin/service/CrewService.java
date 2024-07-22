@@ -1,16 +1,15 @@
 package com.luckycookie.crewin.service;
 
-import com.luckycookie.crewin.domain.Crew;
-import com.luckycookie.crewin.domain.Member;
-import com.luckycookie.crewin.domain.MemberCrew;
+import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.Position;
+import com.luckycookie.crewin.domain.enums.PostType;
 import com.luckycookie.crewin.dto.CrewRequest;
 import com.luckycookie.crewin.dto.CrewResponse.CrewItem;
 import com.luckycookie.crewin.dto.CrewResponse.CrewItemResponse;
+import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
-import com.luckycookie.crewin.repository.CrewRepository;
-import com.luckycookie.crewin.repository.MemberCrewRepository;
-import com.luckycookie.crewin.repository.MemberRepository;
+import com.luckycookie.crewin.exception.crew.CrewPositionMismatchException;
+import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,7 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +31,8 @@ public class CrewService {
     private final CrewRepository crewRepository;
     private final MemberRepository memberRepository;
     private final MemberCrewRepository memberCrewRepository;
+    private final PostRepository postRepository;
+    private final PostImageRepository postImageRepository;
 
     public void createCrew(CrewRequest.CreateCrewRequest createCrewRequest, CustomUser customUser) {
 
@@ -107,6 +110,43 @@ public class CrewService {
                 .pageNo(pageNo)
                 .lastPageNo(lastPageNo)
                 .build();
+    }
+
+    public void createCrewNotice(CrewRequest.CreateCrewNoticeRequest createCrewNoticeRequest, CustomUser customUser) {
+
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+        Crew crew = crewRepository.findById(createCrewNoticeRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
+
+        // 크루 공지는 Pacer 이상
+        Position position = memberCrewRepository.findPositionByMember(member).orElseThrow(CrewPositionMismatchException::new);
+
+        // MEMBER 가 아닐 때만
+        if (position != Position.MEMBER) {
+            Post post = Post
+                    .builder()
+                    .crew(crew)
+                    .author(member)
+                    .isPublic(false)
+                    .content(createCrewNoticeRequest.getContent())
+                    .title(createCrewNoticeRequest.getTitle())
+                    .postType(PostType.NOTICE)
+                    .build();
+
+            postRepository.save(post);
+
+            // 이미지 넣어주기
+            if (createCrewNoticeRequest.getNoticeImages() != null) {
+                for (String imageUrl : createCrewNoticeRequest.getNoticeImages()) {
+                    PostImage postImage = PostImage.builder()
+                            .post(post)
+                            .imageUrl(imageUrl)
+                            .build();
+                    postImageRepository.save(postImage);
+                }
+            }
+        }
+
     }
 
 
