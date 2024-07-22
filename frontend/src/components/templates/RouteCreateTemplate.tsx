@@ -11,6 +11,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../atoms/Button/LargeAbleButton";
 
+import { useRef } from "react";
+import html2canvas from "html2canvas";
+import canvg from "canvg";
+import { saveAs } from "file-saver";
+
 type OwnProps = {
   initPosition: { latitude: number; longitude: number };
   onSave: ({ polyline, title }: FormValues) => void;
@@ -34,6 +39,7 @@ const RouteCreateTemplate: React.FC<OwnProps> = ({
   });
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
+    handleSave(data.title);
     onSave(data);
   };
 
@@ -54,16 +60,68 @@ const RouteCreateTemplate: React.FC<OwnProps> = ({
     setValue("polyline", polyline);
   };
 
+  const captureRef = useRef<HTMLDivElement>(null);
+
+  const handleSave = async (filename: string) => {
+    if (captureRef.current) {
+      const svgNodesToRemove: HTMLCanvasElement[] = [];
+
+      const svgElements = document.body.querySelectorAll("svg");
+
+      svgElements.forEach((item) => {
+        const svg = item.outerHTML.trim();
+
+        const canvas = document.createElement("canvas");
+
+        canvas.width = item.getBoundingClientRect().width;
+        canvas.height = item.getBoundingClientRect().height;
+
+        canvg(canvas, svg);
+
+        if (item.style.position) {
+          canvas.style.position += item.style.position;
+          canvas.style.left += item.style.left;
+          canvas.style.top += item.style.top;
+        }
+
+        item.parentNode?.appendChild(canvas);
+
+        svgNodesToRemove.push(canvas);
+      });
+
+      const canvas = await html2canvas(captureRef.current, {
+        scale: 4,
+        useCORS: true,
+        backgroundColor: null,
+      });
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            saveAs(blob, `${filename}.png`);
+          }
+        },
+        "image/jpg",
+        1
+      );
+
+      svgNodesToRemove.forEach(function (element) {
+        element.remove();
+      });
+    }
+  };
+
   return (
     <NaverMapProvider>
       <div className="mx-auto w-full max-w-[550px] pb-10">
         <div className="flex justify-center relative">
-          <NaverMap
-            lng={initPosition.longitude}
-            lat={initPosition.latitude}
-            onChange={setPolyline}
-          />
-          <div className="absolute bottom-4 right-0 p-4">
+          <div ref={captureRef}>
+            <NaverMap
+              lng={initPosition.longitude}
+              lat={initPosition.latitude}
+              onChange={setPolyline}
+            />
+          </div>
+          <div className="absolute bottom-0 right-4 p-4">
             <MapToggleButton />
           </div>
         </div>
