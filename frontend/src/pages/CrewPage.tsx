@@ -1,67 +1,61 @@
 import React from "react";
-import CrewListComponent from "../components/molecules/CrewListMolecule";
-
-const data = [
-  {
-    imageUrl: "https://picsum.photos/200",
-    title: "Sample Title",
-    description: "This is a sample description for the card component.",
-    captain: "John Doe",
-    location: "Seoul, South Korea",
-    peopleCount: 5,
-  },
-  {
-    imageUrl: "https://picsum.photos/200",
-    title: "Sample Title",
-    description: "This is a sample description for the card component.",
-    captain: "John Doe",
-    location: "Seoul, South Korea",
-    peopleCount: 5,
-  },
-  {
-    imageUrl: "https://picsum.photos/200",
-    title: "Sample Title",
-    description: "This is a sample description for the card component.",
-    captain: "John Doe",
-    location: "Seoul, South Korea",
-    peopleCount: 5,
-  },
-  {
-    imageUrl: "https://picsum.photos/200",
-    title: "Sample Title",
-    description: "This is a sample description for the card component.",
-    captain: "John Doe",
-    location: "Seoul, South Korea",
-    peopleCount: 5,
-  },
-  {
-    imageUrl: "https://picsum.photos/200",
-    title: "Sample Title",
-    description: "This is a sample description for the card component.",
-    captain: "John Doe",
-    location: "Seoul, South Korea",
-    peopleCount: 5,
-  },
-  {
-    imageUrl: "https://picsum.photos/200",
-    title: "Sample Title",
-    description: "This is a sample description for the card component.",
-    captain: "John Doe",
-    location: "Seoul, South Korea",
-    peopleCount: 5,
-  },
-  {
-    imageUrl: "https://picsum.photos/200",
-    title: "Sample Title",
-    description: "This is a sample description for the card component.",
-    captain: "John Doe",
-    location: "Seoul, South Korea",
-    peopleCount: 5,
-  },
-];
+import CrewListComponent from "../components/organisms/CrewListOrganisms";
 
 const CrewPage: React.FC = () => {
-  return <CrewListComponent dataList={data} />;
+  const getCrewListWithPage = async () => {
+    return [
+      {
+        imageUrl: "https://picsum.photos/300",
+        title: "Crew In",
+        description: "같이의 가치",
+        captain: "박준식",
+        location: "서울특별시 강남구",
+        peopleCount: 5,
+      },
+      {
+        imageUrl: "https://picsum.photos/300",
+        title: "Crew In",
+        description: "같이의 가치",
+        captain: "박준식",
+        location: "서울특별시 강남구",
+        peopleCount: 5,
+      },
+      {
+        imageUrl: "https://picsum.photos/300",
+        title: "Crew In",
+        description: "같이의 가치",
+        captain: "박준식",
+        location: "서울특별시 강남구",
+        peopleCount: 5,
+      },
+      {
+        imageUrl: "https://picsum.photos/300",
+        title: "Crew In",
+        description: "같이의 가치",
+        captain: "박준식",
+        location: "서울특별시 강남구",
+        peopleCount: 5,
+      },
+      {
+        imageUrl: "https://picsum.photos/300",
+        title: "Crew In",
+        description: "같이의 가치",
+        captain: "박준식",
+        location: "서울특별시 강남구",
+        peopleCount: 5,
+      },
+      {
+        imageUrl: "https://picsum.photos/300",
+        title: "Crew In",
+        description: "같이의 가치",
+        captain: "박준식",
+        location: "서울특별시 강남구",
+        peopleCount: 5,
+      },
+    ];
+  };
+
+  return <CrewListComponent pageSize={6} fetchData={getCrewListWithPage} />;
 };
 
 export default CrewPage;

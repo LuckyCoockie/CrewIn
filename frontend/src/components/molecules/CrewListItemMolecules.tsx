@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "../../styles/square.css";
 import { IconTextComponent } from "../atoms/text/IconText";
 
-// 카드 컴포넌트의 Props 타입 정의
 interface OwnProps {
   imageUrl: string;
   title: string;
@@ -12,15 +11,14 @@ interface OwnProps {
   peopleCount: number;
 }
 
-// 카드 컴포넌트 정의
-const CrewListItem: React.FC<OwnProps> = ({
+const CrewListItem = ({
   imageUrl,
   title,
   description,
   captain,
   location,
   peopleCount,
-}) => {
+}: OwnProps) => {
   const [image, setImage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -35,7 +33,6 @@ const CrewListItem: React.FC<OwnProps> = ({
         setImage(null);
       });
 
-    // 컴포넌트 언마운트 시 URL 해제
     return () => {
       if (imageUrl) {
         URL.revokeObjectURL(imageUrl);
@@ -44,25 +41,29 @@ const CrewListItem: React.FC<OwnProps> = ({
   }, [imageUrl]);
 
   return (
-    <div className="max-w-sm rounded-xl border-4 border-primary shadow-lg bg-white">
-      <div className="flex justify-center items-center bg-primary square md:p-5 p-4">
+    <div className="max-w-sm rounded-xl border-2 md:border-4 border-primary bg-white tracking-tighter">
+      <div className="flex justify-center items-center bg-primary square md:p-4 p-3">
         {image ? (
           <img
             alt="crew image"
             src={image}
-            className="rounded-full b border-4 border-white w-full"
+            className="rounded-full b border-2 md:border-4 border-white w-full"
           />
         ) : (
-          <div className="rounded-full b border-4 border-white w-full m-10" />
+          <img
+            alt="crew image"
+            src={"./src/assets/images/crewinlogo.png"}
+            className="rounded-full b border-2 md:border-4 border-white w-full"
+          />
         )}
       </div>
       <div className="m-3 md:m-4 ml-2">
         <div className="flex md:b-1 md:mb-2">
           <div className="flex items-center mr-2">
-            <div className="h-full bg-highlight" style={{ width: 3 }}></div>
+            <div className="w-[3px] md:w-1 h-full bg-highlight"></div>
           </div>
           <div className="overflow-hidden">
-            <p className="font-bold text-gray-700 text-xl md:text-2xl truncate">
+            <p className="font-bold text-gray-700 text-xl md:text-xl truncate">
               {title}
             </p>
             <p className="text-gray-700 text-base text-sm md:text-md truncate">
