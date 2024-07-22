@@ -74,7 +74,7 @@ const LoginOrganism: React.FC<OwnProps> = ({ login }: OwnProps) => {
               <InputPasswordTypeMolecule
                 id="password"
                 title="비밀번호"
-                placeholder=""
+                placeholder="⦁⦁⦁⦁⦁⦁"
                 {...field}
                 error={errors.password?.message}
                 hasError={!!errors.password}
