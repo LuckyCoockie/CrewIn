@@ -5,9 +5,11 @@ type ContentData = {
 };
 
 const SmallContent: React.FC<ContentData> = (props) => {
-  return <>
-  <p>{props.data}</p>
-  </>;
+  return (
+    <>
+      <p className="font-medium">{props.data}</p>
+    </>
+  );
 };
 
 export default SmallContent;

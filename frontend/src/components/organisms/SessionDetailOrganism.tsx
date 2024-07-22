@@ -1,6 +1,6 @@
 import React from "react";
 import poster from "../../assets/images/poster.png";
-import poster2 from "../../assets/images/poster.png";
+import poster2 from "../../assets/images/crewinbanner.png";
 import { Carousel } from "react-responsive-carousel";
 import OneToOneImageMolecule from "../molecules/OneToOneImageMolecule";
 import DetailInfoMolecule from "../molecules/DetailInfoMolecule";
@@ -33,14 +33,14 @@ const SessionDetailOrganism: React.FC = () => {
         ))}
       </Carousel>
       <main>
-        <DetailInfoMolecule title="크루명" content={Infos.name} />
+        <DetailInfoMolecule title="크루명" content={Infos.crew} />
         <DetailInfoMolecule title="세션 유형" content={Infos.type} />
         <DetailInfoMolecule title="일시" content={Infos.starttime} />
         <DetailInfoMolecule title="페이스" content={Infos.pace} />
         <DetailInfoMolecule title="집결지" content={Infos.spot} />
         <DetailInfoMolecule title="코스" content={Infos.course} />
         <DetailInfoMolecule title="내용" content={Infos.content} />
-        <LargeAbleButton text="참가 신청"/>
+        <LargeAbleButton text="참가 신청" />
       </main>
     </>
   );

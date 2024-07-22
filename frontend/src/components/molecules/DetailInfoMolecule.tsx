@@ -11,10 +11,10 @@ const DetailInfoMolecule: React.FC<InfoData> = (props) => {
   return (
     <>
       <div className="flex border-b py-4">
-        <div className="w-1/3">
+        <div className="flex ms-2 items-center w-3/12">
           <SmallTitle data={props.title} />
         </div>
-        <div className="w-2/3">
+        <div className="ms-4 w-8/12">
           <SmallContent data={props.content} />
         </div>
       </div>
