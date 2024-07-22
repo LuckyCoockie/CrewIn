@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -24,6 +25,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+@DynamicInsert
 @Table(name="post")
 public class Post {
 
@@ -51,16 +53,18 @@ public class Post {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
 
-    private boolean isPublic;
+    private Boolean isPublic;
 
     @Enumerated(EnumType.STRING)
     private PostType postType;
 
     private String title;
 
+    @Builder.Default
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "post")
     private List<PostImage> postImages = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "post")
     private List<Heart> hearts = new ArrayList<>();
 
@@ -68,7 +72,7 @@ public class Post {
     public void updatePost(PostRequest.UpdatePostRequest updatePostRequest) {
         this.title = updatePostRequest.getTitle();
         this.content = updatePostRequest.getContent();
-        this.isPublic = updatePostRequest.isPublic();
+        this.isPublic = updatePostRequest.getIsPublic();
 
         try {
             this.postType = PostType.valueOf(updatePostRequest.getPostType());

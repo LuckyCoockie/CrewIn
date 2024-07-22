@@ -6,12 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicInsert
 @Table(name="membercrew")
 public class MemberCrew {
 
@@ -30,6 +32,6 @@ public class MemberCrew {
     @Enumerated(EnumType.STRING)
     private Position position;
 
-    private boolean isJoined;
+    private Boolean isJoined;
 
 }

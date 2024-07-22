@@ -5,12 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicInsert
 @Table(name="attendance")
 public class Attendance {
 
@@ -26,5 +28,5 @@ public class Attendance {
     @JoinColumn(name = "session_id")
     private Session session;
 
-    private boolean isAttend;
+    private Boolean isAttend;
 }

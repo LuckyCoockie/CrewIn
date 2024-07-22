@@ -11,12 +11,12 @@ public class PostRequest {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
+    @ToString
     public static class WritePostRequest {
-        private String authorEmail;
         private Long crewId;
         private String title;
         private String content;
-        private boolean isPublic;
+        private Boolean isPublic;
         private String postType;
         List<String> postImages;
     }
@@ -26,11 +26,10 @@ public class PostRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class UpdatePostRequest {
-        private String authorEmail;
         private Long crewId;
         private String title;
         private String content;
-        private boolean isPublic;
+        private Boolean isPublic;
         private String postType;
         List<String> postImages;
     }

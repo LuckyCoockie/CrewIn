@@ -3,10 +3,13 @@ package com.luckycookie.crewin.controller;
 import com.luckycookie.crewin.dto.PostRequest;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.dto.PostResponse;
+import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.PostService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,12 +17,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/post")
+@Slf4j
 public class PostController {
     private final PostService postService;
 
     @PostMapping()
-    public ResponseEntity<BaseResponse<Void>> createPost(@RequestBody PostRequest.WritePostRequest writePostRequest) {
-        postService.writePost(writePostRequest);
+    public ResponseEntity<BaseResponse<Void>> createPost(@AuthenticationPrincipal CustomUser customUser, @RequestBody PostRequest.WritePostRequest writePostRequest) {
+        log.info("req: {}", writePostRequest.toString());
+        postService.writePost(writePostRequest, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.CREATED.value(), "게시물을 등록하는데 성공했습니다."));
     }
 
