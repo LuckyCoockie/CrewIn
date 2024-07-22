@@ -10,6 +10,7 @@ import SessionPage from "./pages/SessionPage";
 import CrewPage from "./pages/CrewPage";
 import ProfilePage from "./pages/ProfilePage";
 import JoinPage from "./pages/JoinPage";
+import PostDetailPage from './pages/PostDetailPage';
 
 export const router = createBrowserRouter([
   {
@@ -22,7 +23,8 @@ export const router = createBrowserRouter([
       { path: "profile", element: <ProfilePage /> },
       { path: "maps", element: <RouteCreatePage /> },
       { path: "createcrew", element: <CrewCreatePage /> },
-      { path: "postcreatepage", element: <PostCreatePage /> },
+      { path: "post", element: <PostCreatePage /> },
+      { path: "postdetail", element: <PostDetailPage /> },
       { path: "login", element: <LoginPage /> },
       { path: "createsession", element: <SessionCreatePage /> },
       { path: "join", element: <JoinPage /> },
