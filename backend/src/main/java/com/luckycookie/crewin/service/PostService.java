@@ -11,6 +11,7 @@ import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.post.NotFoundPostException;
 import com.luckycookie.crewin.repository.*;
+import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,9 +29,9 @@ public class PostService {
     private final HeartRepository heartRepository;
     private final PostImageRepository postImageRepository;
 
-    public void writePost(PostRequest.WritePostRequest writePostRequest) {
+    public void writePost(PostRequest.WritePostRequest writePostRequest, CustomUser customUser) {
 
-        Member member = memberRepository.findByEmail(writePostRequest.getAuthorEmail())
+        Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         Crew crew = crewRepository.findById(writePostRequest.getCrewId())
@@ -40,7 +41,7 @@ public class PostService {
                 .crew(crew)
                 .author(member)
                 .content(writePostRequest.getContent())
-                .isPublic(writePostRequest.isPublic())
+                .isPublic(writePostRequest.getIsPublic())
                 .postType(PostType.valueOf(writePostRequest.getPostType())) // 문자열을 Enum으로 변환
                 .title(writePostRequest.getTitle())
                 .build();
@@ -87,7 +88,7 @@ public class PostService {
                 .authorEmail(post.getAuthor().getEmail())
                 .content(post.getContent())
                 .heartCount(heartCount)
-                .isPublic(post.isPublic())
+                .isPublic(post.getIsPublic())
                 .postType(post.getPostType())
                 .title(post.getTitle())
                 .createdAt(post.getCreatedAt())
