@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.Duration;
 
-@Controller
+@Controller("/member")
 @RequiredArgsConstructor
 @Slf4j
 public class MemberController {
@@ -39,4 +39,5 @@ public class MemberController {
         memberService.signUp(signUpRequest);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "회원가입 되었습니다."));
     }
+    
 }
