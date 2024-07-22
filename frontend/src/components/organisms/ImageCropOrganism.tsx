@@ -9,10 +9,11 @@ import ImageEditSave from './ImageEditSaveOrganism';
 import editButton from "../../assets/images/editbutton.png";
 import cropButton from "../../assets/images/cropbutton.png";
 import checkButton from "../../assets/images/checkbutton.png";
-import InputTextTypeMolecule from "../molecules/InputTextTypeMolecule";
 import InputTextAreaTypeMolecule from '../molecules/InputTextAreaTypeMolecule';
 import HeaderOrganism from './HeaderOrganism';
-import { Input } from 'antd';
+import InputRadioTypeMolecule from '../molecules/InputRadioTypeMolecule';
+import InputDropdonwTypeMolecule from '../molecules/InputDropdonwTypeMolecule';
+import { crewNames } from '../../../src/crewname';
 
 interface ImageCropProps {
   onComplete: (croppedImages: string[], crewName: string, visibility: string, content: string) => void;
@@ -174,28 +175,28 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
         </>
       )}
 
-      <div className="w-full">
-        <InputTextTypeMolecule
+      <div className="w-full flex">
+        <InputDropdonwTypeMolecule
           id="crewName"
-          title="크루명"
-          placeholder="크루명을 입력하세요"
+          title="크루"
+          options={crewNames}
+          value={crewName}
           onChange={(e) => setCrewName(e.target.value)}
-          onBlur={() => { }}
-          name="crewName"
+          text="크루명을 선택하세요"
           hasError={false}
         />
       </div>
 
-      <div className="mb-4 flex items-center">
-        <label className="block mr-3 font-semibold">공개범위</label>
-        <select
-          value={visibility}
+      <div className="w-full">
+        <InputRadioTypeMolecule
+          id="visibility"
+          title="공개범위"
+          name="visibility"
           onChange={(e) => setVisibility(e.target.value)}
-          className="border border-gray-300 rounded px-3 py-2 flex"
-        >
-          <option value="전체">전체</option>
-          <option value="크루">크루</option>
-        </select>
+          value={["전체", "크루"]}
+          default="전체"
+          hasError={false}
+        />
       </div>
 
       <div className="w-full">
