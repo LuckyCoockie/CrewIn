@@ -23,6 +23,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
   const [imagePaths, setImagePaths] = useState<string[]>([]);
   const [cropAspectRatio] = useState<number>(1);
   const [croppedImages, setCroppedImages] = useState<string[]>([]);
+  const [originalCroppedImages, setOriginalCroppedImages] = useState<string[]>([]);
   const [crewName, setCrewName] = useState<string>('');
   const [visibility, setVisibility] = useState<string>('전체');
   const [content, setContent] = useState<string>('');
@@ -41,6 +42,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
     });
     setImagePaths(tempImagePaths);
     setCroppedImages(tempCroppedImages);
+    setOriginalCroppedImages(tempImagePaths);
     setIsCropped(false);
   };
 
@@ -57,10 +59,15 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
       });
 
       if (croppedCanvas) {
-        croppedCanvas.toBlob((blob) => {
+        croppedCanvas.toBlob((blob: Blob | null) => {
           if (blob) {
             const croppedImageUrl = URL.createObjectURL(blob);
             setCroppedImages((prevImages) => {
+              const newImages = [...prevImages];
+              newImages[index] = croppedImageUrl;
+              return newImages;
+            });
+            setOriginalCroppedImages((prevImages) => {
               const newImages = [...prevImages];
               newImages[index] = croppedImageUrl;
               return newImages;
@@ -70,6 +77,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
       }
     }
   };
+
 
   const handleCropAll = () => {
     if (!isCropped) {
@@ -222,7 +230,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
       {currentEditIndex !== null && (
         <ModalMolecules onClose={() => setCurrentEditIndex(null)}>
           <ImageEditSave
-            images={[croppedImages[currentEditIndex]]}
+            images={[originalCroppedImages[currentEditIndex]]}
             crewName={crewName}
             visibility={visibility}
             content={content}
