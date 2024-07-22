@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .addFilterBefore(new JwtFilter(tokenUtil, memberRepository), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests((a) -> {
                     a.requestMatchers("/login").permitAll()
+                            .requestMatchers("/signup/**").permitAll()
                             .anyRequest().authenticated();
                 });
 

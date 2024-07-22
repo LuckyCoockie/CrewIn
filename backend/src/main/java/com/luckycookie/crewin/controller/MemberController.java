@@ -36,6 +36,7 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity<BaseResponse<Void>> signUp(@RequestBody SignUpRequest signUpRequest) {
-
+        memberService.signUp(signUpRequest);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "회원가입 되었습니다."));
     }
 }

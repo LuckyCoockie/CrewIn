@@ -27,6 +27,5 @@ public class MemberRequest {
         private String nickname;
         private String email;
         private String password;
-        private LocalDate birth;
     }
 }
