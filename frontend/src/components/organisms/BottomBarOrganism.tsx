@@ -6,13 +6,16 @@ import CrewTabMolecule from "../molecules/CrewTabMolecule";
 import { useNavigate } from "react-router-dom";
 import "../../styles/buttonstyle.css";
 
-type Tab = "home" | "session" | "crew" | "profile";
+type Current = {
+  current: string;
+};
 
-const BottomBarOrganism: React.FC = () => {
-  const [currentTab, setcurrentTab] = useState<Tab>("home");
+const BottomBarOrganism: React.FC<Current> = (props) => {
+  const [currentTab, setcurrentTab] = useState(props.current.split("/")[1]);
   const navigator = useNavigate();
+  console.log(currentTab);
 
-  const selectedTab = (tab: Tab) => {
+  const selectedTab = (tab: string) => {
     setcurrentTab(tab);
     navigator(`/${tab}`);
   };
