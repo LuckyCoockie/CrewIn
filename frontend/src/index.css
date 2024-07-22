@@ -39,6 +39,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+#root {
+  width: 100%;
+}
+
 /* 폰트 굵기 예시
 
 400(기본값) : Normal
