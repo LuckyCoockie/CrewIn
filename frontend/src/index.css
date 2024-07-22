@@ -43,10 +43,6 @@
   width: 100%;
 }
 
-button {
-  background-color: transparent !important;
-}
-
 /* 폰트 굵기 예시
 
 400(기본값) : Normal
@@ -155,7 +151,7 @@ header {
   }
 
   button {
-    background-color: #f9f9f9;
+    background-color: #ffffff;
   }
 }
 
