@@ -18,7 +18,7 @@ const InputTextTypeComponent = forwardRef<HTMLInputElement, InputData>(
         onChange={props.onChange}
         onBlur={props.onBlur}
         name={props.name}
-        className={`data-input border ${
+        className={`data-input border focus:outline-none ${
           props.hasError
             ? "border-red-500 focus:border-red-500"
             : "border-gray-300"

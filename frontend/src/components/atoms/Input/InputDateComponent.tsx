@@ -35,7 +35,7 @@ const InputDateComponent = React.forwardRef<DatePicker, InputDate>(
         yearDropdownItemNumber={100}
         scrollableYearDropdown
         disabledKeyboardNavigation
-        className="custom-datepicker" // DatePicker 전체에 적용할 클래스
+        className="custom-datepicker focus:ring-0" // DatePicker 전체에 적용할 클래스
         calendarClassName="custom-calendar" // Calendar에 적용할 클래스
         wrapperClassName="custom-wrapper" // DatePicker wrapper에 적용할 클래스
         popperClassName="custom-popper" // Popper에 적용할 클래스

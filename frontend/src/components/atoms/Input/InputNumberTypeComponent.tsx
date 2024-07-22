@@ -19,7 +19,7 @@ const InputNumberTypeComponent = forwardRef<HTMLInputElement, InputData>(
         onChange={props.onChange}
         onBlur={props.onBlur}
         name={props.name}
-        className={`data-input border ${
+        className={`data-input border focus:ring-0 ${
           props.hasError
             ? "border-red-500 focus:border-red-500"
             : "border-gray-300"
