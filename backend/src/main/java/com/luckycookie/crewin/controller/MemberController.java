@@ -12,13 +12,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 
-@Controller
+@RestController()
+@RequestMapping("/member")
 @RequiredArgsConstructor
 @Slf4j
 public class MemberController {
@@ -38,5 +37,17 @@ public class MemberController {
     public ResponseEntity<BaseResponse<Void>> signUp(@RequestBody SignUpRequest signUpRequest) {
         memberService.signUp(signUpRequest);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "회원가입 되었습니다."));
+    }
+
+    @GetMapping("/check-email")
+    public ResponseEntity<BaseResponse<Void>> checkEmail(String email) {
+        memberService.checkEmail(email);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "사용 가능한 이메일입니다."));
+    }
+
+    @GetMapping("/check-nickname")
+    public ResponseEntity<BaseResponse<Void>> checkNickname(String nickname) {
+        memberService.checkNickname(nickname);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "사용 가능한 닉네임입니다."));
     }
 }

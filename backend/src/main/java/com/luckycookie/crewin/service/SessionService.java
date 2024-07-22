@@ -6,6 +6,7 @@ import com.luckycookie.crewin.exception.course.NotFoundCourseException;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.repository.*;
+import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,9 +22,9 @@ public class SessionService {
     private final CrewRepository crewRepository;
     private final SessionPosterRepository sessionPosterRepository;
 
-    public void createSession(SessionRequest.CreateSessionRequest createSessionRequest) {
+    public void createSession(SessionRequest.CreateSessionRequest createSessionRequest, CustomUser customUser) {
 
-        Member member = memberRepository.findById(createSessionRequest.getHostId())
+        Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
         Crew crew = crewRepository.findById(createSessionRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
         Course course = courseRepository.findById(createSessionRequest.getCourseId())

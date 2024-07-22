@@ -17,4 +17,7 @@ public interface CrewRepository extends JpaRepository<Crew, Long> {
     @Query("SELECT COUNT(mc) FROM MemberCrew mc WHERE mc.crew.id = :crewId")
     int countMembersByCrewId(Long crewId);
 
+    @Query("SELECT c FROM Crew c JOIN FETCH c.captain JOIN MemberCrew mc ON c.id = mc.crew.id WHERE mc.member.id = :memberId")
+    Page<Crew> findCrewsByMemberId(Long memberId, Pageable pageable);
+
 }

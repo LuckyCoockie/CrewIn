@@ -28,8 +28,14 @@ public class CrewController {
 
     // 전체 크루 조회 (크루 없는 사람)
     @GetMapping()
-    public ResponseEntity<BaseResponse<CrewItemResponse>> crewList(@RequestParam int pageNo) {
-       return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 목록 조회를 성공했습니다.", crewService.getCrewItem(pageNo)));
+    public ResponseEntity<BaseResponse<CrewItemResponse>> getAllCrewList(@AuthenticationPrincipal CustomUser customUser,@RequestParam int pageNo) {
+       return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "전체 크루 목록 조회를 성공했습니다.", crewService.getCrewList(pageNo, customUser)));
+    }
+
+    // 내가 속한 크루 조회 (크루원 / 비크루원)
+    @GetMapping("/my-crew")
+    public ResponseEntity<BaseResponse<CrewItemResponse>> getMyCrewList(@AuthenticationPrincipal CustomUser customUser,@RequestParam int pageNo) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "내가 속한 크루 목록 조회를 성공했습니다.", crewService.getCrewList(pageNo, customUser)));
     }
 
 }

@@ -1,11 +1,7 @@
 package com.luckycookie.crewin.security.util;
 
-import com.amazonaws.util.DateUtils;
 import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.domain.Token;
-import com.luckycookie.crewin.exception.constants.SecurityExceptionList;
-import com.luckycookie.crewin.exception.security.ExpiredTokenException;
-import com.luckycookie.crewin.exception.security.InvalidTokenException;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -16,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,7 +35,7 @@ public class TokenUtil {
 
     @Value("${security.secret-key}")
     private String secretKey;
-//    private final Long accessTokenExpireTime = 60 * 60L; // 1시간
+    //    private final Long accessTokenExpireTime = 60 * 60L; // 1시간
     private final Long accessTokenExpireTime = 60 * 60L * 24 * 30; // 테스트용 한달
     private final Long refreshTokenExpireTime = 60 * 60 * 24 * 7L; // 일주일
     private SecretKey key;

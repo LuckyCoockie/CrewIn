@@ -19,7 +19,6 @@ public class SessionRequest {
     @Builder
     public static class CreateSessionRequest {
         private Long courseId;
-        private Long hostId;
         private Long crewId;
 
         // 세션 종류
