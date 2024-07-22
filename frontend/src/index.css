@@ -63,7 +63,7 @@ body {
 /* 버튼 컬러 */
 .button-color {
   color: white;
-  background-color: hsla(229, 20%, 21%, 1);
+  background-color: #2b2f40 !important;
   border-radius: 8px;
   padding-top: 8px;
   padding-bottom: 8px;
@@ -81,6 +81,7 @@ label {
 main {
   width: 100%;
   padding: 0px 16px;
+  margin-top: 8px;
 }
 
 /* header 설정 */
@@ -97,7 +98,6 @@ header {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 14px;
-  outline: none;
 }
 
 .data-input:focus {
@@ -111,7 +111,6 @@ header {
   padding-bottom: 50px;
   padding-left: 14px;
   padding-right: 14px;
-  outline: none;
 }
 
 .large-data-input:focus {
@@ -153,7 +152,7 @@ header {
   }
 
   button {
-    background-color: #f9f9f9;
+    background-color: #ffffff;
   }
 }
 

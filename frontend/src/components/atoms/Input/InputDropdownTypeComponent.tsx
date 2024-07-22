@@ -25,7 +25,7 @@ const InputDropdownTypeComponent = React.forwardRef<
       value={props.value}
       onChange={props.onChange}
       ref={ref}
-      className={`data-input border text-right ${
+      className={`data-input border text-right focus:ring-0 ${
         props.hasError
           ? "border-red-500 focus:border-red-500"
           : "border-gray-300"
