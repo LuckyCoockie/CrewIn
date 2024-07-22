@@ -1,5 +1,6 @@
 import RouteCreateTemplate from "../components/templates/RouteCreateTemplate.tsx";
 import useGeolocation from "../util/geolocation/gelocation.ts";
+import { NaverMapProvider } from "../util/maps/naver_map/context.tsx";
 
 const RouteCreatePage: React.FC = () => {
   const { location } = useGeolocation();
@@ -7,7 +8,9 @@ const RouteCreatePage: React.FC = () => {
   return (
     <>
       {location && (
-        <RouteCreateTemplate initPosition={location} onSave={console.log} />
+        <NaverMapProvider>
+          <RouteCreateTemplate initPosition={location} onSave={console.log} />
+        </NaverMapProvider>
       )}
     </>
   );

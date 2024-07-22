@@ -1,10 +1,12 @@
 import axios from "axios";
 
+export type Point = { latitude: number; longitude: number };
+
 export const directionApi = async (
-  start: { latitude: number; longitude: number },
-  end: { latitude: number; longitude: number }
-): Promise<{ latitude: number; longitude: number }[]> => {
-  let result: { latitude: number; longitude: number }[] = [];
+  start: Point,
+  end: Point
+): Promise<Point[]> => {
+  let result: Point[] = [];
   const response = await axios.post(
     "http://limnyn.asuscomm.com:19980/tmap-pedestrian/",
     {
@@ -31,3 +33,23 @@ export const directionApi = async (
 
   return result;
 };
+
+export async function directionApiWithWayPoints(
+  waypoints: Point[],
+  callback: (polyline: Point[]) => void
+) {
+  const result: Point[][] = [];
+  const promises: Promise<Point[]>[] = [];
+
+  for (let i = 1; i < waypoints.length; i++) {
+    const promise = directionApi(waypoints[i - 1], waypoints[i]);
+    promises.push(promise);
+    promise.then((polyline) => {
+      callback(polyline);
+      result.push(polyline);
+    });
+  }
+
+  await Promise.all(promises);
+  return result;
+}

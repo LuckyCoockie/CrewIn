@@ -8,7 +8,7 @@ import {
 } from "../../util/maps/naver_map/context";
 
 import { ToggleSwitch } from "flowbite-react";
-import { directionApi } from "../../util/maps/tmap/api";
+import { directionApiWithWayPoints } from "../../util/maps/tmap/api";
 
 type OwnProps = { style?: React.CSSProperties };
 
@@ -18,21 +18,18 @@ const MapToggleButton: React.FC<OwnProps> = ({ style }: OwnProps) => {
   const { markers } = useNaverMapState();
   const dispatch = useNaverMapDispatch();
 
+  const markerToPoint = (marker: naver.maps.Marker) => {
+    const position = marker.getPosition();
+    return { latitude: position.y, longitude: position.x };
+  };
+
   useEffect(() => {
     if (isDetail) {
       dispatch(clearPolyline());
-      for (let i = 1; i < markers.length; i++) {
-        directionApi(
-          {
-            latitude: markers[i - 1].getPosition().y,
-            longitude: markers[i - 1].getPosition().x,
-          },
-          {
-            latitude: markers[i].getPosition().y,
-            longitude: markers[i].getPosition().x,
-          }
-        ).then((polyline) => dispatch(addPolyline(polyline)));
-      }
+      const waypoints = markers.map(markerToPoint);
+      directionApiWithWayPoints(waypoints, (polyline) =>
+        dispatch(addPolyline(polyline))
+      );
     } else {
       dispatch(updateMarkerList());
     }
