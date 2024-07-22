@@ -43,6 +43,10 @@
   width: 100%;
 }
 
+button {
+  background-color: transparent !important;
+}
+
 /* 폰트 굵기 예시
 
 400(기본값) : Normal
@@ -63,7 +67,7 @@ body {
 /* 버튼 컬러 */
 .button-color {
   color: white;
-  background-color: hsla(229, 20%, 21%, 1);
+  background-color: hsla(229, 20%, 21%, 1) !important;
   border-radius: 8px;
   padding-top: 8px;
   padding-bottom: 8px;
