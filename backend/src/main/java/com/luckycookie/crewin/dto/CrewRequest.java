@@ -17,7 +17,6 @@ public class CrewRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class CreateCrewRequest{
-        private Long captainId; // 작성자 ID
 
         private String name; // 크루명
         private String slogan; // 슬로건
