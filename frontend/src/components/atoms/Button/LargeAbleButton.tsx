@@ -6,7 +6,7 @@ type Text = {
 
 const LargeAbleButton: React.FC<Text> = (props) => {
   return (
-    <button className="w-full bg-[#2b2f40e6] py-4 px-8 text-center rounded-lg disable text-white font-bold">
+    <button className="w-full bg-[#2B2F40] py-4 px-8 text-center rounded-lg disable text-white font-bold">
       {props.text}
     </button>
   );

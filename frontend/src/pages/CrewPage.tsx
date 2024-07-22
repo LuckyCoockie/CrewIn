@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import { Outlet } from "react-router-dom";
 
-const CrewPage:React.FC = () => {
+const CrewPage: React.FC = () => {
   return (
-    <h1>CrewPage</h1>
-  )
-}
+    <>
+      <Outlet />
+    </>
+  );
+};
 
-export default CrewPage
+export default CrewPage;
