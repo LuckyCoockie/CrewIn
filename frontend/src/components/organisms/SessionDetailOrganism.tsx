@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import poster from "../../assets/images/poster.png";
 import poster2 from "../../assets/images/crewinbanner.png";
 import { Carousel } from "react-responsive-carousel";
@@ -6,7 +6,13 @@ import OneToOneImageMolecule from "../molecules/OneToOneImageMolecule";
 import DetailInfoMolecule from "../molecules/DetailInfoMolecule";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 
-const SessionDetailOrganism: React.FC = () => {
+type SessionDetailOrganismProps = {
+  setName: (name: string) => void;
+};
+
+const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
+  setName,
+}) => {
   const Infos = {
     posters: [poster, poster2],
     name: "2024 CAUON 정규런",
@@ -19,6 +25,10 @@ const SessionDetailOrganism: React.FC = () => {
     content:
       "우천 시 취소될 수 있습니다. 정규런 이후 뒷풀이가 있을 예정입니다.",
   };
+
+  useEffect(() => {
+    setName(Infos.name);
+  }, [Infos.name, setName]);
   return (
     <>
       <Carousel

@@ -1,12 +1,12 @@
 import React from "react";
 import JoinOrganism from "../organisms/JoinOrganism";
-import HeaderOrganism from "../organisms/HeaderOrganism";
+import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 
 const JoinTemplate: React.FC = () => {
   return (
     <>
       <header className="text-center">
-        <HeaderOrganism text="회원가입" />
+        <BackHeaderMediumOrganism text="회원가입" />
       </header>
       <main className="flex items-center justify-center pt-4">
         <JoinOrganism />
