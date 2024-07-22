@@ -7,7 +7,7 @@ type TitleData = {
 const SmallTitle: React.FC<TitleData> = (props) => {
   return (
     <>
-      <p className="font-black">{props.data}</p>
+      <p className="font-black tracking-tighter">{props.data}</p>
     </>
   );
 };
