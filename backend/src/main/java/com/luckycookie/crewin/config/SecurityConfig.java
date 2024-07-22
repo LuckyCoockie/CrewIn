@@ -8,6 +8,7 @@ import com.luckycookie.crewin.security.util.TokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -42,8 +43,14 @@ public class SecurityConfig {
                         .accessDeniedHandler(jwtAccessDeniedHandler))
                 .addFilterBefore(new JwtFilter(tokenUtil, memberRepository), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests((a) -> {
-                    a.requestMatchers("/login").permitAll()
-                            .requestMatchers("/signup/**").permitAll()
+                    a.requestMatchers("/member/signup/**").permitAll()
+                            .requestMatchers("/member/check-email").permitAll()
+                            .requestMatchers("/member/check-nickname").permitAll()
+                            .requestMatchers("/member/email").permitAll()
+                            .requestMatchers("/member/login").permitAll()
+                            .requestMatchers("/member/reissue").permitAll()
+                            .requestMatchers("/member/id").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/member/password").permitAll() // 임시 비밀번호 발급만 접근 허용
                             .anyRequest().authenticated();
                 });
 
