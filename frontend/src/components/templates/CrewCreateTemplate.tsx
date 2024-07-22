@@ -5,10 +5,10 @@ import HeaderOrganism from "../organisms/HeaderOrganism";
 const CrewCreateTemplate: React.FC = () => {
   return (
     <>
-      <header className="pb-4">
+      <header className="text-center">
         <HeaderOrganism text="크루 생성" />
       </header>
-      <main className="flex items-center justify-center pb-6">
+      <main className="flex items-center justify-center pt-4 pb-20">
         <CrewCreateOrganism />
       </main>
     </>

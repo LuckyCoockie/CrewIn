@@ -8,7 +8,7 @@ type Info = {
 const InputLabelCompoent: React.FC<Info> = (props) => {
   return (
     <>
-      <label htmlFor={props.id} className="mb-2 block min-h-[1.5rem] font-black">
+      <label htmlFor={props.id} className="mb-2 block min-h-[1.5rem] tracking-tighter">
         {props.title}
       </label>
     </>
