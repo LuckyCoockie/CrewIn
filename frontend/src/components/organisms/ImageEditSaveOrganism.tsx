@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import html2canvas from 'html2canvas';
-import { saveAs } from 'file-saver';
-import InputMask from 'react-input-mask';
+import html2canvas from "html2canvas";
+import { saveAs } from "file-saver";
+import InputMask from "react-input-mask";
 
 import alarmWhite from "../../assets/images/alarm-clockwhite.png";
 import alarmBlack from "../../assets/images/alarm-clockblack.png";
@@ -22,7 +22,7 @@ const ImageEditSave: React.FC<EditorStepProps> = ({
   crewName,
   visibility,
   content,
-  onFinish
+  onFinish,
 }) => {
   const [overlayTotalDistance, setOverlayTotalDistance] = useState("00.00");
   const [overlayTotalTime, setOverlayTotalTime] = useState("00:00:00");
@@ -38,7 +38,10 @@ const ImageEditSave: React.FC<EditorStepProps> = ({
   const captureRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isValidTime(overlayTotalTime) && isValidDistance(overlayTotalDistance)) {
+    if (
+      isValidTime(overlayTotalTime) &&
+      isValidDistance(overlayTotalDistance)
+    ) {
       const timeInSeconds = calculateTimeInSeconds(overlayTotalTime);
       const distanceInKm = parseFloat(overlayTotalDistance);
 
@@ -66,11 +69,13 @@ const ImageEditSave: React.FC<EditorStepProps> = ({
   };
 
   const calculateTimeInSeconds = (time: string): number => {
-    const [hours, minutes, seconds] = time.split(':').map(parseFloat);
+    const [hours, minutes, seconds] = time.split(":").map(parseFloat);
     return hours * 3600 + minutes * 60 + seconds;
   };
 
-  const handleTopLeftImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTopLeftImageUpload = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -83,27 +88,42 @@ const ImageEditSave: React.FC<EditorStepProps> = ({
 
   const handleFinish = async () => {
     if (captureRef.current) {
-      const canvas = await html2canvas(captureRef.current, { scale: 4, useCORS: true, backgroundColor: null });
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const finalImageUrl = URL.createObjectURL(blob);
-          onFinish(finalImageUrl);
-        }
-      }, 'image/jpg', 1);
+      const canvas = await html2canvas(captureRef.current, {
+        scale: 4,
+        useCORS: true,
+        backgroundColor: null,
+      });
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            const finalImageUrl = URL.createObjectURL(blob);
+            onFinish(finalImageUrl);
+          }
+        },
+        "image/jpg",
+        1
+      );
     }
   };
 
   const handleSave = async () => {
     if (captureRef.current) {
-      const canvas = await html2canvas(captureRef.current, { scale: 4, useCORS: true, backgroundColor: null });
-      canvas.toBlob((blob) => {
-        if (blob) {
-          saveAs(blob, 'edited_image.jpg');
-        }
-      }, 'image/jpg', 1);
+      const canvas = await html2canvas(captureRef.current, {
+        scale: 4,
+        useCORS: true,
+        backgroundColor: null,
+      });
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            saveAs(blob, "edited_image.jpg");
+          }
+        },
+        "image/jpg",
+        1
+      );
     }
   };
-
 
   return (
     <div className="p-6">
@@ -112,7 +132,12 @@ const ImageEditSave: React.FC<EditorStepProps> = ({
           id="capture"
           ref={captureRef}
           className="relative mt-1"
-          style={{ maxWidth: "360px", maxHeight: "360px", border: "none", boxSizing: "border-box" }}
+          style={{
+            maxWidth: "360px",
+            maxHeight: "360px",
+            border: "none",
+            boxSizing: "border-box",
+          }}
         >
           {images.map((image, index) => (
             <div key={index}>
@@ -133,26 +158,60 @@ const ImageEditSave: React.FC<EditorStepProps> = ({
             {showTimeInput && (
               <div className="flex items-center space-x-2">
                 {showColorInput ? (
-                  <img src={alarmWhite} alt="Alarm White" className="info-icon w-6 h-6" />
+                  <img
+                    src={alarmWhite}
+                    alt="Alarm White"
+                    className="info-icon w-6 h-6"
+                  />
                 ) : (
-                  <img src={alarmBlack} alt="Alarm Black" className="info-icon w-6 h-6" />
+                  <img
+                    src={alarmBlack}
+                    alt="Alarm Black"
+                    className="info-icon w-6 h-6"
+                  />
                 )}
-                <p className={`info-text ${showColorInput ? "text-white" : "text-black"} m-0`}>{overlayTotalTime}</p>
+                <p
+                  className={`info-text ${
+                    showColorInput ? "text-white" : "text-black"
+                  } m-0`}
+                >
+                  {overlayTotalTime}
+                </p>
               </div>
             )}
             {showDistanceInput && (
               <div className="flex items-center space-x-2">
-                <p className={`info-text ${showColorInput ? "text-white" : "text-black"} m-0`}>{overlayTotalDistance}KM</p>
+                <p
+                  className={`info-text ${
+                    showColorInput ? "text-white" : "text-black"
+                  } m-0`}
+                >
+                  {overlayTotalDistance}KM
+                </p>
               </div>
             )}
             {showPaceInput && (
               <div className="flex items-center space-x-2">
                 {showColorInput ? (
-                  <img src={meterWhite} alt="Meter White" className="info-icon w-6 h-6" />
+                  <img
+                    src={meterWhite}
+                    alt="Meter White"
+                    className="info-icon w-6 h-6"
+                  />
                 ) : (
-                  <img src={meterBlack} alt="Meter Black" className="info-icon w-6 h-6" />
+                  <img
+                    src={meterBlack}
+                    alt="Meter Black"
+                    className="info-icon w-6 h-6"
+                  />
                 )}
-                <p className={`info-text ${showColorInput ? "text-white" : "text-black"} m-0`}>{overlayPace}</p>
+                <p
+                  className={`info-text ${
+                    showColorInput ? "text-white" : "text-black"
+                  } m-0`}
+                >
+                  {overlayPace}
+                </p>
               </div>
             )}
           </div>
@@ -160,7 +219,9 @@ const ImageEditSave: React.FC<EditorStepProps> = ({
       </div>
 
       <div className="mb-4 flex justify-between items-center">
-        <label className="block text-md font-bold text-gray-700 mb-1">크루 로고</label>
+        <label className="block text-md font-bold text-gray-700 mb-1">
+          크루 로고
+        </label>
         <div className="flex items-center space-x-4">
           <input
             type="file"
@@ -169,19 +230,25 @@ const ImageEditSave: React.FC<EditorStepProps> = ({
             className="border border-gray-300 rounded px-2 py-1 text-sm cursor-pointer w-24 sm:w-32"
           />
           <div
-            className={`relative rounded-full w-12 h-6 transition-colors duration-200 ease-in-out ${showLogoInput ? 'bg-[#2b2f40e6]' : 'bg-[#2b2f401a]'}`}
+            className={`relative rounded-full w-12 h-6 transition-colors duration-200 ease-in-out ${
+              showLogoInput ? "bg-[#2b2f40e6]" : "bg-[#2b2f401a]"
+            }`}
             onClick={() => setShowLogoInput(!showLogoInput)}
             style={{ cursor: "pointer" }}
           >
             <div
-              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${showLogoInput ? 'translate-x-full bg-white' : 'bg-gray-500'}`}
+              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${
+                showLogoInput ? "translate-x-full bg-white" : "bg-gray-500"
+              }`}
             />
           </div>
         </div>
       </div>
 
       <div className="mb-4 flex justify-between items-center">
-        <label className="block text-md font-bold text-gray-700 mb-1">소요 시간</label>
+        <label className="block text-md font-bold text-gray-700 mb-1">
+          소요 시간
+        </label>
         <div className="flex items-center space-x-4">
           {showTimeInput && (
             <InputMask
@@ -194,19 +261,25 @@ const ImageEditSave: React.FC<EditorStepProps> = ({
             />
           )}
           <div
-            className={`relative rounded-full w-12 h-6 transition-colors duration-200 ease-in-out ${showTimeInput ? 'bg-[#2b2f40e6]' : 'bg-[#2b2f401a]'}`}
+            className={`relative rounded-full w-12 h-6 transition-colors duration-200 ease-in-out ${
+              showTimeInput ? "bg-[#2b2f40e6]" : "bg-[#2b2f401a]"
+            }`}
             onClick={() => setShowTimeInput(!showTimeInput)}
             style={{ cursor: "pointer" }}
           >
             <div
-              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${showTimeInput ? 'translate-x-full bg-white' : 'bg-gray-500'}`}
+              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${
+                showTimeInput ? "translate-x-full bg-white" : "bg-gray-500"
+              }`}
             />
           </div>
         </div>
       </div>
 
       <div className="mb-4 flex justify-between items-center">
-        <label className="block text-md font-bold text-gray-700 mb-1">러닝 거리</label>
+        <label className="block text-md font-bold text-gray-700 mb-1">
+          러닝 거리
+        </label>
         <div className="flex items-center space-x-4">
           {showDistanceInput && (
             <InputMask
@@ -219,19 +292,25 @@ const ImageEditSave: React.FC<EditorStepProps> = ({
             />
           )}
           <div
-            className={`relative rounded-full w-12 h-6 transition-colors duration-200 ease-in-out ${showDistanceInput ? 'bg-[#2b2f40e6]' : 'bg-[#2b2f401a]'}`}
+            className={`relative rounded-full w-12 h-6 transition-colors duration-200 ease-in-out ${
+              showDistanceInput ? "bg-[#2b2f40e6]" : "bg-[#2b2f401a]"
+            }`}
             onClick={() => setShowDistanceInput(!showDistanceInput)}
             style={{ cursor: "pointer" }}
           >
             <div
-              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${showDistanceInput ? 'translate-x-full bg-white' : 'bg-gray-500'}`}
+              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${
+                showDistanceInput ? "translate-x-full bg-white" : "bg-gray-500"
+              }`}
             />
           </div>
         </div>
       </div>
 
       <div className="mb-4 flex justify-between items-center">
-        <label className="block text-md font-bold text-gray-700 mb-1">페이스</label>
+        <label className="block text-md font-bold text-gray-700 mb-1">
+          페이스
+        </label>
         <div className="flex items-center space-x-4">
           {showPaceInput && (
             <InputMask
@@ -244,33 +323,41 @@ const ImageEditSave: React.FC<EditorStepProps> = ({
             />
           )}
           <div
-            className={`relative rounded-full w-12 h-6 transition-colors duration-200 ease-in-out ${showPaceInput ? 'bg-[#2b2f40e6]' : 'bg-[#2b2f401a]'}`}
+            className={`relative rounded-full w-12 h-6 transition-colors duration-200 ease-in-out ${
+              showPaceInput ? "bg-[#2b2f40e6]" : "bg-[#2b2f401a]"
+            }`}
             onClick={() => setShowPaceInput(!showPaceInput)}
             style={{ cursor: "pointer" }}
           >
             <div
-              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${showPaceInput ? 'translate-x-full bg-white' : 'bg-gray-500'}`}
+              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${
+                showPaceInput ? "translate-x-full bg-white" : "bg-gray-500"
+              }`}
             />
           </div>
         </div>
       </div>
 
       <div className="mb-4 flex justify-between items-center">
-        <label className="block text-md font-bold text-gray-700 mb-1 mt-2">색상</label>
+        <label className="block text-md font-bold text-gray-700 mb-1 mt-2">
+          색상
+        </label>
         <div className="flex items-center space-x-4">
           <div
-            className={`relative rounded-full w-12 h-6 mt-2 transition-colors duration-200 ease-in-out ${showColorInput ? 'bg-[#2b2f40e6]' : 'bg-[#2b2f401a]'}`}
+            className={`relative rounded-full w-12 h-6 mt-2 transition-colors duration-200 ease-in-out ${
+              showColorInput ? "bg-[#2b2f40e6]" : "bg-[#2b2f401a]"
+            }`}
             onClick={() => setShowColorInput(!showColorInput)}
             style={{ cursor: "pointer" }}
           >
             <div
-              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${showColorInput ? 'translate-x-full bg-white' : 'bg-gray-500'}`}
+              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${
+                showColorInput ? "translate-x-full bg-white" : "bg-gray-500"
+              }`}
             />
           </div>
         </div>
       </div>
-
-
 
       <div className="mt-6 flex justify-end gap-2">
         <button
@@ -287,8 +374,7 @@ const ImageEditSave: React.FC<EditorStepProps> = ({
           저장
         </button>
       </div>
-    </div >
-
+    </div>
   );
 };
 
