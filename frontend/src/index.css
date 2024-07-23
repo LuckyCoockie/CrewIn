@@ -39,6 +39,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+#root {
+  width: 100%;
+}
+
 /* 폰트 굵기 예시
 
 400(기본값) : Normal
@@ -51,39 +55,49 @@ body {
   min-width: 320px;
   min-height: 100vh;
   font-family: "Roboto", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* 버튼 컬러 */
 .button-color {
   color: white;
-  background-color: hsla(229, 20%, 21%, 1);
+  background-color: #2b2f40 !important;
+  border-radius: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-top: 1px solid hsla(229, 20%, 21%, 1);
+  border-bottom: 1px solid hsla(229, 20%, 21%, 1);
+  font-weight: bold;
 }
 
 /* 라벨 전역 설정 */
 label {
-  font-weight: 600;
+  font-weight: 900;
 }
 
 /* main 설정 */
 main {
   width: 100%;
   padding: 0px 16px;
+  margin-top: 8px;
 }
 
 /* header 설정 */
 header {
+  font-weight: 900;
   width: 100%;
-  padding: 8px 16px;
+  padding: 12px 16px;
 }
 
 /* Data input css */
 .data-input {
   width: 100%;
   border-radius: 8px;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding-top: 8px;
+  padding-bottom: 8px;
   padding-left: 14px;
-  outline: none;
 }
 
 .data-input:focus {
@@ -93,11 +107,10 @@ header {
 .large-data-input {
   width: 100%;
   border-radius: 8px;
-  padding-top: 12px;
+  padding-top: 8px;
   padding-bottom: 50px;
   padding-left: 14px;
   padding-right: 14px;
-  outline: none;
 }
 
 .large-data-input:focus {
@@ -109,8 +122,8 @@ header {
   display: block;
   width: 100%;
   border-radius: 8px;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding-top: 8px;
+  padding-bottom: 8px;
   padding-left: 14px;
   border: 1px solid #d1d5db;
   /* Tailwind's border-gray-300 */
@@ -139,7 +152,7 @@ header {
   }
 
   button {
-    background-color: #f9f9f9;
+    background-color: #ffffff;
   }
 }
 

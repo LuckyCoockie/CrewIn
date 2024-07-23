@@ -45,6 +45,7 @@ const schema = yup.object({
   sessionpaceminutes: yup.number().required("시간을 설정해주세요."),
   sessionpaceseconds: yup.number().required("시간을 설정해주세요."),
   sessioninfo: yup.string().max(1000).required("상세내용을 작성해주세요."),
+  sessioncourse: yup.string().nullable(),
 });
 type FormValues = {
   sessiontype: string;
@@ -57,6 +58,7 @@ type FormValues = {
   sessionpaceminutes: number;
   sessionpaceseconds: number;
   sessioninfo: string;
+  // sessioncourse: string | null;
 };
 
 const SessionCreateOrganism: React.FC = () => {
@@ -117,6 +119,7 @@ const SessionCreateOrganism: React.FC = () => {
               <InputRadioTypeMolecule
                 id="sessiontype"
                 title="세션 종류"
+                default="번개런"
                 {...field}
                 value={["번개런", "정규런", "오픈런"]}
                 error={errors.sessiontype?.message}
@@ -236,6 +239,19 @@ const SessionCreateOrganism: React.FC = () => {
               />
             )}
           />
+          {/* <Controller
+          name="sessioncourse"
+          control={control}
+          render={({field}) => (<InputDropdonwTypeMolecule
+          id="sessioncourse"
+          title="코스"
+          text="선택"
+          redux에서 개인 지도 불러오는 부분
+          options={
+          }
+          {...field}
+          />)}
+          /> */}
           {/* 상세내용 */}
           <Controller
             name="sessioninfo"

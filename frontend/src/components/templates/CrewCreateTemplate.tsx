@@ -1,14 +1,14 @@
 import React from "react";
 import CrewCreateOrganism from "../organisms/CrewCreateOrganism";
-import HeaderOrganism from "../organisms/HeaderOrganism";
+import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 
 const CrewCreateTemplate: React.FC = () => {
   return (
     <>
-      <header className="pb-4">
-        <HeaderOrganism text="크루 생성" />
+      <header className="text-center">
+        <BackHeaderMediumOrganism text="크루 생성" />
       </header>
-      <main className="flex items-center justify-center pb-6">
+      <main className="flex items-center justify-center pt-4 pb-20">
         <CrewCreateOrganism />
       </main>
     </>

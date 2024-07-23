@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import crewinbanner from "../../../assets/images/crewinbanner.png"
+import crewinbanner from "../../../assets/images/crewinbanner.png";
 
 type InputImage = {
   id: string;
@@ -29,7 +29,7 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
     return (
       <>
         <input
-          className="image-file-input mb-3"
+          className="image-file-input mb-3 focus:ring-0 focus:outline-none"
           id={props.id}
           type="file"
           name={props.name}
