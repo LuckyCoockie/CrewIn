@@ -36,8 +36,8 @@ public class SecurityConfig {
     private final MemberRepository memberRepository;
     private final TokenUtil tokenUtil;
 
-    @Value("${spring.graphql.cors.allowed-origins}")
-    private String[] corsOrigins;
+    @Value("${frontend.server.url}")
+    private String frontURL;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -69,5 +69,18 @@ public class SecurityConfig {
                 });
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", frontURL));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
