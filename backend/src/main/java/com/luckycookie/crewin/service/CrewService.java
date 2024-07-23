@@ -1,9 +1,11 @@
 package com.luckycookie.crewin.service;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.Position;
 import com.luckycookie.crewin.domain.enums.PostType;
 import com.luckycookie.crewin.dto.CrewRequest;
+import com.luckycookie.crewin.dto.CrewResponse;
 import com.luckycookie.crewin.dto.CrewResponse.CrewItem;
 import com.luckycookie.crewin.dto.CrewResponse.CrewItemResponse;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
@@ -82,8 +84,10 @@ public class CrewService {
         boolean isJoined = memberCrewRepository.existsByMemberAndIsJoinedTrue(member);
 
         if (isJoined) {
+            // 내가 가입되어 있는 크루
             crewsPage = crewRepository.findCrewsByMemberId(member.getId(), pageable);
         } else {
+            // 모든 크루
             crewsPage = crewRepository.findAllByCrew(pageable);
         }
 
@@ -148,6 +152,66 @@ public class CrewService {
         }
 
     }
+
+    // 크루 정보 조회
+    public CrewResponse.CrewInfoItem getCrewInfo(Long crewId) {
+
+        // 크루 정보 가져오기
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(NotFoundCrewException::new);
+
+        // 크루 인원 수 가져오기
+        int crewCount = crewRepository.countMembersByCrewId(crewId);
+
+        // 크루 정보
+        return CrewResponse.CrewInfoItem
+                .builder()
+                .id(crewId)
+                .name(crew.getCrewName())
+                .area(crew.getArea())
+                .slogan(crew.getSlogan())
+                .crewCount(crewCount)
+                .captainName(crew.getCaptain().getName())
+                .imageUrl(crew.getMainLogo())
+                .infoText(crew.getIntroduction())
+                .build();
+
+    }
+
+    // 공지사항 조회
+//    public CrewResponse.CrewNoticeItem getCrewNoticeList(int pageNo, Long crewId, CustomUser customUser) {
+//        Pageable pageable = PageRequest.of(pageNo, 10); // pageNo 페이지 번호, 10 : 페이지 크기
+//
+//        Page<Post> noticeListPage;
+//        List<Post> noticeList;
+//        int lastPageNo;
+//
+//        // 크루 정보 가져오기
+//        Crew crew = crewRepository.findById(crewId)
+//                .orElseThrow(NotFoundCrewException::new);
+//
+//        // 게시글 정보 가져오기
+//        Post post = postRepository.findById()
+//
+//        // 인원 정보 가져오기
+//        Member member = memberRepository.findByEmail(customUser.getEmail())
+//                .orElseThrow(NotFoundMemberException::new);
+//
+//        // 해당 멤버의 position
+//        Position position = memberCrewRepository.findPositionByMember(member).orElseThrow(CrewPositionMismatchException::new);
+//
+//        noticeList = noticeListPage.getContent();
+//        lastPageNo = Math.max(noticeListPage.getTotalPages() - 1, 0);
+//
+//        return CrewResponse.CrewNoticeItem
+//                .builder()
+//                .position(position)
+//                .title()
+//                .createdAt()
+//                .noticeId()
+//                .build();
+//
+//    }
 
 
 }
