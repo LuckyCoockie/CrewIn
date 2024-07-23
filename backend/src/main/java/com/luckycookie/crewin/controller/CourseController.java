@@ -43,4 +43,6 @@ public class CourseController {
         courseService.deleteCourse(courseId, customUser);
         return ResponseEntity.noContent().build();
     }
+
+
 }
