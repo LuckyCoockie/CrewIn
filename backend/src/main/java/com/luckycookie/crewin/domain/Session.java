@@ -11,6 +11,8 @@ import org.hibernate.annotations.DynamicInsert;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -37,6 +39,12 @@ public class Session {
     @JoinColumn(name = "crew_id")
     private Crew crew;
 
+    @Builder.Default
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "session")
+    private List<SessionPoster> posterImages = new ArrayList<>();
+
+
+    @Enumerated(EnumType.STRING)
     private SessionType sessionType;
 
     private String name;
