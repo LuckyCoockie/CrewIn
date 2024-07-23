@@ -20,7 +20,6 @@ const PostMainPage: React.FC = () => {
   const [likes, setLikes] = useState<number>(0);
   const [hasLiked, setHasLiked] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [isFocused, setIsFocused] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
