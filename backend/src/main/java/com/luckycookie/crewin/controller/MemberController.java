@@ -1,10 +1,12 @@
 package com.luckycookie.crewin.controller;
 
 import com.luckycookie.crewin.domain.Token;
+import com.luckycookie.crewin.dto.MemberRequest.EmailRequest;
 import com.luckycookie.crewin.dto.MemberRequest.SignInRequest;
 import com.luckycookie.crewin.dto.MemberRequest.SignUpRequest;
 import com.luckycookie.crewin.dto.TokenResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
+import com.luckycookie.crewin.service.MailService;
 import com.luckycookie.crewin.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,7 @@ import java.time.Duration;
 public class MemberController {
 
     private final MemberService memberService;
+    private final MailService mailService;
 
     @PostMapping("/login")
     public ResponseEntity<BaseResponse<TokenResponse>> signIn(@RequestBody SignInRequest signInRequest) {
@@ -49,5 +52,11 @@ public class MemberController {
     public ResponseEntity<BaseResponse<Void>> checkNickname(String nickname) {
         memberService.checkNickname(nickname);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "사용 가능한 닉네임입니다."));
+    }
+
+    @PostMapping("/signup/email")
+    public ResponseEntity<BaseResponse<Void>> sendMail(@RequestBody EmailRequest emailRequest) {
+        mailService.sendMail(emailRequest.getEmail());
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "이메일 전송이 완료되었습니다."));
     }
 }

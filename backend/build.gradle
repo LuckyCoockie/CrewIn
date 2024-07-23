@@ -52,6 +52,12 @@ dependencies {
 
 	//JSONObject
 	implementation 'org.json:json:20240303'
+
+	// Mail
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	// redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {

@@ -28,4 +28,10 @@ public class MemberRequest {
         private String email;
         private String password;
     }
+
+    @Getter
+    @NoArgsConstructor
+    public static class EmailRequest {
+        private String email;
+    }
 }
