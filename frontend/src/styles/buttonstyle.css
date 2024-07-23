@@ -1,0 +1,17 @@
+/* 기본 버튼 스타일 */
+.button {
+  transition: transform 0.1s ease, background-color 0.1s ease;
+}
+
+/* 버튼 클릭(터치) 시 스케일 효과와 색상 변화 */
+.button:active,
+.button:focus {
+  background-color: #eeeeee; /* 원하는 배경색으로 변경 */
+}
+
+/* 모바일 터치 반응 스타일 */
+@media (hover: none) {
+  .button:active {
+    background-color: #eeeeee;
+  }
+}

@@ -2,9 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  img {
+    @apply inline-block;
+  }
+}
+
+@media (max-width: 740px) {
+  .logo {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .info-text {
+    font-size: 0.8rem;
+  }
+
+  .info-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+}
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Roboto", sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -18,45 +39,106 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+#root {
+  width: 100%;
 }
-a:hover {
-  color: #535bf2;
-}
+
+/* 폰트 굵기 예시
+
+400(기본값) : Normal
+600 : Semi Bold
+700 : Bold
+800 : Extra Bold */
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  font-family: "Roboto", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
+/* 버튼 컬러 */
+.button-color {
+  color: white;
+  background-color: #2b2f40 !important;
   border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-top: 1px solid hsla(229, 20%, 21%, 1);
+  border-bottom: 1px solid hsla(229, 20%, 21%, 1);
+  font-weight: bold;
+}
+
+/* 라벨 전역 설정 */
+label {
+  font-weight: 900;
+}
+
+/* main 설정 */
+main {
+  width: 100%;
+  padding: 0px 16px;
+  margin-top: 8px;
+}
+
+/* header 설정 */
+header {
+  font-weight: 900;
+  width: 100%;
+  padding: 12px 16px;
+}
+
+/* Data input css */
+.data-input {
+  width: 100%;
+  border-radius: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 14px;
+}
+
+.data-input:focus {
+  border-color: hsla(229, 20%, 21%, 0.902);
+}
+
+.large-data-input {
+  width: 100%;
+  border-radius: 8px;
+  padding-top: 8px;
+  padding-bottom: 50px;
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+.large-data-input:focus {
+  border-color: hsla(229, 20%, 21%, 0.9);
+}
+
+/* Image file input css */
+.image-file-input {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 14px;
+  border: 1px solid #d1d5db;
+  /* Tailwind's border-gray-300 */
+  border: 1px solid #d1d5db;
+  /* Tailwind's border-gray-300 */
   cursor: pointer;
-  transition: border-color 0.25s;
 }
-button:hover {
-  border-color: #646cff;
+
+.image-file-input::file-selector-button {
+  display: none;
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+
+/* text gray */
+.text-gray-color {
+  color: hsla(229, 20%, 21%, 0.4);
 }
 
 @media (prefers-color-scheme: light) {
@@ -64,10 +146,17 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
-    background-color: #f9f9f9;
+    background-color: #ffffff;
   }
+}
+
+.no-background {
+  background-color: transparent !important;
+  border-color: transparent !important;
 }
