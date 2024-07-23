@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Carousel } from "react-responsive-carousel";
-import Cropper from "react-cropper";
+import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import Dropzone from "react-dropzone";
 import { PlusOutlined } from "@ant-design/icons";
@@ -10,7 +10,7 @@ import ImageEditSave from "./ImageEditSaveOrganism";
 import editButton from "../../assets/images/editbutton.png";
 import cropButton from "../../assets/images/cropbutton.png";
 import checkButton from "../../assets/images/checkbutton.png";
-import InputTextAreaTypeMolecule from "../molecules/InputTextAreaTypeMolecule";
+import InputTextAreaNoLimitTypeMolecule from "../molecules/InputTextAreaNoLimitTypeMolecule";
 import InputRadioTypeMolecule from "../molecules/InputRadioTypeMolecule";
 import InputDropdonwTypeMolecule from "../molecules/InputDropdonwTypeMolecule";
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
@@ -169,8 +169,8 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
                       style={{ height: 360, width: 360 }}
                       aspectRatio={cropAspectRatio}
                       guides={true}
-                      ref={(cropper) => {
-                        cropperRefs.current[index] = cropper ? cropper : null;
+                      ref={(ref: ReactCropperElement | null) => {
+                        cropperRefs.current[index] = ref;
                       }}
                       viewMode={1}
                       autoCropArea={1}
@@ -247,7 +247,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
 
       <div className="w-full">
         <div className="mb-6">
-          <InputTextAreaTypeMolecule
+          <InputTextAreaNoLimitTypeMolecule
             id="content"
             title="내용"
             name="content"
