@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Carousel } from "react-responsive-carousel";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
@@ -25,6 +26,7 @@ interface ImageCropProps {
 }
 
 const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
+  const navigate = useNavigate();
   const [imagePaths, setImagePaths] = useState<string[]>([]);
   const [cropAspectRatio] = useState<number>(1);
   const [croppedImages, setCroppedImages] = useState<string[]>([]);
@@ -108,7 +110,9 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
   };
 
   const handlePost = () => {
+    const postData = { croppedImages, crewName, visibility, content };
     onComplete(croppedImages, crewName, visibility, content);
+    navigate("/postdetail", { state: postData });
   };
 
   return (
