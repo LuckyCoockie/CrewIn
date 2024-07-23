@@ -53,15 +53,19 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    @Transactional(readOnly = true)
     public void checkEmail(String email) {
         if (memberRepository.existsByEmail(email)) {
             throw new DuplicateEmailException();
         }
     }
 
+    @Transactional(readOnly = true)
     public void checkNickname(String nickname) {
         if (memberRepository.existsByNickname(nickname)) {
             throw new DuplicateNicknameException();
         }
     }
+
+
 }

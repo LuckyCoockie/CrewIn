@@ -31,6 +31,7 @@ public class S3Service {
     private String folder;
 
     // 발급
+    @Transactional(readOnly = true)
     public ImageResponse.PresignedUrlRes issuePresignedUrl(PresignedUrlReq presignedUrlReq){
 
         String imageName = folder + UUID.randomUUID() + "." + presignedUrlReq.getImageExtension().getUploadExtension();

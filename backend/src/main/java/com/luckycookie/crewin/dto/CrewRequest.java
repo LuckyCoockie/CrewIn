@@ -48,7 +48,6 @@ public class CrewRequest {
         private String title; // 공지글 제목
         private String content; // 공지글 내용
         private List<String> noticeImages; // 공지 이미지 List
-
     }
 
 }
