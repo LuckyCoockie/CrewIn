@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Carousel } from "react-responsive-carousel";
-import Cropper from "react-cropper";
+import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import Dropzone from "react-dropzone";
 import { PlusOutlined } from "@ant-design/icons";
@@ -10,10 +10,10 @@ import ImageEditSave from "./ImageEditSaveOrganism";
 import editButton from "../../assets/images/editbutton.png";
 import cropButton from "../../assets/images/cropbutton.png";
 import checkButton from "../../assets/images/checkbutton.png";
-import InputTextAreaTypeMolecule from "../molecules/Input/InputTextAreaTypeMolecule";
-import HeaderOrganism from "./HeaderOrganism";
+import InputTextAreaNoLimitTypeMolecule from "../molecules/Input/InputTextAreaNoLimitTypeMolecule";
 import InputRadioTypeMolecule from "../molecules/Input/InputRadioTypeMolecule";
 import InputDropdonwTypeMolecule from "../molecules/Input/InputDropdonwTypeMolecule";
+import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import { crewNames } from "../../../src/crewname";
 
 interface ImageCropProps {
@@ -110,15 +110,20 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
   };
 
   const handlePost = () => {
+    if (!isCropped) {
+      alert("1:1 비율 이미지만 업로드 가능합니다.");
+      return;
+    }
     const postData = { croppedImages, crewName, visibility, content };
+    localStorage.setItem("postData", JSON.stringify(postData));
     onComplete(croppedImages, crewName, visibility, content);
-    navigate("/postdetail", { state: postData });
+    navigate("/home", { state: postData });
   };
 
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="self-start">
-        <HeaderOrganism text="게시글 작성" />
+        <BackHeaderMediumOrganism text="게시글 작성" />
       </div>
       {imagePaths.length === 0 ? (
         <Dropzone onDrop={handleDrop}>
@@ -164,8 +169,8 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
                       style={{ height: 360, width: 360 }}
                       aspectRatio={cropAspectRatio}
                       guides={true}
-                      ref={(cropper) => {
-                        cropperRefs.current[index] = cropper ? cropper : null;
+                      ref={(ref: ReactCropperElement | null) => {
+                        cropperRefs.current[index] = ref;
                       }}
                       viewMode={1}
                       autoCropArea={1}
@@ -181,7 +186,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
                       </div>
                       <button
                         onClick={() => setCurrentEditIndex(index)}
-                        className="absolute bottom-7 right-1 z-1 bg-transparent p-1"
+                        className="absolute bottom-5 right-3 z-1 bg-transparent p-1"
                       >
                         <img
                           src={editButton}
@@ -193,7 +198,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
                   )}
                   <button
                     onClick={handleCropAll}
-                    className="absolute bottom-16 right-1 bg-transparent z-1 p-1"
+                    className="absolute bottom-14 right-3 bg-transparent z-1 p-1"
                   >
                     {isCropped ? (
                       <img
@@ -242,7 +247,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
 
       <div className="w-full">
         <div className="mb-6">
-          <InputTextAreaTypeMolecule
+          <InputTextAreaNoLimitTypeMolecule
             id="content"
             title="내용"
             name="content"
@@ -256,7 +261,10 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
 
       <button
         onClick={handlePost}
-        className="w-full bg-[#2b2f40e6] py-4 px-8 text-center rounded-lg disable text-white font-bold"
+        className={`w-full bg-[#2b2f40e6] py-4 px-8 text-center rounded-lg ${
+          !isCropped ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+        } text-white font-bold`}
+        disabled={!isCropped}
       >
         작성
       </button>

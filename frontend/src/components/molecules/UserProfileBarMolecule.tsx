@@ -5,19 +5,25 @@ import BarContent from '../atoms/Content/BarContent';
 import ProfileImageComponent from '../atoms/ImageSize/ProfileImageComponent';
 
 interface ProfileHeaderProps {
-    profileImage: string;
-    username: string;
-    timeAgo: string;
-    onEdit: () => void;
-    onDelete: () => void;
+  profileImage: string;
+  username: string;
+  timeAgo: string;
+  onEdit: () => void;
+  onDelete: () => void;
 }
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profileImage, username, timeAgo, onEdit, onDelete }) => {
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({
+  profileImage,
+  username,
+  timeAgo,
+  onEdit,
+  onDelete,
+}) => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-    const toggleDropdown = () => {
-        setIsDropdownOpen(!isDropdownOpen);
-    };
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
 
     return (
         <div className="flex items-center w-full mb-4">

@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import ReactDOM from "react-dom";
 import closeButton from "../../assets/images/closebutton.png";
 
 interface ModalProps {
