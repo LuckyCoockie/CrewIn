@@ -3,11 +3,15 @@ import React from "react";
 type Title = {
   text: string;
   devide: number;
+  onClick: () => void;
 };
 
-const NavButton: React.FC<Title> = ({ text, devide }) => {
+const NavButton: React.FC<Title> = ({ text, devide, onClick }) => {
   return (
-    <button className={`bg-gray-100 font-bold text-sm py-2 w-1/${devide}`}>
+    <button
+      className={`border-b font-bold text-sm py-2 w-1/${devide}`}
+      onClick={onClick}
+    >
       {text}
     </button>
   );

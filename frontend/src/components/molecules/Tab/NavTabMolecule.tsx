@@ -3,18 +3,21 @@ import NavButton from "../../atoms/Button/NavButton";
 
 type Titles = {
   texts: string[];
+  onTabClick: (tab: string) => void;
 };
 
-const NavTabMolecule: React.FC<Titles> = ({ texts }) => {
-
+const NavTabMolecule: React.FC<Titles> = ({ texts, onTabClick }) => {
   return (
-    <>
-      <div>
-        {texts.map((text, index) => (
-          <NavButton text={text} key={index} devide={texts.length}/>
-        ))}
-      </div>
-    </>
+    <div>
+      {texts.map((text, index) => (
+        <NavButton
+          text={text}
+          key={index}
+          devide={texts.length}
+          onClick={() => onTabClick(text)}
+        />
+      ))}
+    </div>
   );
 };
 
