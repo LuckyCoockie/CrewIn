@@ -1,10 +1,8 @@
 import React from "react";
-import LogoTitlemolecule from "../molecules/LogoTitlemolecule";
+import LogoTitlemolecule from "../molecules/Title/LogoTitlemolecule";
 
 const LoginTitleOrganism: React.FC = () => {
-  return (
-      <LogoTitlemolecule />
-  );
+  return <LogoTitlemolecule />;
 };
 
 export default LoginTitleOrganism;

@@ -1,6 +1,6 @@
 import React from "react";
-import SessionSelected from "../atoms/Bottombar/SessionSelected";
-import SessionDeselected from "../atoms/Bottombar/SessionDeselected";
+import HomeSelected from "../../atoms/Bottombar/HomeSelected";
+import HomeDeselected from "../../atoms/Bottombar/HomeDeselected";
 
 type Name = {
   name: string;
@@ -8,18 +8,18 @@ type Name = {
   onClick: () => void;
 };
 
-const SessionTabMolecule: React.FC<Name> = (props) => {
+const HomeTabMolecule: React.FC<Name> = (props) => {
   return (
     <>
       <div className="flex flex-col items-center py-2" onClick={props.onClick}>
         {props.tab ? (
           <>
-            <SessionSelected />
+            <HomeSelected />
             <p className="text-center text-xs font-bold">{props.name}</p>
           </>
         ) : (
           <>
-            <SessionDeselected />
+            <HomeDeselected />
             <p className="text-center text-xs text-gray-500">{props.name}</p>
           </>
         )}
@@ -28,4 +28,4 @@ const SessionTabMolecule: React.FC<Name> = (props) => {
   );
 };
 
-export default SessionTabMolecule;
+export default HomeTabMolecule;

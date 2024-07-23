@@ -1,6 +1,6 @@
 import React from "react";
-import InputLabelComponent from "../atoms/Input/InputLabelComponent";
-import InputDateComponent from "../atoms/Input/InputDateComponent";
+import InputLabelComponent from "../../atoms/Input/InputLabelComponent";
+import InputDateStartComponent from "../../atoms/Input/InputDateStartComponent";
 import DatePicker from "react-datepicker";
 
 type InputData = {
@@ -10,12 +10,12 @@ type InputData = {
   onChange: (date: Date | null) => void;
 };
 
-const InputDateTypeMolecule = React.forwardRef<DatePicker, InputData>(
+const InputDateStartTypeMolecule = React.forwardRef<DatePicker, InputData>(
   (props, ref) => {
     return (
       <div className="mb-4">
         <InputLabelComponent id={props.id} title={props.title} />
-        <InputDateComponent
+        <InputDateStartComponent
           id={props.id}
           selected={props.selected}
           onChange={props.onChange}
@@ -26,4 +26,4 @@ const InputDateTypeMolecule = React.forwardRef<DatePicker, InputData>(
   }
 );
 
-export default InputDateTypeMolecule;
+export default InputDateStartTypeMolecule;
