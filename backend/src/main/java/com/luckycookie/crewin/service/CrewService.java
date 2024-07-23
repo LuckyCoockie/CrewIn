@@ -1,6 +1,5 @@
 package com.luckycookie.crewin.service;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.Position;
 import com.luckycookie.crewin.domain.enums.PostType;
@@ -10,6 +9,7 @@ import com.luckycookie.crewin.dto.CrewResponse.CrewItem;
 import com.luckycookie.crewin.dto.CrewResponse.CrewItemResponse;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
+import com.luckycookie.crewin.exception.post.NotFoundPostException;
 import com.luckycookie.crewin.exception.crew.CrewPositionMismatchException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
@@ -20,9 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -179,39 +177,40 @@ public class CrewService {
     }
 
     // 공지사항 조회
-//    public CrewResponse.CrewNoticeItem getCrewNoticeList(int pageNo, Long crewId, CustomUser customUser) {
-//        Pageable pageable = PageRequest.of(pageNo, 10); // pageNo 페이지 번호, 10 : 페이지 크기
-//
-//        Page<Post> noticeListPage;
-//        List<Post> noticeList;
-//        int lastPageNo;
-//
-//        // 크루 정보 가져오기
-//        Crew crew = crewRepository.findById(crewId)
-//                .orElseThrow(NotFoundCrewException::new);
-//
-//        // 게시글 정보 가져오기
-//        Post post = postRepository.findById()
-//
-//        // 인원 정보 가져오기
-//        Member member = memberRepository.findByEmail(customUser.getEmail())
-//                .orElseThrow(NotFoundMemberException::new);
-//
-//        // 해당 멤버의 position
-//        Position position = memberCrewRepository.findPositionByMember(member).orElseThrow(CrewPositionMismatchException::new);
-//
-//        noticeList = noticeListPage.getContent();
-//        lastPageNo = Math.max(noticeListPage.getTotalPages() - 1, 0);
-//
-//        return CrewResponse.CrewNoticeItem
-//                .builder()
-//                .position(position)
-//                .title()
-//                .createdAt()
-//                .noticeId()
-//                .build();
-//
-//    }
+    public CrewResponse.CrewNoticeItemResponse getCrewNoticeList(int pageNo, Long crewId, CustomUser customUser) {
+        Pageable pageable = PageRequest.of(pageNo, 10); // pageNo 페이지 번호, 10 : 페이지 크기
+
+        // 현재 사용자 정보 가져오기
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+
+        // 해당 멤버의 position
+        Position position = memberCrewRepository.findPositionByMember(member).orElseThrow(CrewPositionMismatchException::new);
+
+        Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
+
+        // 해당 크루의 공지사항 게시물 가져오기
+        Page<Post> noticeListPage = postRepository.findByCrewIdAndPostType(crewId, PostType.NOTICE, pageable);
+        List<Post> noticeList = noticeListPage.getContent();
+        int lastPageNo = Math.max(noticeListPage.getTotalPages() - 1, 0);
+
+        List<CrewResponse.CrewNoticeItem> crewNoticeItems = noticeList.stream().map(notice -> {
+            return CrewResponse.CrewNoticeItem
+                    .builder()
+                    .position(position)
+                    .title(notice.getTitle())
+                    .createdAt(notice.getCreatedAt())
+                    .updatedAt(notice.getUpdatedAt())
+                    .noticeId(notice.getId())
+                    .build();
+        }).collect(Collectors.toList());
+
+        return CrewResponse.CrewNoticeItemResponse.builder()
+                .crewNoticeList(crewNoticeItems)
+                .pageNo(pageNo)
+                .lastPageNo(lastPageNo)
+                .build();
+    }
 
 
 }
