@@ -12,7 +12,6 @@ import checkButton from "../../assets/images/checkbutton.png";
 import InputTextTypeMolecule from "../molecules/InputTextTypeMolecule";
 import InputTextAreaTypeMolecule from '../molecules/InputTextAreaTypeMolecule';
 import HeaderOrganism from './HeaderOrganism';
-import { Input } from 'antd';
 
 interface ImageCropProps {
   onComplete: (croppedImages: string[], crewName: string, visibility: string, content: string) => void;

@@ -17,14 +17,16 @@ export const requestPresignedUrl = async (
 };
 
 export const uploadImageToS3 = async (file: File, presignedUrl: string) => {
-  await axios.put(presignedUrl, file);
+  await axios.put(presignedUrl, file, {
+    headers: { "Content-Type": "image/png" },
+  });
 };
 
 export const uploadImage = async (file: File) => {
   const { presignedUrl, imageUrl } = await requestPresignedUrl({
     imageExtension: "png",
   });
-  console.log(presignedUrl);
+  console.log(presignedUrl, imageUrl);
   await uploadImageToS3(file, presignedUrl);
   return imageUrl;
 };

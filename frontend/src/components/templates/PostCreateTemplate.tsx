@@ -21,7 +21,6 @@ const PostCreateTemplate: React.FC<PostCreateTemplateProps> = ({
     content,
     onImageCropComplete,
     onEditorFinish,
-    onStepChange
 }) => {
     return (
         <main className="p-4">
@@ -37,7 +36,6 @@ const PostCreateTemplate: React.FC<PostCreateTemplateProps> = ({
                         crewName={crewName}
                         visibility={visibility}
                         content={content}
-                        onPrevious={() => onStepChange(1)}
                         onFinish={onEditorFinish}
                     />
                 )}

@@ -19,9 +19,6 @@ interface EditorStepProps {
 
 const ImageEditSave: React.FC<EditorStepProps> = ({
   images,
-  crewName,
-  visibility,
-  content,
   onFinish
 }) => {
   const [overlayTotalDistance, setOverlayTotalDistance] = useState("00.00");

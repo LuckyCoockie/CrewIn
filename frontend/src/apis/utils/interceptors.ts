@@ -1,5 +1,5 @@
 import { AxiosError, AxiosResponse } from "axios";
-import api, { setupAxiosInterceptors } from "./instance";
+import api from "./instance";
 import ErrorResponseDto from "./errorCode/ErrorResponseDto";
 import Unauthorized from "./errorCode/Unauthorized";
 import store from "../../modules";

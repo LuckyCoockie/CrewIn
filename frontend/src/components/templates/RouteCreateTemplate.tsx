@@ -13,6 +13,7 @@ import LargeDisableButton from "../atoms/Button/LargeAbleButton";
 import { useCallback, useRef } from "react";
 import html2canvas from "html2canvas";
 import canvg from "canvg";
+
 import { Point, directionApiWithWayPoints } from "../../util/maps/tmap/api";
 import {
   addPolyline,
@@ -39,12 +40,40 @@ const RouteCreateTemplate: React.FC<OwnProps> = ({
   initPosition,
   onSave,
 }: OwnProps) => {
-  const schema = yup.object<FormValues>({
-    markers: yup.array().min(2, "2개 이상의 경유지를 선택해주세요"),
+  const schema = yup.object().shape({
     title: yup
       .string()
       .max(50, "50글자 이내로 입력해주세요.")
       .required("경로의 제목을 입력해주세요."),
+    markers: yup
+      .array()
+      .of(
+        yup.object().shape({
+          latitude: yup.number().required(),
+          longitude: yup.number().required(),
+        })
+      )
+      .min(2, "2개 이상의 경유지를 선택해주세요")
+      .required(),
+    polylines: yup
+      .array()
+      .of(
+        yup
+          .array()
+          .of(
+            yup
+              .object()
+              .shape({
+                latitude: yup.number().required(),
+                longitude: yup.number().required(),
+              })
+              .required()
+          )
+          .required()
+      )
+      .required(),
+    length: yup.number().required(),
+    image: yup.string().required(),
   });
 
   const dispatch = useNaverMapDispatch();
@@ -79,8 +108,8 @@ const RouteCreateTemplate: React.FC<OwnProps> = ({
     resolver: yupResolver(schema),
     mode: "onChange",
     defaultValues: {
+      title: "",
       markers: [],
-      polylines: [],
     },
   });
 
