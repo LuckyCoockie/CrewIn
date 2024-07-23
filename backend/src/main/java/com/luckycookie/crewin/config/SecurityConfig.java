@@ -16,6 +16,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity // 서블릿 필터에 스프링 시큐리티 필터 체인을 추가
@@ -43,7 +48,8 @@ public class SecurityConfig {
                         .accessDeniedHandler(jwtAccessDeniedHandler))
                 .addFilterBefore(new JwtFilter(tokenUtil, memberRepository), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests((a) -> {
-                    a.requestMatchers("/member/signup/**").permitAll()
+                    a.requestMatchers(HttpMethod.OPTIONS).permitAll()
+                            .requestMatchers("/member/signup/**").permitAll()
                             .requestMatchers("/member/check-email").permitAll()
                             .requestMatchers("/member/check-nickname").permitAll()
                             .requestMatchers("/member/email").permitAll()
@@ -56,5 +62,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 }
