@@ -1,7 +1,9 @@
 package com.luckycookie.crewin.service;
 
 import com.luckycookie.crewin.domain.*;
+import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.SessionRequest;
+import com.luckycookie.crewin.dto.SessionResponse;
 import com.luckycookie.crewin.exception.course.NotFoundCourseException;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
@@ -10,6 +12,9 @@ import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -59,4 +64,25 @@ public class SessionService {
         }
     }
 
+    public List<SessionResponse> getSessionsByType(SessionType sessionType) {
+        List<Session> sessions = sessionRepository.findUpcomingSessionsByType(sessionType);
+        return sessions.stream().map(this::convertToDto).collect(Collectors.toList());
+
+    }
+
+    private SessionResponse convertToDto(Session session) {
+        return SessionResponse.builder()
+                .hostName(session.getHost().getName())
+                .crewName(session.getCrew().getCrewName())
+                .courseName(session.getCourse().getName())
+                .sessionName(session.getName())
+                .spot(session.getSpot())
+                .content(session.getContent())
+                .sessionType(session.getSessionType())
+                .pace(session.getPace())
+                .maxPeople(session.getMaxPeople())
+                .startAt(session.getStartAt())
+                .endAt(session.getEndAt())
+                .build();
+    }
 }

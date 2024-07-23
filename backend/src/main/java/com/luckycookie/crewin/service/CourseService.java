@@ -42,6 +42,15 @@ public class CourseService {
 
     }
 
+    public List<CourseResponse> getAllCourse(CustomUser customUser) {
+
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+
+        List<Course> courseList = courseRepository.findByCreatorId(member.getId());
+        return courseList.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
     public void updateCourse(CourseRequest.UpdateCourseRequest updateCourseRequest, Long courseId, CustomUser customUser) {
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
@@ -55,15 +64,17 @@ public class CourseService {
         courseRepository.save(course);
     }
 
-
-    public List<CourseResponse> getAllCourse(CustomUser customUser) {
-
+    public void deleteCourse(Long courseId, CustomUser customUser) {
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
-
-        List<Course> courseList = courseRepository.findByCreatorId(member.getId());
-        return courseList.stream().map(this::convertToDto).collect(Collectors.toList());
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(NotFoundCourseException::new);
+        if (!course.getCreator().equals(member)) {
+            throw new NotMatchMemberCourseError();
+        }
+        courseRepository.delete(course);
     }
+
 
     private CourseResponse convertToDto(Course course) {
         return CourseResponse.builder()

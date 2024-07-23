@@ -2,6 +2,8 @@ package com.luckycookie.crewin.service;
 
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.Headers;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.luckycookie.crewin.dto.ImageRequest.PresignedUrlReq;
 import com.luckycookie.crewin.dto.ImageResponse.PresignedUrlRes;
@@ -56,10 +58,10 @@ public class S3Service {
                 .withMethod(HttpMethod.PUT)
                 .withExpiration(expiration);
 
-        //request 파라미터 추가
-//        request.addRequestParameter(
-//                Headers.S3_CANNED_ACL,
-//                CannedAccessControlList.PublicRead.toString());
+//        request 파라미터 추가
+        request.addRequestParameter(
+                Headers.S3_CANNED_ACL,
+                CannedAccessControlList.PublicRead.toString());
 
         return request;
     }
