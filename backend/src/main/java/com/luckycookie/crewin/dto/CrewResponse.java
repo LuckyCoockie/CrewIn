@@ -19,7 +19,7 @@ public class CrewResponse {
     @SuperBuilder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class CrewItemBaseResponse{
+    public static class CrewItemBaseResponse {
         int pageNo;
         int lastPageNo;
     }
@@ -67,6 +67,8 @@ public class CrewResponse {
         // 날짜
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime createdAt;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        private LocalDateTime updatedAt;
     }
 
     @Getter
