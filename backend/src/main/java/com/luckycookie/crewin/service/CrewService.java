@@ -212,5 +212,31 @@ public class CrewService {
                 .build();
     }
 
+    public CrewResponse.CrewGalleryItemResponse getCrewGalleryList(int pageNo, Long crewId, CustomUser customUser) {
+        Pageable pageable = PageRequest.of(pageNo, 27); // 페이지 크기 : 27
+
+        // 해당 크루의 일반 게시물 가져오기
+        Page<Post> galleryListPage = postRepository.findByCrewIdAndPostType(crewId, PostType.STANDARD, pageable);
+        List<Post> galleryList = galleryListPage.getContent();
+        int lastPageNo = Math.max(galleryListPage.getTotalPages() - 1, 0);
+
+        List<CrewResponse.CrewGalleryItem> crewGalleryItems = galleryList.stream().map(post -> {
+            return CrewResponse.CrewGalleryItem
+                    .builder()
+                    .postId(post.getId())
+                    .imageUrls(post.getPostImages().stream().map(postImage ->
+                        postImage.getImageUrl()
+                    ).toList())
+                    .build();
+        }).collect(Collectors.toList());
+
+        return CrewResponse.CrewGalleryItemResponse
+                .builder()
+                .crewGalleryList(crewGalleryItems)
+                .pageNo(pageNo)
+                .lastPageNo(lastPageNo)
+                .build();
+
+    }
 
 }

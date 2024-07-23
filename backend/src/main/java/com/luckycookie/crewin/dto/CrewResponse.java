@@ -79,5 +79,21 @@ public class CrewResponse {
         List<CrewNoticeItem> crewNoticeList;
     }
 
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class CrewGalleryItem {
+        private Long postId; // 게시글 ID
+        private List<String> imageUrls; // 이미지 List
+    }
+
+    @Getter
+    @SuperBuilder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CrewGalleryItemResponse extends CrewItemBaseResponse {
+        List<CrewGalleryItem> crewGalleryList;
+    }
 
 }

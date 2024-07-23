@@ -1,5 +1,6 @@
 package com.luckycookie.crewin.controller;
 
+import com.luckycookie.crewin.domain.Crew;
 import com.luckycookie.crewin.dto.CrewRequest;
 import com.luckycookie.crewin.dto.CrewResponse;
 import com.luckycookie.crewin.dto.CrewResponse.CrewItemResponse;
@@ -56,6 +57,12 @@ public class CrewController {
     @GetMapping("/notice/{crewId}")
     public ResponseEntity<BaseResponse<CrewResponse.CrewNoticeItemResponse>> getCrewNoticeList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long crewId, @RequestParam int pageNo) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 공지 조회를 성공했습니다.", crewService.getCrewNoticeList(pageNo, crewId, customUser)));
+    }
+
+    // 크루 사진첩 조회
+    @GetMapping("/gallery/{crewId}")
+    public ResponseEntity<BaseResponse<CrewResponse.CrewGalleryItemResponse>> getCrewGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long crewId, @RequestParam int pageNo) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 사진첩 조회를 성공했습니다.", crewService.getCrewGalleryList(pageNo, crewId, customUser)));
     }
 
 }
