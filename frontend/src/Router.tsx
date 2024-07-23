@@ -10,6 +10,7 @@ import SessionPage from "./pages/SessionPage";
 import CrewPage from "./pages/CrewPage";
 import ProfilePage from "./pages/ProfilePage";
 import JoinPage from "./pages/JoinPage";
+import SessionDetailPage from "./pages/SessionDetailPage";
 import PostDetailPage from './pages/PostDetailPage';
 
 export const router = createBrowserRouter([
@@ -18,15 +19,25 @@ export const router = createBrowserRouter([
     element: <App />,
     children: [
       { path: "home", element: <HomePage /> },
-      { path: "session", element: <SessionPage /> },
-      { path: "crew", element: <CrewPage /> },
+      {
+        path: "session",
+        element: <SessionPage />,
+        children: [
+          { path: "create", element: <SessionCreatePage /> },
+          { path: "detail", element: <SessionDetailPage /> },
+        ],
+      },
+      {
+        path: "crew",
+        element: <CrewPage />,
+        children: [{ path: "create", element: <CrewCreatePage /> }],
+      },
       { path: "profile", element: <ProfilePage /> },
       { path: "maps", element: <RouteCreatePage /> },
       { path: "createcrew", element: <CrewCreatePage /> },
       { path: "post", element: <PostCreatePage /> },
       { path: "postdetail", element: <PostDetailPage /> },
       { path: "login", element: <LoginPage /> },
-      { path: "createsession", element: <SessionCreatePage /> },
       { path: "join", element: <JoinPage /> },
     ],
   },

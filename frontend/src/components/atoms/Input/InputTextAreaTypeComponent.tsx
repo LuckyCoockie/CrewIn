@@ -20,7 +20,7 @@ const InputTextAreaTypeComponent = React.forwardRef<
       value={props.value}
       onChange={props.onChange}
       ref={ref}
-      className={`large-data-input border ${
+      className={`large-data-input border focus:ring-0 ${
         props.hasError
           ? "border-red-500 focus:border-red-500"
           : "border-gray-300"

@@ -12,7 +12,7 @@ const InputImageMultiComponent = React.forwardRef<HTMLInputElement, InputImage>(
     return (
       <>
         <input
-          className="image-file-input"
+          className="image-file-input focus:ring-0 focus:outline-none focus:border-black"
           id={props.id}
           type="file"
           name={props.name}

@@ -29,7 +29,7 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
     return (
       <>
         <input
-          className="image-file-input mb-3"
+          className="image-file-input mb-3 focus:ring-0"
           id={props.id}
           type="file"
           name={props.name}
