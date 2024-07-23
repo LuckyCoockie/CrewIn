@@ -52,8 +52,8 @@ const PostDetailPage: React.FC = () => {
     }
 
     return (
-        <div className="flex flex-col">
-            <div className="w-full max-w-md mb-1">
+        <div className="flex flex-col items-center max-w-[360px] mt-4 mb-20">
+            <div className="w-full">
                 <Userprofilebar
                     profileImage={crewinlogo}
                     username="쿄징이다"
@@ -74,38 +74,28 @@ const PostDetailPage: React.FC = () => {
                         </div>
                     ))}
                 </Carousel>
-            </div>
-
-            <div className="flex items-center">
-                <button onClick={handleLike} className="flex items-center ml-4">
-                    <img
-                        src={hasLiked ? filledfire : emptyfire}
-                        alt="fire-icon"
-                        className="w-7"
-                    />
-                </button>
-                <span className="text-md ml-1 mt-1">{likes}명이 공감했어요!</span>
-                <button onClick={handleShare} className="flex ml-auto mr-3">
-                    <img
-                        src={shareicon}
-                        alt="share-icon"
-                        className="w-4"
-                    />
-                </button>
-            </div>
-            <div className="border-t border-gray-300 my-2"></div>
-
-            <div className="mb-2 ml-4">
-                {isExpanded ? content : `${content.slice(0, 50)}${content.length > 50 ? '...' : ''}`}
-                {content.length > 50 && (
-                    <button
-                        onClick={toggleContent}
-                        className="text-blue-500 hover:underline ml-2"
-                    >
-                        {isExpanded ? '접기' : '더보기'}
+                <div className="flex items-center">
+                    <button onClick={handleLike} className="flex items-center ml-3 mt-2">
+                        <img
+                            src={hasLiked ? filledfire : emptyfire}
+                            alt="fire-icon"
+                            className="w-7"
+                        />
                     </button>
-                )}
+                    <span className="text-md ml-1 mt-3">{likes}명이 공감했어요!</span>
+                    <button onClick={handleShare} className="flex ml-auto mr-3 mt-3">
+                        <img
+                            src={shareicon}
+                            alt="share-icon"
+                            className="w-4"
+                        />
+                    </button>
+                </div>
+                <div className="border-t border-gray-300 my-2"></div>
+
+                <div className="mb-2 mx-3 break-all">{content}</div>
             </div>
+
 
         </div>
     );
