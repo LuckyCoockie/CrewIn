@@ -32,9 +32,15 @@ public class CourseController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "경로 리스트를 조회하는데 성공했습니다.", courseList));
     }
 
-    @PutMapping("mypage/course/{course-id}")
-    public ResponseEntity<BaseResponse<Void>> updateCourse(@AuthenticationPrincipal CustomUser customUser, @PathVariable("course-id") Long courseId, @RequestBody CourseRequest.UpdateCourseRequest updateCourseRequest) {
+    @PutMapping("mypage/course/{courseId}")
+    public ResponseEntity<BaseResponse<Void>> updateCourse(@AuthenticationPrincipal CustomUser customUser, @PathVariable("courseId") Long courseId, @RequestBody CourseRequest.UpdateCourseRequest updateCourseRequest) {
         courseService.updateCourse(updateCourseRequest, courseId, customUser);
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.CREATED.value(), "경로를 수정하는데 성공했습니다."));
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "경로를 수정하는데 성공했습니다."));
+    }
+
+    @DeleteMapping("mypage/course/{courseId}")
+    public ResponseEntity<Void> deleteCourse(@AuthenticationPrincipal CustomUser customUser, @PathVariable("courseId") Long courseId) {
+        courseService.deleteCourse(courseId, customUser);
+        return ResponseEntity.noContent().build();
     }
 }
