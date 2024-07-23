@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import poster from "../../assets/images/poster.png";
 import poster2 from "../../assets/images/crewinbanner.png";
 import { Carousel } from "react-responsive-carousel";
-import OneToOneImageMolecule from "../molecules/OneToOneImageMolecule";
-import DetailInfoMolecule from "../molecules/DetailInfoMolecule";
+import OneToOneImageMolecule from "../molecules/Image/OneToOneImageMolecule";
+import DetailInfoMolecule from "../molecules/Content/DetailInfoMolecule";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 
 type SessionDetailOrganismProps = {

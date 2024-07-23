@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import InputLabelComponent from "../atoms/Input/InputLabelComponent";
-import InputRadioComponent from "../atoms/Input/InputRadioComponent";
+import InputLabelComponent from "../../atoms/Input/InputLabelComponent";
+import InputRadioComponent from "../../atoms/Input/InputRadioComponent";
 
 type InputData = {
   id: string;

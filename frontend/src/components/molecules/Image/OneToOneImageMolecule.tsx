@@ -1,5 +1,5 @@
 import React from "react";
-import ImageSizeComponent from "../atoms/ImageSize/ImageSizeComponent";
+import ImageSizeComponent from "../../atoms/ImageSize/ImageSizeComponent";
 
 type Image = {
   src: string;
