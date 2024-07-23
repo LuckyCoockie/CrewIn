@@ -39,4 +39,10 @@ public class SessionController {
         List<SessionResponse> sessions = sessionService.getSessionsByType(sessionType);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당하는 타입의 세션을 조회하는데 성공했습니다.", sessions));
     }
+
+    @GetMapping("/crew-name")
+    public ResponseEntity<BaseResponse<List<SessionResponse>>> getSessionsByCrewName(@RequestParam("crew-name") String crewName, @AuthenticationPrincipal CustomUser customUser) {
+        List<SessionResponse> sessions = sessionService.getSessionsByCrewName(crewName);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당하는 크루의 세션을 조회하는데 성공했습니다.", sessions));
+    }
 }

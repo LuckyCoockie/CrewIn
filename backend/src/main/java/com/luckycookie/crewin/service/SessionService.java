@@ -70,6 +70,12 @@ public class SessionService {
 
     }
 
+    public List<SessionResponse> getSessionsByCrewName(String crewName) {
+        List<Session> sessions = sessionRepository.findSessionsByCrewNameContaining(crewName);
+        return sessions.stream().map(this::convertToDto).collect(Collectors.toList());
+
+    }
+
     private SessionResponse convertToDto(Session session) {
         return SessionResponse.builder()
                 .hostName(session.getHost().getName())
