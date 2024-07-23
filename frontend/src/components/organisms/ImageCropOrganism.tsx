@@ -1,32 +1,39 @@
-import React, { useState, useRef } from 'react';
-import { Carousel } from 'react-responsive-carousel';
-import Cropper from 'react-cropper';
-import 'cropperjs/dist/cropper.css';
-import Dropzone from 'react-dropzone';
-import { PlusOutlined } from '@ant-design/icons';
-import ModalMolecules from '../molecules/ModalMolecules';
-import ImageEditSave from './ImageEditSaveOrganism';
+import React, { useState, useRef } from "react";
+import { Carousel } from "react-responsive-carousel";
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
+import Dropzone from "react-dropzone";
+import { PlusOutlined } from "@ant-design/icons";
+import ModalMolecules from "../molecules/ModalMolecules";
+import ImageEditSave from "./ImageEditSaveOrganism";
 import editButton from "../../assets/images/editbutton.png";
 import cropButton from "../../assets/images/cropbutton.png";
 import checkButton from "../../assets/images/checkbutton.png";
-import InputTextAreaTypeMolecule from '../molecules/InputTextAreaTypeMolecule';
-import HeaderOrganism from './HeaderOrganism';
-import InputRadioTypeMolecule from '../molecules/InputRadioTypeMolecule';
-import InputDropdonwTypeMolecule from '../molecules/InputDropdonwTypeMolecule';
-import { crewNames } from '../../../src/crewname';
+import InputTextAreaTypeMolecule from "../molecules/Input/InputTextAreaTypeMolecule";
+import HeaderOrganism from "./HeaderOrganism";
+import InputRadioTypeMolecule from "../molecules/Input/InputRadioTypeMolecule";
+import InputDropdonwTypeMolecule from "../molecules/Input/InputDropdonwTypeMolecule";
+import { crewNames } from "../../../src/crewname";
 
 interface ImageCropProps {
-  onComplete: (croppedImages: string[], crewName: string, visibility: string, content: string) => void;
+  onComplete: (
+    croppedImages: string[],
+    crewName: string,
+    visibility: string,
+    content: string
+  ) => void;
 }
 
 const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
   const [imagePaths, setImagePaths] = useState<string[]>([]);
   const [cropAspectRatio] = useState<number>(1);
   const [croppedImages, setCroppedImages] = useState<string[]>([]);
-  const [originalCroppedImages, setOriginalCroppedImages] = useState<string[]>([]);
-  const [crewName, setCrewName] = useState<string>('');
-  const [visibility, setVisibility] = useState<string>('전체');
-  const [content, setContent] = useState<string>('');
+  const [originalCroppedImages, setOriginalCroppedImages] = useState<string[]>(
+    []
+  );
+  const [crewName, setCrewName] = useState<string>("");
+  const [visibility, setVisibility] = useState<string>("전체");
+  const [content, setContent] = useState<string>("");
   const [isCropped, setIsCropped] = useState<boolean>(false);
   const [currentEditIndex, setCurrentEditIndex] = useState<number | null>(null);
 
@@ -35,7 +42,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
   const handleDrop = (acceptedFiles: File[]) => {
     const tempImagePaths: string[] = [];
     const tempCroppedImages: string[] = [];
-    acceptedFiles.forEach(file => {
+    acceptedFiles.forEach((file) => {
       const tempImagePath = URL.createObjectURL(file);
       tempImagePaths.push(tempImagePath);
       tempCroppedImages.push(tempImagePath);
@@ -53,31 +60,34 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
       const croppedCanvas = cropper.getCroppedCanvas({
         width: 360,
         height: 360,
-        fillColor: '#fff',
+        fillColor: "#fff",
         imageSmoothingEnabled: true,
-        imageSmoothingQuality: 'high',
+        imageSmoothingQuality: "high",
       });
 
       if (croppedCanvas) {
-        croppedCanvas.toBlob((blob: Blob | null) => {
-          if (blob) {
-            const croppedImageUrl = URL.createObjectURL(blob);
-            setCroppedImages((prevImages) => {
-              const newImages = [...prevImages];
-              newImages[index] = croppedImageUrl;
-              return newImages;
-            });
-            setOriginalCroppedImages((prevImages) => {
-              const newImages = [...prevImages];
-              newImages[index] = croppedImageUrl;
-              return newImages;
-            });
-          }
-        }, 'image/jpeg', 0.8);
+        croppedCanvas.toBlob(
+          (blob: Blob | null) => {
+            if (blob) {
+              const croppedImageUrl = URL.createObjectURL(blob);
+              setCroppedImages((prevImages) => {
+                const newImages = [...prevImages];
+                newImages[index] = croppedImageUrl;
+                return newImages;
+              });
+              setOriginalCroppedImages((prevImages) => {
+                const newImages = [...prevImages];
+                newImages[index] = croppedImageUrl;
+                return newImages;
+              });
+            }
+          },
+          "image/jpeg",
+          0.8
+        );
       }
     }
   };
-
 
   const handleCropAll = () => {
     if (!isCropped) {
@@ -103,7 +113,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className='self-start'>
+      <div className="self-start">
         <HeaderOrganism text="게시글 작성" />
       </div>
       {imagePaths.length === 0 ? (
@@ -115,22 +125,25 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
                 style={{
                   width: 360,
                   height: 360,
-                  border: '1px solid lightgray',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
+                  border: "1px solid lightgray",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
                 }}
               >
                 <input {...getInputProps()} />
-                <PlusOutlined style={{ fontSize: '3rem' }} />
+                <PlusOutlined style={{ fontSize: "3rem" }} />
               </div>
             </section>
           )}
         </Dropzone>
       ) : (
         <>
-          <div className="relative w-full bg-white rounded-lg mb-6" style={{ width: 360, height: 360 }}>
+          <div
+            className="relative w-full bg-white rounded-lg mb-6"
+            style={{ width: 360, height: 360 }}
+          >
             <Carousel
               showThumbs={false}
               showIndicators={true}
@@ -166,7 +179,11 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
                         onClick={() => setCurrentEditIndex(index)}
                         className="absolute bottom-7 right-1 z-1 bg-transparent p-1"
                       >
-                        <img src={editButton} alt="edit Button" className="w-10 h-10" />
+                        <img
+                          src={editButton}
+                          alt="edit Button"
+                          className="w-10 h-10"
+                        />
                       </button>
                     </>
                   )}
@@ -174,7 +191,19 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
                     onClick={handleCropAll}
                     className="absolute bottom-16 right-1 bg-transparent z-1 p-1"
                   >
-                    {isCropped ? <img src={cropButton} alt="crop Button" className="w-10 h-10" /> : <img src={checkButton} alt="check Button" className="w-10 h-10" />}
+                    {isCropped ? (
+                      <img
+                        src={cropButton}
+                        alt="crop Button"
+                        className="w-10 h-10"
+                      />
+                    ) : (
+                      <img
+                        src={checkButton}
+                        alt="check Button"
+                        className="w-10 h-10"
+                      />
+                    )}
                   </button>
                 </div>
               ))}
@@ -223,7 +252,8 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
 
       <button
         onClick={handlePost}
-        className="w-full bg-[#2b2f40e6] py-4 px-8 text-center rounded-lg disable text-white font-bold">
+        className="w-full bg-[#2b2f40e6] py-4 px-8 text-center rounded-lg disable text-white font-bold"
+      >
         작성
       </button>
 
