@@ -27,8 +27,8 @@ const MapToggleButton: React.FC<OwnProps> = ({ style }: OwnProps) => {
     if (isDetail) {
       dispatch(clearPolyline());
       const waypoints = markers.map(markerToPoint);
-      directionApiWithWayPoints(waypoints, (polyline) =>
-        dispatch(addPolyline(polyline))
+      directionApiWithWayPoints(waypoints, (direction) =>
+        dispatch(addPolyline(direction.polyline))
       );
     } else {
       dispatch(updateMarkerList());

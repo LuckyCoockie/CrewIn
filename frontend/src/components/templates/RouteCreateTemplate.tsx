@@ -10,10 +10,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../atoms/Button/LargeAbleButton";
 
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 import html2canvas from "html2canvas";
 import canvg from "canvg";
-import { saveAs } from "file-saver";
 import { Point, directionApiWithWayPoints } from "../../util/maps/tmap/api";
 import {
   addPolyline,
@@ -21,16 +20,19 @@ import {
   moveToCenter,
   useNaverMapDispatch,
 } from "../../util/maps/naver_map/context";
+import { uploadImage } from "../../apis/api/presigned";
 
 type OwnProps = {
   initPosition: Point;
-  onSave: ({ polylines, title }: FormValues) => void;
+  onSave: ({ polylines, markers, title, image }: FormValues) => void;
 };
 
 type FormValues = {
   title: string;
   markers: Point[];
   polylines: Point[][];
+  length: number;
+  image: string;
 };
 
 const RouteCreateTemplate: React.FC<OwnProps> = ({
@@ -51,16 +53,19 @@ const RouteCreateTemplate: React.FC<OwnProps> = ({
     const mapDim = captureRef.current!.getBoundingClientRect().width;
     dispatch(moveToCenter(mapDim));
     dispatch(clearPolyline());
-    const polylines = await directionApiWithWayPoints(
+    const directions = await directionApiWithWayPoints(
       data.markers,
-      (polyline) => {
-        dispatch(addPolyline(polyline));
+      (direction) => {
+        dispatch(addPolyline(direction.polyline));
       }
     );
-    setPolylines(polylines);
+    setPolylines(directions.map((directoin) => directoin.polyline));
+    setLength(
+      directions.reduce((sum, direction) => sum + direction.distance, 0)
+    );
     // TODO : 상세 정보 체크 되면 저장 하는거 고려해보기
     setTimeout(async () => {
-      await handleSave(data.title);
+      await handleSave();
       onSave(data);
     }, 500);
   };
@@ -79,17 +84,37 @@ const RouteCreateTemplate: React.FC<OwnProps> = ({
     },
   });
 
-  const setMarkers = (markers: Point[]) => {
-    setValue("markers", markers);
-  };
+  const setMarkers = useCallback(
+    (markers: Point[]) => {
+      setValue("markers", markers);
+    },
+    [setValue]
+  );
 
-  const setPolylines = (polylines: Point[][]) => {
-    setValue("polylines", polylines);
-  };
+  const setPolylines = useCallback(
+    (polylines: Point[][]) => {
+      setValue("polylines", polylines);
+    },
+    [setValue]
+  );
+
+  const setLength = useCallback(
+    (length: number) => {
+      setValue("length", length);
+    },
+    [setValue]
+  );
+
+  const setImage = useCallback(
+    (image: string) => {
+      setValue("image", image);
+    },
+    [setValue]
+  );
 
   const captureRef = useRef<HTMLDivElement>(null);
 
-  const handleSave = async (filename: string) => {
+  const handleSave = async () => {
     if (captureRef.current) {
       const svgNodesToRemove: HTMLCanvasElement[] = [];
 
@@ -121,17 +146,21 @@ const RouteCreateTemplate: React.FC<OwnProps> = ({
         useCORS: true,
         backgroundColor: null,
       });
+
       canvas.toBlob(
-        (blob) => {
+        async (blob) => {
+          // TODO : upload file
           if (blob) {
-            saveAs(blob, `${filename}.png`);
+            const file = new File([blob], "temp.png");
+            const imageUrl = await uploadImage(file);
+            setImage(imageUrl);
           }
         },
         "image/png",
         1
       );
 
-      svgNodesToRemove.forEach(function (element) {
+      svgNodesToRemove.forEach((element) => {
         element.remove();
       });
     }

@@ -9,7 +9,25 @@ const RouteCreatePage: React.FC = () => {
     <>
       {location && (
         <NaverMapProvider>
-          <RouteCreateTemplate initPosition={location} onSave={console.log} />
+          <RouteCreateTemplate
+            initPosition={location}
+            onSave={({ title, markers, polylines, length, image }) =>
+              console.log({
+                title: title,
+                info: JSON.stringify({
+                  markers: markers.map((point) => [
+                    point.latitude,
+                    point.longitude,
+                  ]),
+                  polylines: polylines.map((polyline) =>
+                    polyline.map((point) => [point.latitude, point.longitude])
+                  ),
+                }),
+                length: length,
+                image: image,
+              })
+            }
+          />
         </NaverMapProvider>
       )}
     </>
