@@ -48,15 +48,21 @@ const RouteCreateTemplate: React.FC<OwnProps> = ({
   const dispatch = useNaverMapDispatch();
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-
-    dispatch(moveToCenter());
+    const mapDim = captureRef.current!.getBoundingClientRect().width;
+    dispatch(moveToCenter(mapDim));
     dispatch(clearPolyline());
-    const polylines = await directionApiWithWayPoints(data.markers, (polyline) => {
-      dispatch(addPolyline(polyline));
-    });
+    const polylines = await directionApiWithWayPoints(
+      data.markers,
+      (polyline) => {
+        dispatch(addPolyline(polyline));
+      }
+    );
     setPolylines(polylines);
-    await handleSave(data.title);
-    onSave(data);
+    // TODO : 상세 정보 체크 되면 저장 하는거 고려해보기
+    setTimeout(async () => {
+      await handleSave(data.title);
+      onSave(data);
+    }, 500);
   };
 
   const {
@@ -121,7 +127,7 @@ const RouteCreateTemplate: React.FC<OwnProps> = ({
             saveAs(blob, `${filename}.png`);
           }
         },
-        "image/jpg",
+        "image/png",
         1
       );
 

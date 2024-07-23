@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useReducer, useState } from "react";
 import { Dispatch } from "react";
+import { calculateZoomLevel } from "./zoom";
 
 /* ----------------- 액션 타입 ------------------ */
 const INIT = "naver/maps/INIT" as const;
@@ -17,7 +18,10 @@ const CLEAR_POLYLINE = "naver/maps/CLEAR_POLYLINE" as const;
 /* ----------------- 액션 생성 함수 ------------------ */
 export const init = (map: naver.maps.Map) => ({ type: INIT, map });
 
-export const moveToCenter = () => ({ type: MOVE_TO_CENTER });
+export const moveToCenter = (mapDim: number) => ({
+  type: MOVE_TO_CENTER,
+  mapDim,
+});
 
 export const addMarker = (data: {
   latitude: number;
@@ -111,14 +115,26 @@ export default function NaverMapReducer(
       };
     case MOVE_TO_CENTER: {
       const center = { x: 0, y: 0 };
+
       state.markers.forEach((marker) => {
-        center.x += marker.getPosition().y;
-        center.y += marker.getPosition().x;
+        center.x += marker.getPosition().x;
+        center.y += marker.getPosition().y;
       });
       center.x /= state.markers.length;
       center.y /= state.markers.length;
 
-      state.map?.panTo(center);
+      const zoom = calculateZoomLevel(
+        state.markers.map((marker) => {
+          return {
+            x: marker.getPosition().x,
+            y: marker.getPosition().y,
+          };
+        }),
+        action.mapDim
+      );
+
+      state.map?.setZoom(zoom);
+      state.map?.panTo(center, { duration: 0 });
       return state;
     }
     case ADD_MARKER: {
