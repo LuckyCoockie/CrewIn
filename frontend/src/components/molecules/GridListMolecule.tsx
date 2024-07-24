@@ -15,7 +15,7 @@ const GridListComponent = <T,>({
   children: ItemComponent,
 }: OwnProps<T>) => {
   return (
-    <div className="grid grid-cols-2 gap-2 md:gap-4">
+    <div className="grid grid-cols-2 gap-2 md:gap-4 mb-2 md:mb-4">
       {items.map((item, index) => (
         <ItemComponent key={index} index={index} item={item} />
       ))}

@@ -41,24 +41,24 @@ const CrewListItem = ({
   }, [imageUrl]);
 
   return (
-    <div className="max-w-sm rounded-xl border-2 md:border-4 border-primary bg-white tracking-tighter">
+    <div className="max-w-sm rounded-xl border-[2px] md:border-2 border-primary bg-white tracking-tighter truncate">
       <div className="flex justify-center items-center bg-primary square md:p-4 p-3">
         {image ? (
           <img
             alt="crew image"
             src={image}
-            className="rounded-full b border-2 md:border-4 border-white w-full"
+            className="rounded-full b border md:border-2 border-white w-full"
           />
         ) : (
           <img
             alt="crew image"
             src={"./src/assets/images/crewinlogo.png"}
-            className="rounded-full b border-2 md:border-4 border-white w-full"
+            className="rounded-full b border md:border-2 border-white w-full"
           />
         )}
       </div>
-      <div className="m-3 md:m-4 ml-2">
-        <div className="flex md:b-1 md:mb-2">
+      <div className="m-2 md:m-4 ml-2">
+        <div className="flex mb-1 md:mb-2">
           <div className="flex items-center mr-2">
             <div className="w-[3px] md:w-1 h-full bg-highlight"></div>
           </div>
