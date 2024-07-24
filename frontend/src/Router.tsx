@@ -26,7 +26,7 @@ export const router = createBrowserRouter([
         element: <SessionPage />,
         children: [
           { path: "create", element: <SessionCreatePage /> },
-          { path: "detail", element: <SessionDetailPage /> },
+          { path: "detail/:sessionId", element: <SessionDetailPage /> },
         ],
       },
       {
@@ -34,12 +34,11 @@ export const router = createBrowserRouter([
         element: <CrewPage />,
         children: [
           { path: "create", element: <CrewCreatePage /> },
-          { path: "detail", element: <CrewDetailPage /> },
+          { path: "detail/:crewId", element: <CrewDetailPage /> },
         ],
       },
       { path: "profile", element: <ProfilePage /> },
       { path: "course", element: <CourseCreatePage /> },
-      { path: "createcrew", element: <CrewCreatePage /> },
       { path: "post", element: <PostCreatePage /> },
       { path: "searchuser", element: <SearchUserPage /> },
       { path: "alarm", element: <AlarmPage /> },
