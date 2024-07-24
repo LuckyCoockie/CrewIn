@@ -40,7 +40,7 @@ public class CrewController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "내가 속한 크루 목록 조회를 성공했습니다.", crewService.getCrewList(pageNo, customUser)));
     }
 
-
+    // 크루 공지 생성
     @PostMapping("/notice")
     public ResponseEntity<BaseResponse<Void>> createCrewNotice(@AuthenticationPrincipal CustomUser customUser, @RequestBody CrewRequest.CreateCrewNoticeRequest createCrewNoticeRequest) {
         crewService.createCrewNotice(createCrewNoticeRequest, customUser);
@@ -53,12 +53,31 @@ public class CrewController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 정보 조회를 성공했습니다.", crewService.getCrewInfo(crewId)));
     }
 
+    // 크루 정보 수정
+    @PutMapping("/{id}")
+    public ResponseEntity<BaseResponse<Void>> updateCrewInfo(
+            @PathVariable("id") Long crewId,
+            @RequestBody CrewRequest.CreateCrewRequest createCrewRequest, @AuthenticationPrincipal CustomUser customUser) {
+        try {
+            crewService.updateCrewInfo(crewId, createCrewRequest, customUser);
+            return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 정보를 수정하는데 성공했습니다."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(BaseResponse.create(HttpStatus.BAD_REQUEST.value(), "크루 정보 업데이트를 실패했습니다: " + e.getMessage()));
+        }
+    }
+
+    // 크루 정보 삭제
+
+
+
     // 크루 공지 조회
     @GetMapping("/notice/{crewId}")
     public ResponseEntity<BaseResponse<CrewResponse.CrewNoticeItemResponse>> getCrewNoticeList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long crewId, @RequestParam int pageNo) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 공지 조회를 성공했습니다.", crewService.getCrewNoticeList(pageNo, crewId, customUser)));
     }
 
+    // 크루 공지 수정
     @PutMapping("/notice/{id}")
     public ResponseEntity<BaseResponse<Void>> updateNotice(
             @PathVariable("id") Long noticeId,
@@ -72,6 +91,7 @@ public class CrewController {
         }
     }
 
+    // 크루 공지 삭제
     @DeleteMapping("/notice/{id}")
     public ResponseEntity<BaseResponse<Void>> deletePost(@PathVariable("id") Long noticeId) {
         try {

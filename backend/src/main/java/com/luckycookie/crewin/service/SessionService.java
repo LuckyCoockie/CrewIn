@@ -35,7 +35,7 @@ public class SessionService {
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
-        Crew crew = crewRepository.findById(createSessionRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
+        Crew crew = crewRepository.findById(createSessionRequest.getCrewId()).orElseThrow(() -> new NotFoundCrewException(createSessionRequest.getCrewId()));
         Course course = courseRepository.findById(createSessionRequest.getCourseId())
                 .orElseThrow(NotFoundCourseException::new);
 
