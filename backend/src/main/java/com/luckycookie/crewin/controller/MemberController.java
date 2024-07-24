@@ -10,6 +10,8 @@ import com.luckycookie.crewin.dto.TokenResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.service.MailService;
 import com.luckycookie.crewin.service.MemberService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -65,5 +67,15 @@ public class MemberController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "인증 여부를 성공적으로 조회했습니다.",
                 EmailResponse.builder().isVerified(mailService.checkMail(email, code)).build()
         ));
+    }
+
+    @PostMapping("/reissue")
+    public ResponseEntity<BaseResponse<TokenResponse>> reissue(@CookieValue(value = "refreshToken") Cookie cookie, HttpServletRequest request) {
+        String refreshToken = cookie.getValue();
+        Token token = memberService.reissue(refreshToken, request);
+        ResponseCookie responseCookie = ResponseCookie.from("refreshToken", token.getRefreshToken()).httpOnly(true)
+                .secure(true).maxAge(Duration.ofDays(7L)).build();
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .body(BaseResponse.create(HttpStatus.OK.value(), "토큰 재발급에 성공했습니다.", TokenResponse.builder().accessToken(token.getAccessToken()).build()));
     }
 }
