@@ -1,12 +1,17 @@
-import React from "react";
-import { Outlet } from "react-router-dom";
+import { useCallback } from "react";
+import { getSessionList } from "../apis/api/session";
+import SessionListTemplate from "../components/templates/session/SessionListTemplate";
 
-const SessionPage: React.FC = () => {
+const CrewPage: React.FC = () => {
+  const fetchData = useCallback(async (page: number) => {
+    return (await getSessionList({ pageNo: page })).sessions;
+  }, []);
+
   return (
-    <>
-      <Outlet />
-    </>
+    <main>
+      <SessionListTemplate fetchData={fetchData} />;
+    </main>
   );
 };
 
-export default SessionPage;
+export default CrewPage;

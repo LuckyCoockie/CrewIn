@@ -41,7 +41,7 @@ const CrewListItem = ({
   }, [imageUrl]);
 
   return (
-    <div className="max-w-sm rounded-xl border-[2px] md:border-2 border-primary bg-white tracking-tighter truncate">
+    <div className="max-w-sm rounded-lg border-[2px] md:border-2 border-primary bg-white tracking-tighter truncate">
       <div className="flex justify-center items-center bg-primary square md:p-4 p-3">
         {image ? (
           <img
@@ -63,7 +63,10 @@ const CrewListItem = ({
             <div className="w-[3px] md:w-1 h-full bg-highlight"></div>
           </div>
           <div className="overflow-hidden">
-            <p className="font-bold text-gray-700 text-xl md:text-xl truncate">
+            <p
+              className="font-bold text-gray-700 text-xl md:text-xl truncate"
+              style={{ lineHeight: "0.8em" }}
+            >
               {title}
             </p>
             <p className="text-gray-700 text-base text-sm md:text-md truncate">
