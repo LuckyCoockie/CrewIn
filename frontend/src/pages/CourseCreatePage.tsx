@@ -19,7 +19,7 @@ const CourseCreatePage: React.FC = () => {
                     point.latitude,
                     point.longitude,
                   ]),
-                  polylines: polylines.map((polyline) =>
+                  polylines: polylines!.map((polyline) =>
                     polyline.map((point) => [point.latitude, point.longitude])
                   ),
                 }),
