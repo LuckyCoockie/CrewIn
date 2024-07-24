@@ -67,18 +67,18 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
     return hours * 3600 + minutes * 60 + seconds;
   };
 
-  const handleTopLeftImageUpload = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setTopLeftImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  // const handleTopLeftImageUpload = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   const file = event.target.files?.[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onload = (e) => {
+  //       setTopLeftImage(e.target?.result as string);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
   const handleFinish = async () => {
     if (captureRef.current) {
@@ -148,9 +148,9 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
               />
             </div>
           )}
-          <div className="absolute bottom-4 left-4 right-4 flex justify-around items-center">
+          <div className="absolute bottom-4 left-2 right-2 flex justify-around items-center">
             {showTimeInput && (
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1">
                 {showColorInput ? (
                   <img
                     src={alarmWhite}
@@ -185,7 +185,7 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
               </div>
             )}
             {showPaceInput && (
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1">
                 {showColorInput ? (
                   <img
                     src={meterWhite}
@@ -217,12 +217,6 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
           크루 로고
         </label>
         <div className="flex items-center space-x-4">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleTopLeftImageUpload}
-            className="border border-gray-300 rounded px-2 py-1 text-sm cursor-pointer w-24 sm:w-32"
-          />
           <div
             className={`relative rounded-full w-12 h-6 transition-colors duration-200 ease-in-out ${
               showLogoInput ? "bg-[#2b2f40e6]" : "bg-[#2b2f401a]"
