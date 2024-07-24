@@ -1,9 +1,9 @@
-import { CrewDto } from "../../../apis/api/crew";
 import CrewListComponent from "../../organisms/CrewListOrganisms";
 
 import { ReactComponent as CrewinLogo } from "../../../assets/icons/crewinlogo.svg";
 import { ReactComponent as SearchIcon } from "../../../assets/icons/searchicon.svg";
 import { ReactComponent as CrewCreateIcon } from "../../../assets/icons/crewCreate.svg";
+import { CrewDto } from "../../../apis/api/crewlist";
 
 type OwnProps = {
   fetchData: (page: number) => Promise<CrewDto[]>;

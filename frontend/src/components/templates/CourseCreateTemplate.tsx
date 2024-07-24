@@ -179,7 +179,6 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
           if (blob) {
             const file = new File([blob], "temp.png");
             const imageUrl = await uploadImage(file);
-            console.log(imageUrl);
             setImage(imageUrl);
           }
         },
