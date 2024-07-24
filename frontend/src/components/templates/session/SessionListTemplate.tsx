@@ -2,10 +2,10 @@ import { ReactComponent as CrewinLogo } from "../../../assets/icons/crewinlogo.s
 import { ReactComponent as SearchIcon } from "../../../assets/icons/searchicon.svg";
 import { ReactComponent as CrewCreateIcon } from "../../../assets/icons/crewCreate.svg";
 import SessionListComponent from "../../organisms/SessionListOrganisms";
-import { SessionDto } from "../../../apis/api/session";
+import { SessionDto, SessionRequestType } from "../../../apis/api/session";
 
 type OwnProps = {
-  fetchData: (page: number) => Promise<SessionDto[]>;
+  fetchData: (type: SessionRequestType) => Promise<SessionDto[]>;
 };
 
 const SessionListTemplate: React.FC<OwnProps> = ({ fetchData }: OwnProps) => {

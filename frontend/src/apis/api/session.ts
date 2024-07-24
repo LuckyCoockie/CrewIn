@@ -1,19 +1,59 @@
 import api from "../utils/instance";
 
+export const SessionTypeData = {
+  STANDARD: "STANDARD",
+  OPEN: "OPEN",
+  THUNDER: "THUNDER",
+} as const;
+export type SessionType =
+  (typeof SessionTypeData)[keyof typeof SessionTypeData];
+export const sessionTypeToLabel = (type: SessionType) => {
+  switch (type) {
+    case SessionTypeData.STANDARD:
+      return "정규련";
+    case SessionTypeData.OPEN:
+      return "오픈런";
+    case SessionTypeData.THUNDER:
+      return "번개런";
+  }
+};
+
+export const SessionRequestTypeData = {
+  ALL: "all",
+  STANDARD: "standard",
+  OPEN: "open",
+  THUNDER: "thunder",
+} as const;
+export type SessionRequestType =
+  (typeof SessionRequestTypeData)[keyof typeof SessionRequestTypeData];
+
+export const sessionRequestTypeToLabel = (type: SessionRequestType) => {
+  switch (type) {
+    case SessionRequestTypeData.ALL:
+      return "전체";
+    case SessionRequestTypeData.STANDARD:
+      return "정규련";
+    case SessionRequestTypeData.OPEN:
+      return "오픈런";
+    case SessionRequestTypeData.THUNDER:
+      return "번개런";
+  }
+};
+
 export type SessionDto = {
   sessionId: number;
   sessionName: string;
   crewName: string;
   area: string;
   spot: string;
-  sessionType: "STANDARD" | "OPEN" | "THUNDER";
+  sessionType: SessionType;
   maxPeople: number;
   sessionThumbnail: string;
   startAt: string;
 };
 
 export type GetSessionListRequestDto = {
-  pageNo: number;
+  type: SessionRequestType;
 };
 
 export type GetSessionListResponseDto = {
