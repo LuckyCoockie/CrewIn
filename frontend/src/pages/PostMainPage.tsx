@@ -63,15 +63,15 @@ const PostMainPage: React.FC = () => {
   };
 
   const handleSearch = () => {
-    navigate("/search");
-  }
+    navigate("/searchuser");
+  };
 
   if (!postData) {
     return <div>No post data available</div>;
   }
 
   return (
-    <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20">
+    <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20 relative">
       <div className="flex items-center bg-white w-full mb-10">
         <div className="flex items-center">
           <CrewinLogo />
@@ -131,7 +131,7 @@ const PostMainPage: React.FC = () => {
           )}
         </div>
       </div>
-      <div style={{ position: "fixed", right: "8px", bottom: "90px" }}>
+      <div className="sticky bottom-24 right-4 max-w-[550px] w-full flex justify-end">
         <Postcreateicon onClick={handlePostCreate} />
       </div>
     </div>

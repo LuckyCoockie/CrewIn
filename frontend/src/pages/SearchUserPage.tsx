@@ -7,9 +7,9 @@ const SearchUserPage: React.FC = () => {
     <div className="flex flex-col max-w-[550px] mx-auto">
       <div className="flex items-center justify-between">
         <BackHeaderMediumOrganism text="" />
-        <div className="relative text-gray-600 mt-4 flex-1">
+        <div className="relative text-gray-600 ml-12 mt-2 mr-4 flex-1">
           <input
-            className="border-2 border-gray-300 bg-white h-12 px-5 pr-12 rounded-lg text-sm focus:outline-none w-full"
+            className="border-2 border-gray-300 bg-white h-10 px-4 pr-12 rounded-lg text-sm focus:outline-none w-full"
             type="search"
             name="search"
             placeholder="아이디, 이름, 닉네임"
