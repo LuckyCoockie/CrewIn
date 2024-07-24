@@ -1,7 +1,7 @@
-type ErrorResponse = {
+type ErrorResponseDto = {
   timeStamp: string;
   errorCode: string;
   message: string;
 };
 
-export default ErrorResponse;
+export default ErrorResponseDto;

@@ -1,8 +1,10 @@
+const flowbite = require("flowbite-react/tailwind");
 module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
     "./node_modules/flowbite/**/*.js",
+    flowbite.content(),
   ],
   theme: {
     extend: {
@@ -22,8 +24,17 @@ module.exports = {
           DEFAULT: "#2B2F40",
           dark: "#2B2F40",
         },
+        highlight: {
+          light: "#7E251B",
+          DEFAULT: "#7E251B",
+          dark: "#7E251B",
+        }        
       },
     },
   },
-  plugins: [require("@tailwindcss/aspect-ratio"), require("flowbite/plugin")],
+  plugins: [
+    flowbite.plugin(),
+    require("@tailwindcss/aspect-ratio"),
+    require("flowbite/plugin"),
+  ],
 };

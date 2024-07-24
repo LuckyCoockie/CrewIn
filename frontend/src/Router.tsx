@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import CrewCreatePage from "./pages/CrewCreatePage";
 import PostCreatePage from "./pages/PostCreatePage";
-import RouteCreatePage from "./pages/RouteCreatePage";
+import CourseCreatePage from "./pages/CourseCreatePage";
 import LoginPage from "./pages/LoginPage";
 import SessionCreatePage from "./pages/SessionCreatePage";
 import SessionPage from "./pages/SessionPage";
@@ -11,7 +11,9 @@ import ProfilePage from "./pages/ProfilePage";
 import JoinPage from "./pages/JoinPage";
 import SessionDetailPage from "./pages/SessionDetailPage";
 import PostMainPage from "./pages/PostMainPage";
+import SearchUserPage from "./pages/SearchUserPage";
 import CrewDetailPage from "./pages/CrewDetailPage";
+import AlarmPage from "./pages/AlarmPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -36,9 +38,11 @@ export const router = createBrowserRouter([
         ],
       },
       { path: "profile", element: <ProfilePage /> },
-      { path: "maps", element: <RouteCreatePage /> },
+      { path: "course", element: <CourseCreatePage /> },
       { path: "createcrew", element: <CrewCreatePage /> },
       { path: "post", element: <PostCreatePage /> },
+      { path: "searchuser", element: <SearchUserPage /> },
+      { path: "alarm", element: <AlarmPage /> },
       { path: "login", element: <LoginPage /> },
       { path: "join", element: <JoinPage /> },
     ],
