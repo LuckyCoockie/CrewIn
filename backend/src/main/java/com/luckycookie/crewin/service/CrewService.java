@@ -246,6 +246,12 @@ public class CrewService {
         post.updateCrewNotice(createCrewNoticeRequest);
     }
 
+    public void deleteNotice(Long noticeId) {
+        Post post = postRepository.findById(noticeId)
+                .orElseThrow(() -> new NotFoundPostException(noticeId));
+        postRepository.delete(post);
+    }
+
     public boolean isJoined(Integer isJoined) {
         if (isJoined == null || isJoined == 0) {
             return false;
