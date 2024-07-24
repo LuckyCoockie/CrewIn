@@ -80,9 +80,9 @@ public class CrewService {
                 .orElseThrow(NotFoundMemberException::new);
 
         // 가입 여부 확인
-        List<Integer> isJoinedList = memberCrewRepository.existsByMemberAndIsJoinedTrue(member);
+        List<Boolean> isJoinedList = memberCrewRepository.existsByMemberAndIsJoinedTrue(member);
 
-        if (isJoinedList.contains(1)) {
+        if (isJoinedList.contains(true)) {
             // 내가 가입되어 있는 크루
             crewsPage = crewRepository.findCrewsByMemberId(member.getId(), pageable);
         } else {
