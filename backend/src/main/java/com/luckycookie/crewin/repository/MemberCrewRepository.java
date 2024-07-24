@@ -14,8 +14,8 @@ import java.util.Optional;
 @Repository
 public interface MemberCrewRepository extends JpaRepository<MemberCrew, Long> {
 
-    @Query(value = "SELECT is_joined FROM membercrew WHERE member_id = :memberId AND crew_id = :crewId", nativeQuery = true)
-    Integer findIsJoinedByMemberIdAndCrewId(@Param("memberId") Long memberId, @Param("crewId") Long crewId);
+    @Query(value = "SELECT mc.isJoined FROM MemberCrew mc WHERE mc.id = :memberId AND mc.crew.id = :crewId")
+    Boolean findIsJoinedByMemberIdAndCrewId(@Param("memberId") Long memberId, @Param("crewId") Long crewId);
 
     List<Integer> existsByMemberAndIsJoinedTrue(Member member);
 
