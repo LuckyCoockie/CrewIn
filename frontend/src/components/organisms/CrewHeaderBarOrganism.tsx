@@ -27,10 +27,11 @@ const CrewHeaderBarOrganism: React.FC = () => {
       <div
         className="whitespace-nowrap overflow-x-auto flex items-center space-x-3"
         style={{
-          msOverflowStyle: "none", // IE and Edge
-          scrollbarWidth: "none", // Firefox
+          msOverflowStyle: "none", 
+          scrollbarWidth: "none", 
         }}
       >
+        {/*횡 스크롤바 삭제 */}
         <style>
           {`
             .whitespace-nowrap::-webkit-scrollbar {
