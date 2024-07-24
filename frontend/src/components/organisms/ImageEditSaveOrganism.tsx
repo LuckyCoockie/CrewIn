@@ -17,13 +17,7 @@ interface EditorStepProps {
   onFinish: (finalImage: string) => void;
 }
 
-const ImageEditSave: React.FC<EditorStepProps> = ({
-  images,
-  crewName,
-  visibility,
-  content,
-  onFinish,
-}) => {
+const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
   const [overlayTotalDistance, setOverlayTotalDistance] = useState("00.00");
   const [overlayTotalTime, setOverlayTotalTime] = useState("00:00:00");
   const [overlayPace, setOverlayPace] = useState("0'0''");
