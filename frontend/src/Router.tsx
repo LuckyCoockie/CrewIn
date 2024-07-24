@@ -11,6 +11,7 @@ import ProfilePage from "./pages/ProfilePage";
 import JoinPage from "./pages/JoinPage";
 import SessionDetailPage from "./pages/SessionDetailPage";
 import PostMainPage from "./pages/PostMainPage";
+import SearchUserPage from "./pages/SearchUserPage";
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +36,7 @@ export const router = createBrowserRouter([
       { path: "maps", element: <RouteCreatePage /> },
       { path: "createcrew", element: <CrewCreatePage /> },
       { path: "post", element: <PostCreatePage /> },
+      { path: "searchuser", element: <SearchUserPage /> },
       { path: "login", element: <LoginPage /> },
       { path: "join", element: <JoinPage /> },
     ],

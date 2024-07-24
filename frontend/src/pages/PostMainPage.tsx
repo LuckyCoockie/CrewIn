@@ -63,6 +63,10 @@ const PostMainPage: React.FC = () => {
     navigate("/post");
   };
 
+  const handleSearch = () => {
+    navigate("/search");
+  }
+
   if (!postData) {
     return <div>No post data available</div>;
   }
@@ -74,7 +78,7 @@ const PostMainPage: React.FC = () => {
           <CrewinLogo />
         </div>
         <div className="flex items-center flex-grow justify-end mr-2">
-          <Searchicon className="w-6 h-6 mr-4" />
+          <Searchicon className="w-6 h-6 mr-4" onClick={handleSearch} />
           <Alarmicon className="w-6 h-6" />
         </div>
       </div>
