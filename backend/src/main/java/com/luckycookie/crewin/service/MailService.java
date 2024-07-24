@@ -1,6 +1,7 @@
 package com.luckycookie.crewin.service;
 
 import com.luckycookie.crewin.domain.redis.EmailCertification;
+import com.luckycookie.crewin.exception.member.EmailNotFoundException;
 import com.luckycookie.crewin.exception.member.EmailSendException;
 import com.luckycookie.crewin.repository.EmailRedisRepository;
 import jakarta.mail.MessagingException;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -48,7 +50,6 @@ public class MailService {
             "</body>\n" +
             "</html>";
 
-    @Transactional(readOnly = true)
     public void sendMail(String mail) {
         try {
             String randomCode = generateRandomCode();
@@ -62,6 +63,16 @@ public class MailService {
         } catch (Exception e) {
             throw new EmailSendException();
         }
+    }
+
+    @Transactional(readOnly = true)
+    public boolean checkMail(String email, String code) {
+        Optional<EmailCertification> findCode = emailRedisRepository.findById(email);
+        if (findCode.isEmpty()) {
+            throw new EmailNotFoundException();
+        }
+
+        return findCode.get().getCertificationNumber().equals(code);
     }
 
     public MimeMessage createMessage(String mail, String randomCode) throws MessagingException, UnsupportedEncodingException {
