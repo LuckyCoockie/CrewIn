@@ -1,61 +1,13 @@
-import React from "react";
-import CrewListComponent from "../components/organisms/CrewListOrganisms";
+import { getCrewList } from "../apis/api/crew";
+import { useCallback } from "react";
+import CrewListTemplate from "../components/templates/crew/CrewListTemplate";
 
 const CrewPage: React.FC = () => {
-  const getCrewListWithPage = async () => {
-    return [
-      {
-        imageUrl: "https://picsum.photos/300",
-        title: "Crew In",
-        description: "같이의 가치",
-        captain: "박준식",
-        location: "서울특별시 강남구",
-        peopleCount: 5,
-      },
-      {
-        imageUrl: "https://picsum.photos/300",
-        title: "Crew In",
-        description: "같이의 가치",
-        captain: "박준식",
-        location: "서울특별시 강남구",
-        peopleCount: 5,
-      },
-      {
-        imageUrl: "https://picsum.photos/300",
-        title: "Crew In",
-        description: "같이의 가치",
-        captain: "박준식",
-        location: "서울특별시 강남구",
-        peopleCount: 5,
-      },
-      {
-        imageUrl: "https://picsum.photos/300",
-        title: "Crew In",
-        description: "같이의 가치",
-        captain: "박준식",
-        location: "서울특별시 강남구",
-        peopleCount: 5,
-      },
-      {
-        imageUrl: "https://picsum.photos/300",
-        title: "Crew In",
-        description: "같이의 가치",
-        captain: "박준식",
-        location: "서울특별시 강남구",
-        peopleCount: 5,
-      },
-      {
-        imageUrl: "https://picsum.photos/300",
-        title: "Crew In",
-        description: "같이의 가치",
-        captain: "박준식",
-        location: "서울특별시 강남구",
-        peopleCount: 5,
-      },
-    ];
-  };
+  const fetchData = useCallback(async (page: number) => {
+    return (await getCrewList({ pageNo: page })).crews;
+  }, []);
 
-  return <CrewListComponent pageSize={6} fetchData={getCrewListWithPage} />;
+  return <CrewListTemplate fetchData={fetchData} />;
 };
 
 export default CrewPage;

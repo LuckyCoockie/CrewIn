@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "../../styles/square.css";
 import { IconTextComponent } from "../atoms/text/IconText";
+import React from "react";
 
 interface OwnProps {
   imageUrl: string;
@@ -25,7 +26,6 @@ const CrewListItem = ({
     fetch(imageUrl)
       .then((response) => response.blob())
       .then((blob) => {
-        console.log(blob);
         const url = URL.createObjectURL(blob);
         setImage(url);
       })
@@ -90,4 +90,4 @@ const CrewListItem = ({
   );
 };
 
-export default CrewListItem;
+export default React.memo(CrewListItem);

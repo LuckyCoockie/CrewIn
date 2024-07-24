@@ -1,63 +1,58 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { Spinner } from "flowbite-react";
+import { useInfiniteQuery } from "react-query";
 
 export interface ItemComponentProps<T> {
   data: T[];
 }
 
 type OwnProps<T> = {
-  pageSize: number,
+  key?: string;
+  pageSize: number;
   fetchData: (page: number) => Promise<T[]>;
-  child: (props: ItemComponentProps<T>) => React.ReactElement<HTMLElement>;
+  PageComponent: (
+    props: ItemComponentProps<T>
+  ) => React.ReactElement<HTMLElement>;
 };
 
-const InfiniteScrollList = <T,>({
-  pageSize,
+const InfiniteScrollComponent = <T,>({
+  key = "??",
   fetchData,
-  child: ListComponent,
+  PageComponent,
 }: OwnProps<T>) => {
-  const [data, setData] = useState<T[]>([]);
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-  const loaderRef = useRef<HTMLDivElement | null>(null);
+  const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
+    useInfiniteQuery(key, ({ pageParam = 1 }) => fetchData(pageParam), {
+      getNextPageParam: (_, allPages) => {
+        const nextPage = allPages.length + 1;
+        return nextPage;
+      },
+    });
 
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      const newData = await fetchData(page);
-      setData((prevData) => [...prevData, ...newData]);
-      setLoading(false);
-      if (newData.length < pageSize) {
-        setHasMore(false);
+    const handleScroll = async () => {
+      const { scrollHeight, scrollTop, clientHeight } =
+      document.documentElement;
+      if (
+        !isFetchingNextPage &&
+        scrollHeight - scrollTop <= clientHeight * 1.2
+      ) {
+        if (hasNextPage) await fetchNextPage();
       }
     };
-
-    loadData();
-  }, [fetchData, page, pageSize]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (loaderRef.current) {
-        const bottom = loaderRef.current.getBoundingClientRect().bottom;
-        if (bottom <= window.innerHeight && !loading && hasMore) {
-          setPage((prevPage) => prevPage + 1);
-        }
-      }
+    document.addEventListener("scroll", handleScroll);
+    return () => {
+      document.removeEventListener("scroll", handleScroll);
     };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [loading, hasMore]);
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   return (
     <div>
-      <ListComponent data={data} />
-      <div ref={loaderRef} className="items-center">
-        {loading && <Spinner />}
-      </div>
+      {data?.pages.map((data, index) => (
+        <PageComponent key={index} data={data} />
+      ))}
+      <div className="items-center">{isFetchingNextPage && <Spinner />}</div>
     </div>
   );
 };
 
-export default InfiniteScrollList;
+export default InfiniteScrollComponent;

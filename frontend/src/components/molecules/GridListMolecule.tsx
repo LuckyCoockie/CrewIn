@@ -17,7 +17,7 @@ const GridListComponent = <T,>({
   return (
     <div className="grid grid-cols-2 gap-2 md:gap-4">
       {items.map((item, index) => (
-        <ItemComponent index={index} item={item} />
+        <ItemComponent key={index} index={index} item={item} />
       ))}
     </div>
   );
