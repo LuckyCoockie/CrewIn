@@ -2,12 +2,15 @@ package com.luckycookie.crewin.security.util;
 
 import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.domain.Token;
+import com.luckycookie.crewin.domain.redis.Auth;
+import com.luckycookie.crewin.repository.RefreshTokenRedisRepository;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,6 +34,7 @@ import static com.luckycookie.crewin.exception.constants.SecurityExceptionList.*
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class TokenUtil {
 
     @Value("${security.secret-key}")
@@ -39,13 +43,11 @@ public class TokenUtil {
     private final Long accessTokenExpireTime = 60 * 60L * 24 * 30; // 테스트용 한달
     private final Long refreshTokenExpireTime = 60 * 60 * 24 * 7L; // 일주일
     private SecretKey key;
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
 
     public void makeAuthentication(Member member) {
         // Authentication 만들기
-        CustomUser customUser = CustomUser.builder()
-                .email(member.getEmail())
-                .roles(Collections.singletonList(member.getRole().toString()))
-                .build();
+        CustomUser customUser = CustomUser.builder().email(member.getEmail()).roles(Collections.singletonList(member.getRole().toString())).build();
 
         // ContextHolder에 Authentication 정보 저장
         Authentication auth = getAuthentication(customUser);
@@ -53,12 +55,9 @@ public class TokenUtil {
     }
 
     public Authentication getAuthentication(CustomUser user) {
-        List<GrantedAuthority> grantedAuthorities = user.getRoles().stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+        List<GrantedAuthority> grantedAuthorities = user.getRoles().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 
-        return new UsernamePasswordAuthenticationToken(user, "",
-                grantedAuthorities);
+        return new UsernamePasswordAuthenticationToken(user, "", grantedAuthorities);
     }
 
     public boolean validateToken(String token, HttpServletRequest request) {
@@ -85,25 +84,15 @@ public class TokenUtil {
     }
 
     public Token generateToken(Member member) {
-        String accessToken = Jwts.builder()
-                .subject(member.getEmail())
-                .issuedAt(Timestamp.valueOf(LocalDateTime.now()))
-                .claim("email", member.getEmail())
-                .expiration(Date.from(Instant.now().plus(accessTokenExpireTime, ChronoUnit.SECONDS)))
-                .signWith(key)
-                .compact();
+        String accessToken = Jwts.builder().subject(member.getEmail()).issuedAt(Timestamp.valueOf(LocalDateTime.now())).claim("email", member.getEmail()).expiration(Date.from(Instant.now().plus(accessTokenExpireTime, ChronoUnit.SECONDS))).signWith(key).compact();
 
-        String refreshToken = Jwts.builder()
-                .subject(member.getEmail())
-                .issuedAt(Timestamp.valueOf(LocalDateTime.now()))
-                .expiration(Date.from(Instant.now().plus(refreshTokenExpireTime, ChronoUnit.SECONDS)))
-                .signWith(key)
-                .compact();
+        String refreshToken = Jwts.builder().subject(member.getEmail()).issuedAt(Timestamp.valueOf(LocalDateTime.now())).expiration(Date.from(Instant.now().plus(refreshTokenExpireTime, ChronoUnit.SECONDS))).signWith(key).compact();
 
-        return Token.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+        // redis에 refresh Token 저장
+        refreshTokenRedisRepository.save(Auth.builder().email(member.getEmail()).refreshToken(refreshToken).build());
+        System.out.println("asdfasdf  " + refreshTokenExpireTime + " " + accessTokenExpireTime);
+
+        return Token.builder().accessToken(accessToken).refreshToken(refreshToken).build();
     }
 
     @PostConstruct
