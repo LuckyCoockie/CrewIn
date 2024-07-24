@@ -1,6 +1,7 @@
 package com.luckycookie.crewin.controller;
 
 import com.luckycookie.crewin.domain.enums.SessionType;
+import com.luckycookie.crewin.dto.SessionDetailResponse;
 import com.luckycookie.crewin.dto.SessionRequest;
 import com.luckycookie.crewin.dto.SessionResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
@@ -23,7 +24,7 @@ public class SessionController {
     private final SessionService sessionService;
 
     @PostMapping()
-    public ResponseEntity<BaseResponse<Void>> createPost(@AuthenticationPrincipal CustomUser customUser, @RequestBody SessionRequest.CreateSessionRequest createSessionRequest) {
+    public ResponseEntity<BaseResponse<Void>> createPost(@RequestBody SessionRequest.CreateSessionRequest createSessionRequest, @AuthenticationPrincipal CustomUser customUser) {
         sessionService.createSession(createSessionRequest, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션을 등록하는데 성공했습니다."));
     }
@@ -44,5 +45,11 @@ public class SessionController {
     public ResponseEntity<BaseResponse<List<SessionResponse>>> getSessionsByCrewName(@RequestParam("crew-name") String crewName, @AuthenticationPrincipal CustomUser customUser) {
         List<SessionResponse> sessions = sessionService.getSessionsByCrewName(crewName);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당하는 크루의 세션을 조회하는데 성공했습니다.", sessions));
+    }
+
+    @GetMapping("/detail")
+    public ResponseEntity<BaseResponse<SessionDetailResponse>> getSessionDetail(@RequestParam("id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
+        SessionDetailResponse sessionDetailResponse = sessionService.getSessionDetail(sessionId, customUser);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당하는 세션의 세부정보를 조회하는데 성공했습니다.", sessionDetailResponse));
     }
 }
