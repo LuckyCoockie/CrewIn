@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import { Outlet } from "react-router-dom";
 
-const SessionPage:React.FC = () => {
+const SessionPage: React.FC = () => {
   return (
-    <h1>SessionPage</h1>
-  )
-}
+    <>
+      <Outlet />
+    </>
+  );
+};
 
-export default SessionPage
+export default SessionPage;

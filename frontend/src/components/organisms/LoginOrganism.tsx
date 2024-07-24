@@ -1,16 +1,13 @@
-import React, { useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import InputTextTypeMolecule from "../molecules/InputTextTypeMolecule";
-import InputPasswordTypeMolecule from "../molecules/InputPasswordTypeMolecule";
+import InputTextTypeMolecule from "../molecules/Input/InputTextTypeMolecule";
+import InputPasswordTypeMolecule from "../molecules/Input/InputPasswordTypeMolecule";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
-
-type OwnProps = {
-  login: (value: FormValues) => Promise<void>;
-};
-
+import { useSelector } from "react-redux";
+import { login } from "../../modules/reducers/auth";
+import store, { RootState } from "../../modules";
 // 유효성 검사 스키마 정의
 const schema = yup.object({
   email: yup
@@ -24,7 +21,7 @@ type FormValues = {
   password: string;
 };
 
-const LoginOrganism: React.FC<OwnProps> = ({ login }: OwnProps) => {
+const LoginOrganism = () => {
   const {
     control,
     handleSubmit,
@@ -36,13 +33,9 @@ const LoginOrganism: React.FC<OwnProps> = ({ login }: OwnProps) => {
     defaultValues: {},
   });
 
-  const [isFailed, setIsFailed] = useState<boolean>(false);
-
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    login(data).catch((error) => {
-      console.log(error);
-      setIsFailed(true);
-    });
+  const { error } = useSelector((state: RootState) => state.auth);
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    store.dispatch(login(data.email, data.password));
   };
 
   return (
@@ -74,7 +67,7 @@ const LoginOrganism: React.FC<OwnProps> = ({ login }: OwnProps) => {
               <InputPasswordTypeMolecule
                 id="password"
                 title="비밀번호"
-                placeholder=""
+                placeholder="⦁⦁⦁⦁⦁⦁"
                 {...field}
                 error={errors.password?.message}
                 hasError={!!errors.password}
@@ -83,11 +76,7 @@ const LoginOrganism: React.FC<OwnProps> = ({ login }: OwnProps) => {
           />
         </div>
         <div>
-          {isFailed ?? (
-            <p className="ps-4 pt-1 text-sm font-light text-red-500">
-              {"이메일 또는 비밀번호가 잘못되었습니다."}
-            </p>
-          )}
+          <p className="ps-4 pt-1 text-sm font-light text-red-500">{error}</p>
           <LargeDisableButton text="로그인" />
         </div>
       </form>

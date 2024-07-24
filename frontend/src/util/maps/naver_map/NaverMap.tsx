@@ -16,7 +16,7 @@ type props = {
   onChange?: (polyline: { latitude: number; longitude: number }[]) => void;
 };
 
-const NaverMap: React.FC<props> = ({ lat, lng, zoom }: props) => {
+const NaverMap: React.FC<props> = ({ lat, lng, zoom, onChange }: props) => {
   const { markers } = useNaverMapState();
   const dispatch = useNaverMapDispatch();
 
