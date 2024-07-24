@@ -131,7 +131,6 @@ public class SessionService {
                 .crewName(session.getCrew().getCrewName())
                 .sessionName(session.getName())
                 .spot(session.getSpot())
-                .content(session.getContent())
                 .sessionType(session.getSessionType())
                 .maxPeople(session.getMaxPeople())
                 .startAt(session.getStartAt())
