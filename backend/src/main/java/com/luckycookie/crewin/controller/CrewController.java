@@ -59,6 +59,19 @@ public class CrewController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 공지 조회를 성공했습니다.", crewService.getCrewNoticeList(pageNo, crewId, customUser)));
     }
 
+    @PutMapping("/notice/{id}")
+    public ResponseEntity<BaseResponse<Void>> updateNotice(
+            @PathVariable("id") Long noticeId,
+            @RequestBody CrewRequest.CreateCrewNoticeRequest createCrewNoticeRequest) {
+        try {
+            crewService.updateNotice(noticeId, createCrewNoticeRequest);
+            return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "공지를 수정하는데 성공했습니다."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(BaseResponse.create(HttpStatus.BAD_REQUEST.value(), "공지 업데이트를 실패했습니다: " + e.getMessage()));
+        }
+    }
+
     // 크루 사진첩 조회
     @GetMapping("/gallery/{crewId}")
     public ResponseEntity<BaseResponse<CrewResponse.CrewGalleryItemResponse>> getCrewGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long crewId, @RequestParam int pageNo) {

@@ -13,6 +13,7 @@ import com.luckycookie.crewin.exception.post.NotFoundPostException;
 import com.luckycookie.crewin.exception.crew.CrewPositionMismatchException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -79,9 +80,9 @@ public class CrewService {
                 .orElseThrow(NotFoundMemberException::new);
 
         // 가입 여부 확인
-        boolean isJoined = memberCrewRepository.existsByMemberAndIsJoinedTrue(member);
+        List<Integer> isJoinedList = memberCrewRepository.existsByMemberAndIsJoinedTrue(member);
 
-        if (isJoined) {
+        if (isJoinedList.contains(1)) {
             // 내가 가입되어 있는 크루
             crewsPage = crewRepository.findCrewsByMemberId(member.getId(), pageable);
         } else {
@@ -237,6 +238,20 @@ public class CrewService {
                 .lastPageNo(lastPageNo)
                 .build();
 
+    }
+
+    public void updateNotice(Long noticeId, CrewRequest.CreateCrewNoticeRequest createCrewNoticeRequest) {
+        Post post = postRepository.findById(noticeId)
+                .orElseThrow(() -> new NotFoundPostException(noticeId));
+        post.updateCrewNotice(createCrewNoticeRequest);
+    }
+
+    public boolean isJoined(Integer isJoined) {
+        if (isJoined == null || isJoined == 0) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }
