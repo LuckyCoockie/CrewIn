@@ -3,12 +3,12 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import InputTextTypeMolecule from "../molecules/InputTextTypeMolecule";
-import ImageTypeMolecule from "../molecules/ImageTypeMolecule";
-import InputDateTypeMolecule from "../molecules/InputDateTypeMolecule";
-import InputTextAreaTypeMolecule from "../molecules/InputTextAreaTypeMolecule";
-import ImageTypeBannerMolecule from "../molecules/ImageTypeBannerMolecule";
-import InputDropdonwTypeMolecule from "../molecules/InputDropdonwTypeMolecule";
+import InputTextTypeMolecule from "../molecules/Input/InputTextTypeMolecule";
+import ImageTypeMolecule from "../molecules/Input/InputImageTypeMolecule";
+import InputDateTypeMolecule from "../molecules/Input/InputDateTypeMolecule";
+import InputTextAreaTypeMolecule from "../molecules/Input/InputTextAreaTypeMolecule";
+import ImageTypeBannerMolecule from "../molecules/Input/InputImageTypeBannerMolecule";
+import InputDropdonwTypeMolecule from "../molecules/Input/InputDropdonwTypeMolecule";
 import { regions } from "../../regions";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";

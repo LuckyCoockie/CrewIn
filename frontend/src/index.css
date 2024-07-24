@@ -25,7 +25,7 @@
 }
 
 :root {
-  font-family: "Roboto", sans-serif;
+  font-family: "Pretendard","Roboto", sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -54,10 +54,9 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  font-family: "Roboto", sans-serif;
+  font-family: "Pretendard", "Roboto", sans-serif;
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
 /* 버튼 컬러 */
@@ -67,8 +66,7 @@ body {
   border-radius: 8px;
   padding-top: 8px;
   padding-bottom: 8px;
-  border-top: 1px solid hsla(229, 20%, 21%, 1);
-  border-bottom: 1px solid hsla(229, 20%, 21%, 1);
+  border: 1px solid hsla(229, 20%, 21%, 1);
   font-weight: bold;
 }
 

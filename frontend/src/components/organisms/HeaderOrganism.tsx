@@ -1,5 +1,5 @@
 import React from "react";
-import LargeTitleMolecule from "../molecules/LargeTitleMolecule";
+import LargeTitleMolecule from "../molecules/Title/LargeTitleMolecule";
 
 type Text = {
   text: string;

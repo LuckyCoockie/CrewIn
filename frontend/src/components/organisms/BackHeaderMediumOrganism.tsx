@@ -1,5 +1,5 @@
 import React from "react";
-import MediumTitleMolecule from "../molecules/MediumTitleMolecule";
+import MediumTitleMolecule from "../molecules/Title/MediumTitleMolecule";
 import BackButton from "../atoms/Button/BackButton";
 
 type Text = {

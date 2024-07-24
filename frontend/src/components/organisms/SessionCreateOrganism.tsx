@@ -3,17 +3,17 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import InputTextTypeMolecule from "../molecules/InputTextTypeMolecule";
-import InputNumberTypeMolecule from "../molecules/InputNumberTypeMolecule";
-import ImageMultiTypeMolecule from "../molecules/ImageMultiTypeMolecule";
-import InputDropdonwTypeMolecule from "../molecules/InputDropdonwTypeMolecule";
-import InputTextAreaNoLimitTypeMolecule from "../molecules/InputTextAreaNoLimitTypeMolecule";
-import InputDateStartTypeMolecule from "../molecules/InputDateStartTypeMolecule";
-import InputDateEndTypeMolecule from "../molecules/InputDateEndTypeMolecule";
+import InputTextTypeMolecule from "../molecules/Input/InputTextTypeMolecule";
+import InputNumberTypeMolecule from "../molecules/Input/InputNumberTypeMolecule";
+import ImageMultiTypeMolecule from "../molecules/Input/InputImageMultiTypeMolecule";
+import InputDropdonwTypeMolecule from "../molecules/Input/InputDropdonwTypeMolecule";
+import InputTextAreaNoLimitTypeMolecule from "../molecules/Input/InputTextAreaNoLimitTypeMolecule";
+import InputDateStartTypeMolecule from "../molecules/Input/InputDateStartTypeMolecule";
+import InputDateEndTypeMolecule from "../molecules/Input/InputDateEndTypeMolecule";
 import { pace } from "../../pace";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
-import InputRadioTypeMolecule from "../molecules/InputRadioTypeMolecule";
+import InputRadioTypeMolecule from "../molecules/Input/InputRadioTypeMolecule";
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import HomeTabMolecule from "../molecules/HomeTabMolecule";
-import SessionTabMolecule from "../molecules/SessionTabMolecule";
-import ProfileTabMolecule from "../molecules/ProfileTabMolecule";
-import CrewTabMolecule from "../molecules/CrewTabMolecule";
+import HomeTabMolecule from "../molecules/Tab/HomeTabMolecule";
+import SessionTabMolecule from "../molecules/Tab/SessionTabMolecule";
+import ProfileTabMolecule from "../molecules/Tab/ProfileTabMolecule";
+import CrewTabMolecule from "../molecules/Tab/CrewTabMolecule";
 import { useNavigate } from "react-router-dom";
 import "../../styles/buttonstyle.css";
 

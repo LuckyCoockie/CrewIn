@@ -2,8 +2,8 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import InputTextTypeMolecule from "../molecules/InputTextTypeMolecule";
-import InputPasswordTypeMolecule from "../molecules/InputPasswordTypeMolecule";
+import InputTextTypeMolecule from "../molecules/Input/InputTextTypeMolecule";
+import InputPasswordTypeMolecule from "../molecules/Input/InputPasswordTypeMolecule";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import { useSelector } from "react-redux";
 import { login } from "../../modules/reducers/auth";

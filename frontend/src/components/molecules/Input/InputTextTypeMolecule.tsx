@@ -1,6 +1,6 @@
 import React from "react";
-import InputLabelComponent from "../atoms/Input/InputLabelComponent";
-import InputNumberTypeComponent from "../atoms/Input/InputNumberTypeComponent";
+import InputLabelComponent from "../../atoms/Input/InputLabelComponent";
+import InputTextTypeComponent from "../../atoms/Input/InputTextTypeComponent";
 
 type InputData = {
   id: string;
@@ -13,12 +13,12 @@ type InputData = {
   hasError?: boolean;
 };
 
-const InputNumberTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
+const InputTextTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
   (props, ref) => {
     return (
       <div className="mb-4 w-full">
         <InputLabelComponent id={props.id} title={props.title} />
-        <InputNumberTypeComponent
+        <InputTextTypeComponent
           id={props.id}
           placeholder={props.placeholder}
           onChange={props.onChange}
@@ -37,4 +37,4 @@ const InputNumberTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
   }
 );
 
-export default InputNumberTypeMolecule;
+export default InputTextTypeMolecule;
