@@ -72,6 +72,17 @@ public class CrewController {
         }
     }
 
+    @DeleteMapping("/notice/{id}")
+    public ResponseEntity<BaseResponse<Void>> deletePost(@PathVariable("id") Long noticeId) {
+        try {
+            crewService.deleteNotice(noticeId);
+            return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "공지 삭제를 성공했습니다."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(BaseResponse.create(HttpStatus.BAD_REQUEST.value(), "공지 삭제를 실패했습니다." + e.getMessage()));
+        }
+    }
+
     // 크루 사진첩 조회
     @GetMapping("/gallery/{crewId}")
     public ResponseEntity<BaseResponse<CrewResponse.CrewGalleryItemResponse>> getCrewGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long crewId, @RequestParam int pageNo) {
