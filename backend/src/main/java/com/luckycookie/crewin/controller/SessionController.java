@@ -60,4 +60,10 @@ public class SessionController {
         sessionService.updateSession(sessionId, updateSessionRequest, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 정보를 수정하는데 성공했습니다."));
     }
+
+    @DeleteMapping("/detail")
+    public ResponseEntity<BaseResponse<Void>> deletePost(@RequestParam("id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
+        sessionService.deleteSession(sessionId, customUser);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

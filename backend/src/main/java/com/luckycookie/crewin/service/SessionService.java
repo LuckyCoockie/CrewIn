@@ -10,7 +10,7 @@ import com.luckycookie.crewin.exception.crew.CrewMemberNotExsistException;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.session.NotFoundSessionException;
-import com.luckycookie.crewin.exception.session.UpdateAuthorizationException;
+import com.luckycookie.crewin.exception.session.SessionAuthorizationException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
@@ -131,13 +131,24 @@ public class SessionService {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(NotFoundSessionException::new);
         if (!session.getHost().getEmail().equals(member.getEmail())) {
-            throw new UpdateAuthorizationException();
+            throw new SessionAuthorizationException();
         }
         Course course = courseRepository.findById(updateSessionRequest.getCourseId())
                 .orElseThrow(NotFoundCourseException::new);
 
         session.updateSession(updateSessionRequest, course);
         sessionRepository.save(session);
+    }
+
+    public void deleteSession(Long sessionId, CustomUser customUser) {
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+        Session session = sessionRepository.findById(sessionId)
+                .orElseThrow(NotFoundSessionException::new);
+        if (!session.getHost().getEmail().equals(member.getEmail())) {
+            throw new SessionAuthorizationException();
+        }
+        sessionRepository.delete(session);
     }
 
     private SessionResponse convertToSessionResponse(Session session) {
