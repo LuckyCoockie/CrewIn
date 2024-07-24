@@ -7,6 +7,7 @@ import com.luckycookie.crewin.dto.CrewRequest;
 import com.luckycookie.crewin.dto.CrewResponse;
 import com.luckycookie.crewin.dto.CrewResponse.CrewItem;
 import com.luckycookie.crewin.dto.CrewResponse.CrewItemResponse;
+import com.luckycookie.crewin.exception.crew.CrewUnauthorizedException;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.post.NotFoundPostException;
@@ -189,9 +190,31 @@ public class CrewService {
         // CAPTAIN 만 수정 가능
         if(position == Position.CAPTAIN) {
             crew.updateCrewInfo(createCrewRequest);
+        } else {
+            throw new CrewUnauthorizedException();
         }
     }
 
+    // 크루 정보 삭제
+    public void deleteCrewInfo(Long crewId, CustomUser customUser) {
+        Crew crew = crewRepository.findById(crewId).orElseThrow(()->new NotFoundCrewException(crewId));
+
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+
+        Position position = memberCrewRepository.findPositionByMember(member).orElseThrow(CrewPositionMismatchException::new);
+
+        // CAPTAIN 만 삭제 가능
+        if(position == Position.CAPTAIN) {
+            // MemberCrew 먼저 삭제
+            memberCrewRepository.deleteByCrewId(crewId);
+
+            // Crew 삭제
+            crewRepository.delete(crew);
+        } else {
+            throw new CrewUnauthorizedException();
+        }
+    }
 
     // 공지사항 조회
     public CrewResponse.CrewNoticeItemResponse getCrewNoticeList(int pageNo, Long crewId, CustomUser customUser) {
@@ -266,14 +289,6 @@ public class CrewService {
         Post post = postRepository.findById(noticeId)
                 .orElseThrow(() -> new NotFoundPostException(noticeId));
         postRepository.delete(post);
-    }
-
-    public boolean isJoined(Integer isJoined) {
-        if (isJoined == null || isJoined == 0) {
-            return false;
-        } else {
-            return true;
-        }
     }
 
 }
