@@ -2,6 +2,7 @@ package com.luckycookie.crewin.controller;
 
 import com.luckycookie.crewin.domain.Crew;
 import com.luckycookie.crewin.dto.CrewRequest;
+import com.luckycookie.crewin.dto.CrewRequest.UpdateCrewPositionRequest;
 import com.luckycookie.crewin.dto.CrewResponse;
 import com.luckycookie.crewin.dto.CrewResponse.CrewItemResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
@@ -79,7 +80,6 @@ public class CrewController {
         }
     }
 
-
     // 크루 공지 조회
     @GetMapping("/notice/{crewId}")
     public ResponseEntity<BaseResponse<CrewResponse.CrewNoticeItemResponse>> getCrewNoticeList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long crewId, @RequestParam int pageNo) {
@@ -116,6 +116,14 @@ public class CrewController {
     @GetMapping("/gallery/{crewId}")
     public ResponseEntity<BaseResponse<CrewResponse.CrewGalleryItemResponse>> getCrewGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long crewId, @RequestParam int pageNo) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 사진첩 조회를 성공했습니다.", crewService.getCrewGalleryList(pageNo, crewId, customUser)));
+    }
+
+    // 크루 권한 부여
+    @PostMapping("/member/authority")
+    public ResponseEntity<BaseResponse<Void>> updateMemberCrewPosition(@AuthenticationPrincipal CustomUser customUser, @RequestBody UpdateCrewPositionRequest updateCrewPositionRequest) {
+        System.out.println("memberCrewId : " + updateCrewPositionRequest.getPosition());
+        crewService.updateMemberCrewPosition(updateCrewPositionRequest, customUser);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "권한을 부여하는데 성공했습니다."));
     }
 
 }

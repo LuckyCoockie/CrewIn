@@ -21,13 +21,17 @@ public interface MemberCrewRepository extends JpaRepository<MemberCrew, Long> {
 
     List<Boolean> existsByMemberAndIsJoinedTrue(Member member);
 
-    // 해당 Member 의 Position 반환
-    @Query("SELECT mc.position FROM MemberCrew mc WHERE mc.member = :member")
-    Optional<Position> findPositionByMember(@Param("member") Member member);
+    @Query("SELECT mc.position FROM MemberCrew mc WHERE mc.member = :member and mc.crew.id = :crewId")
+    Optional<Position> findPositionByMember(@Param("member") Member member, @Param("crewId") Long crewId);
 
-    @Transactional
     @Modifying
     @Query("DELETE FROM MemberCrew mc WHERE mc.crew.id = :crewId")
     void deleteByCrewId(@Param("crewId") Long crewId);
+
+    @Modifying
+    @Query("UPDATE MemberCrew mc SET mc.position = :position WHERE mc.id = :memberCrewId")
+    void updatePosition(@Param("memberCrewId") Long memberCrewId, @Param("position") Position position);
+
+    Optional<MemberCrew> findByMemberIdAndCrewId(Long memberId, Long crewId);
 
 }

@@ -2,6 +2,7 @@ package com.luckycookie.crewin.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.luckycookie.crewin.domain.PostImage;
+import com.luckycookie.crewin.domain.enums.Position;
 import com.luckycookie.crewin.domain.enums.PostType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,6 +49,16 @@ public class CrewRequest {
         private String title; // 공지글 제목
         private String content; // 공지글 내용
         private List<String> noticeImages; // 공지 이미지 List
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UpdateCrewPositionRequest{
+        private Long memberId;
+        private Long crewId;
+        private Position position; // 회원의 직급
     }
 
 }
