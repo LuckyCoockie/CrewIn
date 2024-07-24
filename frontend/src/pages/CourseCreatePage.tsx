@@ -1,15 +1,15 @@
-import RouteCreateTemplate from "../components/templates/RouteCreateTemplate.tsx";
+import CourseCreateTemplate from "../components/templates/CourseCreateTemplate.tsx";
 import useGeolocation from "../util/geolocation/gelocation.ts";
 import { NaverMapProvider } from "../util/maps/naver_map/context.tsx";
 
-const RouteCreatePage: React.FC = () => {
+const CourseCreatePage: React.FC = () => {
   const { location } = useGeolocation();
 
   return (
     <>
       {location && (
         <NaverMapProvider>
-          <RouteCreateTemplate
+          <CourseCreateTemplate
             initPosition={location}
             onSave={({ title, markers, polylines, length, image }) =>
               console.log({
@@ -34,4 +34,4 @@ const RouteCreatePage: React.FC = () => {
   );
 };
 
-export default RouteCreatePage;
+export default CourseCreatePage;

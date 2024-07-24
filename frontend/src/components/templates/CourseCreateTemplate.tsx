@@ -3,7 +3,7 @@ import MarkerList from "../organisms/MarkerList";
 import MapToggleButton from "../organisms/MapToggleButton";
 
 import InputLabelComponent from "../atoms/Input/InputLabelComponent";
-import InputTextTypeMolecule from "../molecules/InputTextTypeMolecule";
+import InputTextTypeMolecule from "../molecules/Input/InputTextTypeMolecule";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -36,7 +36,7 @@ type FormValues = {
   image: string;
 };
 
-const RouteCreateTemplate: React.FC<OwnProps> = ({
+const CourseCreateTemplate: React.FC<OwnProps> = ({
   initPosition,
   onSave,
 }: OwnProps) => {
@@ -257,4 +257,4 @@ const RouteCreateTemplate: React.FC<OwnProps> = ({
   );
 };
 
-export default RouteCreateTemplate;
+export default CourseCreateTemplate;
