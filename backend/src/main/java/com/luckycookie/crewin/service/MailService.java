@@ -1,6 +1,9 @@
 package com.luckycookie.crewin.service;
 
+import com.luckycookie.crewin.domain.redis.EmailCertification;
+import com.luckycookie.crewin.exception.member.EmailNotFoundException;
 import com.luckycookie.crewin.exception.member.EmailSendException;
+import com.luckycookie.crewin.repository.EmailRedisRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -18,6 +22,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class MailService {
     private final JavaMailSender javaMailSender;
+    private final EmailRedisRepository emailRedisRepository;
 
     @Value("${spring.mail.username}")
     private String email;
@@ -45,21 +50,36 @@ public class MailService {
             "</body>\n" +
             "</html>";
 
-    @Transactional(readOnly = true)
     public void sendMail(String mail) {
         try {
-            MimeMessage mimeMessage = createMessage(mail);
+            String randomCode = generateRandomCode();
+            MimeMessage mimeMessage = createMessage(mail, randomCode);
+            EmailCertification emailCertification = EmailCertification.builder()
+                    .email(mail)
+                    .certificationNumber(randomCode)
+                    .build();
+            emailRedisRepository.save(emailCertification);
             javaMailSender.send(mimeMessage);
         } catch (Exception e) {
             throw new EmailSendException();
         }
     }
 
-    public MimeMessage createMessage(String mail) throws MessagingException, UnsupportedEncodingException {
+    @Transactional(readOnly = true)
+    public boolean checkMail(String email, String code) {
+        Optional<EmailCertification> findCode = emailRedisRepository.findById(email);
+        if (findCode.isEmpty()) {
+            throw new EmailNotFoundException();
+        }
+
+        return findCode.get().getCertificationNumber().equals(code);
+    }
+
+    public MimeMessage createMessage(String mail, String randomCode) throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         message.addRecipients(MimeMessage.RecipientType.TO, mail);
         message.setSubject("CREW-IN 회원가입 인증 메일입니다."); // 메일 제목
-        message.setText(content.replace("RandomCode", generateRandomCode()), "UTF-8", "html"); // 메일 내용
+        message.setText(content.replace("RandomCode", randomCode), "UTF-8", "html"); // 메일 내용
         message.setFrom(new InternetAddress(email, "CrewIn_Official")); //보내는 사람의 메일 주소, 보내는 사람 이름
         return message;
     }

@@ -1,7 +1,9 @@
 package com.luckycookie.crewin.controller;
 
 import com.luckycookie.crewin.domain.Token;
+import com.luckycookie.crewin.dto.MemberRequest;
 import com.luckycookie.crewin.dto.MemberRequest.EmailRequest;
+import com.luckycookie.crewin.dto.MemberRequest.EmailResponse;
 import com.luckycookie.crewin.dto.MemberRequest.SignInRequest;
 import com.luckycookie.crewin.dto.MemberRequest.SignUpRequest;
 import com.luckycookie.crewin.dto.TokenResponse;
@@ -58,5 +60,12 @@ public class MemberController {
     public ResponseEntity<BaseResponse<Void>> sendMail(@RequestBody EmailRequest emailRequest) {
         mailService.sendMail(emailRequest.getEmail());
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "이메일 전송이 완료되었습니다."));
+    }
+
+    @GetMapping("/signup/email")
+    public ResponseEntity<BaseResponse<EmailResponse>> checkMail(String email, String code) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "인증 여부를 성공적으로 조회했습니다.",
+                EmailResponse.builder().isVerified(mailService.checkMail(email, code)).build()
+        ));
     }
 }

@@ -31,7 +31,17 @@ public class MemberRequest {
 
     @Getter
     @NoArgsConstructor
+    @Builder
+    @AllArgsConstructor
     public static class EmailRequest {
         private String email;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @Builder
+    @AllArgsConstructor
+    public static class EmailResponse {
+        private boolean isVerified;
     }
 }
