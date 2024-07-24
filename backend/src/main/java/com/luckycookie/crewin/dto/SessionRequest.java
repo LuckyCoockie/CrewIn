@@ -28,7 +28,7 @@ public class SessionRequest {
         private List<String> images;
         // 평균 페이스
         private int pace;
-        // 코스 이름
+        // 집결지 정보
         private String spot;
 
         // 시작 시간
@@ -44,4 +44,33 @@ public class SessionRequest {
 
     }
 
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class UpdateSessionRequest {
+        private Long courseId;
+
+        // 세션 종류
+        private SessionType sessionType;
+        private String name; // 세션 이름
+        // 한 세션에 포스터 여러장 가능
+        private List<String> images;
+        // 평균 페이스
+        private int pace;
+        // 집결지 정보
+        private String spot;
+
+        // 시작 시간
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        private LocalDateTime startAt;
+
+        // 종료 시간
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        private LocalDateTime endAt;
+
+        private String content;
+        private int maxPeople;
+
+    }
 }

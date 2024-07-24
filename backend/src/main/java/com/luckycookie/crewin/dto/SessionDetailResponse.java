@@ -19,6 +19,7 @@ public class SessionDetailResponse {
     private String crewName;
     private String sessionName;
     private String spot;
+    private String area;
     private String content;
     private Integer pace;
     private Integer maxPeople;
