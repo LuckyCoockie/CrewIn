@@ -1,3 +1,4 @@
+// CrewDetailTemplate.js
 import React, { useState } from "react";
 import CrewInfoOrganism from "../organisms/CrewInfoOrganism";
 import CrewNoticeOrganism from "../organisms/CrewNoticeOrganism";
@@ -20,7 +21,7 @@ import nine from "../../assets/images/alarm-clockblack.png";
 import ten from "../../assets/images/alarm-clockblack.png";
 
 const CrewDetailTemplate: React.FC = () => {
-  const [curruntTab, setCurrentTab] = useState<string>("정보");
+  const [currentTab, setCurrentTab] = useState<string>("정보");
 
   const notices = [
     { role: "Captain", title: "첫번째 공지", date: "2024.07.23" },
@@ -44,7 +45,7 @@ const CrewDetailTemplate: React.FC = () => {
   };
 
   const renderTab = () => {
-    switch (curruntTab) {
+    switch (currentTab) {
       case "공지사항":
         return <CrewNoticeOrganism notices={notices} />;
       case "정보":
@@ -66,7 +67,7 @@ const CrewDetailTemplate: React.FC = () => {
       </header>
       <ThreeToTwoImageMolecule src={crewbanner} alt="crewbanner" />
       <div className="pb-20">
-        <NavTabMolecule texts={texts} onTabClick={handleTabClick} />
+        <NavTabMolecule texts={texts} onTabClick={handleTabClick} currentTab={currentTab} />
         {renderTab()}
       </div>
     </>

@@ -20,6 +20,7 @@ const ImageButton: React.FC<Image> = ({ src, alt }) => {
         background: "none",
         cursor: "pointer",
       }}
+      className="transition-transform duration-300 ease-in-out transform active:scale-90" 
     >
       <img
         src={src}
