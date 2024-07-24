@@ -167,4 +167,9 @@ public class SessionService {
                 .startAt(session.getStartAt())
                 .build();
     }
+
+    public List<SessionResponse> getAllSessions() {
+        List<Session> sessions = sessionRepository.findAll();
+        return sessions.stream().map(this::convertToSessionResponse).collect(Collectors.toList());
+    }
 }

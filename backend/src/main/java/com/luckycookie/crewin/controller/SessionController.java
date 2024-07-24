@@ -33,14 +33,21 @@ public class SessionController {
 
     @GetMapping()
     public ResponseEntity<BaseResponse<List<SessionResponse>>> getSessionsByType(@RequestParam("type") String type) {
-        SessionType sessionType;
-        try {
-            sessionType = SessionType.valueOf(type.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new NotFoundSessionTypeException();
+        List<SessionResponse> sessions;
+
+        if (type.equalsIgnoreCase("all")) {
+            sessions = sessionService.getAllSessions();
+        } else {
+            try {
+                SessionType sessionType = SessionType.valueOf(type.toUpperCase());
+                sessions = sessionService.getSessionsByType(sessionType);
+            } catch (IllegalArgumentException e) {
+                throw new NotFoundSessionTypeException();
+            }
         }
-        List<SessionResponse> sessions = sessionService.getSessionsByType(sessionType);
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당하는 타입의 세션을 조회하는데 성공했습니다.", sessions));
+
+        String message = type.equalsIgnoreCase("ALL") ? "모든 세션을 조회하는데 성공했습니다." : "해당하는 타입의 세션을 조회하는데 성공했습니다.";
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), message, sessions));
     }
 
     @GetMapping("/crew-name")
