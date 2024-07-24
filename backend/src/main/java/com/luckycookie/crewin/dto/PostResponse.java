@@ -15,7 +15,7 @@ public class PostResponse {
     private String crewName;
     private String authorEmail;
     private String content;
-    private int heartCount;
+    private Integer heartCount;
     private Boolean isPublic;
     private PostType postType;
     private String title;

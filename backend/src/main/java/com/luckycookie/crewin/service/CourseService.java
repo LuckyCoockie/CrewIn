@@ -4,6 +4,8 @@ import com.luckycookie.crewin.domain.Course;
 import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.dto.CourseRequest;
 import com.luckycookie.crewin.dto.CourseResponse;
+import com.luckycookie.crewin.exception.course.NotFoundCourseException;
+import com.luckycookie.crewin.exception.course.NotMatchMemberCourseError;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.repository.CourseRepository;
 import com.luckycookie.crewin.repository.MemberRepository;
@@ -34,6 +36,7 @@ public class CourseService {
                 .info(createCourseRequest.getInfo())
                 .name(createCourseRequest.getName())
                 .length(createCourseRequest.getLength())
+                .thumbnailImage(createCourseRequest.getThumbnailImage())
                 .build();
         courseRepository.save(course);
 
@@ -47,6 +50,31 @@ public class CourseService {
         List<Course> courseList = courseRepository.findByCreatorId(member.getId());
         return courseList.stream().map(this::convertToDto).collect(Collectors.toList());
     }
+
+    public void updateCourse(CourseRequest.UpdateCourseRequest updateCourseRequest, Long courseId, CustomUser customUser) {
+
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(NotFoundCourseException::new);
+        if (!course.getCreator().equals(member)) {
+            throw new NotMatchMemberCourseError();
+        }
+        course.updateCourse(updateCourseRequest);
+        courseRepository.save(course);
+    }
+
+    public void deleteCourse(Long courseId, CustomUser customUser) {
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(NotFoundCourseException::new);
+        if (!course.getCreator().equals(member)) {
+            throw new NotMatchMemberCourseError();
+        }
+        courseRepository.delete(course);
+    }
+
 
     private CourseResponse convertToDto(Course course) {
         return CourseResponse.builder()

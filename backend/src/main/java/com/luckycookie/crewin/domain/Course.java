@@ -1,5 +1,6 @@
 package com.luckycookie.crewin.domain;
 
+import com.luckycookie.crewin.dto.CourseRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,5 +31,15 @@ public class Course {
 
     private String name;
 
-    private double length;
+    private Double length;
+
+    @Column(columnDefinition = "TEXT")
+    private String thumbnailImage ;
+
+    public void updateCourse(CourseRequest.UpdateCourseRequest updateCourseRequest) {
+        this.info = updateCourseRequest.getInfo();
+        this.name = updateCourseRequest.getName();
+        this.length = updateCourseRequest.getLength();
+        this.thumbnailImage = updateCourseRequest.getThumbnailImage();
+    }
 }

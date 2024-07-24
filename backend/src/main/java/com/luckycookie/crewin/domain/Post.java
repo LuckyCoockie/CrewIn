@@ -2,6 +2,7 @@ package com.luckycookie.crewin.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.luckycookie.crewin.domain.enums.PostType;
+import com.luckycookie.crewin.dto.CrewRequest;
 import com.luckycookie.crewin.dto.PostRequest;
 import com.luckycookie.crewin.exception.post.InvalidPostTypeException;
 import jakarta.persistence.*;
@@ -87,6 +88,20 @@ public class Post {
                         .imageUrl(imageUrl)
                         .post(this)
                         .build());
+            }
+        }
+    }
+
+    public void updateCrewNotice(CrewRequest.CreateCrewNoticeRequest createCrewNoticeRequest) {
+        this.title = createCrewNoticeRequest.getTitle();
+        this.content = createCrewNoticeRequest.getContent();
+
+        this.postImages.clear();
+        if(createCrewNoticeRequest.getNoticeImages() != null) {
+            for(String imageUrl : createCrewNoticeRequest.getNoticeImages()) {
+                this.postImages.add(PostImage.builder()
+                        .imageUrl(imageUrl)
+                        .post(this).build());
             }
         }
     }

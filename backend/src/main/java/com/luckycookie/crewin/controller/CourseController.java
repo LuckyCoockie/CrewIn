@@ -15,20 +15,34 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/mypage/course")
+@RequestMapping("/")
 public class CourseController {
 
     private final CourseService courseService;
 
-    @PostMapping()
+    @PostMapping("mypage/course")
     public ResponseEntity<BaseResponse<Void>> createCourse(@AuthenticationPrincipal CustomUser customUser, @RequestBody CourseRequest.CreateCourseRequest createCourseRequest) {
         courseService.createCourse(createCourseRequest, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.CREATED.value(), "경로를 등록하는데 성공했습니다."));
     }
 
-    @GetMapping()
+    @GetMapping("mypage/course")
     public ResponseEntity<BaseResponse<List<CourseResponse>>> getAllCourse(@AuthenticationPrincipal CustomUser customUser) {
         List<CourseResponse> courseList = courseService.getAllCourse(customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "경로 리스트를 조회하는데 성공했습니다.", courseList));
     }
+
+    @PutMapping("mypage/course/{courseId}")
+    public ResponseEntity<BaseResponse<Void>> updateCourse(@AuthenticationPrincipal CustomUser customUser, @PathVariable("courseId") Long courseId, @RequestBody CourseRequest.UpdateCourseRequest updateCourseRequest) {
+        courseService.updateCourse(updateCourseRequest, courseId, customUser);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "경로를 수정하는데 성공했습니다."));
+    }
+
+    @DeleteMapping("mypage/course/{courseId}")
+    public ResponseEntity<Void> deleteCourse(@AuthenticationPrincipal CustomUser customUser, @PathVariable("courseId") Long courseId) {
+        courseService.deleteCourse(courseId, customUser);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }

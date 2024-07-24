@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -16,6 +17,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsUtils;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity // 서블릿 필터에 스프링 시큐리티 필터 체인을 추가
@@ -42,8 +47,10 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint)
                         .accessDeniedHandler(jwtAccessDeniedHandler))
                 .addFilterBefore(new JwtFilter(tokenUtil, memberRepository), UsernamePasswordAuthenticationFilter.class)
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests((a) -> {
-                    a.requestMatchers("/member/signup/**").permitAll()
+                    a.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                            .requestMatchers("/member/signup/**").permitAll()
                             .requestMatchers("/member/check-email").permitAll()
                             .requestMatchers("/member/check-nickname").permitAll()
                             .requestMatchers("/member/email").permitAll()
@@ -56,5 +63,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 }
