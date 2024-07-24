@@ -14,16 +14,16 @@ const EditableText = ({ text, onChange }: OwnProps) => {
     setIsEditing(true);
   };
 
-  const handleBlur = (e) => {
+  const handleBlur: React.FocusEventHandler<HTMLInputElement> = (e) => {
     setIsEditing(false);
     if (onChange) onChange(e.target.value);
   };
 
-  const handleChange = (e) => {
+  const handleChange: React.FocusEventHandler<HTMLInputElement> = (e) => {
     setValue(e.target.value);
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: { key: string }) => {
     if (e.key === "Enter") {
       inputRef.current?.blur();
     }
