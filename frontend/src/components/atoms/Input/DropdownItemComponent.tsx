@@ -22,7 +22,7 @@ const DropdownTypeComponent = React.forwardRef<HTMLSelectElement, InputData>(
         value={props.value}
         onChange={props.onChange}
         ref={ref}
-        className={`data-input border text-right focus:ring-0 ${
+        className={`border rounded-md text-white bg-primary focus:ring-0 text-xs xs:text-sm ${
           props.hasError
             ? "border-red-500 focus:border-red-500"
             : "border-gray-300"
@@ -33,7 +33,7 @@ const DropdownTypeComponent = React.forwardRef<HTMLSelectElement, InputData>(
           <option
             key={option.value}
             value={option.value}
-            className="text-center"
+            className="text-center text-black bg-white"
           >
             {option.label}
           </option>

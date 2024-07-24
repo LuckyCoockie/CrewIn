@@ -10,7 +10,7 @@ export type SessionType =
 export const sessionTypeToLabel = (type: SessionType) => {
   switch (type) {
     case SessionTypeData.STANDARD:
-      return "정규련";
+      return "정규런";
     case SessionTypeData.OPEN:
       return "오픈런";
     case SessionTypeData.THUNDER:
@@ -32,7 +32,7 @@ export const sessionRequestTypeToLabel = (type: SessionRequestType) => {
     case SessionRequestTypeData.ALL:
       return "전체";
     case SessionRequestTypeData.STANDARD:
-      return "정규련";
+      return "정규런";
     case SessionRequestTypeData.OPEN:
       return "오픈런";
     case SessionRequestTypeData.THUNDER:

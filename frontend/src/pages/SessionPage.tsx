@@ -2,16 +2,16 @@ import { useCallback } from "react";
 import { getSessionList, SessionRequestType } from "../apis/api/session";
 import SessionListTemplate from "../components/templates/session/SessionListTemplate";
 
-const CrewPage: React.FC = () => {
+const SessionPage: React.FC = () => {
   const fetchData = useCallback(async (type: SessionRequestType) => {
     return (await getSessionList({ type })).sessions;
   }, []);
 
   return (
     <main>
-      <SessionListTemplate fetchData={fetchData} />;
+      <SessionListTemplate fetchData={fetchData} />
     </main>
   );
 };
 
-export default CrewPage;
+export default SessionPage;

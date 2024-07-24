@@ -36,8 +36,8 @@ const SessionListComponent: React.FC<OwnProps> = ({ fetchData }) => {
   });
 
   return (
-    <>
-      <div>
+    <div>
+      <div className="mb-3 xs:mb-5">
         <DropdownTypeComponent
           id="sessionpaceminutes"
           options={Object.values(SessionRequestTypeData).map((type) => ({
@@ -60,7 +60,7 @@ const SessionListComponent: React.FC<OwnProps> = ({ fetchData }) => {
           />
         )}
       </GridListComponent>
-    </>
+    </div>
   );
 };
 
