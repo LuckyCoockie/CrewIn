@@ -68,7 +68,16 @@ public class CrewController {
     }
 
     // 크루 정보 삭제
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse<Void>> deleteCrew(@PathVariable("id") Long crewId, @AuthenticationPrincipal CustomUser customUser) {
+        try {
+            crewService.deleteCrewInfo(crewId, customUser);
+            return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 정보를 삭제하는데 성공했습니다."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(BaseResponse.create(HttpStatus.BAD_REQUEST.value(), "크루 정보 삭제를 실패했습니다: " + e.getMessage()));
+        }
+    }
 
 
     // 크루 공지 조회

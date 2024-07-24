@@ -34,4 +34,8 @@ public class MemberCrew {
 
     private Boolean isJoined;
 
+    private Boolean isInvited;
+
+    private int attendanceCount;
+
 }
