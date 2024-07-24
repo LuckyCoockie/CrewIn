@@ -1,6 +1,6 @@
 import React from "react";
-import InputIBannermageComponent from "../atoms/Input/InputIBannermageComponent";
-import InputLabelComponent from "../atoms/Input/InputLabelComponent";
+import InputImageComponent from "../../atoms/Input/InputImageComponent";
+import InputLabelComponent from "../../atoms/Input/InputLabelComponent";
 
 type InputData = {
   id: string;
@@ -10,13 +10,13 @@ type InputData = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const ImageTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
+const InputImageTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
   (props, ref) => {
     return (
       <>
         <div className="mb-4">
           <InputLabelComponent id={props.id} title={props.title} />
-          <InputIBannermageComponent
+          <InputImageComponent
             placeholder={props.placeholder}
             id={props.id}
             name={props.name}
@@ -29,4 +29,4 @@ const ImageTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
   }
 );
 
-export default ImageTypeMolecule;
+export default InputImageTypeMolecule;

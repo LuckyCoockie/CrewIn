@@ -1,6 +1,6 @@
 import React from "react";
-import SmallTitle from "../atoms/Title/SmallTitle";
-import SmallContent from "../atoms/Content/SmallContent";
+import SmallTitle from "../../atoms/Title/SmallTitle";
+import SmallContent from "../../atoms/Content/SmallContent";
 
 type InfoData = {
   title: string;

@@ -1,6 +1,6 @@
 import React from "react";
-import UserSelected from "../atoms/Bottombar/UserSelected";
-import UserDeselected from "../atoms/Bottombar/UserDeselected";
+import CrewSelected from "../../atoms/Bottombar/CrewSelected";
+import CrewDeselected from "../../atoms/Bottombar/CrewDeselected";
 
 type Name = {
   name: string;
@@ -8,18 +8,18 @@ type Name = {
   onClick: () => void;
 };
 
-const ProfileTabMolecule: React.FC<Name> = (props) => {
+const CrewTabMolecule: React.FC<Name> = (props) => {
   return (
     <>
       <div className="flex flex-col items-center py-2" onClick={props.onClick}>
         {props.tab ? (
           <>
-            <UserSelected />
+            <CrewSelected />
             <p className="text-center text-xs font-bold">{props.name}</p>
           </>
         ) : (
           <>
-            <UserDeselected />
+            <CrewDeselected />
             <p className="text-center text-xs text-gray-500">{props.name}</p>
           </>
         )}
@@ -28,4 +28,4 @@ const ProfileTabMolecule: React.FC<Name> = (props) => {
   );
 };
 
-export default ProfileTabMolecule;
+export default CrewTabMolecule;

@@ -1,5 +1,5 @@
 import React from "react";
-import LogoTitle from "../atoms/Title/LogoTitle";
+import LogoTitle from "../../atoms/Title/LogoTitle";
 
 const LogoTitlemolecule: React.FC = () => {
   return <LogoTitle />;

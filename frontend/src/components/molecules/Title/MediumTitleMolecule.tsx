@@ -1,5 +1,5 @@
 import React from "react";
-import MediumTitle from "../atoms/Title/MediumTitle";
+import MediumTitle from "../../atoms/Title/MediumTitle";
 
 type Text = {
   text: string;

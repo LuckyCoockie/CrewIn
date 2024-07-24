@@ -10,9 +10,9 @@ import ImageEditSave from "./ImageEditSaveOrganism";
 import editButton from "../../assets/images/editbutton.png";
 import cropButton from "../../assets/images/cropbutton.png";
 import checkButton from "../../assets/images/checkbutton.png";
-import InputTextAreaNoLimitTypeMolecule from "../molecules/InputTextAreaNoLimitTypeMolecule";
-import InputRadioTypeMolecule from "../molecules/InputRadioTypeMolecule";
-import InputDropdonwTypeMolecule from "../molecules/InputDropdonwTypeMolecule";
+import InputTextAreaNoLimitTypeMolecule from "../molecules/Input/InputTextAreaNoLimitTypeMolecule";
+import InputRadioTypeMolecule from "../molecules/Input/InputRadioTypeMolecule";
+import InputDropdonwTypeMolecule from "../molecules/Input/InputDropdonwTypeMolecule";
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import { crewNames } from "../../../src/crewname";
 

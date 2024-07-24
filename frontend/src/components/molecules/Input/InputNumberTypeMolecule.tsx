@@ -1,6 +1,6 @@
 import React from "react";
-import InputLabelComponent from "../atoms/Input/InputLabelComponent";
-import InputPasswordTypeComponent from "../atoms/Input/InputPasswordTypeComponent";
+import InputLabelComponent from "../../atoms/Input/InputLabelComponent";
+import InputNumberTypeComponent from "../../atoms/Input/InputNumberTypeComponent";
 
 type InputData = {
   id: string;
@@ -13,12 +13,12 @@ type InputData = {
   hasError?: boolean;
 };
 
-const InputPasswordTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
+const InputNumberTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
   (props, ref) => {
     return (
       <div className="mb-4 w-full">
         <InputLabelComponent id={props.id} title={props.title} />
-        <InputPasswordTypeComponent
+        <InputNumberTypeComponent
           id={props.id}
           placeholder={props.placeholder}
           onChange={props.onChange}
@@ -37,4 +37,4 @@ const InputPasswordTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
   }
 );
 
-export default InputPasswordTypeMolecule;
+export default InputNumberTypeMolecule;
