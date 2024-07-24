@@ -31,9 +31,9 @@ type OwnProps = {
 type FormValues = {
   title: string;
   markers: Point[];
-  polylines: Point[][];
-  length: number;
-  image: string;
+  polylines?: Point[][];
+  length?: number;
+  image?: string;
 };
 
 const CourseCreateTemplate: React.FC<OwnProps> = ({
@@ -55,25 +55,22 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
       )
       .min(2, "2개 이상의 경유지를 선택해주세요")
       .required(),
-    polylines: yup
-      .array()
-      .of(
-        yup
-          .array()
-          .of(
-            yup
-              .object()
-              .shape({
-                latitude: yup.number().required(),
-                longitude: yup.number().required(),
-              })
-              .required()
-          )
-          .required()
-      )
-      .required(),
-    length: yup.number().required(),
-    image: yup.string().required(),
+    polylines: yup.array().of(
+      yup
+        .array()
+        .of(
+          yup
+            .object()
+            .shape({
+              latitude: yup.number().required(),
+              longitude: yup.number().required(),
+            })
+            .required()
+        )
+        .required()
+    ),
+    length: yup.number(),
+    image: yup.string(),
   });
 
   const dispatch = useNaverMapDispatch();
