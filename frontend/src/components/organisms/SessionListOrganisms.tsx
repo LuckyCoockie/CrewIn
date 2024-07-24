@@ -31,7 +31,7 @@ const SessionListComponent: React.FC<OwnProps> = ({ fetchData }) => {
     SessionDto[],
     AxiosError<ErrorResponseDto>
   >({
-    queryKey: ["SessionList"],
+    queryKey: [`SessionList`, type],
     queryFn: () => fetchData(type),
   });
 

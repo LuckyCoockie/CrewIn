@@ -4,6 +4,7 @@ import SessionListTemplate from "../components/templates/session/SessionListTemp
 
 const SessionPage: React.FC = () => {
   const fetchData = useCallback(async (type: SessionRequestType) => {
+    console.log(type);
     return (await getSessionList({ type })).sessions;
   }, []);
 
