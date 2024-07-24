@@ -46,7 +46,7 @@ public class SessionController {
             }
         }
 
-        String message = type.equalsIgnoreCase("ALL") ? "모든 세션을 조회하는데 성공했습니다." : "해당하는 타입의 세션을 조회하는데 성공했습니다.";
+        String message = type.equalsIgnoreCase("all") ? "모든 세션을 조회하는데 성공했습니다." : "해당하는 타입의 세션을 조회하는데 성공했습니다.";
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), message, sessions));
     }
 
