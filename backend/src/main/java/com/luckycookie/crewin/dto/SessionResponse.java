@@ -15,7 +15,6 @@ public class SessionResponse {
     private String crewName;
     private String sessionName;
     private String spot;
-    private String content;
     private String sessionThumbnail;
     private SessionType sessionType;
     private int maxPeople;
