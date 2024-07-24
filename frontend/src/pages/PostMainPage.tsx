@@ -8,7 +8,8 @@ import emptyfire from "../assets/images/emptyfire.png";
 import shareicon from "../assets/images/shareicon.png";
 import Userprofilebar from "../components/molecules/UserProfileBarMolecule";
 import { ReactComponent as CrewinLogo } from "../assets/icons/crewinlogo.svg";
-import { ReactComponent as Alarmicon } from "../assets/icons/alarmicon.svg";
+import { ReactComponent as Alarmicon } from "../assets/icons/alarm_deactivated.svg";
+import { ReactComponent as AlarmOnicon } from "../assets/icons/alarm_activated.svg";
 import { ReactComponent as Searchicon } from "../assets/icons/searchicon.svg";
 import { ReactComponent as Postcreateicon } from "../assets/icons/postcreateicon.svg";
 
@@ -20,6 +21,7 @@ const PostMainPage: React.FC = () => {
   const [likes, setLikes] = useState<number>(0);
   const [hasLiked, setHasLiked] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [alarmActive, setAlarmActive] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,6 +42,13 @@ const PostMainPage: React.FC = () => {
   const handleLike = () => {
     setLikes((prevLikes) => (hasLiked ? prevLikes - 1 : prevLikes + 1));
     setHasLiked(!hasLiked);
+
+    if (!hasLiked) {
+      const alarmMessages = JSON.parse(localStorage.getItem("alarms") || "[]");
+      alarmMessages.push("@@님이 회원님의 게시글에 좋아요를 눌렀습니다.");
+      localStorage.setItem("alarms", JSON.stringify(alarmMessages));
+      setAlarmActive(true);
+    }
   };
 
   const handleShare = () => {
@@ -66,6 +75,10 @@ const PostMainPage: React.FC = () => {
     navigate("/searchuser");
   };
 
+  const handleAlarm = () => {
+    navigate("/alarm");
+  };
+
   if (!postData) {
     return <div>No post data available</div>;
   }
@@ -78,7 +91,11 @@ const PostMainPage: React.FC = () => {
         </div>
         <div className="flex items-center flex-grow justify-end mr-2">
           <Searchicon className="w-6 h-6 mr-4" onClick={handleSearch} />
-          <Alarmicon className="w-6 h-6" />
+          {alarmActive ? (
+            <AlarmOnicon className="w-6 h-6" onClick={handleAlarm} />
+          ) : (
+            <Alarmicon className="w-6 h-6" onClick={handleAlarm} />
+          )}
         </div>
       </div>
       <div className="w-full">
