@@ -6,6 +6,7 @@ import ThreeToTwoImageMolecule from "../molecules/Image/ThreeToTwoImageMolecule"
 import crewbanner from "../../assets/images/crewinbanner.png";
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import CrewAlbumOrganism from "../organisms/CrewAlbumOrganism";
+import CrewHeaderBarOrganism from "../organisms/CrewHeaderBarOrganism";
 
 import one from "../../assets/images/alarm-clockblack.png";
 import two from "../../assets/images/alarm-clockblack.png";
@@ -59,7 +60,8 @@ const CrewDetailTemplate: React.FC = () => {
 
   return (
     <>
-      <header className="py-6">
+      <CrewHeaderBarOrganism />
+      <header>
         <BackHeaderMediumOrganism text={infos.crewname} />
       </header>
       <ThreeToTwoImageMolecule src={crewbanner} alt="crewbanner" />
