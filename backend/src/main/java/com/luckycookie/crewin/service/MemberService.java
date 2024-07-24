@@ -54,18 +54,13 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public void checkEmail(String email) {
-        if (memberRepository.existsByEmail(email)) {
-            throw new DuplicateEmailException();
-        }
+    public boolean checkDuplicateEmail(String email) {
+        return memberRepository.existsByEmail(email);
     }
 
     @Transactional(readOnly = true)
-    public void checkNickname(String nickname) {
-        if (memberRepository.existsByNickname(nickname)) {
-            throw new DuplicateNicknameException();
-        }
+    public boolean checkDuplicateNickname(String nickname) {
+        return memberRepository.existsByNickname(nickname);
     }
-
 
 }

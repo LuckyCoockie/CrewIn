@@ -1,11 +1,11 @@
 package com.luckycookie.crewin.controller;
 
 import com.luckycookie.crewin.domain.Token;
-import com.luckycookie.crewin.dto.MemberRequest;
 import com.luckycookie.crewin.dto.MemberRequest.EmailRequest;
-import com.luckycookie.crewin.dto.MemberRequest.EmailResponse;
 import com.luckycookie.crewin.dto.MemberRequest.SignInRequest;
 import com.luckycookie.crewin.dto.MemberRequest.SignUpRequest;
+import com.luckycookie.crewin.dto.MemberResponse.DuplicateResponse;
+import com.luckycookie.crewin.dto.MemberResponse.EmailResponse;
 import com.luckycookie.crewin.dto.TokenResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.service.MailService;
@@ -45,15 +45,13 @@ public class MemberController {
     }
 
     @GetMapping("/check-email")
-    public ResponseEntity<BaseResponse<Void>> checkEmail(String email) {
-        memberService.checkEmail(email);
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "사용 가능한 이메일입니다."));
+    public ResponseEntity<BaseResponse<DuplicateResponse>> checkDuplicateEmail(String email) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "이메일 중복 여부를 성공적으로 조회했습니다.", new DuplicateResponse(memberService.checkDuplicateEmail(email))));
     }
 
     @GetMapping("/check-nickname")
-    public ResponseEntity<BaseResponse<Void>> checkNickname(String nickname) {
-        memberService.checkNickname(nickname);
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "사용 가능한 닉네임입니다."));
+    public ResponseEntity<BaseResponse<DuplicateResponse>> checkDuplicateNickname(String nickname) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "닉네임 중복 여부를 성공적으로 조회했습니다.", new DuplicateResponse(memberService.checkDuplicateNickname(nickname))));
     }
 
     @PostMapping("/signup/email")
