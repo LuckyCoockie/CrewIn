@@ -10,6 +10,7 @@ import com.luckycookie.crewin.exception.crew.CrewMemberNotExsistException;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.session.NotFoundSessionException;
+import com.luckycookie.crewin.exception.session.SessionAuthorizationException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class SessionService {
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
-        Crew crew = crewRepository.findById(createSessionRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
+        Crew crew = crewRepository.findById(createSessionRequest.getCrewId()).orElseThrow(() -> new NotFoundCrewException(createSessionRequest.getCrewId()));
         Course course = courseRepository.findById(createSessionRequest.getCourseId())
                 .orElseThrow(NotFoundCourseException::new);
 
@@ -44,6 +45,7 @@ public class SessionService {
                 .sessionType(createSessionRequest.getSessionType())
                 .host(member)
                 .crew(crew)
+                .area(course.getArea())
                 .course(course)
                 .name(createSessionRequest.getName())
                 .pace(createSessionRequest.getPace())
@@ -86,7 +88,6 @@ public class SessionService {
         if (session.getSessionType().equals(SessionType.STANDARD)) {
             Member member = memberRepository.findByEmail(customUser.getEmail())
                     .orElseThrow(NotFoundMemberException::new);
-            //여기에 멤버가 해당 크루에 가입되어 있는지 검증하는 코드 추가
             if (!memberCrewRepository.findIsJoinedByMemberIdAndCrewId(member.getId(), session.getCrew().getId())
                     .orElse(false)) {
                 throw new CrewMemberNotExsistException();
@@ -107,6 +108,7 @@ public class SessionService {
                 .courseId(session.getCourse().getId())
                 .hostId(host.getId())
                 .hostname(host.getName())
+                .area(session.getArea())
                 .hostNickname(host.getNickname())
                 .crewName(session.getCrew().getCrewName())
                 .sessionName(session.getName())
@@ -121,6 +123,34 @@ public class SessionService {
                 .build();
     }
 
+
+    public void updateSession(Long sessionId, SessionRequest.UpdateSessionRequest updateSessionRequest, CustomUser customUser) {
+
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+        Session session = sessionRepository.findById(sessionId)
+                .orElseThrow(NotFoundSessionException::new);
+        if (!session.getHost().getEmail().equals(member.getEmail())) {
+            throw new SessionAuthorizationException();
+        }
+        Course course = courseRepository.findById(updateSessionRequest.getCourseId())
+                .orElseThrow(NotFoundCourseException::new);
+
+        session.updateSession(updateSessionRequest, course);
+        sessionRepository.save(session);
+    }
+
+    public void deleteSession(Long sessionId, CustomUser customUser) {
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+        Session session = sessionRepository.findById(sessionId)
+                .orElseThrow(NotFoundSessionException::new);
+        if (!session.getHost().getEmail().equals(member.getEmail())) {
+            throw new SessionAuthorizationException();
+        }
+        sessionRepository.delete(session);
+    }
+
     private SessionResponse convertToSessionResponse(Session session) {
         List<SessionPoster> sessionPosters = sessionPosterRepository.findBySessionIdOrderByImageUrlAsc(session.getId());
         String sessionThumbnail = sessionPosters.isEmpty() ? null : sessionPosters.get(0).getImageUrl();
@@ -131,9 +161,15 @@ public class SessionService {
                 .crewName(session.getCrew().getCrewName())
                 .sessionName(session.getName())
                 .spot(session.getSpot())
+                .area(session.getArea())
                 .sessionType(session.getSessionType())
                 .maxPeople(session.getMaxPeople())
                 .startAt(session.getStartAt())
                 .build();
+    }
+
+    public List<SessionResponse> getAllSessions() {
+        List<Session> sessions = sessionRepository.findAll();
+        return sessions.stream().map(this::convertToSessionResponse).collect(Collectors.toList());
     }
 }

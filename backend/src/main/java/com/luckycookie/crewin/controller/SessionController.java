@@ -26,19 +26,28 @@ public class SessionController {
     @PostMapping()
     public ResponseEntity<BaseResponse<Void>> createPost(@RequestBody SessionRequest.CreateSessionRequest createSessionRequest, @AuthenticationPrincipal CustomUser customUser) {
         sessionService.createSession(createSessionRequest, customUser);
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션을 등록하는데 성공했습니다."));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(BaseResponse.create(HttpStatus.CREATED.value(), "세션을 등록하는데 성공했습니다."));
     }
 
     @GetMapping()
     public ResponseEntity<BaseResponse<List<SessionResponse>>> getSessionsByType(@RequestParam("type") String type) {
-        SessionType sessionType;
-        try {
-            sessionType = SessionType.valueOf(type.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new NotFoundSessionTypeException();
+        List<SessionResponse> sessions;
+
+        if (type.equalsIgnoreCase("all")) {
+            sessions = sessionService.getAllSessions();
+        } else {
+            try {
+                SessionType sessionType = SessionType.valueOf(type.toUpperCase());
+                sessions = sessionService.getSessionsByType(sessionType);
+            } catch (IllegalArgumentException e) {
+                throw new NotFoundSessionTypeException();
+            }
         }
-        List<SessionResponse> sessions = sessionService.getSessionsByType(sessionType);
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당하는 타입의 세션을 조회하는데 성공했습니다.", sessions));
+
+        String message = type.equalsIgnoreCase("all") ? "모든 세션을 조회하는데 성공했습니다." : "해당하는 타입의 세션을 조회하는데 성공했습니다.";
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), message, sessions));
     }
 
     @GetMapping("/crew-name")
@@ -51,5 +60,17 @@ public class SessionController {
     public ResponseEntity<BaseResponse<SessionDetailResponse>> getSessionDetail(@RequestParam("id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
         SessionDetailResponse sessionDetailResponse = sessionService.getSessionDetail(sessionId, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당하는 세션의 세부정보를 조회하는데 성공했습니다.", sessionDetailResponse));
+    }
+
+    @PutMapping("/detail")
+    public ResponseEntity<BaseResponse<Void>> updatePost(@RequestParam("id") Long sessionId, @RequestBody SessionRequest.UpdateSessionRequest updateSessionRequest, @AuthenticationPrincipal CustomUser customUser) {
+        sessionService.updateSession(sessionId, updateSessionRequest, customUser);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 정보를 수정하는데 성공했습니다."));
+    }
+
+    @DeleteMapping("/detail")
+    public ResponseEntity<BaseResponse<Void>> deletePost(@RequestParam("id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
+        sessionService.deleteSession(sessionId, customUser);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

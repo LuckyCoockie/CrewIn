@@ -2,6 +2,7 @@ package com.luckycookie.crewin.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.luckycookie.crewin.domain.enums.SessionType;
+import com.luckycookie.crewin.dto.SessionRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,7 +53,7 @@ public class Session {
     private int pace;
 
     private String spot;
-
+    private String area;
     private int maxPeople;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -65,5 +66,26 @@ public class Session {
 
     @Column(columnDefinition = "TEXT")
     private String content;
+
+    public void updateSession(SessionRequest.UpdateSessionRequest updateSessionRequest, Course course){
+        this.course = course;
+        this.sessionType = updateSessionRequest.getSessionType();
+        this.name = updateSessionRequest.getName();
+        this.pace = updateSessionRequest.getPace();
+        this.spot = updateSessionRequest.getSpot();
+        this.startAt = updateSessionRequest.getStartAt();
+        this.endAt = updateSessionRequest.getEndAt();
+        this.content = updateSessionRequest.getContent();
+        this.posterImages.clear();
+        if (updateSessionRequest.getImages() != null) {
+            for (String imageUrl : updateSessionRequest.getImages()) {
+                this.posterImages.add(SessionPoster.builder()
+                        .imageUrl(imageUrl)
+                        .session(this)
+                        .build());
+            }
+        }
+
+    }
 
 }

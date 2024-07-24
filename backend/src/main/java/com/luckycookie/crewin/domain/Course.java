@@ -30,7 +30,7 @@ public class Course {
     private String info;
 
     private String name;
-
+    private String area;
     private Double length;
 
     @Column(columnDefinition = "TEXT")
@@ -39,6 +39,7 @@ public class Course {
     public void updateCourse(CourseRequest.UpdateCourseRequest updateCourseRequest) {
         this.info = updateCourseRequest.getInfo();
         this.name = updateCourseRequest.getName();
+        this.area = updateCourseRequest.getArea();
         this.length = updateCourseRequest.getLength();
         this.thumbnailImage = updateCourseRequest.getThumbnailImage();
     }

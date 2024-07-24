@@ -15,6 +15,7 @@ public class CourseRequest {
     public static class CreateCourseRequest {
         private String info;
         private String name;
+        private String area;
         private Double length;
         private String thumbnailImage ;
     }
@@ -26,6 +27,7 @@ public class CourseRequest {
     public static class UpdateCourseRequest {
         private String info;
         private String name;
+        private String area;
         private Double length;
         private String thumbnailImage ;
     }

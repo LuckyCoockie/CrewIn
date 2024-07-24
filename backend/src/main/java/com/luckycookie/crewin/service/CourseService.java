@@ -34,6 +34,7 @@ public class CourseService {
                 .builder()
                 .creator(member)
                 .info(createCourseRequest.getInfo())
+                .area(createCourseRequest.getArea())
                 .name(createCourseRequest.getName())
                 .length(createCourseRequest.getLength())
                 .thumbnailImage(createCourseRequest.getThumbnailImage())
@@ -80,6 +81,7 @@ public class CourseService {
         return CourseResponse.builder()
                 .id(course.getId())
                 .info(course.getInfo())
+                .area(course.getArea())
                 .name(course.getName())
                 .length(course.getLength())
                 .build();

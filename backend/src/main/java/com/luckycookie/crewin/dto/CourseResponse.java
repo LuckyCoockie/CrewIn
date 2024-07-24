@@ -9,6 +9,7 @@ import lombok.Getter;
 public class CourseResponse {
     private Long id;
     private String info;
+    private String area;
     private String name;
     private Double length;
 }

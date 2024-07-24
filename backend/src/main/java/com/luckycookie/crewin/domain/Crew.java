@@ -1,6 +1,8 @@
 package com.luckycookie.crewin.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.luckycookie.crewin.dto.CrewRequest;
+import com.luckycookie.crewin.repository.CrewRepository;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,4 +50,15 @@ public class Crew {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate crewBirth;
+
+    public void updateCrewInfo(CrewRequest.CreateCrewRequest createCrewRequest) {
+        this.crewName = createCrewRequest.getName();
+        this.slogan = createCrewRequest.getSlogan();
+        this.area = createCrewRequest.getArea();
+        this.introduction = createCrewRequest.getIntroduction();
+        this.mainLogo = createCrewRequest.getMainLogo();
+        this.subLogo = createCrewRequest.getSubLogo();
+        this.banner = createCrewRequest.getBanner();
+        this.crewBirth = createCrewRequest.getCrewBirth();
+    }
 }
