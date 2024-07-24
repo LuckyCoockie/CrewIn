@@ -8,8 +8,6 @@ import lombok.Getter;
 @Builder
 public class CourseResponse {
     private Long id;
-    private String info;
-    private String area;
     private String name;
-    private Double length;
+    private String thumbnailImage;
 }

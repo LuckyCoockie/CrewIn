@@ -80,10 +80,8 @@ public class CourseService {
     private CourseResponse convertToDto(Course course) {
         return CourseResponse.builder()
                 .id(course.getId())
-                .info(course.getInfo())
-                .area(course.getArea())
                 .name(course.getName())
-                .length(course.getLength())
+                .thumbnailImage(course.getThumbnailImage())
                 .build();
     }
 }
