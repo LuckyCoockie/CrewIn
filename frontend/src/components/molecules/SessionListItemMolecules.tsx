@@ -48,46 +48,42 @@ const SessionListItem = ({ crewName, area, date, imageUrl }: OwnProps) => {
 
   return (
     <div className="max-w-sm rounded-lg border-primary bg-primary tracking-tighter truncate">
-      <div className="flex justify-center items-center square p-[6px] md:p-2">
+      <div className="flex justify-center items-center square p-[6px] xs:p-2">
         {image ? (
           <img
             alt="crew image"
             src={image}
-            className="b border md:border-2 border-white w-full"
+            className="b border xs:border-2 border-white w-full"
           />
         ) : (
           <img
             alt="crew image"
             src={"./src/assets/images/crewinlogo.png"}
-            className="b border md:border-2 border-white w-full"
+            className="b border xs:border-2 border-white w-full"
           />
         )}
       </div>
-      <div className="m-1 md:m-2">
-        <div className="flex justify-between items-center flex mb-1 md:mb-2 overflow-hidden">
-          <div className="left-element">
+      <div className="mt-[3px] m-2 xs:mt-2">
+        <div className="flex justify-between items-center flex mb-1 xs:mb-2">
+          <div className="left-element mr-2">
             <p
-              className="font-bold text-white text-md md:text-lg truncate"
+              className="text-white font-bold text-xs xs:text-base truncate"
               style={{ lineHeight: "0.8em" }}
             >
               {crewName}
             </p>
-            <p className="text-white text-base text-sm md:text-md truncate">
-              {area}
-            </p>
+            <p className="text-white text-[10px] xs:text-xs truncate">{area}</p>
           </div>
-          <div className="right-element">
-            <div className="items-center mr-2">
-              <p
-                className="text-white text-base text-sm md:text-md truncate"
-                style={{ lineHeight: "0.8em" }}
-              >
-                {parsedDate}
-              </p>
-              <p className="text-white text-base text-sm md:text-md truncate text-right">
-                {parsedTime}
-              </p>
-            </div>
+          <div className="right-element text-right items-center overflow-hidden">
+            <p
+              className="text-white text-[10px] xs:text-xs truncate"
+              style={{ lineHeight: "0.8em" }}
+            >
+              {parsedDate}
+            </p>
+            <p className="text-white text-[10px] xs:text-xs truncate">
+              {parsedTime}
+            </p>
           </div>
         </div>
       </div>
