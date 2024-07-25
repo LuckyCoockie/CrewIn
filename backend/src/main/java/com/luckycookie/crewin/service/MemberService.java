@@ -5,10 +5,7 @@ import com.luckycookie.crewin.domain.Token;
 import com.luckycookie.crewin.domain.redis.Auth;
 import com.luckycookie.crewin.dto.MemberRequest.SignInRequest;
 import com.luckycookie.crewin.dto.MemberRequest.SignUpRequest;
-import com.luckycookie.crewin.exception.member.DuplicateEmailException;
-import com.luckycookie.crewin.exception.member.DuplicateNicknameException;
-import com.luckycookie.crewin.exception.member.LoginFailException;
-import com.luckycookie.crewin.exception.member.MemberNotFoundException;
+import com.luckycookie.crewin.exception.member.*;
 import com.luckycookie.crewin.exception.security.InvalidTokenException;
 import com.luckycookie.crewin.repository.MemberRepository;
 import com.luckycookie.crewin.repository.RefreshTokenRedisRepository;
@@ -77,6 +74,11 @@ public class MemberService {
             }
         }
         throw new InvalidTokenException();
+    }
+
+    public void logout(String email) {
+        Auth auth = refreshTokenRedisRepository.findById(email).orElseThrow(AlreadyLogoutException::new);
+        refreshTokenRedisRepository.delete(auth);
     }
 
 }

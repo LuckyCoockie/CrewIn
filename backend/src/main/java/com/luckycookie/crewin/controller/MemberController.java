@@ -8,6 +8,7 @@ import com.luckycookie.crewin.dto.MemberResponse.DuplicateResponse;
 import com.luckycookie.crewin.dto.MemberResponse.EmailResponse;
 import com.luckycookie.crewin.dto.TokenResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
+import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.MailService;
 import com.luckycookie.crewin.service.MemberService;
 import jakarta.servlet.http.Cookie;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
@@ -77,5 +79,11 @@ public class MemberController {
                 .secure(true).maxAge(Duration.ofDays(7L)).build();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .body(BaseResponse.create(HttpStatus.OK.value(), "토큰 재발급에 성공했습니다.", TokenResponse.builder().accessToken(token.getAccessToken()).build()));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<BaseResponse<Void>> logout(@AuthenticationPrincipal CustomUser customUser) {
+        memberService.logout(customUser.getEmail());
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "로그아웃 되었습니다."));
     }
 }
