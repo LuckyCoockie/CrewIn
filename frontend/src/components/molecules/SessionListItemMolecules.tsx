@@ -72,17 +72,17 @@ const SessionListItem = ({ crewName, area, date, imageUrl }: OwnProps) => {
             >
               {crewName}
             </p>
-            <p className="text-white text-[10px] xs:text-xs truncate">{area}</p>
+            <p className="text-white text-[10px] xs:text-xs sm:text-sm truncate">{area}</p>
           </div>
           <div className="right-element text-right items-center overflow-hidden">
             <p
-              className="text-white text-[10px] xs:text-xs truncate"
+              className="text-white text-[10px] xs:text-xs sm:text-sm truncate"
               style={{ lineHeight: "0.95em" }}
             >
               {parsedDate}
             </p>
             <p
-              className="text-white text-[10px] xs:text-xs truncate"
+              className="text-white text-[10px] xs:text-xs sm:text-sm truncate"
               style={{ lineHeight: "0.95em" }}
             >
               {parsedTime}
