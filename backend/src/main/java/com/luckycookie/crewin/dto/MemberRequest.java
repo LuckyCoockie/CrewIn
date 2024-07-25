@@ -37,4 +37,12 @@ public class MemberRequest {
         private String email;
     }
 
+    @Getter
+    @NoArgsConstructor
+    @Builder
+    @AllArgsConstructor
+    public static class TemporaryPasswordRequest {
+        private String email;
+        private String name;
+    }
 }

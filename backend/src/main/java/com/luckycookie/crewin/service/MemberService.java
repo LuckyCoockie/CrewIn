@@ -25,6 +25,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
     private final TokenUtil tokenUtil;
+    private final MailService mailService;
 
     public Token signIn(SignInRequest signInRequest) {
         Member member = memberRepository.findByEmail(signInRequest.getEmail()).orElseThrow(MemberNotFoundException::new);
@@ -79,6 +80,11 @@ public class MemberService {
     public void logout(String email) {
         Auth auth = refreshTokenRedisRepository.findById(email).orElseThrow(AlreadyLogoutException::new);
         refreshTokenRedisRepository.delete(auth);
+    }
+
+    public void issueTemporaryPassword(String email, String name) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+        // 비밀번호 재발급후 db에 저장하고 메일로 보내기, 만약 이메일 전송도중에 예외발생하면 처리해주기
     }
 
 }

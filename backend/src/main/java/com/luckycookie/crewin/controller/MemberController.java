@@ -4,6 +4,7 @@ import com.luckycookie.crewin.domain.Token;
 import com.luckycookie.crewin.dto.MemberRequest.EmailRequest;
 import com.luckycookie.crewin.dto.MemberRequest.SignInRequest;
 import com.luckycookie.crewin.dto.MemberRequest.SignUpRequest;
+import com.luckycookie.crewin.dto.MemberRequest.TemporaryPasswordRequest;
 import com.luckycookie.crewin.dto.MemberResponse.DuplicateResponse;
 import com.luckycookie.crewin.dto.MemberResponse.EmailResponse;
 import com.luckycookie.crewin.dto.TokenResponse;
@@ -59,9 +60,9 @@ public class MemberController {
     }
 
     @PostMapping("/signup/email")
-    public ResponseEntity<BaseResponse<Void>> sendMail(@RequestBody EmailRequest emailRequest) {
-        mailService.sendMail(emailRequest.getEmail());
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "이메일 전송이 완료되었습니다."));
+    public ResponseEntity<BaseResponse<Void>> sendAuthenticationMail(@RequestBody EmailRequest emailRequest) {
+        mailService.sendAuthenticationMail(emailRequest.getEmail());
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "인증번호 전송이 완료되었습니다."));
     }
 
     @GetMapping("/signup/email")
@@ -85,5 +86,11 @@ public class MemberController {
     public ResponseEntity<BaseResponse<Void>> logout(@AuthenticationPrincipal CustomUser customUser) {
         memberService.logout(customUser.getEmail());
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "로그아웃 되었습니다."));
+    }
+
+    @PostMapping("/password")
+    public ResponseEntity<BaseResponse<Void>> temporaryPassword(@RequestBody TemporaryPasswordRequest temporaryPasswordRequest) {
+        memberService.issueTemporaryPassword(temporaryPasswordRequest.getEmail(), temporaryPasswordRequest.getName());
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "임시 비밀번호 발급이 완료되었습니다."));
     }
 }
