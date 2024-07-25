@@ -21,7 +21,7 @@ const CrewListTemplate: React.FC<OwnProps> = ({ fetchData }: OwnProps) => {
           <CrewCreateIcon className="w-6 h-6" />
         </div>
       </div>
-      <CrewListComponent pageSize={6} fetchData={fetchData} />
+      <CrewListComponent fetchData={fetchData} />
     </div>
   );
 };
