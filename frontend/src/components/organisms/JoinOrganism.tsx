@@ -34,7 +34,7 @@ const schema = yup.object({
     .required("닉네임을 입력해주세요."),
   name: yup
     .string()
-    .max(10, "이름은 최대 10자입니다.")
+    .max(30, "이름은 최대 30자입니다.")
     .required("이름을 입력해주세요."),
 });
 
