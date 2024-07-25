@@ -1,16 +1,9 @@
-import { useCallback } from "react";
-import { getSessionList, SessionRequestType } from "../apis/api/session";
-import SessionListTemplate from "../components/templates/session/SessionListTemplate";
+import { Outlet } from "react-router";
 
 const SessionPage: React.FC = () => {
-  const fetchData = useCallback(async (type: SessionRequestType) => {
-    console.log(type);
-    return (await getSessionList({ type })).sessions;
-  }, []);
-
   return (
     <main>
-      <SessionListTemplate fetchData={fetchData} />
+      <Outlet />
     </main>
   );
 };

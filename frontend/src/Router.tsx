@@ -14,6 +14,7 @@ import PostMainPage from "./pages/PostMainPage";
 import SearchUserPage from "./pages/SearchUserPage";
 import CrewDetailPage from "./pages/CrewDetailPage";
 import AlarmPage from "./pages/AlarmPage.tsx";
+import SessionSearchPage from "./pages/SessionSearchPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -25,6 +26,7 @@ export const router = createBrowserRouter([
         path: "session",
         element: <SessionPage />,
         children: [
+          { path: "", element: <SessionSearchPage /> },
           { path: "create", element: <SessionCreatePage /> },
           { path: "detail", element: <SessionDetailPage /> },
         ],
@@ -33,6 +35,7 @@ export const router = createBrowserRouter([
         path: "crew",
         element: <CrewPage />,
         children: [
+          { path: "", element: <CrewPage /> },
           { path: "create", element: <CrewCreatePage /> },
           { path: "detail", element: <CrewDetailPage /> },
         ],

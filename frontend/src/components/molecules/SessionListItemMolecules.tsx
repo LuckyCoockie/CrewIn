@@ -77,11 +77,14 @@ const SessionListItem = ({ crewName, area, date, imageUrl }: OwnProps) => {
           <div className="right-element text-right items-center overflow-hidden">
             <p
               className="text-white text-[10px] xs:text-xs truncate"
-              style={{ lineHeight: "0.8em" }}
+              style={{ lineHeight: "0.95em" }}
             >
               {parsedDate}
             </p>
-            <p className="text-white text-[10px] xs:text-xs truncate">
+            <p
+              className="text-white text-[10px] xs:text-xs truncate"
+              style={{ lineHeight: "0.95em" }}
+            >
               {parsedTime}
             </p>
           </div>
