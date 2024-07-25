@@ -1,6 +1,5 @@
 import React from "react";
 import CrewListItem from "../molecules/CrewListItemMolecules";
-import GridListComponent from "../molecules/GridListMolecule";
 import InfiniteScrollComponent from "../molecules/InfinityScrollMolecules";
 
 type CrewData = {
@@ -14,33 +13,27 @@ type CrewData = {
 };
 
 type OwnProps = {
-  pageSize: number;
   fetchData: (page: number) => Promise<CrewData[]>;
 };
 
-const CrewListComponent: React.FC<OwnProps> = ({ pageSize, fetchData }) => {
+const CrewListComponent: React.FC<OwnProps> = ({ fetchData }) => {
   return (
     <InfiniteScrollComponent
-      pageSize={pageSize}
+      className="grid grid-cols-2 gap-2 xs:gap-4 mb-2 xs:mb-4"
+      fetchKey={["CrewList"]}
       fetchData={fetchData}
-      PageComponent={({ data }: { data: CrewData[] }) => {
-        return (
-          <GridListComponent items={data}>
-            {({ item }) => (
-              <CrewListItem
-                key={item.id}
-                imageUrl={item.imageUrl}
-                title={item.name}
-                description={item.slogan}
-                captain={item.captainName}
-                location={item.area}
-                peopleCount={item.crewCount}
-              />
-            )}
-          </GridListComponent>
-        );
-      }}
-    ></InfiniteScrollComponent>
+      ItemComponent={({ data }) => (
+        <CrewListItem
+          key={data.id}
+          imageUrl={data.imageUrl}
+          title={data.name}
+          description={data.slogan}
+          captain={data.captainName}
+          location={data.area}
+          peopleCount={data.crewCount}
+        />
+      )}
+    />
   );
 };
 
