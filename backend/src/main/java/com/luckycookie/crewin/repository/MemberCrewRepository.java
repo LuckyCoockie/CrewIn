@@ -34,4 +34,7 @@ public interface MemberCrewRepository extends JpaRepository<MemberCrew, Long> {
 
     Optional<MemberCrew> findByMemberIdAndCrewId(Long memberId, Long crewId);
 
+    // 해당 크루에 있는 크루원 조회
+    List<MemberCrew> findByCrewId(Long crewId);
+
 }

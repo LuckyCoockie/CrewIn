@@ -4,9 +4,10 @@ import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.Position;
 import com.luckycookie.crewin.domain.enums.PostType;
 import com.luckycookie.crewin.dto.CrewRequest;
+import com.luckycookie.crewin.dto.CrewRequest.CreateCrewNoticeRequest;
+import com.luckycookie.crewin.dto.CrewRequest.CreateCrewRequest;
 import com.luckycookie.crewin.dto.CrewResponse;
-import com.luckycookie.crewin.dto.CrewResponse.CrewItem;
-import com.luckycookie.crewin.dto.CrewResponse.CrewItemResponse;
+import com.luckycookie.crewin.dto.CrewResponse.*;
 import com.luckycookie.crewin.exception.crew.CrewUnauthorizedException;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +39,7 @@ public class CrewService {
     private final PostRepository postRepository;
     private final PostImageRepository postImageRepository;
 
-    public void createCrew(CrewRequest.CreateCrewRequest createCrewRequest, CustomUser customUser) {
+    public void createCrew(CreateCrewRequest createCrewRequest, CustomUser customUser) {
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
@@ -117,7 +119,7 @@ public class CrewService {
                 .build();
     }
 
-    public void createCrewNotice(CrewRequest.CreateCrewNoticeRequest createCrewNoticeRequest, CustomUser customUser) {
+    public void createCrewNotice(CreateCrewNoticeRequest createCrewNoticeRequest, CustomUser customUser) {
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
@@ -155,7 +157,7 @@ public class CrewService {
     }
 
     // 크루 정보 조회
-    public CrewResponse.CrewInfoItem getCrewInfo(Long crewId) {
+    public CrewInfoItem getCrewInfo(Long crewId) {
 
         // 크루 정보 가져오기
         Crew crew = crewRepository.findById(crewId)
@@ -165,7 +167,7 @@ public class CrewService {
         int crewCount = crewRepository.countMembersByCrewId(crewId);
 
         // 크루 정보
-        return CrewResponse.CrewInfoItem
+        return CrewInfoItem
                 .builder()
                 .id(crewId)
                 .name(crew.getCrewName())
@@ -173,14 +175,14 @@ public class CrewService {
                 .slogan(crew.getSlogan())
                 .crewCount(crewCount)
                 .captainName(crew.getCaptain().getName())
-                .imageUrl(crew.getMainLogo())
+                .imageUrl(crew.getBanner())
                 .infoText(crew.getIntroduction())
                 .build();
 
     }
 
     // 크루 정보 수정
-    public void updateCrewInfo(Long crewId, CrewRequest.CreateCrewRequest createCrewRequest, CustomUser customUser) {
+    public void updateCrewInfo(Long crewId, CreateCrewRequest createCrewRequest, CustomUser customUser) {
         Crew crew = crewRepository.findById(crewId).orElseThrow(()->new NotFoundCrewException(crewId));
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
@@ -218,7 +220,7 @@ public class CrewService {
     }
 
     // 공지사항 조회
-    public CrewResponse.CrewNoticeItemResponse getCrewNoticeList(int pageNo, Long crewId, CustomUser customUser) {
+    public CrewNoticeItemResponse getCrewNoticeList(int pageNo, Long crewId, CustomUser customUser) {
         Pageable pageable = PageRequest.of(pageNo, 10); // pageNo 페이지 번호, 10 : 페이지 크기
 
         // 현재 사용자 정보 가져오기
@@ -246,14 +248,14 @@ public class CrewService {
                     .build();
         }).collect(Collectors.toList());
 
-        return CrewResponse.CrewNoticeItemResponse.builder()
+        return CrewNoticeItemResponse.builder()
                 .crewNoticeList(crewNoticeItems)
                 .pageNo(pageNo)
                 .lastPageNo(lastPageNo)
                 .build();
     }
 
-    public CrewResponse.CrewGalleryItemResponse getCrewGalleryList(int pageNo, Long crewId, CustomUser customUser) {
+    public CrewGalleryItemResponse getCrewGalleryList(int pageNo, Long crewId, CustomUser customUser) {
         Pageable pageable = PageRequest.of(pageNo, 27); // 페이지 크기 : 27
 
         // 해당 크루의 일반 게시물 가져오기
@@ -271,7 +273,7 @@ public class CrewService {
                     .build();
         }).collect(Collectors.toList());
 
-        return CrewResponse.CrewGalleryItemResponse
+        return CrewGalleryItemResponse
                 .builder()
                 .crewGalleryList(crewGalleryItems)
                 .pageNo(pageNo)
@@ -280,7 +282,7 @@ public class CrewService {
 
     }
 
-    public void updateNotice(Long noticeId, CrewRequest.CreateCrewNoticeRequest createCrewNoticeRequest) {
+    public void updateNotice(Long noticeId, CreateCrewNoticeRequest createCrewNoticeRequest) {
         Post post = postRepository.findById(noticeId)
                 .orElseThrow(() -> new NotFoundPostException(noticeId));
         post.updateCrewNotice(createCrewNoticeRequest);
@@ -313,6 +315,45 @@ public class CrewService {
         }else {
             throw new CrewUnauthorizedException();
         }
+    }
+
+    // 크루원 조회 (일반, 대기 중 List 나눠서)
+    // 일반 : isJoined (true), isInvited (true)
+    // 대기 중 : isJoined (false), isInvited (true)
+    public CrewMemberItemResponse getCrewMemberList(Long crewId) {
+
+        // 해당 크루에 있는 크루원 조회
+        List<MemberCrew> memberCrewList = memberCrewRepository.findByCrewId(crewId);
+
+        // 일반 회원 리스트
+        List<CrewMemberItem> crewIsJoinedMemberList = new ArrayList<>();
+        // 대기 중인 회원 리스트
+        List<CrewMemberItem> crewIsInvitedMemberList = new ArrayList<>();
+
+        // MemberCrew 객체를 CrewMemberItem 객체로 변환하고 리스트에 추가
+        for (MemberCrew memberCrew : memberCrewList) {
+            CrewMemberItem item = CrewMemberItem.builder()
+                    .nickname(memberCrew.getMember().getNickname())
+                    .name(memberCrew.getMember().getName())
+                    .email(memberCrew.getMember().getEmail())
+                    .isJoined(memberCrew.getIsJoined())
+                    .isInvited(memberCrew.getIsInvited())
+                    .position(memberCrew.getPosition())
+                    .build();
+
+            if (item.isJoined() && item.isInvited()) {
+                crewIsJoinedMemberList.add(item);
+            } else if (!item.isJoined() && item.isInvited()) {
+                crewIsInvitedMemberList.add(item);
+            }
+        }
+
+        // CrewMemberItemResponse 객체 생성 및 반환
+        return CrewMemberItemResponse.builder()
+                .crewIsJoinedMemberList(crewIsJoinedMemberList)
+                .crewIsInvitedMemberList(crewIsInvitedMemberList)
+                .build();
+
     }
 
 }

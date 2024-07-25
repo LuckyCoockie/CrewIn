@@ -121,9 +121,14 @@ public class CrewController {
     // 크루 권한 부여
     @PostMapping("/member/authority")
     public ResponseEntity<BaseResponse<Void>> updateMemberCrewPosition(@AuthenticationPrincipal CustomUser customUser, @RequestBody UpdateCrewPositionRequest updateCrewPositionRequest) {
-        System.out.println("memberCrewId : " + updateCrewPositionRequest.getPosition());
         crewService.updateMemberCrewPosition(updateCrewPositionRequest, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "권한을 부여하는데 성공했습니다."));
+    }
+
+    // 크루원 조회
+    @GetMapping("/member/{crewId}")
+    public ResponseEntity<BaseResponse<CrewResponse.CrewMemberItemResponse>> getCrewMemberList(@PathVariable Long crewId) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루원 조회를 성공했습니다.", crewService.getCrewMemberList(crewId)));
     }
 
 }
