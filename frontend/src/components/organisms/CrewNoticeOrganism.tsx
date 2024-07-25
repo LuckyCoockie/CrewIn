@@ -1,5 +1,6 @@
 import React from "react";
 import NoticeMolecule from "../molecules/Content/NoticeMolecule";
+import FloatingActionButton from "../atoms/Button/FloatingActionButton";
 
 type Notice = {
   role: string;
@@ -22,6 +23,7 @@ const CrewNoticeOrganism: React.FC<NoticesProps> = ({ notices }) => {
           date={notice.date}
         />
       ))}
+      <FloatingActionButton />
     </main>
   );
 };

@@ -1,4 +1,3 @@
-// CrewDetailTemplate.js
 import React, { useState } from "react";
 import CrewInfoOrganism from "../organisms/CrewInfoOrganism";
 import CrewNoticeOrganism from "../organisms/CrewNoticeOrganism";
@@ -8,6 +7,8 @@ import crewbanner from "../../assets/images/crewinbanner.png";
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import CrewAlbumOrganism from "../organisms/CrewAlbumOrganism";
 import CrewHeaderBarOrganism from "../organisms/CrewHeaderBarOrganism";
+
+// import { getCrewDetail, getCrewNoticeList, getCrewGalleryList, CrewDetailDto, CrewNoticeDto, CrewGalleryDto } from './api';
 
 import one from "../../assets/images/alarm-clockblack.png";
 import two from "../../assets/images/alarm-clockblack.png";
@@ -20,7 +21,13 @@ import eight from "../../assets/images/alarm-clockblack.png";
 import nine from "../../assets/images/alarm-clockblack.png";
 import ten from "../../assets/images/alarm-clockblack.png";
 
+// type OwnProps = {
+//   fetchData: (crewId: number) => Promise<CrewInfoDto>;
+// }
+
 const CrewDetailTemplate: React.FC = () => {
+  
+  
   const [currentTab, setCurrentTab] = useState<string>("정보");
 
   const notices = [
