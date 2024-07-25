@@ -1,15 +1,9 @@
-import { useCallback } from "react";
-import CrewListTemplate from "../components/templates/crew/CrewListTemplate";
-import { getCrewList } from "../apis/api/crewlist";
+import { Outlet } from "react-router";
 
 const CrewPage: React.FC = () => {
-  const fetchData = useCallback(async (page: number) => {
-    return (await getCrewList({ pageNo: page })).crews;
-  }, []);
-
   return (
     <main>
-      <CrewListTemplate fetchData={fetchData} />
+      <Outlet />
     </main>
   );
 };
