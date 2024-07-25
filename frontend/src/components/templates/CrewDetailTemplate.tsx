@@ -26,8 +26,6 @@ import ten from "../../assets/images/alarm-clockblack.png";
 // }
 
 const CrewDetailTemplate: React.FC = () => {
-  
-  
   const [currentTab, setCurrentTab] = useState<string>("정보");
 
   const notices = [
@@ -73,8 +71,12 @@ const CrewDetailTemplate: React.FC = () => {
         <BackHeaderMediumOrganism text={infos.crewname} />
       </header>
       <ThreeToTwoImageMolecule src={crewbanner} alt="crewbanner" />
-      <div className="pb-20">
-        <NavTabMolecule texts={texts} onTabClick={handleTabClick} currentTab={currentTab} />
+      <div className="pb-12">
+        <NavTabMolecule
+          texts={texts}
+          onTabClick={handleTabClick}
+          currentTab={currentTab}
+        />
         {renderTab()}
       </div>
     </>
