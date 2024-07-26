@@ -4,6 +4,8 @@ export type CreateCourseRequestDto = {
   info: string;
   name: string;
   length: number;
+  area: string;
+  thumbnailImage: string;
 };
 
 export type CourseInfoDto = {
