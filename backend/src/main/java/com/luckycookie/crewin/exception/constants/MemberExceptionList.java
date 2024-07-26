@@ -14,7 +14,7 @@ public enum MemberExceptionList {
     EMAIL_SEND_ERROR("M0005", HttpStatus.NOT_FOUND, "이메일 발송에 실패했습니다."),
     EMAIL_NOT_FOUND("M0006", HttpStatus.NOT_FOUND, "이메일을 찾을 수 없습니다."),
     ALREADY_LOGOUT_ERROR("M0007", HttpStatus.BAD_REQUEST, "이미 로그아웃한 회원입니다."),
-    NAME_EMAIL_MISMATCH("M0008", HttpStatus.BAD_REQUEST, "회원 정보가 올바르지 않습니다.");
+    INVALID_CREDENTIAL("M0008", HttpStatus.BAD_REQUEST, "회원 정보가 올바르지 않습니다.");
 
     private final String errorCode;
     private final HttpStatus httpStatus;

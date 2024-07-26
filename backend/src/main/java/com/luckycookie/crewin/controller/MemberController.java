@@ -1,10 +1,8 @@
 package com.luckycookie.crewin.controller;
 
 import com.luckycookie.crewin.domain.Token;
-import com.luckycookie.crewin.dto.MemberRequest.EmailRequest;
-import com.luckycookie.crewin.dto.MemberRequest.SignInRequest;
-import com.luckycookie.crewin.dto.MemberRequest.SignUpRequest;
-import com.luckycookie.crewin.dto.MemberRequest.TemporaryPasswordRequest;
+import com.luckycookie.crewin.dto.MemberRequest;
+import com.luckycookie.crewin.dto.MemberRequest.*;
 import com.luckycookie.crewin.dto.MemberResponse.DuplicateResponse;
 import com.luckycookie.crewin.dto.MemberResponse.EmailResponse;
 import com.luckycookie.crewin.dto.TokenResponse;
@@ -92,5 +90,11 @@ public class MemberController {
     public ResponseEntity<BaseResponse<Void>> temporaryPassword(@RequestBody TemporaryPasswordRequest temporaryPasswordRequest) {
         memberService.issueTemporaryPassword(temporaryPasswordRequest.getEmail(), temporaryPasswordRequest.getName());
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "임시 비밀번호 발급이 완료되었습니다."));
+    }
+
+    @PutMapping("/password")
+    public ResponseEntity<BaseResponse<Void>> changePassword(@AuthenticationPrincipal CustomUser customUser, @RequestBody ChangePasswordRequest changePasswordRequest) {
+        memberService.changePassword(customUser.getEmail(), changePasswordRequest.getOldPassword(), changePasswordRequest.getNewPassword());
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "비밀번호가 변경되었습니다."));
     }
 }

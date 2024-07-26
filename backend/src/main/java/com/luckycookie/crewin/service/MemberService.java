@@ -84,10 +84,18 @@ public class MemberService {
         refreshTokenRedisRepository.delete(auth);
     }
 
+    public void changePassword(String email, String oldPassword, String newPassword) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+        if (!passwordEncoder.matches(oldPassword, member.getPassword())) {
+            throw new InvalidCredentialException();
+        }
+        member.changePassword(passwordEncoder.encode(newPassword));
+    }
+
     public void issueTemporaryPassword(String email, String name) {
         Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
         if (!member.getName().toLowerCase().equals(name.toLowerCase().trim())) {
-            throw new NameEmailMismatchException();
+            throw new InvalidCredentialException();
         }
         String temporaryPassword = generateRandomPassword();
         member.changePassword(temporaryPassword);

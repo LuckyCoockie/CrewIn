@@ -45,4 +45,13 @@ public class MemberRequest {
         private String email;
         private String name;
     }
+
+    @Getter
+    @NoArgsConstructor
+    @Builder
+    @AllArgsConstructor
+    public static class ChangePasswordRequest {
+        String newPassword;
+        String oldPassword;
+    }
 }
