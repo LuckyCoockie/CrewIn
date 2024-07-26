@@ -53,7 +53,9 @@ export type SessionDto = {
 };
 
 export type GetSessionListRequestDto = {
-  type: SessionRequestType;
+  type?: SessionRequestType;
+  "crew-name"?: string;
+  date?: string;
 };
 
 export type GetSessionListResponseDto = {
