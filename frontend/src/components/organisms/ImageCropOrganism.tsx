@@ -42,13 +42,24 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
   const cropperRefs = useRef<(ReactCropperElement | null)[]>([]);
 
   const handleDrop = (acceptedFiles: File[]) => {
+    const allowedTypes = ["image/png", "image/jpeg"];
+    const filteredFiles = acceptedFiles.filter((file) =>
+      allowedTypes.includes(file.type)
+    );
+
+    if (filteredFiles.length !== acceptedFiles.length) {
+      alert("Only .png, .jpg, and .jpeg files are allowed.");
+    }
+
     const tempImagePaths: string[] = [];
     const tempCroppedImages: string[] = [];
-    acceptedFiles.forEach((file) => {
+
+    filteredFiles.forEach((file) => {
       const tempImagePath = URL.createObjectURL(file);
       tempImagePaths.push(tempImagePath);
       tempCroppedImages.push(tempImagePath);
     });
+
     setImagePaths(tempImagePaths);
     setCroppedImages(tempCroppedImages);
     setOriginalCroppedImages(tempImagePaths);
@@ -115,7 +126,16 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
       return;
     }
     const postData = { croppedImages, crewName, visibility, content };
-    localStorage.setItem("postData", JSON.stringify(postData));
+
+    const existingPosts = JSON.parse(localStorage.getItem("postData") || "[]");
+
+    if (Array.isArray(existingPosts)) {
+      existingPosts.push(postData);
+      localStorage.setItem("postData", JSON.stringify(existingPosts));
+    } else {
+      localStorage.setItem("postData", JSON.stringify([postData]));
+    }
+
     onComplete(croppedImages, crewName, visibility, content);
     navigate("/home", { state: postData });
   };
