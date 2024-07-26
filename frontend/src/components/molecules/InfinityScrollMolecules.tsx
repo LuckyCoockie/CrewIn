@@ -1,27 +1,27 @@
 import React, { useEffect } from "react";
-import { Spinner } from "flowbite-react";
 import { useInfiniteQuery } from "react-query";
 
 export interface ItemComponentProps<T> {
-  data: T[];
+  data: T;
 }
 
 type OwnProps<T> = {
-  key?: string;
-  pageSize: number;
+  fetchKey: string | string[];
   fetchData: (page: number) => Promise<T[]>;
-  PageComponent: (
+  ItemComponent: (
     props: ItemComponentProps<T>
   ) => React.ReactElement<HTMLElement>;
+  className?: string;
 };
 
 const InfiniteScrollComponent = <T,>({
-  key = "??",
+  fetchKey,
   fetchData,
-  PageComponent,
+  ItemComponent,
+  className,
 }: OwnProps<T>) => {
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
-    useInfiniteQuery(key, ({ pageParam = 1 }) => fetchData(pageParam), {
+    useInfiniteQuery(fetchKey, ({ pageParam = 1 }) => fetchData(pageParam), {
       getNextPageParam: (_, allPages) => {
         const nextPage = allPages.length + 1;
         return nextPage;
@@ -31,7 +31,7 @@ const InfiniteScrollComponent = <T,>({
   useEffect(() => {
     const handleScroll = async () => {
       const { scrollHeight, scrollTop, clientHeight } =
-      document.documentElement;
+        document.documentElement;
       if (
         !isFetchingNextPage &&
         scrollHeight - scrollTop <= clientHeight * 1.2
@@ -46,11 +46,10 @@ const InfiniteScrollComponent = <T,>({
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   return (
-    <div>
-      {data?.pages.map((data, index) => (
-        <PageComponent key={index} data={data} />
+    <div className={className}>
+      {data?.pages.map((data) => (
+        <>{data?.map((data) => ItemComponent({ data }))}</>
       ))}
-      <div className="items-center">{isFetchingNextPage && <Spinner />}</div>
     </div>
   );
 };
