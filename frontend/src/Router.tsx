@@ -31,7 +31,7 @@ export const router = createBrowserRouter([
           {
             path: "",
             element: <SessionSearchPage />,
-            children: [{ path: "search", element: <SessionListPage /> }],
+            children: [{ path: "", element: <SessionListPage /> }],
           },
           { path: "create", element: <SessionCreatePage /> },
           { path: "detail", element: <SessionDetailPage /> },

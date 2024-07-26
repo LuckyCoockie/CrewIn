@@ -10,7 +10,7 @@ const SessionSearchPage: React.FC = () => {
   const fetchData = useCallback(
     async (dto: GetSessionListRequestDto) => {
       removeUndefinedKey(dto);
-      navigate(`/session/search?${createSearchParams(dto)}`);
+      navigate(`/session?${createSearchParams(dto)}`);
     },
     [navigate]
   );
