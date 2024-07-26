@@ -56,20 +56,20 @@ public class SessionController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당하는 크루의 세션을 조회하는데 성공했습니다.", sessions));
     }
 
-    @GetMapping("/detail")
-    public ResponseEntity<BaseResponse<SessionDetailResponse>> getSessionDetail(@RequestParam("id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<BaseResponse<SessionDetailResponse>> getSessionDetail(@PathVariable("id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
         SessionDetailResponse sessionDetailResponse = sessionService.getSessionDetail(sessionId, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당하는 세션의 세부정보를 조회하는데 성공했습니다.", sessionDetailResponse));
     }
 
-    @PutMapping("/detail")
-    public ResponseEntity<BaseResponse<Void>> updatePost(@RequestParam("id") Long sessionId, @RequestBody SessionRequest.UpdateSessionRequest updateSessionRequest, @AuthenticationPrincipal CustomUser customUser) {
+    @PutMapping("/detail/{id}")
+    public ResponseEntity<BaseResponse<Void>> updatePost(@PathVariable("id") Long sessionId, @RequestBody SessionRequest.UpdateSessionRequest updateSessionRequest, @AuthenticationPrincipal CustomUser customUser) {
         sessionService.updateSession(sessionId, updateSessionRequest, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 정보를 수정하는데 성공했습니다."));
     }
 
-    @DeleteMapping("/detail")
-    public ResponseEntity<BaseResponse<Void>> deletePost(@RequestParam("id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
+    @DeleteMapping("/detail/{id}")
+    public ResponseEntity<BaseResponse<Void>> deletePost(@PathVariable("id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
         sessionService.deleteSession(sessionId, customUser);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
