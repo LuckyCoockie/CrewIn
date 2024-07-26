@@ -12,6 +12,7 @@ import { ReactComponent as Alarmicon } from "../assets/icons/alarm_deactivated.s
 import { ReactComponent as AlarmOnicon } from "../assets/icons/alarm_activated.svg";
 import { ReactComponent as Searchicon } from "../assets/icons/searchicon.svg";
 import { ReactComponent as Postcreateicon } from "../assets/icons/postcreateicon.svg";
+import FloatingActionButton from "../components/atoms/Button/FloatingActionButton";
 
 const PostMainPage: React.FC = () => {
   const [postData, setPostData] = useState<{
@@ -148,9 +149,7 @@ const PostMainPage: React.FC = () => {
           )}
         </div>
       </div>
-      <div className="sticky bottom-24 right-4 max-w-[550px] w-full flex justify-end">
-        <Postcreateicon onClick={handlePostCreate} />
-      </div>
+      <FloatingActionButton icon={Postcreateicon} onClick={handlePostCreate} />
     </div>
   );
 };
