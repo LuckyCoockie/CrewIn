@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Random;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -84,7 +86,37 @@ public class MemberService {
 
     public void issueTemporaryPassword(String email, String name) {
         Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
-        // 비밀번호 재발급후 db에 저장하고 메일로 보내기, 만약 이메일 전송도중에 예외발생하면 처리해주기
+        if (!member.getName().toLowerCase().equals(name.toLowerCase().trim())) {
+            throw new NameEmailMismatchException();
+        }
+        String temporaryPassword = generateRandomPassword();
+        member.changePassword(temporaryPassword);
+        mailService.sendTemporaryPasswordMail(email, temporaryPassword);
     }
 
+    private String generateRandomPassword() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random rnd = new Random();
+        StringBuilder sb = new StringBuilder();
+
+        // 5개의 알파벳 생성
+        for (int i = 0; i < 5; i++) {
+            sb.append(chars.charAt(rnd.nextInt(chars.length())));
+        }
+
+        // 3개의 숫자 생성
+        for (int i = 0; i < 3; i++) {
+            sb.append(chars.charAt(rnd.nextInt(10) + 52)); // 숫자만 선택
+        }
+
+        // 생성된 문자열을 랜덤하게 섞음
+        for (int i = sb.length() - 1; i > 0; i--) {
+            int index = rnd.nextInt(i + 1);
+            char temp = sb.charAt(index);
+            sb.setCharAt(index, sb.charAt(i));
+            sb.setCharAt(i, temp);
+        }
+
+        return sb.toString();
+    }
 }

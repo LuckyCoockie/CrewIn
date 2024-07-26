@@ -43,4 +43,8 @@ public class Member {
     private int totalDistance;
 
     private int totalTime;
+
+    public void changePassword(String newPassword){
+        this.password = newPassword;
+    }
 }

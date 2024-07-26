@@ -4,6 +4,7 @@ import com.luckycookie.crewin.domain.redis.EmailCertification;
 import com.luckycookie.crewin.exception.member.EmailNotFoundException;
 import com.luckycookie.crewin.exception.member.EmailSendException;
 import com.luckycookie.crewin.repository.EmailRedisRepository;
+import com.luckycookie.crewin.repository.MemberRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
@@ -26,9 +27,20 @@ public class MailService {
     private final JavaMailSender javaMailSender;
     private final EmailRedisRepository emailRedisRepository;
     private final MessageSource messageSource;
+    private final MemberRepository memberRepository;
 
     @Value("${spring.mail.username}")
     private String email;
+
+    @Transactional(readOnly = true)
+    public boolean checkMail(String email, String code) {
+        Optional<EmailCertification> findCode = emailRedisRepository.findById(email);
+        if (findCode.isEmpty()) {
+            throw new EmailNotFoundException();
+        }
+
+        return findCode.get().getCertificationNumber().equals(code);
+    }
 
     public void sendAuthenticationMail(String mail) {
         try {
@@ -43,16 +55,6 @@ public class MailService {
         } catch (Exception e) {
             throw new EmailSendException();
         }
-    }
-
-    @Transactional(readOnly = true)
-    public boolean checkMail(String email, String code) {
-        Optional<EmailCertification> findCode = emailRedisRepository.findById(email);
-        if (findCode.isEmpty()) {
-            throw new EmailNotFoundException();
-        }
-
-        return findCode.get().getCertificationNumber().equals(code);
     }
 
     public MimeMessage createAuthenticationMessage(String mail, String randomCode) throws MessagingException, UnsupportedEncodingException {
@@ -73,6 +75,26 @@ public class MailService {
         }
         return builder.toString();
     }
+
+    public void sendTemporaryPasswordMail(String mail, String temporaryPassword) {
+        try {
+            MimeMessage mimeMessage = createTemporaryPasswordMessage(mail, temporaryPassword);
+            javaMailSender.send(mimeMessage);
+        } catch (Exception e) {
+            throw new EmailSendException();
+        }
+    }
+
+    public MimeMessage createTemporaryPasswordMessage(String mail, String temporaryPassword) throws MessagingException, UnsupportedEncodingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        message.addRecipients(MimeMessage.RecipientType.TO, mail);
+        message.setSubject("CREW-IN 임시 비밀번호 발급 메일입니다.", "UTF-8"); // 메일 제목
+        message.setText(messageSource.getMessage("spring.mail.temporaryPassword", new String[]{temporaryPassword}, Locale.KOREA), "UTF-8", "html"); // 메일 내용
+        message.setFrom(new InternetAddress(email, "CrewIn_Official")); //보내는 사람의 메일 주소, 보내는 사람 이름
+        return message;
+    }
+
+
 }
 
 
