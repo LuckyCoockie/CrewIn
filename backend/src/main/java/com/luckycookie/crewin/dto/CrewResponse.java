@@ -96,4 +96,26 @@ public class CrewResponse {
         List<CrewGalleryItem> crewGalleryList;
     }
 
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CrewMemberItem{
+        private String nickname; // 닉네임
+        private String name; // 이름
+        private String email; // 이메일
+        private boolean isJoined; // 가입 여부
+        private boolean isInvited; // 초대 여부
+        private Position position; // 직급
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CrewMemberItemResponse{
+        List<CrewMemberItem> crewIsJoinedMemberList; // 일반 회원
+        List<CrewMemberItem> crewIsInvitedMemberList; // 대기 중인 회원
+    }
+
 }
