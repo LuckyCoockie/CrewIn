@@ -34,21 +34,23 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
   fetchGalleryData,
 }) => {
   const [currentTab, setCurrentTab] = useState<string>("정보");
+  const crewId = 1;
+  const pageNo = 0;
 
   // 크루 정보를 가져오는 React Query 훅
   const {
     data: infoData,
     isLoading: infoLoading,
     error: infoError,
-  } = useQuery(["crewInfo", { crewId: 1 }], () => fetchInfoData({ crewId: 1 }));
+  } = useQuery(["crewInfo", { crewId }], () => fetchInfoData({ crewId }));
 
   // 크루 공지사항을 가져오는 React Query 훅
   const {
     data: noticeData,
     isLoading: noticeLoading,
     error: noticeError,
-  } = useQuery(["crewNotice", { crewId: 1, pageNo: 1 }], () =>
-    fetchNoticeData({ crewId: 1, pageNo: 1 })
+  } = useQuery(["crewNotice", { crewId, pageNo }], () =>
+    fetchNoticeData({ crewId, pageNo })
   );
 
   // 크루 사진첩을 가져오는 React Query 훅
@@ -56,8 +58,8 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
     data: galleryData,
     isLoading: galleryLoading,
     error: galleryError,
-  } = useQuery(["crewGallery", { crewId: 1, pageNo: 1 }], () =>
-    fetchGalleryData({ crewId: 1, pageNo: 1 })
+  } = useQuery(["crewGallery", { crewId, pageNo }], () =>
+    fetchGalleryData({ crewId, pageNo })
   );
 
   // 로그 출력
