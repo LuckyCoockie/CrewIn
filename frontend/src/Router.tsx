@@ -29,7 +29,7 @@ export const router = createBrowserRouter([
         children: [
           { path: "", element: <SessionSearchPage /> },
           { path: "create", element: <SessionCreatePage /> },
-          { path: "detail", element: <SessionDetailPage /> },
+          { path: "detail/:sessionId", element: <SessionDetailPage /> },
         ],
       },
       {
@@ -38,12 +38,11 @@ export const router = createBrowserRouter([
         children: [
           { path: "", element: <CrewSearchPage /> },
           { path: "create", element: <CrewCreatePage /> },
-          { path: "detail", element: <CrewDetailPage /> },
+          { path: "detail/:crewId", element: <CrewDetailPage /> },
         ],
       },
       { path: "profile", element: <ProfilePage /> },
       { path: "course", element: <CourseCreatePage /> },
-      { path: "createcrew", element: <CrewCreatePage /> },
       { path: "post", element: <PostCreatePage /> },
       { path: "searchuser", element: <SearchUserPage /> },
       { path: "alarm", element: <AlarmPage /> },
