@@ -20,7 +20,7 @@ export type GetCrewInfoResponseDto = {
   crewInfo: CrewInfoDto;
 };
 
-export const getCrewDetail = async (
+export const getCrewInfo = async (
   dto: GetCrewInfoRequestDto
 ): Promise<GetCrewInfoResponseDto> => {
   const response = await api.get(`/crew/detail/${dto.crewId}`);

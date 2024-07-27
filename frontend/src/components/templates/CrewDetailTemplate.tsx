@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useQuery } from "react-query";
 import CrewInfoOrganism from "../organisms/CrewInfoOrganism";
 import CrewNoticeOrganism from "../organisms/CrewNoticeOrganism";
 import NavTabMolecule from "../molecules/Tab/NavTabMolecule";
@@ -8,57 +9,123 @@ import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import CrewAlbumOrganism from "../organisms/CrewAlbumOrganism";
 import CrewHeaderBarOrganism from "../organisms/CrewHeaderBarOrganism";
 
-// import { getCrewDetail, getCrewNoticeList, getCrewGalleryList, CrewDetailDto, CrewNoticeDto, CrewGalleryDto } from './api';
+import {
+  CrewInfoDto,
+  CrewNoticeDto,
+  CrewGalleryDto,
+  GetCrewInfoRequestDto,
+  GetCrewGalleryListRequestDto,
+  GetCrewNoticeListRequestDto,
+} from "../../apis/api/crewdetail";
 
-import one from "../../assets/images/alarm-clockblack.png";
-import two from "../../assets/images/alarm-clockblack.png";
-import three from "../../assets/images/alarm-clockblack.png";
-import four from "../../assets/images/alarm-clockblack.png";
-import five from "../../assets/images/alarm-clockblack.png";
-import six from "../../assets/images/alarm-clockblack.png";
-import seven from "../../assets/images/alarm-clockblack.png";
-import eight from "../../assets/images/alarm-clockblack.png";
-import nine from "../../assets/images/alarm-clockblack.png";
-import ten from "../../assets/images/alarm-clockblack.png";
+type OwnDetailProps = {
+  fetchInfoData: (dto: GetCrewInfoRequestDto) => Promise<CrewInfoDto>;
+  fetchNoticeData: (
+    dto: GetCrewNoticeListRequestDto
+  ) => Promise<CrewNoticeDto[]>;
+  fetchGalleryData: (
+    dto: GetCrewGalleryListRequestDto
+  ) => Promise<CrewGalleryDto[]>;
+};
 
-// type OwnProps = {
-//   fetchData: (crewId: number) => Promise<CrewInfoDto>;
-// }
-
-const CrewDetailTemplate: React.FC = () => {
+const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
+  fetchInfoData,
+  fetchNoticeData,
+  fetchGalleryData,
+}) => {
   const [currentTab, setCurrentTab] = useState<string>("정보");
 
-  const notices = [
-    { role: "Captain", title: "첫번째 공지", date: "2024.07.23" },
-    { role: "Pacer", title: "두번째 공지", date: "2024.07.24" },
-  ];
+  // 크루 정보를 가져오는 React Query 훅
+  const {
+    data: infoData,
+    isLoading: infoLoading,
+    error: infoError,
+  } = useQuery(["crewInfo", { crewId: 1 }], () => fetchInfoData({ crewId: 1 }));
 
-  const infos = {
-    crewname: "CAUON",
-    captain: "이예령씨",
-    slogan: "같이의 가치",
-    area: "서울특별시 동작구",
-    birth: "2018년 4월 3일",
-    people: "100",
-    introduction: "중앙대학교 중앙동아리 러닝크루입니다.",
-  };
+  // 크루 공지사항을 가져오는 React Query 훅
+  const {
+    data: noticeData,
+    isLoading: noticeLoading,
+    error: noticeError,
+  } = useQuery(["crewNotice", { crewId: 1, pageNo: 1 }], () =>
+    fetchNoticeData({ crewId: 1, pageNo: 1 })
+  );
 
-  const photos = [one, two, three, four, five, six, seven, eight, nine, ten];
+  // 크루 사진첩을 가져오는 React Query 훅
+  const {
+    data: galleryData,
+    isLoading: galleryLoading,
+    error: galleryError,
+  } = useQuery(["crewGallery", { crewId: 1, pageNo: 1 }], () =>
+    fetchGalleryData({ crewId: 1, pageNo: 1 })
+  );
+
+  // 로그 출력
+  console.log("infoData", infoData);
+  console.log("noticeData", noticeData);
+  console.log("galleryData", galleryData);
+
+  // 오류 로그 출력
+  if (infoError) console.error("infoError", infoError);
+  if (noticeError) console.error("noticeError", noticeError);
+  if (galleryError) console.error("galleryError", galleryError);
 
   const handleTabClick = (tab: string) => {
     setCurrentTab(tab);
   };
 
   const renderTab = () => {
+    if (infoLoading || noticeLoading || galleryLoading) {
+      return <div>Loading...</div>;
+    }
+
+    if (infoError || noticeError || galleryError) {
+      return <div>Error loading data</div>;
+    }
+
     switch (currentTab) {
       case "공지사항":
-        return <CrewNoticeOrganism notices={notices} />;
+        return noticeData ? (
+          <CrewNoticeOrganism notices={noticeData} />
+        ) : (
+          <div>No Notice Data</div>
+        );
       case "정보":
-        return <CrewInfoOrganism {...infos} />;
+        return infoData ? (
+          <CrewInfoOrganism
+            crewname={infoData.name}
+            captain={infoData.captainName}
+            slogan={infoData.slogan}
+            area={infoData.area}
+            birth="2024"
+            people={infoData.crewCount}
+            introduction={infoData.infoText}
+          />
+        ) : (
+          <div>No Info Data</div>
+        );
       case "사진첩":
-        return <CrewAlbumOrganism photos={photos} />;
+        return galleryData ? (
+          <CrewAlbumOrganism
+            photos={galleryData.flatMap((gallery) => gallery.imageUrls)}
+          />
+        ) : (
+          <div>No Gallery Data</div>
+        );
       default:
-        return <CrewInfoOrganism {...infos} />;
+        return infoData ? (
+          <CrewInfoOrganism
+            crewname={infoData.name}
+            captain={infoData.captainName}
+            slogan={infoData.slogan}
+            area={infoData.area}
+            birth="2024"
+            people={infoData.crewCount}
+            introduction={infoData.infoText}
+          />
+        ) : (
+          <div>No Info Data</div>
+        );
     }
   };
 
@@ -68,7 +135,9 @@ const CrewDetailTemplate: React.FC = () => {
     <>
       <CrewHeaderBarOrganism />
       <header>
-        <BackHeaderMediumOrganism text={infos.crewname} />
+        <BackHeaderMediumOrganism
+          text={infoData ? infoData.name : "Loading..."}
+        />
       </header>
       <ThreeToTwoImageMolecule src={crewbanner} alt="crewbanner" />
       <div className="pb-12">

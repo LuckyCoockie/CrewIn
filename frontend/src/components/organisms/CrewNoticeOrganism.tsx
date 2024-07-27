@@ -4,9 +4,11 @@ import FloatingActionButton from "../atoms/Button/FloatingActionButton";
 import PaginationMolecule from "../molecules/Pagination/PaginationMolecule";
 
 type Notice = {
-  role: string;
+  noticeId: number;
+  position: string;
   title: string;
-  date: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 type NoticesProps = {
@@ -32,9 +34,9 @@ const CrewNoticeOrganism: React.FC<NoticesProps> = ({ notices }) => {
       {currentNotices.map((notice, index) => (
         <NoticeMolecule
           key={index}
-          text={notice.role}
+          text={notice.position}
           title={notice.title}
-          date={notice.date}
+          date={notice.createdAt}
         />
       ))}
       {/* 분리 */}
