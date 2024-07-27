@@ -4,7 +4,6 @@ import { Carousel } from "react-responsive-carousel";
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import Dropzone from "react-dropzone";
-import { PlusOutlined } from "@ant-design/icons";
 import ModalMolecules from "../molecules/ModalMolecules";
 import ImageEditSave from "./ImageEditSaveOrganism";
 import editButton from "../../assets/images/editbutton.png";
@@ -14,6 +13,7 @@ import InputTextAreaNoLimitTypeMolecule from "../molecules/Input/InputTextAreaNo
 import InputRadioTypeMolecule from "../molecules/Input/InputRadioTypeMolecule";
 import InputDropdonwTypeMolecule from "../molecules/Input/InputDropdonwTypeMolecule";
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
+import { ReactComponent as FileDrop } from "../../assets/icons/filedrop.svg";
 import { crewNames } from "../../../src/crewname";
 
 interface ImageCropProps {
@@ -42,13 +42,24 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
   const cropperRefs = useRef<(ReactCropperElement | null)[]>([]);
 
   const handleDrop = (acceptedFiles: File[]) => {
+    const allowedTypes = ["image/png", "image/jpeg"];
+    const filteredFiles = acceptedFiles.filter((file) =>
+      allowedTypes.includes(file.type)
+    );
+
+    if (filteredFiles.length !== acceptedFiles.length) {
+      alert("Only .png, .jpg, and .jpeg files are allowed.");
+    }
+
     const tempImagePaths: string[] = [];
     const tempCroppedImages: string[] = [];
-    acceptedFiles.forEach((file) => {
+
+    filteredFiles.forEach((file) => {
       const tempImagePath = URL.createObjectURL(file);
       tempImagePaths.push(tempImagePath);
       tempCroppedImages.push(tempImagePath);
     });
+
     setImagePaths(tempImagePaths);
     setCroppedImages(tempCroppedImages);
     setOriginalCroppedImages(tempImagePaths);
@@ -115,7 +126,16 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
       return;
     }
     const postData = { croppedImages, crewName, visibility, content };
-    localStorage.setItem("postData", JSON.stringify(postData));
+
+    const existingPosts = JSON.parse(localStorage.getItem("postData") || "[]");
+
+    if (Array.isArray(existingPosts)) {
+      existingPosts.push(postData);
+      localStorage.setItem("postData", JSON.stringify(existingPosts));
+    } else {
+      localStorage.setItem("postData", JSON.stringify([postData]));
+    }
+
     onComplete(croppedImages, crewName, visibility, content);
     navigate("/home", { state: postData });
   };
@@ -134,15 +154,16 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
                 style={{
                   width: 360,
                   height: 360,
-                  border: "1px solid lightgray",
+                  border: "1px solid #f0f0f0",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   cursor: "pointer",
+                  backgroundColor: "#f0f0f0",
                 }}
               >
                 <input {...getInputProps()} />
-                <PlusOutlined style={{ fontSize: "3rem" }} />
+                <FileDrop style={{ fontSize: "3rem" }} />
               </div>
             </section>
           )}
@@ -222,27 +243,31 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
       )}
 
       <div className="w-full flex">
-        <InputDropdonwTypeMolecule
-          id="crewName"
-          title="크루"
-          options={crewNames}
-          value={crewName}
-          onChange={(e) => setCrewName(e.target.value)}
-          text="크루명을 선택하세요"
-          hasError={false}
-        />
-      </div>
+        <div className="w-full">
+          <InputRadioTypeMolecule
+            id="visibility"
+            title="공개 범위"
+            name="visibility"
+            onChange={(e) => setVisibility(e.target.value)}
+            value={["전체", "크루"]}
+            default="전체"
+            hasError={false}
+          />
+        </div>
 
-      <div className="w-full">
-        <InputRadioTypeMolecule
-          id="visibility"
-          title="공개범위"
-          name="visibility"
-          onChange={(e) => setVisibility(e.target.value)}
-          value={["전체", "크루"]}
-          default="전체"
-          hasError={false}
-        />
+        {visibility === "크루" && (
+          <div className="w-60">
+            <InputDropdonwTypeMolecule
+              id="crewName"
+              title=""
+              options={crewNames}
+              value={crewName}
+              onChange={(e) => setCrewName(e.target.value)}
+              text="크루 선택"
+              hasError={false}
+            />
+          </div>
+        )}
       </div>
 
       <div className="w-full">
