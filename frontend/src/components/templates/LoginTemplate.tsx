@@ -6,7 +6,7 @@ import LoginMenuOrganism from "../organisms/LoginMenuOrganism";
 const LoginTemplate: React.FC = () => {
   return (
     <>
-      <div className="mx-auto w-full max-w-[550px] pt-4 pb-10">
+      <div className="mx-auto w-full max-w-[550px] pb-10">
         <div className="pt-8 pb-12">
           <LoginTitleOrganism />
         </div>
