@@ -197,7 +197,6 @@ const LoginOrganism: React.FC = () => {
       </div>
       {/* 버튼 영역 */}
       <div>
-        {/* Form 유효성 검사 통과 + 이메일 인증 통과 여부에 따라 버튼 교체 */}
         {isValid && isCodeVerified ? (
           <LargeAbleButton text="생성" />
         ) : (
