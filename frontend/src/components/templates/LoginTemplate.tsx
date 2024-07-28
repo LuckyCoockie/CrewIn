@@ -1,6 +1,7 @@
 import React from "react";
 import LoginTitleOrganism from "../organisms/LoginTitleOrganism";
 import LoginOrganism from "../organisms/LoginOrganism";
+import LoginMenuOrganism from "../organisms/LoginMenuOrganism";
 
 const LoginTemplate: React.FC = () => {
   return (
@@ -10,8 +11,9 @@ const LoginTemplate: React.FC = () => {
           <LoginTitleOrganism />
         </div>
         <div className="flex items-center justify-center">
-          <LoginOrganism/>
+          <LoginOrganism />
         </div>
+        <LoginMenuOrganism />
       </div>
     </>
   );
