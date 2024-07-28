@@ -16,6 +16,7 @@ import CrewDetailPage from "./pages/CrewDetailPage";
 import AlarmPage from "./pages/AlarmPage.tsx";
 import SessionSearchPage from "./pages/SessionSearchPage.tsx";
 import CrewSearchPage from "./pages/CrewSearchPage.tsx";
+import FindPasswordPage from "./pages/FindPasswordPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -48,6 +49,7 @@ export const router = createBrowserRouter([
       { path: "alarm", element: <AlarmPage /> },
       { path: "login", element: <LoginPage /> },
       { path: "join", element: <JoinPage /> },
+      { path: "find-password", element: <FindPasswordPage /> },
     ],
   },
 ]);
