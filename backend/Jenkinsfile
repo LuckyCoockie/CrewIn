@@ -1,5 +1,13 @@
 pipeline {
     agent any
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('docker_hub_token') // Docker Hub 자격 증명 ID
+        DOCKER_REPO = "limnyn/crewin"
+        DOCKER_TAG = "backend" // 태그를 backend로 지정
+        DOCKER_IMAGE = "${DOCKER_REPO}:${DOCKER_TAG}"
+        HOST_CONATINER_PORT = "12380:8080"
+        CONTAINER_NAME = "crewin_springboot_server"
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -12,7 +20,6 @@ pipeline {
                     sh '''
                         mkdir -p backend/src/main/resources
                         chmod -R 755 backend/src/main/resources
-                        # 환경 변수에 저장된 파일 내용을 읽어 application.yml로 저장
                         cp $CONFIG_FILE backend/src/main/resources/application.yml
                     '''
                 }
@@ -23,26 +30,48 @@ pipeline {
                 sh 'cd backend && chmod +x gradlew && ./gradlew clean build'
             }
         }
-        stage('Deploy') {
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh 'cd backend && docker build -t $DOCKER_IMAGE .'
+                }
+            }
+        }
+        stage('Login to Docker Hub') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'docker_hub_token', usernameVariable: 'DOCKER_HUB_CREDENTIALS_USR', passwordVariable: 'DOCKER_HUB_CREDENTIALS_PSW')]) {
+                        sh 'docker login -u $DOCKER_HUB_CREDENTIALS_USR -p $DOCKER_HUB_CREDENTIALS_PSW'
+                    }
+                }
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    sh 'docker push $DOCKER_IMAGE'
+                }
+            }
+        }
+        stage('Deploy to Server') {
             steps {
                 script {
                     sshPublisher(
                         publishers: [
                             sshPublisherDesc(
-                                configName: 'Gumi-Spring-Server',
+                                configName: 'Gumi-Server',
                                 transfers: [
                                     sshTransfer(
-                                        sourceFiles: 'backend/build/libs/crewin-0.0.1-SNAPSHOT.jar',
-                                        removePrefix: 'backend/build/libs',
-                                        remoteDirectory: 'spring_server',
-                                        execCommand: '''#!/bin/bash
-                                            pkill -9 java
-                                            java -jar spring_server/crewin-0.0.1-SNAPSHOT.jar > spring_server/nohup.out 2>&1 &
-                                        '''
+                                        execCommand: """
+                                            docker pull $DOCKER_IMAGE
+                                            if [ \$(docker ps -q -f name=$CONTAINER_NAME) ]; then
+                                                docker stop $CONTAINER_NAME
+                                                docker rm $CONTAINER_NAME
+                                            fi
+                                            docker run -d --name $CONTAINER_NAME -p $HOST_CONATINER_PORT $DOCKER_IMAGE
+                                        """
                                     )
-                                ],
-                                usePromotionTimestamp: false,
-                                alwaysPublishFromMaster: false
+                                ]
                             )
                         ]
                     )
@@ -62,3 +91,4 @@ pipeline {
         }
     }
 }
+
