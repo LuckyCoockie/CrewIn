@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,9 +36,12 @@ public interface MemberCrewRepository extends JpaRepository<MemberCrew, Long> {
     // 해당 크루에 있는 크루원 조회
     List<MemberCrew> findByCrewId(Long crewId);
 
-    List<MemberCrew> findByMemberId(Long memberId);
+    List<MemberCrew> findMemberCrewsByMemberId(Long memberId);
+
+    @Query("SELECT mc FROM MemberCrew mc WHERE mc.member = :member AND mc.isJoined = true")
+    List<MemberCrew> findJoinedMemberCrewsByMember(Member member);
 
     @Query("SELECT mc.crew.id FROM MemberCrew mc WHERE mc.member.id = :memberId")
-    List<Long> findCrewIdsByMemberId(@Param("memberId") Long memberId);
+    List<Long> findJoinedCrewIdsByMemberId(@Param("memberId") Long memberId);
 
 }

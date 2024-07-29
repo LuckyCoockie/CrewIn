@@ -16,7 +16,6 @@ import com.luckycookie.crewin.exception.memberCrew.NotFoundMemberCrewException;
 import com.luckycookie.crewin.exception.post.NotFoundPostException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -121,7 +120,7 @@ public class CrewService {
                 .orElseThrow(NotFoundMemberException::new);
 
         // MemberCrewRepository에서 member.getId()로 crewId List를 반환
-        List<Long> crewIds = memberCrewRepository.findCrewIdsByMemberId(member.getId());
+        List<Long> crewIds = memberCrewRepository.findJoinedCrewIdsByMemberId(member.getId());
 
         // crewId에 해당하는 Crew 들을 페이징 처리하여 조회
         crewsPage = crewRepository.findByIdIn(crewIds, pageable);

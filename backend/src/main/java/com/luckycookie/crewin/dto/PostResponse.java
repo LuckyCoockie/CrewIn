@@ -12,8 +12,8 @@ import java.util.List;
 @Builder
 public class PostResponse {
     private Long id;
-    private String crewName;
-    private String authorEmail;
+    private String authorName; // postType에 따라 작성자 닉네임 or 크루명 반환
+    private Long authorId; // postType에 따라서 작성자 id or 크루id 반환
     private String content;
     private Integer heartCount;
     private Boolean isHearted;

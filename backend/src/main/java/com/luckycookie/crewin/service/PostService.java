@@ -1,9 +1,6 @@
 package com.luckycookie.crewin.service;
 
-import com.luckycookie.crewin.domain.Crew;
-import com.luckycookie.crewin.domain.Member;
-import com.luckycookie.crewin.domain.Post;
-import com.luckycookie.crewin.domain.PostImage;
+import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.PostType;
 import com.luckycookie.crewin.dto.PostRequest;
 import com.luckycookie.crewin.dto.PostResponse;
@@ -29,6 +26,7 @@ public class PostService {
     private final CrewRepository crewRepository;
     private final HeartRepository heartRepository;
     private final PostImageRepository postImageRepository;
+    private final MemberCrewRepository memberCrewRepository;
 
     public void writePost(PostRequest.WritePostRequest writePostRequest, CustomUser customUser) {
 
@@ -75,8 +73,11 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public List<PostResponse> getAllPostsSortedByCreatedAt(String email) {
-        List<Post> posts = postRepository.findPublicPostsSortedByCreatedAt();
         Member viewer = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+        List<MemberCrew> crews = memberCrewRepository.findJoinedMemberCrewsByMember(viewer);
+        List<Post> posts = postRepository.findPublicPostsSortedByCreatedAt(
+                crews.stream().map(mc -> mc.getCrew().getId()).collect(Collectors.toList())
+        );
         return posts.stream().map(p -> convertToDto(p, viewer.getId())).collect(Collectors.toList());
     }
 
@@ -84,11 +85,21 @@ public class PostService {
         int heartCount = heartRepository.countByPostId(post.getId());
         List<String> postImages = getPostImages(post.getId());
 
+        Long authorId;
+        String authorName;
+        if (post.getPostType() == PostType.NOTICE) {
+            authorId = post.getAuthor().getId();
+            authorName = post.getAuthor().getName();
+        } else {
+            authorId = post.getCrew().getId();
+            authorName = post.getCrew().getCrewName();
+        }
+
         return PostResponse.builder()
                 .id(post.getId())
-                .crewName(post.getCrew().getCrewName())
-                .authorEmail(post.getAuthor().getEmail())
                 .content(post.getContent())
+                .authorId(authorId)
+                .authorName(authorName)
                 .heartCount(heartCount)
                 .isPublic(post.getIsPublic())
                 .postType(post.getPostType())
@@ -96,8 +107,7 @@ public class PostService {
                 .isHearted(heartRepository.existsByPostIdAndMemberId(post.getId(), viewerId))
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
-                .postImages(postImages)
-                .build();
+                .postImages(postImages).build();
     }
 
     private List<String> getPostImages(Long postId) {
