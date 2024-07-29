@@ -61,4 +61,14 @@ public class CrewRequest {
         private Position position; // 회원의 직급
     }
 
+    // 초대 당한 사람
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CrewInvitedMemberRequest{
+        private Long memberId;
+        private Long crewId;
+    }
+
 }

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -21,5 +22,7 @@ public interface CrewRepository extends JpaRepository<Crew, Long> {
 
     @Query("SELECT c FROM Crew c JOIN FETCH c.captain JOIN MemberCrew mc ON c.id = mc.crew.id WHERE mc.member.id = :memberId")
     Page<Crew> findCrewsByMemberId(Long memberId, Pageable pageable);
+
+    Page<Crew> findByIdIn(List<Long> crewIds, Pageable pageable);
 
 }
