@@ -14,7 +14,7 @@ const CrewDetailPage: React.FC = () => {
   const fetchInfoData = useCallback(async (dto: GetCrewInfoRequestDto) => {
     const data = await getCrewInfo(dto);
     console.log("fetchInfoData", data);
-    return data.crewInfo;
+    return data;
   }, []);
 
   const fetchNoticeData = useCallback(

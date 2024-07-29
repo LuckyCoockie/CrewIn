@@ -4,7 +4,6 @@ import CrewInfoOrganism from "../organisms/CrewInfoOrganism";
 import CrewNoticeOrganism from "../organisms/CrewNoticeOrganism";
 import NavTabMolecule from "../molecules/Tab/NavTabMolecule";
 import ThreeToTwoImageMolecule from "../molecules/Image/ThreeToTwoImageMolecule";
-import crewbanner from "../../assets/images/crewinbanner.png";
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import CrewAlbumOrganism from "../organisms/CrewAlbumOrganism";
 import CrewHeaderBarOrganism from "../organisms/CrewHeaderBarOrganism";
@@ -34,7 +33,7 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
   fetchGalleryData,
 }) => {
   const [currentTab, setCurrentTab] = useState<string>("정보");
-  const crewId = 1;
+  const crewId = 2;
   const pageNo = 0;
 
   // 크루 정보를 가져오는 React Query 훅
@@ -99,9 +98,9 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
             captain={infoData.captainName}
             slogan={infoData.slogan}
             area={infoData.area}
-            birth="2024"
+            birth={infoData.crewBirth}
             people={infoData.crewCount}
-            introduction={infoData.infoText}
+            introduction={infoData.introduction}
           />
         ) : (
           <div>No Info Data</div>
@@ -121,9 +120,9 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
             captain={infoData.captainName}
             slogan={infoData.slogan}
             area={infoData.area}
-            birth="2024"
+            birth={infoData.crewBirth}
             people={infoData.crewCount}
-            introduction={infoData.infoText}
+            introduction={infoData.introduction}
           />
         ) : (
           <div>No Info Data</div>
@@ -141,7 +140,10 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
           text={infoData ? infoData.name : "Loading..."}
         />
       </header>
-      <ThreeToTwoImageMolecule src={crewbanner} alt="crewbanner" />
+      <ThreeToTwoImageMolecule
+        src={infoData ? infoData.imageUrl : ""}
+        alt="crewbanner"
+      />
       <div className="pb-12">
         <NavTabMolecule
           texts={texts}
