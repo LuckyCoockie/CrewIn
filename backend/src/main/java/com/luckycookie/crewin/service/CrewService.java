@@ -6,8 +6,10 @@ import com.luckycookie.crewin.domain.enums.PostType;
 import com.luckycookie.crewin.dto.CrewRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CreateCrewNoticeRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CreateCrewRequest;
+import com.luckycookie.crewin.dto.CrewRequest.CrewInvitedMemberRequest;
 import com.luckycookie.crewin.dto.CrewResponse;
 import com.luckycookie.crewin.dto.CrewResponse.*;
+import com.luckycookie.crewin.exception.crew.CrewDupulicateException;
 import com.luckycookie.crewin.exception.crew.CrewUnauthorizedException;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
@@ -26,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,7 +75,53 @@ public class CrewService {
     }
 
     @Transactional(readOnly = true)
-    public CrewItemResponse getCrewList(int pageNo, CustomUser customUser) {
+    public CrewItemResponse getAllCrewList(int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo, 10); // pageNo 페이지 번호, 10 : 페이지 크기
+
+        Page<Crew> crewsPage;
+        List<Crew> crews;
+        int lastPageNo;
+
+//        // 가입 여부 확인
+//        List<Boolean> isJoinedList = memberCrewRepository.existsByMemberAndIsJoinedTrue(member);
+//
+//        if (isJoinedList.contains(true)) {
+//            // 내가 가입되어 있는 크루
+//            crewsPage = crewRepository.findCrewsByMemberId(member.getId(), pageable);
+//        } else {
+//            // 모든 크루
+//            crewsPage = crewRepository.findAllByCrew(pageable);
+//        }
+
+        crewsPage = crewRepository.findAllByCrew(pageable);
+
+        crews = crewsPage.getContent();
+        lastPageNo = Math.max(crewsPage.getTotalPages() - 1, 0);
+
+        List<CrewItem> crewItems = crews.stream().map(crew -> {
+            int crewCount = crewRepository.countMembersByCrewId(crew.getId());
+            String captainName = crew.getCaptain().getName();
+
+            return CrewItem.builder()
+                    .id(crew.getId())
+                    .name(crew.getCrewName())
+                    .slogan(crew.getSlogan())
+                    .area(crew.getArea())
+                    .crewCount(crewCount)
+                    .captainName(captainName)
+                    .imageUrl(crew.getMainLogo())
+                    .build();
+        }).collect(Collectors.toList());
+
+        return CrewItemResponse.builder()
+                .crews(crewItems)
+                .pageNo(pageNo)
+                .lastPageNo(lastPageNo)
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public CrewItemResponse getMyCrewList(int pageNo, CustomUser customUser) {
         Pageable pageable = PageRequest.of(pageNo, 10); // pageNo 페이지 번호, 10 : 페이지 크기
 
         Page<Crew> crewsPage;
@@ -83,16 +132,11 @@ public class CrewService {
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
-        // 가입 여부 확인
-        List<Boolean> isJoinedList = memberCrewRepository.existsByMemberAndIsJoinedTrue(member);
+        // MemberCrewRepository에서 member.getId()로 crewId List를 반환
+        List<Long> crewIds = memberCrewRepository.findCrewIdsByMemberId(member.getId());
 
-        if (isJoinedList.contains(true)) {
-            // 내가 가입되어 있는 크루
-            crewsPage = crewRepository.findCrewsByMemberId(member.getId(), pageable);
-        } else {
-            // 모든 크루
-            crewsPage = crewRepository.findAllByCrew(pageable);
-        }
+        // crewId에 해당하는 Crew 들을 페이징 처리하여 조회
+        crewsPage = crewRepository.findByIdIn(crewIds, pageable);
 
         crews = crewsPage.getContent();
         lastPageNo = Math.max(crewsPage.getTotalPages() - 1, 0);
@@ -353,6 +397,41 @@ public class CrewService {
                 .crewIsJoinedMemberList(crewIsJoinedMemberList)
                 .crewIsInvitedMemberList(crewIsInvitedMemberList)
                 .build();
+
+    }
+
+    // 크루 초대
+    public void inviteCrewMember(CustomUser customUser, CrewInvitedMemberRequest crewInvitedMemberRequest) {
+
+        // 요청자
+        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+        Crew crew = crewRepository.findById(crewInvitedMemberRequest.getCrewId()).orElseThrow(() -> new NotFoundCrewException(crewInvitedMemberRequest.getCrewId()));
+        Position position = memberCrewRepository.findPositionByMember(member, crewInvitedMemberRequest.getCrewId()).orElseThrow(() -> new NotFoundCrewException(crewInvitedMemberRequest.getCrewId()));
+
+        // 초대 당한 사람
+        Member invitedMember = memberRepository.findById(crewInvitedMemberRequest.getMemberId()).orElseThrow(NotFoundMemberException::new);
+
+        MemberCrew invitedMemberCrew = MemberCrew
+                .builder()
+                .member(invitedMember)
+                .crew(crew)
+                .position(Position.MEMBER)
+                .isJoined(false)
+                .isInvited(true)
+                .build();
+
+        if(position == Position.CAPTAIN) {
+            // 초대 하면 회원 크루에 넣기 (이미 초대 요청이 보내진 크루한테는 초대 요청을 보내면 안됨)
+            Optional<MemberCrew> memberCrew = memberCrewRepository.findByMemberIdAndCrewId(crewInvitedMemberRequest.getMemberId(), crewInvitedMemberRequest.getCrewId());
+            if(memberCrew.isEmpty()) { // memberCrew 에 없을 때만 요청 보내기
+                memberCrewRepository.save(invitedMemberCrew);
+            } else {
+                // 이미 초대된 요청 입니다. Exception
+                throw new CrewDupulicateException();
+            }
+        }else {
+            throw new CrewUnauthorizedException(); // CAPTAIN 만 초대 가능
+        }
 
     }
 
