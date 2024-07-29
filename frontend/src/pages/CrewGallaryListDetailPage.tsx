@@ -3,7 +3,7 @@ import CrewGallaryListDetailTemplate from "../components/templates/CrewGalleryDe
 import {
   getCrewGallaryDetailList,
   GetCrewGalleryListDetailReqeustParams,
-} from "../apis/api/crewPostList";
+} from "../apis/api/crewGallaryList";
 import { useParams } from "react-router";
 import qs from "query-string";
 

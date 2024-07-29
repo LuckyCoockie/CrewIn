@@ -6,7 +6,7 @@ import filledfire from "../../assets/images/filledfire.png";
 import emptyfire from "../../assets/images/emptyfire.png";
 import shareicon from "../../assets/images/shareicon.png";
 import Userprofilebar from "../molecules/UserProfileBarMolecule";
-import { PostDto } from "../../apis/api/crewPostList";
+import { PostDto } from "../../apis/api/crewGallaryList";
 
 type OwnProps = {
   postData: PostDto;

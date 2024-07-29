@@ -1,7 +1,7 @@
 import {
   GetCrewGalleryListDetailReqeustParams,
   PostDto,
-} from "../../apis/api/crewPostList";
+} from "../../apis/api/crewGallaryList";
 import CrewGallaryListDetailComponent from "../organisms/CrewGalleryDetailListOrganism";
 
 type OwnProps = {

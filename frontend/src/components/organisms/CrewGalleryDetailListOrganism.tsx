@@ -4,7 +4,7 @@ import PostItemComponent from "./PostItemOrganism";
 import {
   GetCrewGalleryListDetailReqeustParams,
   PostDto,
-} from "../../apis/api/crewPostList";
+} from "../../apis/api/crewGallaryList";
 
 type OwnProps = {
   postId: number;
@@ -19,7 +19,7 @@ const CrewGallaryListDetailComponent: React.FC<OwnProps> = ({
 }) => {
   return (
     <TwoWayInfiniteScrollComponent
-      fetchKey={["CrewPostList"]}
+      fetchKey={["crewGallaryList"]}
       fetchData={fetchData}
       ItemComponent={({ data }) => (
         <PostItemComponent key={data.id} postData={data} />
