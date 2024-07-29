@@ -16,6 +16,7 @@ public class PostResponse {
     private String authorEmail;
     private String content;
     private Integer heartCount;
+    private Boolean isHearted;
     private Boolean isPublic;
     private PostType postType;
     private String title;

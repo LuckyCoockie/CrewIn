@@ -29,8 +29,8 @@ public class PostController {
     }
 
     @GetMapping()
-    public ResponseEntity<BaseResponse<List<PostResponse>>> getAllPostsSortedByCreatedAt() {
-        List<PostResponse> posts = postService.getAllPostsSortedByCreatedAt();
+    public ResponseEntity<BaseResponse<List<PostResponse>>> getAllPostsSortedByCreatedAt(@AuthenticationPrincipal CustomUser customUser) {
+        List<PostResponse> posts = postService.getAllPostsSortedByCreatedAt(customUser.getEmail());
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "게시물 리스트를 조회하는데 성공했습니다", posts));
     }
 

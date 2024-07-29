@@ -8,6 +8,7 @@ import com.luckycookie.crewin.domain.enums.PostType;
 import com.luckycookie.crewin.dto.PostRequest;
 import com.luckycookie.crewin.dto.PostResponse;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
+import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.post.NotFoundPostException;
 import com.luckycookie.crewin.repository.*;
@@ -73,12 +74,13 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponse> getAllPostsSortedByCreatedAt() {
-        List<Post> posts = postRepository.findAllWithCrewAndAuthorByOrderByCreatedAtDesc();
-        return posts.stream().map(this::convertToDto).collect(Collectors.toList());
+    public List<PostResponse> getAllPostsSortedByCreatedAt(String email) {
+        List<Post> posts = postRepository.findPublicPostsSortedByCreatedAt();
+        Member viewer = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+        return posts.stream().map(p -> convertToDto(p, viewer.getId())).collect(Collectors.toList());
     }
 
-    private PostResponse convertToDto(Post post) {
+    private PostResponse convertToDto(Post post, Long viewerId) {
         int heartCount = heartRepository.countByPostId(post.getId());
         List<String> postImages = getPostImages(post.getId());
 
@@ -91,6 +93,7 @@ public class PostService {
                 .isPublic(post.getIsPublic())
                 .postType(post.getPostType())
                 .title(post.getTitle())
+                .isHearted(heartRepository.existsByPostIdAndMemberId(post.getId(), viewerId))
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
                 .postImages(postImages)
