@@ -1,5 +1,3 @@
-import api from "../utils/instance";
-
 export type SessionCreateDto = {
   courseId: number;
   crewId: number;
@@ -16,9 +14,4 @@ export type SessionCreateDto = {
 
 export type PostSessionCreateRto = {
   data: SessionCreateDto;
-};
-
-export const postSession = async (dto: PostSessionCreateRto): Promise<> => {
-  const response = await api.post(`/session/create`);
-  return response.data;
 };
