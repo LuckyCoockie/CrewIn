@@ -7,14 +7,14 @@ import {
 } from "../../apis/api/crewPostList";
 
 type OwnProps = {
-  startPostId: number;
+  postId: number;
   fetchData: (
     params: GetCrewGalleryListDetailReqeustParams
   ) => Promise<PostDto[]>;
 };
 
-const CrewPostListComponent: React.FC<OwnProps> = ({
-  startPostId,
+const CrewGallaryListDetailComponent: React.FC<OwnProps> = ({
+  postId,
   fetchData,
 }) => {
   return (
@@ -22,11 +22,11 @@ const CrewPostListComponent: React.FC<OwnProps> = ({
       fetchKey={["CrewPostList"]}
       fetchData={fetchData}
       ItemComponent={({ data }) => (
-        <PostItemComponent key={data.postId} postData={data} />
+        <PostItemComponent key={data.id} postData={data} />
       )}
-      startPostId={startPostId}
+      postId={postId}
     />
   );
 };
 
-export default CrewPostListComponent;
+export default CrewGallaryListDetailComponent;

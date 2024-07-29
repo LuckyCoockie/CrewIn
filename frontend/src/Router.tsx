@@ -17,6 +17,7 @@ import AlarmPage from "./pages/AlarmPage.tsx";
 import SessionSearchPage from "./pages/session/SessionSearchPage.tsx";
 import CrewSearchPage from "./pages/CrewSearchPage.tsx";
 import SessionListPage from "./pages/session/SessionListPage.tsx";
+import CrewGallaryListDetailPage from "./pages/CrewGallaryListDetailPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -44,6 +45,7 @@ export const router = createBrowserRouter([
           { path: "", element: <CrewSearchPage /> },
           { path: "create", element: <CrewCreatePage /> },
           { path: "detail", element: <CrewDetailPage /> },
+          { path: "gallary/:crewId", element: <CrewGallaryListDetailPage/> },
         ],
       },
       { path: "profile", element: <ProfilePage /> },

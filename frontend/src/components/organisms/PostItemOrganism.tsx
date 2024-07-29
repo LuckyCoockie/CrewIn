@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import crewinlogo from "../assets/images/crewinlogo.png";
-import filledfire from "../assets/images/filledfire.png";
-import emptyfire from "../assets/images/emptyfire.png";
-import shareicon from "../assets/images/shareicon.png";
+import crewinlogo from "../../assets/images/crewinlogo.png";
+import filledfire from "../../assets/images/filledfire.png";
+import emptyfire from "../../assets/images/emptyfire.png";
+import shareicon from "../../assets/images/shareicon.png";
 import Userprofilebar from "../molecules/UserProfileBarMolecule";
 import { PostDto } from "../../apis/api/crewPostList";
 
@@ -21,28 +21,22 @@ const PostItemComponent: React.FC<OwnProps> = ({
   onDeleteClicked,
   onLikesClicked,
 }) => {
-  const [likes, setLikes] = useState<number>(postData.likes);
-  const [hasLiked, setHasLiked] = useState<boolean>(postData.hasLiked);
+  const [likes, setLikes] = useState<number>(postData.heartCount);
+  const [hasLiked, setHasLiked] = useState<boolean>(postData.isHearted);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   const handleEdit = () => {
-    if (onEditClicked) onEditClicked(postData.postId);
+    if (onEditClicked) onEditClicked(postData.id);
   };
 
   const handleDelete = () => {
-    if (onDeleteClicked) onDeleteClicked(postData.postId);
+    if (onDeleteClicked) onDeleteClicked(postData.id);
   };
 
   const handleLike = () => {
-    if (onLikesClicked) onLikesClicked(postData.postId);
+    if (onLikesClicked) onLikesClicked(postData.id);
     setLikes(hasLiked ? likes - 1 : likes + 1);
     setHasLiked(!hasLiked);
-
-    if (!postData.hasLiked) {
-      const alarmMessages = JSON.parse(localStorage.getItem("alarms") || "[]");
-      alarmMessages.push("@@님이 회원님의 게시글에 좋아요를 눌렀습니다.");
-      localStorage.setItem("alarms", JSON.stringify(alarmMessages));
-    }
   };
 
   const handleShare = () => {
@@ -70,8 +64,8 @@ const PostItemComponent: React.FC<OwnProps> = ({
       <div className="w-full">
         <Userprofilebar
           profileImage={crewinlogo}
-          username={postData.userName}
-          timeAgo={postData.time}
+          username={postData.crewName}
+          timeAgo={postData.updatedAt}
           onEdit={handleEdit}
           onDelete={handleDelete}
         />
@@ -82,7 +76,7 @@ const PostItemComponent: React.FC<OwnProps> = ({
           infiniteLoop={false}
           autoPlay={false}
         >
-          {postData.croppedImages.map((image: string, index: number) => (
+          {postData.postImages.map((image: string, index: number) => (
             <div key={index}>
               <img
                 src={image}
@@ -95,14 +89,12 @@ const PostItemComponent: React.FC<OwnProps> = ({
         <div className="flex items-center">
           <button onClick={handleLike} className="flex items-center ml-3 mt-2">
             <img
-              src={postData.hasLiked ? filledfire : emptyfire}
+              src={hasLiked ? filledfire : emptyfire}
               alt="fire-icon"
               className="w-7"
             />
           </button>
-          <span className="text-md ml-1 mt-3">
-            {postData.likes}명이 공감했어요!
-          </span>
+          <span className="text-md ml-1 mt-3">{likes}명이 공감했어요!</span>
           <button onClick={handleShare} className="flex ml-auto mr-3 mt-3">
             <img src={shareicon} alt="share-icon" className="w-4" />
           </button>

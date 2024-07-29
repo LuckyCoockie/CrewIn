@@ -7,12 +7,12 @@ type fetchParams = {
   offset: number;
 };
 
-export interface ItemComponentProps<T extends { postId: number }> {
+export interface ItemComponentProps<T extends { id: number }> {
   data: T;
 }
 
-type OwnProps<T extends { postId: number }> = {
-  startPostId: number;
+type OwnProps<T extends { id: number }> = {
+  postId: number;
   fetchKey: string | string[];
   fetchData: (params: fetchParams) => Promise<T[]>;
   ItemComponent: (
@@ -21,9 +21,9 @@ type OwnProps<T extends { postId: number }> = {
   className?: string;
 };
 
-const TwoWayInfiniteScrollComponent = <T extends { postId: number }>({
+const TwoWayInfiniteScrollComponent = <T extends { id: number }>({
   fetchKey,
-  startPostId,
+  postId,
   fetchData,
   ItemComponent,
   className,
@@ -40,22 +40,23 @@ const TwoWayInfiniteScrollComponent = <T extends { postId: number }>({
     fetchKey,
     ({
       pageParam = {
-        postId: startPostId,
+        postId: postId,
         direction: "both",
         offset: 5,
       },
     }) => fetchData(pageParam),
     {
       getNextPageParam: (lastPage) => {
+        // 데이터가 없을때 문제가 생기는 중...
         return {
-          postId: lastPage[lastPage.length - 1].postId,
+          postId: lastPage[lastPage.length - 1].id,
           direction: "increase",
           offset: 5,
         };
       },
       getPreviousPageParam: (firstPage) => {
         return {
-          postId: firstPage[0].postId,
+          postId: firstPage[0].id,
           direction: "decrease",
           offset: 5,
         };
