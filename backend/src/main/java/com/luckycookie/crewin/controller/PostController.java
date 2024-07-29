@@ -3,6 +3,7 @@ package com.luckycookie.crewin.controller;
 import com.luckycookie.crewin.dto.PostRequest;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.dto.PostResponse;
+import com.luckycookie.crewin.exception.post.ImageRequiredException;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,9 @@ public class PostController {
 
     @PostMapping()
     public ResponseEntity<BaseResponse<Void>> createPost(@AuthenticationPrincipal CustomUser customUser, @RequestBody PostRequest.WritePostRequest writePostRequest) {
-        log.info("req: {}", writePostRequest.toString());
+        if(writePostRequest.getPostImages().isEmpty()){
+            throw new ImageRequiredException();
+        }
         postService.writePost(writePostRequest, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.CREATED.value(), "게시물을 등록하는데 성공했습니다."));
     }
