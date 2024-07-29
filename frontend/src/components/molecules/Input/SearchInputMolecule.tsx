@@ -7,7 +7,7 @@ type OwnProps = {
   onSubmit?: (value: string) => void;
 };
 
-const SearchMolecule: React.FC<OwnProps> = ({ hint, onChange, onSubmit }) => {
+const SearchInputMolecule: React.FC<OwnProps> = ({ hint, onChange, onSubmit }) => {
   const [value, setValue] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -53,4 +53,4 @@ const SearchMolecule: React.FC<OwnProps> = ({ hint, onChange, onSubmit }) => {
   );
 };
 
-export default SearchMolecule;
+export default SearchInputMolecule;

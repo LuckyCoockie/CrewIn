@@ -7,7 +7,7 @@ import {
 } from "../../apis/api/session";
 import DropdownTypeComponent from "../atoms/Input/DropdownItemComponent";
 import qs from "query-string";
-import SearchMolecule from "../molecules/Input/SearchMolecule";
+import SearchInputMolecule from "../molecules/Input/SearchInputMolecule";
 
 type OwnProps = {
   onSearch: (data: GetSessionListRequestDto) => Promise<void>;
@@ -58,7 +58,7 @@ const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
         onChange={handelTypeChange}
       />
       <div className="flex items-center flex-grow justify-end ml-2 xs:ml-4">
-        <SearchMolecule
+        <SearchInputMolecule
           hint={"크루명"}
           onChange={handleInputChange}
           onSubmit={handleSearch}

@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { GetSessionListRequestDto } from "../../apis/api/session";
-import SessionSearchTemplate from "../../components/templates/session/SessionListTemplate";
+import SessionSearchTemplate from "../../components/templates/session/SessionSearchtTemplate";
 import { createSearchParams, useNavigate } from "react-router-dom";
 import { removeUndefinedKey } from "../../util/removeUndefinedKey";
 

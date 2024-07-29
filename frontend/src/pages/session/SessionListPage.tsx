@@ -3,7 +3,7 @@ import {
   getSessionList,
   GetSessionListRequestDto,
 } from "../../apis/api/session";
-import SessionListComponent from "../../components/organisms/SessionListOrganisms";
+import SessionListComponent from "../../components/organisms/SessionListOrganism";
 
 const SessionListPage: React.FC = () => {
   const fetchData = useCallback(async (dto: GetSessionListRequestDto) => {
