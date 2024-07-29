@@ -92,6 +92,7 @@ public class SessionService {
     public SessionDetailResponse getSessionDetail(Long sessionId, CustomUser customUser) {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(NotFoundSessionException::new);
+
         if (session.getSessionType().equals(SessionType.STANDARD)) {
             Member member = memberRepository.findByEmail(customUser.getEmail())
                     .orElseThrow(NotFoundMemberException::new);
@@ -100,8 +101,16 @@ public class SessionService {
                 throw new CrewMemberNotExsistException();
             }
         }
+
         Member host = memberRepository.findById(session.getHost().getId())
                 .orElseThrow(NotFoundMemberException::new);
+
+        Boolean userSessionCompare;
+        if (customUser.getEmail().equals(host.getEmail())) {
+            userSessionCompare = true;
+        } else {
+            userSessionCompare = false;
+        }
 
         List<SessionPoster> sessionPosters = sessionPosterRepository.findBySessionId(sessionId);
 
@@ -110,10 +119,13 @@ public class SessionService {
                 .map(SessionPoster::getImageUrl)
                 .collect(Collectors.toList());
 
+        Course course = courseRepository.findById(session.getCourse().getId())
+                .orElseThrow(NotFoundCourseException::new);
+
         return SessionDetailResponse.builder()
                 .sessionId(session.getId())
                 .courseId(session.getCourse().getId())
-                .hostId(host.getId())
+                .isSessionHost(userSessionCompare)
                 .hostname(host.getName())
                 .area(session.getArea())
                 .hostNickname(host.getNickname())
@@ -121,6 +133,7 @@ public class SessionService {
                 .sessionName(session.getName())
                 .spot(session.getSpot())
                 .content(session.getContent())
+                .courseThumbnail(course.getThumbnailImage())
                 .maxPeople(session.getMaxPeople())
                 .pace(session.getPace())
                 .startAt(session.getStartAt())

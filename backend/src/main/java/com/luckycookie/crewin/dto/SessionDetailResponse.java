@@ -13,7 +13,7 @@ import java.util.List;
 public class SessionDetailResponse {
     private Long sessionId;
     private Long courseId;
-    private Long hostId;
+    private Boolean isSessionHost;
     private String hostname;
     private String hostNickname;
     private String crewName;
@@ -21,6 +21,7 @@ public class SessionDetailResponse {
     private String spot;
     private String area;
     private String content;
+    private String courseThumbnail;
     private Integer pace;
     private Integer maxPeople;
 
