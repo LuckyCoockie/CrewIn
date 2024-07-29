@@ -1,6 +1,9 @@
 package com.luckycookie.crewin.domain;
 
 import com.luckycookie.crewin.domain.enums.Position;
+import com.luckycookie.crewin.dto.CrewRequest;
+import com.luckycookie.crewin.dto.CrewRequest.CrewInvitedMemberRequest;
+import com.luckycookie.crewin.dto.CrewRequest.CrewReplyMemberRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,5 +40,15 @@ public class MemberCrew {
     private Boolean isInvited;
 
     private int attendanceCount;
+
+    public void updateMemberCrewInvitation(Boolean replyStatus) {
+        if(replyStatus) { // 이때는 수락
+            this.isInvited = true;
+            this.isJoined = true; // 멤버 가입 완료
+        } else { // 거절
+            this.isInvited = false;
+            this.isJoined = false;
+        }
+    }
 
 }

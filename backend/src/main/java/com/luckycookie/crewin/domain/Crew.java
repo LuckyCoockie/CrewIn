@@ -2,6 +2,7 @@ package com.luckycookie.crewin.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.luckycookie.crewin.dto.CrewRequest;
+import com.luckycookie.crewin.dto.CrewRequest.CreateCrewRequest;
 import com.luckycookie.crewin.repository.CrewRepository;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -51,7 +52,7 @@ public class Crew {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate crewBirth;
 
-    public void updateCrewInfo(CrewRequest.CreateCrewRequest createCrewRequest) {
+    public void updateCrewInfo(CreateCrewRequest createCrewRequest) {
         this.crewName = createCrewRequest.getName();
         this.slogan = createCrewRequest.getSlogan();
         this.area = createCrewRequest.getArea();

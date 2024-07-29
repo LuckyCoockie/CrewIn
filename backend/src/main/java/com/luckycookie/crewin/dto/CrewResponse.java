@@ -7,7 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,8 +31,8 @@ public class CrewResponse {
     @NoArgsConstructor
     @SuperBuilder
     public static class CrewItem{
-        private Long id;
-        private String name; // 크루명
+        private Long crewId;
+        private String crewName; // 크루명
         private String slogan; // 슬로건
         private String area; // 활동 지역
         private int crewCount;
@@ -51,7 +53,10 @@ public class CrewResponse {
     @NoArgsConstructor
     @SuperBuilder
     public static class CrewInfoItem extends CrewItem{
-        private String infoText; // 크루 소개 문구
+        private String introduction; // 크루 소개 문구
+
+        @JsonFormat(pattern = "yyyy-MM-dd")
+        private LocalDate crewBirth; // 크루 생성일
     }
 
     // 크루 공지사항 조회

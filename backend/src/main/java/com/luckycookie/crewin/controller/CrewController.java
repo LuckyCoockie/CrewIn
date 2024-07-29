@@ -3,10 +3,12 @@ package com.luckycookie.crewin.controller;
 import com.luckycookie.crewin.domain.Crew;
 import com.luckycookie.crewin.dto.CrewRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewInvitedMemberRequest;
+import com.luckycookie.crewin.dto.CrewRequest.CrewReplyMemberRequest;
 import com.luckycookie.crewin.dto.CrewRequest.UpdateCrewPositionRequest;
 import com.luckycookie.crewin.dto.CrewResponse;
 import com.luckycookie.crewin.dto.CrewResponse.CrewItemResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
+import com.luckycookie.crewin.exception.post.ImageRequiredException;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.CrewService;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +47,9 @@ public class CrewController {
     // 크루 공지 생성
     @PostMapping("/notice")
     public ResponseEntity<BaseResponse<Void>> createCrewNotice(@AuthenticationPrincipal CustomUser customUser, @RequestBody CrewRequest.CreateCrewNoticeRequest createCrewNoticeRequest) {
+        if(createCrewNoticeRequest.getNoticeImages().isEmpty()) {
+            throw new ImageRequiredException(); // 이미지 필수
+        }
         crewService.createCrewNotice(createCrewNoticeRequest, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 공지를 생성하는데 성공했습니다."));
     }
@@ -138,5 +143,13 @@ public class CrewController {
         crewService.inviteCrewMember(customUser, crewInvitedMemberRequest);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "새로운 크루를 초대하는데 성공했습니다."));
     }
+
+    // 크루 초대 수락, 거절
+    @PostMapping("/member/reply")
+    public ResponseEntity<BaseResponse<Void>> replyCrewMember(@AuthenticationPrincipal CustomUser customUser, @RequestBody CrewReplyMemberRequest crewReplyMemberRequest) {
+        crewService.replyCrewInvitation(customUser, crewReplyMemberRequest);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 초대를 응답하는데 성공했습니다."));
+    }
+
 
 }

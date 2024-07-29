@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -63,12 +64,21 @@ public class CrewRequest {
 
     // 초대 당한 사람
     @Getter
-    @Builder
+    @SuperBuilder
     @AllArgsConstructor
     @NoArgsConstructor
     public static class CrewInvitedMemberRequest{
-        private Long memberId;
-        private Long crewId;
+        private Long memberId; // 초대 당한 사람의 memberId
+        private Long crewId; // 초대한 사람의 crewId
+    }
+
+    // 초대 당한 사람의 응답
+    @Getter
+    @SuperBuilder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CrewReplyMemberRequest extends CrewInvitedMemberRequest{
+        private Boolean replyStatus; // 수락인지, 거절인지 (수락이면 true, 거절이면 false)
     }
 
 }
