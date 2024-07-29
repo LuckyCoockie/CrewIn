@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Carousel } from "react-responsive-carousel";
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
-import Dropzone from "react-dropzone";
 import ModalMolecules from "../molecules/ModalMolecules";
 import ImageEditSave from "./ImageEditSaveOrganism";
 import editButton from "../../assets/images/editbutton.png";
@@ -13,7 +12,7 @@ import InputTextAreaNoLimitTypeMolecule from "../molecules/Input/InputTextAreaNo
 import InputRadioTypeMolecule from "../molecules/Input/InputRadioTypeMolecule";
 import InputDropdonwTypeMolecule from "../molecules/Input/InputDropdonwTypeMolecule";
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
-import { ReactComponent as FileDrop } from "../../assets/icons/filedrop.svg";
+import ImageUploadDropzone from "../molecules/Input/ImageUploadDropzone";
 import { crewNames } from "../../../src/crewname";
 
 interface ImageCropProps {
@@ -142,38 +141,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
         <BackHeaderMediumOrganism text="게시글 작성" />
       </div>
       {imagePaths.length === 0 ? (
-        <Dropzone onDrop={handleDrop}>
-          {({ getRootProps, getInputProps }) => (
-            <section className="my-3">
-              <div
-                {...getRootProps()}
-                style={{
-                  width: 360,
-                  height: 360,
-                  border: "1px solid #f0f0f0",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  backgroundColor: "#f0f0f0",
-                }}
-              >
-                <input {...getInputProps()} />
-                <FileDrop style={{ fontSize: "3rem" }} />
-                <p
-                  style={{
-                    color: "#b0b0b0",
-                    fontSize: "0.875rem",
-                    marginTop: "0.5rem",
-                  }}
-                >
-                  * 이미지 파일(.png .jpg .jpeg)만 업로드 가능합니다.
-                </p>
-              </div>
-            </section>
-          )}
-        </Dropzone>
+        <ImageUploadDropzone onDrop={handleDrop} />
       ) : (
         <>
           <div
