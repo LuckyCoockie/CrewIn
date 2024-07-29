@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.luckycookie.crewin.domain.enums.PostType;
 import com.luckycookie.crewin.dto.CrewRequest;
 import com.luckycookie.crewin.dto.PostRequest;
-import com.luckycookie.crewin.exception.post.InvalidPostTypeException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
