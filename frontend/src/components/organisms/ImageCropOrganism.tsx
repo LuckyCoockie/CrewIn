@@ -47,10 +47,6 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
       allowedTypes.includes(file.type)
     );
 
-    if (filteredFiles.length !== acceptedFiles.length) {
-      alert("Only .png, .jpg, and .jpeg files are allowed.");
-    }
-
     const tempImagePaths: string[] = [];
     const tempCroppedImages: string[] = [];
 
@@ -156,6 +152,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
                   height: 360,
                   border: "1px solid #f0f0f0",
                   display: "flex",
+                  flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
                   cursor: "pointer",
@@ -164,6 +161,15 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
               >
                 <input {...getInputProps()} />
                 <FileDrop style={{ fontSize: "3rem" }} />
+                <p
+                  style={{
+                    color: "#b0b0b0",
+                    fontSize: "0.875rem",
+                    marginTop: "0.5rem",
+                  }}
+                >
+                  * 이미지 파일(.png .jpg .jpeg)만 업로드 가능합니다.
+                </p>
               </div>
             </section>
           )}
