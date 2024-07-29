@@ -6,7 +6,7 @@ import com.luckycookie.crewin.dto.CourseDetailResponse;
 import com.luckycookie.crewin.dto.CourseRequest;
 import com.luckycookie.crewin.dto.CourseResponse;
 import com.luckycookie.crewin.exception.course.NotFoundCourseException;
-import com.luckycookie.crewin.exception.course.NotMatchMemberCourseError;
+import com.luckycookie.crewin.exception.course.NotMatchMemberCourseException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.repository.CourseRepository;
 import com.luckycookie.crewin.repository.MemberRepository;
@@ -60,7 +60,7 @@ public class CourseService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(NotFoundCourseException::new);
         if (!course.getCreator().equals(member)) {
-            throw new NotMatchMemberCourseError();
+            throw new NotMatchMemberCourseException();
         }
         course.updateCourse(updateCourseRequest);
         courseRepository.save(course);
@@ -72,7 +72,7 @@ public class CourseService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(NotFoundCourseException::new);
         if (!course.getCreator().equals(member)) {
-            throw new NotMatchMemberCourseError();
+            throw new NotMatchMemberCourseException();
         }
         courseRepository.delete(course);
     }
@@ -86,7 +86,7 @@ public class CourseService {
                 .orElseThrow(NotFoundCourseException::new);
 
         if (!member.getId().equals(course.getCreator().getId())) {
-            throw new NotMatchMemberCourseError();
+            throw new NotMatchMemberCourseException();
         }
 
         return CourseDetailResponse.builder()

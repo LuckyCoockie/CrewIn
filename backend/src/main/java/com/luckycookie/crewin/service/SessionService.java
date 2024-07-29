@@ -6,7 +6,7 @@ import com.luckycookie.crewin.dto.SessionDetailResponse;
 import com.luckycookie.crewin.dto.SessionRequest;
 import com.luckycookie.crewin.dto.SessionResponse;
 import com.luckycookie.crewin.exception.course.NotFoundCourseException;
-import com.luckycookie.crewin.exception.crew.CrewMemberNotExsistException;
+import com.luckycookie.crewin.exception.crew.CrewMemberNotExistException;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.session.InvalidSessionException;
@@ -98,7 +98,7 @@ public class SessionService {
                     .orElseThrow(NotFoundMemberException::new);
             if (!memberCrewRepository.findIsJoinedByMemberIdAndCrewId(member.getId(), session.getCrew().getId())
                     .orElse(false)) {
-                throw new CrewMemberNotExsistException();
+                throw new CrewMemberNotExistException();
             }
         }
 

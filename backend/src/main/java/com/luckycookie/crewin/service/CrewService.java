@@ -316,13 +316,13 @@ public class CrewService {
 
     public void updateNotice(Long noticeId, CreateCrewNoticeRequest createCrewNoticeRequest) {
         Post post = postRepository.findById(noticeId)
-                .orElseThrow(() -> new NotFoundPostException(noticeId));
+                .orElseThrow(NotFoundPostException::new);
         post.updateCrewNotice(createCrewNoticeRequest);
     }
 
     public void deleteNotice(Long noticeId) {
         Post post = postRepository.findById(noticeId)
-                .orElseThrow(() -> new NotFoundPostException(noticeId));
+                .orElseThrow(NotFoundPostException::new);
         postRepository.delete(post);
     }
 

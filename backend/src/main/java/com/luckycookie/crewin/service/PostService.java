@@ -60,13 +60,13 @@ public class PostService {
 
     public void updatePost(Long postId, PostRequest.UpdatePostRequest updatePostRequest) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NotFoundPostException(postId));
+                .orElseThrow(NotFoundPostException::new);
         post.updatePost(updatePostRequest);
     }
 
     public void deletePost(Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NotFoundPostException(postId));
+                .orElseThrow(NotFoundPostException::new);
         postRepository.delete(post);
 
     }

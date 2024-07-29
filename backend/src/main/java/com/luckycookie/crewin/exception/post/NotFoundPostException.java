@@ -6,13 +6,10 @@ import static com.luckycookie.crewin.exception.constants.PostExceptionList.NOT_F
 
 @Getter
 public class NotFoundPostException extends PostException {
-    private final Long postId;
 
-    public NotFoundPostException(Long postId) {
+    public NotFoundPostException() {
         super(NOT_FOUND_POST_ERROR.getErrorCode(),
                 NOT_FOUND_POST_ERROR.getHttpStatus(),
                 NOT_FOUND_POST_ERROR.getMessage());
-        this.postId = postId;
     }
-
 }
