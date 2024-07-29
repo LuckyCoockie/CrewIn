@@ -75,12 +75,6 @@ public class Post {
         this.content = updatePostRequest.getContent();
         this.isPublic = updatePostRequest.getIsPublic();
 
-        try {
-            this.postType = PostType.valueOf(updatePostRequest.getPostType());
-        } catch (Exception e) {
-            throw  new InvalidPostTypeException();
-        }
-
         this.postImages.clear();
         if (updatePostRequest.getPostImages() != null) {
             for (String imageUrl : updatePostRequest.getPostImages()) {
