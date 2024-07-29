@@ -7,15 +7,13 @@ import com.luckycookie.crewin.dto.CrewRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CreateCrewNoticeRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CreateCrewRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewInvitedMemberRequest;
+import com.luckycookie.crewin.dto.CrewRequest.CrewReplyMemberRequest;
 import com.luckycookie.crewin.dto.CrewResponse;
 import com.luckycookie.crewin.dto.CrewResponse.*;
-import com.luckycookie.crewin.exception.crew.CrewDupulicateException;
-import com.luckycookie.crewin.exception.crew.CrewUnauthorizedException;
-import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
+import com.luckycookie.crewin.exception.crew.*;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.memberCrew.NotFoundMemberCrewException;
 import com.luckycookie.crewin.exception.post.NotFoundPostException;
-import com.luckycookie.crewin.exception.crew.CrewPositionMismatchException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -28,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -255,7 +254,7 @@ public class CrewService {
 
     // 공지사항 조회
     public CrewNoticeItemResponse getCrewNoticeList(int pageNo, Long crewId, CustomUser customUser) {
-        Pageable pageable = PageRequest.of(pageNo, 10); // pageNo 페이지 번호, 10 : 페이지 크기
+        Pageable pageable = PageRequest.of(pageNo, 5); // pageNo 페이지 번호, 5 : 페이지 크기
 
         // 현재 사용자 정보 가져오기
         Member member = memberRepository.findByEmail(customUser.getEmail())
@@ -393,12 +392,12 @@ public class CrewService {
     // 크루 초대
     public void inviteCrewMember(CustomUser customUser, CrewInvitedMemberRequest crewInvitedMemberRequest) {
 
-        // 요청자
+        // 요청자 (crewId)
         Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
         Crew crew = crewRepository.findById(crewInvitedMemberRequest.getCrewId()).orElseThrow(() -> new NotFoundCrewException(crewInvitedMemberRequest.getCrewId()));
         Position position = memberCrewRepository.findPositionByMember(member, crewInvitedMemberRequest.getCrewId()).orElseThrow(() -> new NotFoundCrewException(crewInvitedMemberRequest.getCrewId()));
 
-        // 초대 당한 사람
+        // 초대 당한 사람 (memberId)
         Member invitedMember = memberRepository.findById(crewInvitedMemberRequest.getMemberId()).orElseThrow(NotFoundMemberException::new);
 
         MemberCrew invitedMemberCrew = MemberCrew
@@ -411,7 +410,7 @@ public class CrewService {
                 .build();
 
         if(position == Position.CAPTAIN) {
-            // 초대 하면 회원 크루에 넣기 (이미 초대 요청이 보내진 크루한테는 초대 요청을 보내면 안됨)
+            // 초대 하면 회원 크루에 넣기 (이미 초대 요청이 보내진 멤버한테는 초대 요청을 보내면 안됨)
             Optional<MemberCrew> memberCrew = memberCrewRepository.findByMemberIdAndCrewId(crewInvitedMemberRequest.getMemberId(), crewInvitedMemberRequest.getCrewId());
             if(memberCrew.isEmpty()) { // memberCrew 에 없을 때만 요청 보내기
                 memberCrewRepository.save(invitedMemberCrew);
@@ -421,6 +420,31 @@ public class CrewService {
             }
         }else {
             throw new CrewUnauthorizedException(); // CAPTAIN 만 초대 가능
+        }
+
+    }
+
+    // 크루 수락, 거절
+    public void replyCrewInvitation(CustomUser customUser, CrewReplyMemberRequest crewReplyMemberRequest) {
+
+        // 초대된 사람 (memberId)
+        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+        if(!Objects.equals(member.getId(), crewReplyMemberRequest.getMemberId())) {
+            throw new CrewMemberInvitedException();
+        }
+
+        // 초대한 사람 (어떤 크루 인지 crewId)
+        Crew crew = crewRepository.findById(crewReplyMemberRequest.getCrewId()).orElseThrow(()-> new NotFoundCrewException(crewReplyMemberRequest.getCrewId()));
+
+        MemberCrew memberCrew = memberCrewRepository.findByMemberIdAndCrewId(crewReplyMemberRequest.getMemberId(), crewReplyMemberRequest.getCrewId()).orElseThrow(NotFoundMemberCrewException::new);
+
+        // 초대된 사람의 응답 (수락 or 거절)
+        if(memberCrew.getPosition() == Position.MEMBER) {
+            if(memberCrew.getIsInvited() && !memberCrew.getIsJoined()) { // isInvited는 true 이고, isJoined는 false인 상태면 초대 미수락 상태
+                memberCrew.updateMemberCrewInvitation(crewReplyMemberRequest.getReplyStatus());
+            }
+        } else {
+            throw new CrewUnauthorizedException(); // Member 일때만 가능 해야 함
         }
 
     }
