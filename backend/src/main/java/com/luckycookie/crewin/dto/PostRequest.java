@@ -26,7 +26,6 @@ public class PostRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class UpdatePostRequest {
-        private Long crewId;
         private String title;
         private String content;
         private Boolean isPublic;
