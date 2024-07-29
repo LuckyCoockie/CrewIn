@@ -9,16 +9,15 @@ export type CrewInfoDto = {
   crewCount: number;
   captainName: string;
   imageUrl: string;
-  infoText: string;
+  introduction: string;
+  crewBirth: string;
 };
 
 export type GetCrewInfoRequestDto = {
   crewId: number;
 };
 
-export type GetCrewInfoResponseDto = {
-  crewInfo: CrewInfoDto;
-};
+export type GetCrewInfoResponseDto = CrewInfoDto;
 
 export const getCrewInfo = async (
   dto: GetCrewInfoRequestDto
