@@ -154,7 +154,7 @@ public class CrewService {
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
-        Crew crew = crewRepository.findById(createCrewNoticeRequest.getCrewId()).orElseThrow(() -> new NotFoundCrewException(createCrewNoticeRequest.getCrewId()));
+        Crew crew = crewRepository.findById(createCrewNoticeRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
 
         // 크루 공지는 Pacer 이상
         Position position = memberCrewRepository.findPositionByMember(member, crew.getId()).orElseThrow(CrewPositionMismatchException::new);
@@ -192,7 +192,7 @@ public class CrewService {
 
         // 크루 정보 가져오기
         Crew crew = crewRepository.findById(crewId)
-                .orElseThrow(()->new NotFoundCrewException(crewId));
+                .orElseThrow(NotFoundCrewException::new);
 
         // 크루 인원 수 가져오기
         int crewCount = crewRepository.countMembersByCrewId(crewId);
@@ -215,7 +215,7 @@ public class CrewService {
 
     // 크루 정보 수정
     public void updateCrewInfo(Long crewId, CreateCrewRequest createCrewRequest, CustomUser customUser) {
-        Crew crew = crewRepository.findById(crewId).orElseThrow(()->new NotFoundCrewException(crewId));
+        Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
@@ -232,7 +232,7 @@ public class CrewService {
 
     // 크루 정보 삭제
     public void deleteCrewInfo(Long crewId, CustomUser customUser) {
-        Crew crew = crewRepository.findById(crewId).orElseThrow(()->new NotFoundCrewException(crewId));
+        Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
@@ -262,7 +262,7 @@ public class CrewService {
         // 해당 멤버의 position
         Position position = memberCrewRepository.findPositionByMember(member, crewId).orElseThrow(CrewPositionMismatchException::new);
 
-        Crew crew = crewRepository.findById(crewId).orElseThrow(()->new NotFoundCrewException(crewId));
+        Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
 
         // 해당 크루의 공지사항 게시물 가져오기
         Page<Post> noticeListPage = postRepository.findByCrewIdAndPostType(crewId, PostType.NOTICE, pageable);
@@ -393,8 +393,8 @@ public class CrewService {
 
         // 요청자 (crewId)
         Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
-        Crew crew = crewRepository.findById(crewInvitedMemberRequest.getCrewId()).orElseThrow(() -> new NotFoundCrewException(crewInvitedMemberRequest.getCrewId()));
-        Position position = memberCrewRepository.findPositionByMember(member, crewInvitedMemberRequest.getCrewId()).orElseThrow(() -> new NotFoundCrewException(crewInvitedMemberRequest.getCrewId()));
+        Crew crew = crewRepository.findById(crewInvitedMemberRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
+        Position position = memberCrewRepository.findPositionByMember(member, crewInvitedMemberRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
 
         // 초대 당한 사람 (memberId)
         Member invitedMember = memberRepository.findById(crewInvitedMemberRequest.getMemberId()).orElseThrow(NotFoundMemberException::new);
@@ -433,7 +433,7 @@ public class CrewService {
         }
 
         // 초대한 사람 (어떤 크루 인지 crewId)
-        Crew crew = crewRepository.findById(crewReplyMemberRequest.getCrewId()).orElseThrow(()-> new NotFoundCrewException(crewReplyMemberRequest.getCrewId()));
+        Crew crew = crewRepository.findById(crewReplyMemberRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
 
         MemberCrew memberCrew = memberCrewRepository.findByMemberIdAndCrewId(crewReplyMemberRequest.getMemberId(), crewReplyMemberRequest.getCrewId()).orElseThrow(NotFoundMemberCrewException::new);
 
