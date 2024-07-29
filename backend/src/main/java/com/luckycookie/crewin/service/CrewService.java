@@ -82,17 +82,6 @@ public class CrewService {
         List<Crew> crews;
         int lastPageNo;
 
-//        // 가입 여부 확인
-//        List<Boolean> isJoinedList = memberCrewRepository.existsByMemberAndIsJoinedTrue(member);
-//
-//        if (isJoinedList.contains(true)) {
-//            // 내가 가입되어 있는 크루
-//            crewsPage = crewRepository.findCrewsByMemberId(member.getId(), pageable);
-//        } else {
-//            // 모든 크루
-//            crewsPage = crewRepository.findAllByCrew(pageable);
-//        }
-
         crewsPage = crewRepository.findAllByCrew(pageable);
 
         crews = crewsPage.getContent();
@@ -103,8 +92,8 @@ public class CrewService {
             String captainName = crew.getCaptain().getName();
 
             return CrewItem.builder()
-                    .id(crew.getId())
-                    .name(crew.getCrewName())
+                    .crewId(crew.getId())
+                    .crewName(crew.getCrewName())
                     .slogan(crew.getSlogan())
                     .area(crew.getArea())
                     .crewCount(crewCount)
@@ -146,8 +135,8 @@ public class CrewService {
             String captainName = crew.getCaptain().getName();
 
             return CrewItem.builder()
-                    .id(crew.getId())
-                    .name(crew.getCrewName())
+                    .crewId(crew.getId())
+                    .crewName(crew.getCrewName())
                     .slogan(crew.getSlogan())
                     .area(crew.getArea())
                     .crewCount(crewCount)
@@ -213,14 +202,15 @@ public class CrewService {
         // 크루 정보
         return CrewInfoItem
                 .builder()
-                .id(crewId)
-                .name(crew.getCrewName())
+                .crewId(crewId)
+                .crewName(crew.getCrewName())
                 .area(crew.getArea())
                 .slogan(crew.getSlogan())
                 .crewCount(crewCount)
                 .captainName(crew.getCaptain().getName())
                 .imageUrl(crew.getBanner())
-                .infoText(crew.getIntroduction())
+                .introduction(crew.getIntroduction())
+                .crewBirth(crew.getCrewBirth())
                 .build();
 
     }
