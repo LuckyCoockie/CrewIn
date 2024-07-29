@@ -34,7 +34,7 @@ const schema = yup.object({
     .required("닉네임을 입력해주세요."),
   name: yup
     .string()
-    .max(10, "이름은 최대 10자입니다.")
+    .max(30, "이름은 최대 30자입니다.")
     .required("이름을 입력해주세요."),
 });
 
@@ -197,7 +197,6 @@ const LoginOrganism: React.FC = () => {
       </div>
       {/* 버튼 영역 */}
       <div>
-        {/* Form 유효성 검사 통과 + 이메일 인증 통과 여부에 따라 버튼 교체 */}
         {isValid && isCodeVerified ? (
           <LargeAbleButton text="생성" />
         ) : (

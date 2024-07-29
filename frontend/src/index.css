@@ -25,14 +25,14 @@
 }
 
 :root {
-  font-family: "Pretendard","Roboto", sans-serif;
+  font-family: "Pretendard", "Roboto", sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
-
+  
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -86,7 +86,12 @@ main {
 header {
   font-weight: 900;
   width: 100%;
-  padding: 12px 16px;
+  padding-top: 12px;
+  padding-bottom: 6px;
+  padding-left: 16px;
+  padding-right: 16px;
+  display: flex;
+  align-items: center;
 }
 
 /* Data input css */
@@ -142,11 +147,11 @@ header {
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-    background-color: #ffffff;
+    background-color: transparent;
   }
 
   a:hover {
-    color: #747bff;
+    color: #213547;
   }
 
   button {

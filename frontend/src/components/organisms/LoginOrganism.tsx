@@ -4,10 +4,12 @@ import * as yup from "yup";
 
 import InputTextTypeMolecule from "../molecules/Input/InputTextTypeMolecule";
 import InputPasswordTypeMolecule from "../molecules/Input/InputPasswordTypeMolecule";
+import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import { useSelector } from "react-redux";
 import { login } from "../../modules/reducers/auth";
 import store, { RootState } from "../../modules";
+
 // 유효성 검사 스키마 정의
 const schema = yup.object({
   email: yup
@@ -25,7 +27,7 @@ const LoginOrganism = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     // 유효성 검사 mode
@@ -77,7 +79,11 @@ const LoginOrganism = () => {
         </div>
         <div>
           <p className="ps-4 pt-1 text-sm font-light text-red-500">{error}</p>
-          <LargeDisableButton text="로그인" />
+          {isValid ? (
+            <LargeAbleButton text="로그인" />
+          ) : (
+            <LargeDisableButton text="로그인" />
+          )}
         </div>
       </form>
     </div>
