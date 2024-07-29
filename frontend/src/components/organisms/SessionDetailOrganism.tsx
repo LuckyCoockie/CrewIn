@@ -2,9 +2,8 @@ import React from "react";
 import { Carousel } from "react-responsive-carousel";
 import OneToOneImageMolecule from "../molecules/Image/OneToOneImageMolecule";
 import DetailInfoMolecule from "../molecules/Content/DetailInfoMolecule";
-import DetailInfoPaceMolecule from "../molecules/Content/DetailInfoPaceMolecule"
+import DetailInfoPaceMolecule from "../molecules/Content/DetailInfoPaceMolecule";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
-
 
 import { SessionDetailDto } from "../../apis/api/sessiondetail";
 
@@ -16,6 +15,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
   detailData,
 }) => {
   const {
+    hostNickname,
     crewName,
     sessionType,
     startAt,
@@ -40,6 +40,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
       </Carousel>
       <main>
         <DetailInfoMolecule title="크루명" content={crewName} />
+        <DetailInfoMolecule title="개최자" content={hostNickname} />
         <DetailInfoMolecule title="세션 유형" content={sessionType} />
         <DetailInfoMolecule title="일시" content={startAt} />
         <DetailInfoPaceMolecule title="페이스" content={pace} />
