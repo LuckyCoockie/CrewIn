@@ -2,20 +2,73 @@ import React, { useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import _ from "lodash";
 
 import InputTextTypeMolecule from "../molecules/Input/InputTextTypeMolecule";
 import InputPasswordTypeMolecule from "../molecules/Input/InputPasswordTypeMolecule";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 
+import { getEmailDuplicationCheck } from "../../apis/api/signup";
+
+// 비밀번호 규칙 설정
 const passwordRules = /^(?=.*[a-z])(?=.*[A-Z]).{0,}$/;
+
+// FormValues 타입 정의
+type FormValues = {
+  email?: string;
+  password: string;
+  confirmPassword: string;
+  nickname: string;
+  name: string;
+};
+
+// yup 스키마에 이메일 중복 확인 메서드 추가
+yup.addMethod<yup.StringSchema>(
+  yup.string,
+  "emailDuplicationCheck",
+  function (message) {
+    return this.test(
+      "emailDuplicationCheck",
+      message,
+      function (value, context) {
+        const { createError } = context;
+
+        // debounce 설정
+        const debouncedCheck = _.debounce(async (value: string) => {
+          try {
+            const { duplicated } = await getEmailDuplicationCheck({
+              email: value,
+            });
+            if (duplicated) {
+              createError({ message });
+            }
+          } catch (error) {
+            createError({ message: "이메일 확인 중 오류 발생" });
+          }
+        }, 500); // 500ms 후에 서버 확인
+
+        // 유효성 검사를 비동기로 처리
+        if (value) {
+          return new Promise((resolve) => {
+            debouncedCheck(value);
+            resolve(true);
+          });
+        }
+
+        return true;
+      }
+    );
+  }
+);
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({
   email: yup
     .string()
     .email("이메일 형식으로 입력해주세요")
-    .required("이메일을 입력해주세요."),
+    .required("이메일을 입력해주세요.")
+    .emailDuplicationCheck("이미 사용 중인 이메일입니다."),
   password: yup
     .string()
     .required("비밀번호를 입력해주세요.")
@@ -37,14 +90,6 @@ const schema = yup.object({
     .max(30, "이름은 최대 30자입니다.")
     .required("이름을 입력해주세요."),
 });
-
-type FormValues = {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  nickname: string;
-  name: string;
-};
 
 const LoginOrganism: React.FC = () => {
   const {
@@ -77,6 +122,8 @@ const LoginOrganism: React.FC = () => {
       setIsCodeVerified(false);
     }
   };
+  const isEmailFieldValid = !errors.email; // 이메일 필드의 유효성 확인
+  console.log(isEmailFieldValid);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -135,8 +182,11 @@ const LoginOrganism: React.FC = () => {
         <div className="w-1/4 mt-8 mb-4 mx-auto text-center">
           <button
             type="button"
-            className="button-color w-full border-transparent"
+            className={`button-color w-full ${
+              !isValid ? "bg-gray-500" : "bg-blue-500"
+            }`}
             onClick={handleEmailVerification}
+            disabled={!isValid}
           >
             인증
           </button>
