@@ -1,6 +1,6 @@
 import api from "../utils/instance";
 
-export type SessionInfoDto = {
+export type SessionDetailDto = {
   sessionId: number;
   courseId: number;
   hostId: number;
@@ -23,9 +23,7 @@ export type GetSessionInfoRequestDto = {
   sessionId: number;
 };
 
-export type GetSessionInfoResponseDto = {
-  sessionInfo: SessionInfoDto;
-};
+export type GetSessionInfoResponseDto = SessionDetailDto;
 
 export const getSessionDetail = async (
   dto: GetSessionInfoRequestDto
