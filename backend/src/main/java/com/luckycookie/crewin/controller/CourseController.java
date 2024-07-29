@@ -16,36 +16,36 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/")
+@RequestMapping("/course")
 public class CourseController {
 
     private final CourseService courseService;
 
-    @PostMapping("mypage/course")
+    @PostMapping
     public ResponseEntity<BaseResponse<Void>> createCourse(@AuthenticationPrincipal CustomUser customUser, @RequestBody CourseRequest.CreateCourseRequest createCourseRequest) {
         courseService.createCourse(createCourseRequest, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.CREATED.value(), "경로를 등록하는데 성공했습니다."));
     }
 
-    @GetMapping("mypage/course")
+    @GetMapping
     public ResponseEntity<BaseResponse<List<CourseResponse>>> getAllCourse(@AuthenticationPrincipal CustomUser customUser) {
         List<CourseResponse> courseList = courseService.getAllCourse(customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "경로 리스트를 조회하는데 성공했습니다.", courseList));
     }
 
-    @PutMapping("mypage/course/{courseId}")
+    @PutMapping("/{courseId}")
     public ResponseEntity<BaseResponse<Void>> updateCourse(@AuthenticationPrincipal CustomUser customUser, @PathVariable("courseId") Long courseId, @RequestBody CourseRequest.UpdateCourseRequest updateCourseRequest) {
         courseService.updateCourse(updateCourseRequest, courseId, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "경로를 수정하는데 성공했습니다."));
     }
 
-    @DeleteMapping("mypage/course/{courseId}")
+    @DeleteMapping("/{courseId}")
     public ResponseEntity<Void> deleteCourse(@AuthenticationPrincipal CustomUser customUser, @PathVariable("courseId") Long courseId) {
         courseService.deleteCourse(courseId, customUser);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("course/{courseId}")
+    @GetMapping("/{courseId}")
     public ResponseEntity<BaseResponse<CourseDetailResponse>> getCourseDetail(@AuthenticationPrincipal CustomUser customUser, @PathVariable("courseId") Long courseId) {
         CourseDetailResponse courseDetailResponse = courseService.getCourseDetail(courseId, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당 경로 상세정보를 조회하는데 성공했습니다.", courseDetailResponse));
