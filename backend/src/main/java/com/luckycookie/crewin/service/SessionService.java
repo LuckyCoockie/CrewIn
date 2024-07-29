@@ -9,14 +9,17 @@ import com.luckycookie.crewin.exception.course.NotFoundCourseException;
 import com.luckycookie.crewin.exception.crew.CrewMemberNotExsistException;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
+import com.luckycookie.crewin.exception.session.InvalidSessionException;
 import com.luckycookie.crewin.exception.session.NotFoundSessionException;
 import com.luckycookie.crewin.exception.session.SessionAuthorizationException;
+import com.luckycookie.crewin.exception.session.SessionInProgressException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +36,10 @@ public class SessionService {
     private final SessionPosterRepository sessionPosterRepository;
 
     public void createSession(SessionRequest.CreateSessionRequest createSessionRequest, CustomUser customUser) {
+
+        if (createSessionRequest.getStartAt().isAfter(createSessionRequest.getEndAt())) {
+            throw new InvalidSessionException();
+        }
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
@@ -59,7 +66,7 @@ public class SessionService {
         sessionRepository.save(session);
 
         // 세션 포스터 이미지
-        if(createSessionRequest.getImages()!=null) {
+        if (createSessionRequest.getImages() != null) {
             for (String imageUrl : createSessionRequest.getImages()) {
                 SessionPoster sessionPoster = SessionPoster.builder()
                         .session(session)
@@ -145,6 +152,11 @@ public class SessionService {
                 .orElseThrow(NotFoundMemberException::new);
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(NotFoundSessionException::new);
+
+        if (session.getStartAt().isAfter(LocalDateTime.now())) {
+            throw new SessionInProgressException();
+        }
+
         if (!session.getHost().getEmail().equals(member.getEmail())) {
             throw new SessionAuthorizationException();
         }
