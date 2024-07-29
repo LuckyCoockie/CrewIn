@@ -1,11 +1,20 @@
 import React from "react";
-
-type PhotosProps = {
-  // postId: number;
-  photos: string[];
-};
+import logo from "../../../assets/images/crewinlogo.png";
 
 const MyPageAlbumOrganism: React.FC = () => {
+  const photos = [
+    logo,
+    logo,
+    logo,
+    logo,
+    logo,
+    logo,
+    logo,
+    logo,
+    logo,
+    logo,
+    logo,
+  ];
   return (
     <>
       {photos.map((photo, index) => (
