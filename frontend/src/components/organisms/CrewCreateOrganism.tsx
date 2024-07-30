@@ -15,7 +15,6 @@ import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 
 import {
   CrewCreateDto,
-  // GetCrewCreateRequestDto,
   postCreateCrew,
 } from "../../apis/api/crewcreate";
 
@@ -79,6 +78,7 @@ const CrewCreatePage: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
+    
     Promise.all([
       checkUndefined(data.main_logo),
       checkUndefined(data.sub_logo),
@@ -101,7 +101,6 @@ const CrewCreatePage: React.FC = () => {
           sub_logo: subLogoImageUrl!,
           banner: bannerImageUrl!,
         };
-        console.log(data.crewcreatedat);
 
         console.log(submitData);
         // 여기에 제출 API 호출 코드 추가
@@ -239,6 +238,9 @@ const CrewCreatePage: React.FC = () => {
                   title="메인로고"
                   placeholder="1:1 비율이 가장 적합합니다."
                   {...field}
+                  onChange={(e) => {
+                    setValue("main_logo", e.target.files![0]);
+                  }}
                 />
               )}
             />
@@ -253,6 +255,9 @@ const CrewCreatePage: React.FC = () => {
                   title="서브로고"
                   placeholder="1:1 비율이 가장 적합합니다."
                   {...field}
+                  onChange={(e) => {
+                    setValue("sub_logo", e.target.files![0]);
+                  }}
                 />
               )}
             />
@@ -267,6 +272,9 @@ const CrewCreatePage: React.FC = () => {
                   title="배너"
                   placeholder="3:2 비율이 가장 적합합니다."
                   {...field}
+                  onChange={(e) => {
+                    setValue("banner", e.target.files![0]);
+                  }}
                 />
               )}
             />
