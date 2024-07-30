@@ -26,7 +26,7 @@ export const setupAxiosInterceptors = (token: string) => {
 };
 
 setupAxiosInterceptors(
-  "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MTIzNEB0ZXN0LmNvbSIsImlhdCI6MTcyMTcwNjUzMywiZW1haWwiOiJ0ZXN0MTIzNEB0ZXN0LmNvbSIsImV4cCI6MTcyNDI5ODUzM30.F36pmENzLcmqw7OZGRuV1dnMYLfoJwjfSTv7CRC90MbO7B_J8I6vZLCabBYdJnAGw6XEwH2QXbSQsfnyk_itew"
+  "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MTIzNEB0ZXN0LmNvbSIsImlhdCI6MTcyMjMxODMzNiwiZW1haWwiOiJ0ZXN0MTIzNEB0ZXN0LmNvbSIsImV4cCI6MTcyNDkxMDMzNn0.87BHcZy0Fd38yfJ0GkXe2woDZrVSpkNuzbCe3RFHmpPuqOHBnVbrGFVLG3as_BvmduiXD1xiOR5mOrmFBJsFtQ"
 );
 
 export const clearAxiosInterceptors = () => {

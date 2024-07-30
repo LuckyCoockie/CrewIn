@@ -1,22 +1,22 @@
 import React, { useState } from "react";
-import PostCreateTemplate from "../components/templates/PostCreateTemplate.tsx";
+import PostCreateTemplate from "../components/templates/PostCreateTemplate";
 
 const PostCreatePage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
-  const [croppedImages, setCroppedImages] = useState<string[]>([]);
-  const [crewName, setCrewName] = useState<string>("");
-  const [visibility, setVisibility] = useState<string>("전체");
+  const [postImages, setPostImages] = useState<string[]>([]);
+  const [crewId, setCrewId] = useState<number>(0);
+  const [isPublic, setIsPublic] = useState<boolean>(true);
   const [content, setContent] = useState<string>("");
 
   const handleImageCropComplete = (
-    croppedImages: string[],
-    crewName: string,
-    visibility: string,
+    postImages: string[],
+    crewId: number,
+    isPublic: boolean,
     content: string
   ) => {
-    setCroppedImages(croppedImages);
-    setCrewName(crewName);
-    setVisibility(visibility);
+    setPostImages(postImages);
+    setCrewId(crewId);
+    setIsPublic(isPublic);
     setContent(content);
     setCurrentStep(2);
   };
@@ -28,9 +28,9 @@ const PostCreatePage: React.FC = () => {
   return (
     <PostCreateTemplate
       currentStep={currentStep}
-      croppedImages={croppedImages}
-      crewName={crewName}
-      visibility={visibility}
+      postImages={postImages}
+      crewId={crewId}
+      isPublic={isPublic}
       content={content}
       onImageCropComplete={handleImageCropComplete}
       onEditorFinish={handleEditorFinish}

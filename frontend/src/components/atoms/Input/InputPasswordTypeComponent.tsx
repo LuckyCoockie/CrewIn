@@ -7,6 +7,7 @@ type InputData = {
   onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
   name: string;
   hasError?: boolean;
+  disabled?:boolean
 };
 
 const InputPasswordTypeComponent = forwardRef<HTMLInputElement, InputData>(
@@ -25,6 +26,7 @@ const InputPasswordTypeComponent = forwardRef<HTMLInputElement, InputData>(
             : "border-gray-300"
         }`}
         ref={ref}
+        disabled={props.disabled}
       />
     );
   }
