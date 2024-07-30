@@ -12,7 +12,7 @@ import PostItemComponent, {
   ItemComponentProps,
 } from "../components/templates/PostItemTemplate";
 import api from "../apis";
-import { PostDto, getPostList } from "../apis/api/postlist";
+import { PostDto } from "../apis/api/postlist";
 
 const fetchPostData = async (page: number): Promise<PostDto[]> => {
   try {

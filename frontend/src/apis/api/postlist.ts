@@ -1,7 +1,5 @@
 import api from "../index";
 
-export type GetPostListRequestDto = {};
-
 export type PostDto = {
   id: number;
   authorName: string;
@@ -19,9 +17,7 @@ export type PostDto = {
 
 export type GetPostListResponseDto = PostDto[];
 
-export const getPostList = async (
-  dto: GetPostListRequestDto
-): Promise<GetPostListResponseDto> => {
+export const getPostList = async (): Promise<GetPostListResponseDto> => {
   const response = await api.get(`/post`);
   return response.data;
 };

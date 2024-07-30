@@ -8,7 +8,7 @@ import {
 } from "../../util/maps/naver_map/context";
 
 import { ToggleSwitch } from "flowbite-react";
-import { directionApiWithWayPoints } from "../../util/maps/tmap/api";
+import { directionApiWithWayPoints } from "../../util/maps/tmap/apis/api/directionApi";
 
 type OwnProps = { style?: React.CSSProperties };
 
