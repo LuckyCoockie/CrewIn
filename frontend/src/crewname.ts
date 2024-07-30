@@ -1,11 +1,10 @@
 export type CrewName = {
-    label: string;
-    value: string;
+  label: string;
+  value: number;
 };
 
 export const crewNames: CrewName[] = [
-    { label: 'Crew 1', value: 'Crew 1' },
-    { label: 'Crew 2', value: 'Crew 2' },
-    { label: 'Crew 3', value: 'Crew 3' },
-
+  { label: "Crew 1", value: 1 },
+  { label: "Crew 2", value: 2 },
+  { label: "Crew 3", value: 3 },
 ];

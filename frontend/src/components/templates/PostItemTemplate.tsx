@@ -1,31 +1,28 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Userprofilebar from "../../components/molecules/UserProfileBarMolecule";
+import UserProfileBar from "../../components/molecules/UserProfileBarMolecule";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import crewinlogo from "../../assets/images/crewinlogo.png";
-import filledfire from "../../assets/images/filledfire.png";
-import emptyfire from "../../assets/images/emptyfire.png";
-import shareicon from "../../assets/images/shareicon.png";
-
-interface PostData {
-  croppedImages: string[];
-  content: string;
-}
+import crewinLogo from "../../assets/images/crewinlogo.png";
+import filledFire from "../../assets/images/filledfire.png";
+import emptyFire from "../../assets/images/emptyfire.png";
+import shareIcon from "../../assets/images/shareicon.png";
+import { PostDto } from "../../apis/api/postlist";
 
 export interface ItemComponentProps<T> {
   data: T;
 }
 
-const PostItemComponent: React.FC<ItemComponentProps<PostData>> = ({
-  data,
-}) => {
-  const { croppedImages, content } = data;
-  const [likes, setLikes] = useState<number>(0);
-  const [hasLiked, setHasLiked] = useState<boolean>(false);
+const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
+  const {
+    postImages: croppedImages,
+    content,
+    authorName,
+    heartCount,
+    isHearted,
+  } = data;
+  const [likes, setLikes] = useState<number>(heartCount);
+  const [isHeartedState, setIsHeartedState] = useState<boolean>(isHearted);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-
-  const navigate = useNavigate();
 
   const handleEdit = () => {
     console.log("Edit action");
@@ -36,10 +33,10 @@ const PostItemComponent: React.FC<ItemComponentProps<PostData>> = ({
   };
 
   const handleLike = () => {
-    setLikes((prevLikes) => (hasLiked ? prevLikes - 1 : prevLikes + 1));
-    setHasLiked(!hasLiked);
+    setLikes((prevLikes) => (isHeartedState ? prevLikes - 1 : prevLikes + 1));
+    setIsHeartedState(!isHeartedState);
 
-    if (!hasLiked) {
+    if (!isHeartedState) {
       const alarmMessages = JSON.parse(localStorage.getItem("alarms") || "[]");
       alarmMessages.push("@@님이 회원님의 게시글에 좋아요를 눌렀습니다.");
       localStorage.setItem("alarms", JSON.stringify(alarmMessages));
@@ -64,10 +61,10 @@ const PostItemComponent: React.FC<ItemComponentProps<PostData>> = ({
 
   return (
     <div className="w-full mb-4">
-      <Userprofilebar
-        profileImage={crewinlogo}
-        username="쿄징이다"
-        timeAgo="3시간 전"
+      <UserProfileBar
+        profileImage={crewinLogo}
+        username={authorName}
+        timeAgo="3시간 전" // 이 부분은 데이터에 맞게 수정 필요
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
@@ -91,14 +88,14 @@ const PostItemComponent: React.FC<ItemComponentProps<PostData>> = ({
       <div className="flex items-center mt-2">
         <button onClick={handleLike} className="flex items-center ml-3">
           <img
-            src={hasLiked ? filledfire : emptyfire}
+            src={isHeartedState ? filledFire : emptyFire}
             alt="fire-icon"
             className="w-7"
           />
         </button>
         <span className="text-md ml-1">{likes}명이 공감했어요!</span>
         <button onClick={handleShare} className="flex ml-auto mr-3">
-          <img src={shareicon} alt="share-icon" className="w-4" />
+          <img src={shareIcon} alt="share-icon" className="w-4" />
         </button>
       </div>
       <div className="border-t border-gray-300 my-2"></div>
