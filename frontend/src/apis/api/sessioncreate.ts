@@ -1,3 +1,5 @@
+import api from "../utils/instance";
+
 export type SessionCreateDto = {
   courseId: number;
   crewId: number;
@@ -12,6 +14,11 @@ export type SessionCreateDto = {
   maxPeople: number;
 };
 
-export type PostSessionCreateRto = {
-  data: SessionCreateDto;
+export type GetSessionCreateRto = SessionCreateDto;
+
+export const postCreateSession = async (
+  dto: GetSessionCreateRto
+): Promise<void> => {
+  const response = await api.post(`/session`, dto);
+  return response.data;
 };

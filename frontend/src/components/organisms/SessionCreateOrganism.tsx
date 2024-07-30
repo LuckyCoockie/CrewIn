@@ -15,6 +15,13 @@ import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import InputRadioTypeMolecule from "../molecules/Input/InputRadioTypeMolecule";
 
+import {
+  SessionCreateDto,
+  postCreateSession,
+} from "../../apis/api/sessioncreate";
+
+import { uploadImage } from "../../apis/api/presigned";
+
 // 유효성 검사 스키마 정의
 const schema = yup.object({
   sessiontype: yup.string().required("세션 종류를 선택해주세요."),
@@ -58,7 +65,6 @@ type FormValues = {
   sessionpaceminutes: number;
   sessionpaceseconds: number;
   sessioninfo: string;
-  // sessioncourse: string | null;
 };
 
 const SessionCreateOrganism: React.FC = () => {
@@ -75,19 +81,60 @@ const SessionCreateOrganism: React.FC = () => {
     // 유효성 검사 mode
     mode: "onChange",
     defaultValues: {
+      sessiontype: "번개런",
       sessionstart: new Date(),
       sessionend: new Date(),
     },
   });
 
-  console.log(errors);
-  console.log(isValid);
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log(data);
-    console.log(errors);
-    console.log(isValid);
+  const checkUndefined = async (files: FileList) => {
+    if (files) {
+      const uploadPromises = Array.from(files).map(async (file) => {
+        const result = await uploadImage(file);
+        return result;
+      });
+      return Promise.all(uploadPromises);
+    } else {
+      return [];
+    }
   };
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    const urls = await checkUndefined(data.sessionposter!);
+    const formatDate = (date: Date): string => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const hours = String(date.getHours()).padStart(2, "0");
+      const minutes = String(date.getMinutes()).padStart(2, "0");
+      const seconds = String(date.getSeconds()).padStart(2, "0");
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    };
+    const formType = (type: string) => {
+      if (type === "번개런") {
+        return "THUNDER";
+      } else if (type === "정규런") {
+        return "STANDARD";
+      } else if (type === "오픈런") {
+        return "OPEN";
+      }
+    };
+    const submitData: SessionCreateDto = {
+      courseId: 1,
+      crewId: 1,
+      sessionType: formType(data.sessiontype)!,
+      name: data.sessiontitle,
+      images: urls!,
+      pace: data.sessionpaceminutes * 60 + data.sessionpaceseconds,
+      spot: data.sessionspot,
+      startAt: formatDate(data.sessionstart!),
+      endAt: formatDate(data.sessionend!),
+      content: data.sessioninfo,
+      maxPeople: data.sessionmembers,
+    };
+    console.log(submitData);
 
+    return postCreateSession(submitData); // 제출 API 호출
+  };
   // 분 선택 이후 초 함수
   const handleMinutesChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const minutes = Number(event.target.value);
@@ -221,6 +268,9 @@ const SessionCreateOrganism: React.FC = () => {
                 title="포스터"
                 placeholder=""
                 {...field}
+                onChange={(e) => {
+                  setValue("sessionposter", e.target.files!);
+                }}
               />
             )}
           />
