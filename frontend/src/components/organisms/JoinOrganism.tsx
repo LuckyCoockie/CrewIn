@@ -3,19 +3,82 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
+import { debounce } from "lodash";
+
 import InputTextTypeMolecule from "../molecules/Input/InputTextTypeMolecule";
 import InputPasswordTypeMolecule from "../molecules/Input/InputPasswordTypeMolecule";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 
+import { getEmailDuplicationCheck } from "../../apis/api/signup";
+
+// 비밀번호 규칙 설정
 const passwordRules = /^(?=.*[a-z])(?=.*[A-Z]).{0,}$/;
+
+// yup 스키마에 이메일 중복 확인 메서드 추가
+yup.addMethod<yup.StringSchema>(
+  yup.string,
+  "emailDuplicationCheck",
+  function (message) {
+    let debounceFunc: {
+      (
+        arg0: string,
+        arg1: (
+          value:
+            | boolean
+            | yup.ValidationError
+            | PromiseLike<boolean | yup.ValidationError>
+        ) => void,
+        arg2: (
+          params?: yup.CreateErrorOptions | undefined
+        ) => yup.ValidationError
+      ): void;
+      cancel: () => void;
+    } | null = null;
+
+    return this.test("emailDuplicationCheck", message, function (value) {
+      const { path, createError } = this;
+
+      if (!value) return true; 
+
+      return new Promise((resolve) => {
+        // 디바운스된 함수 정의
+        const debouncedCheck = debounce(async (value, resolve, createError) => {
+          try {
+            const { duplicated } = await getEmailDuplicationCheck({
+              email: value,
+            });
+            if (duplicated) {
+              return resolve(createError({ path, message }));
+            }
+            return resolve(true);
+          } catch (error) {
+            return resolve(
+              createError({ path, message: "이메일 확인 중 오류 발생" })
+            );
+          }
+        }, 1000);
+
+        // 기존 디바운스 함수가 있으면 취소
+        if (debounceFunc) {
+          debounceFunc.cancel();
+        }
+
+        // 새로운 디바운스 함수 할당 및 실행
+        debounceFunc = debouncedCheck;
+        debounceFunc(value, resolve, createError);
+      });
+    });
+  }
+);
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({
   email: yup
     .string()
     .email("이메일 형식으로 입력해주세요")
-    .required("이메일을 입력해주세요."),
+    .required("이메일을 입력해주세요.")
+    .emailDuplicationCheck("이미 사용 중인 이메일입니다."),
   password: yup
     .string()
     .required("비밀번호를 입력해주세요.")
@@ -34,12 +97,12 @@ const schema = yup.object({
     .required("닉네임을 입력해주세요."),
   name: yup
     .string()
-    .max(10, "이름은 최대 10자입니다.")
+    .max(30, "이름은 최대 30자입니다.")
     .required("이름을 입력해주세요."),
 });
 
 type FormValues = {
-  email: string;
+  email?: string;
   password: string;
   confirmPassword: string;
   nickname: string;
@@ -57,6 +120,7 @@ const LoginOrganism: React.FC = () => {
   });
 
   const [isEmailValid, setIsEmailValid] = useState(false);
+  const [isCodeInput, setIsCodeInput] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [isCodeVerified, setIsCodeVerified] = useState(false);
 
@@ -65,6 +129,7 @@ const LoginOrganism: React.FC = () => {
   };
 
   const handleEmailVerification = () => {
+    setIsCodeInput(true);
     setIsEmailValid(true);
   };
 
@@ -94,6 +159,7 @@ const LoginOrganism: React.FC = () => {
                 {...field}
                 error={errors.name?.message}
                 hasError={!!errors.name}
+                disabled={isCodeInput}
               />
             )}
           />
@@ -111,12 +177,13 @@ const LoginOrganism: React.FC = () => {
                 {...field}
                 error={errors.nickname?.message}
                 hasError={!!errors.nickname}
+                disabled={isCodeInput}
               />
             )}
           />
         </div>
         {/* 이메일 */}
-        <div className="w-2/3">
+        <div className="w-full">
           <Controller
             name="email"
             control={control}
@@ -128,22 +195,63 @@ const LoginOrganism: React.FC = () => {
                 {...field}
                 error={errors.email?.message}
                 hasError={!!errors.email}
+                disabled={isCodeInput}
               />
             )}
           />
         </div>
-        <div className="w-1/4 mt-8 mb-4 mx-auto text-center">
-          <button
-            type="button"
-            className="button-color w-full border-transparent"
-            onClick={handleEmailVerification}
-          >
-            인증
-          </button>
-        </div>
-        {/* 인증번호 확인 */}
-        {isEmailValid && (
-          <>
+        {/* 비밀번호 */}
+        <Controller
+          name="password"
+          control={control}
+          render={({ field }) => (
+            <InputPasswordTypeMolecule
+              id="password"
+              title="비밀번호"
+              placeholder="소문자, 대문자 조합 4~60자"
+              {...field}
+              error={errors.password?.message}
+              hasError={!!errors.password}
+              disabled={isCodeInput}
+            />
+          )}
+        />
+        {/* 비밀번호 확인 */}
+        <Controller
+          name="confirmPassword"
+          control={control}
+          render={({ field }) => (
+            <InputPasswordTypeMolecule
+              id="confirmPassword"
+              title="비밀번호 확인"
+              placeholder="⦁⦁⦁⦁⦁⦁"
+              {...field}
+              error={errors.confirmPassword?.message}
+              hasError={!!errors.confirmPassword}
+              disabled={isCodeInput}
+            />
+          )}
+        />
+      </div>
+      {/* 버튼 영역 */}
+      {isValid && !isCodeInput ? (
+        <button
+          type="button"
+          className="button-color w-full mb-4"
+          onClick={handleEmailVerification}
+          disabled={!isValid}
+        >
+          이메일 인증
+        </button>
+      ) : !isCodeInput ? (
+        <button className="w-full bg-[#2b2f401a] py-2 text-center rounded-lg disable text-white font-bold">
+          이메일 인증
+        </button>
+      ) : null}
+
+      {isEmailValid && (
+        <>
+          <div className="flex">
             <div className="w-2/3 mb-4">
               <input
                 type="text"
@@ -162,48 +270,14 @@ const LoginOrganism: React.FC = () => {
                 확인
               </button>
             </div>
-          </>
-        )}
-        {/* 비밀번호 */}
-        <Controller
-          name="password"
-          control={control}
-          render={({ field }) => (
-            <InputPasswordTypeMolecule
-              id="password"
-              title="비밀번호"
-              placeholder="소문자, 대문자 조합 4~60자"
-              {...field}
-              error={errors.password?.message}
-              hasError={!!errors.password}
-            />
+          </div>
+          {isValid && isCodeVerified && isEmailValid ? (
+            <LargeAbleButton text="회원가입" />
+          ) : (
+            <LargeDisableButton text="회원가입" />
           )}
-        />
-        {/* 비밀번호 확인 */}
-        <Controller
-          name="confirmPassword"
-          control={control}
-          render={({ field }) => (
-            <InputPasswordTypeMolecule
-              id="confirmPassword"
-              title="비밀번호 확인"
-              placeholder="⦁⦁⦁⦁⦁⦁"
-              {...field}
-              error={errors.confirmPassword?.message}
-              hasError={!!errors.confirmPassword}
-            />
-          )}
-        />
-      </div>
-      {/* 버튼 영역 */}
-      <div>
-        {/* Form 유효성 검사 통과 + 이메일 인증 통과 여부에 따라 버튼 교체 */}
-        {isValid && isCodeVerified ? (
-          <LargeAbleButton text="생성" />
-        ) : (
-          <LargeDisableButton text="생성" />
-        )}
-      </div>
+        </>
+      )}
     </form>
   );
 };

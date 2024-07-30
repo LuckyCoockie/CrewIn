@@ -7,7 +7,7 @@ export type RefreshTokenResponseDto = { accessToken: string };
 export const login = async (
   dto: LoginRequestDto
 ): Promise<LoginResponseDto> => {
-  const response = await api.post<LoginResponseDto>("/login", dto);
+  const response = await api.post<LoginResponseDto>("/member/login", dto);
   return response.data;
 };
 

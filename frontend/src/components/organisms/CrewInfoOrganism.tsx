@@ -7,7 +7,7 @@ type Infos = {
   slogan: string;
   area: string;
   birth: string;
-  people: string;
+  people: number;
   introduction: string;
 };
 

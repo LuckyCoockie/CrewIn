@@ -8,7 +8,11 @@ const SessionSearchPage: React.FC = () => {
     return (await getSessionList({ type })).sessions;
   }, []);
 
-  return <SessionListTemplate fetchData={fetchData} />;
+  return (
+    <main>
+      <SessionListTemplate fetchData={fetchData} />
+    </main>
+  );
 };
 
 export default SessionSearchPage;

@@ -16,6 +16,8 @@ import CrewDetailPage from "./pages/CrewDetailPage";
 import AlarmPage from "./pages/AlarmPage.tsx";
 import SessionSearchPage from "./pages/SessionSearchPage.tsx";
 import CrewSearchPage from "./pages/CrewSearchPage.tsx";
+import FindPasswordPage from "./pages/FindPasswordPage.tsx";
+import NoticeCreatePage from "./pages/NoticeCreatePage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -29,7 +31,7 @@ export const router = createBrowserRouter([
         children: [
           { path: "", element: <SessionSearchPage /> },
           { path: "create", element: <SessionCreatePage /> },
-          { path: "detail", element: <SessionDetailPage /> },
+          { path: "detail/:sessionId", element: <SessionDetailPage /> },
         ],
       },
       {
@@ -38,17 +40,18 @@ export const router = createBrowserRouter([
         children: [
           { path: "", element: <CrewSearchPage /> },
           { path: "create", element: <CrewCreatePage /> },
-          { path: "detail", element: <CrewDetailPage /> },
+          { path: "detail/:crewId", element: <CrewDetailPage /> },
+          { path: "noticecreate", element: <NoticeCreatePage /> },
         ],
       },
       { path: "profile", element: <ProfilePage /> },
       { path: "course", element: <CourseCreatePage /> },
-      { path: "createcrew", element: <CrewCreatePage /> },
       { path: "post", element: <PostCreatePage /> },
       { path: "searchuser", element: <SearchUserPage /> },
       { path: "alarm", element: <AlarmPage /> },
       { path: "login", element: <LoginPage /> },
       { path: "join", element: <JoinPage /> },
+      { path: "find-password", element: <FindPasswordPage /> },
     ],
   },
 ]);
