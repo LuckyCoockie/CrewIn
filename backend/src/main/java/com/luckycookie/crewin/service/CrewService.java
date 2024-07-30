@@ -1,6 +1,7 @@
 package com.luckycookie.crewin.service;
 
 import com.luckycookie.crewin.domain.*;
+import com.luckycookie.crewin.domain.enums.NotificationType;
 import com.luckycookie.crewin.domain.enums.Position;
 import com.luckycookie.crewin.domain.enums.PostType;
 import com.luckycookie.crewin.dto.CrewRequest;
@@ -39,6 +40,8 @@ public class CrewService {
     private final MemberCrewRepository memberCrewRepository;
     private final PostRepository postRepository;
     private final PostImageRepository postImageRepository;
+
+    private final NotificationService notificationService;
 
     public void createCrew(CreateCrewRequest createCrewRequest, CustomUser customUser) {
 
@@ -290,6 +293,7 @@ public class CrewService {
     public CrewGalleryItemResponse getCrewGalleryList(int pageNo, Long crewId, CustomUser customUser) {
         Pageable pageable = PageRequest.of(pageNo, 27); // 페이지 크기 : 27
 
+
         // 해당 크루의 일반 게시물 가져오기
         Page<Post> galleryListPage = postRepository.findByCrewIdAndPostType(crewId, PostType.STANDARD, pageable);
         List<Post> galleryList = galleryListPage.getContent();
@@ -413,6 +417,7 @@ public class CrewService {
             Optional<MemberCrew> memberCrew = memberCrewRepository.findByMemberIdAndCrewId(crewInvitedMemberRequest.getMemberId(), crewInvitedMemberRequest.getCrewId());
             if(memberCrew.isEmpty()) { // memberCrew 에 없을 때만 요청 보내기
                 memberCrewRepository.save(invitedMemberCrew);
+                notificationService.createNotification(NotificationType.INVITATION, crewInvitedMemberRequest.getCrewId(),crewInvitedMemberRequest.getMemberId());
             } else {
                 // 이미 초대된 요청 입니다. Exception
                 throw new CrewDupulicateException();
@@ -435,7 +440,7 @@ public class CrewService {
         // 초대한 사람 (어떤 크루 인지 crewId)
         Crew crew = crewRepository.findById(crewReplyMemberRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
 
-        MemberCrew memberCrew = memberCrewRepository.findByMemberIdAndCrewId(crewReplyMemberRequest.getMemberId(), crewReplyMemberRequest.getCrewId()).orElseThrow(NotFoundMemberCrewException::new);
+        MemberCrew memberCrew = memberCrewRepository.findByMemberIdAndCrewId(member.getId(), crew.getId()).orElseThrow(NotFoundMemberCrewException::new);
 
         // 초대된 사람의 응답 (수락 or 거절)
         if(memberCrew.getPosition() == Position.MEMBER) {
@@ -447,5 +452,6 @@ public class CrewService {
         }
 
     }
+
 
 }

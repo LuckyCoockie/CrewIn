@@ -1,6 +1,5 @@
 package com.luckycookie.crewin.controller;
 
-import com.luckycookie.crewin.domain.Crew;
 import com.luckycookie.crewin.dto.CrewRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewInvitedMemberRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewReplyMemberRequest;

@@ -47,4 +47,6 @@ public class Member {
     public void changePassword(String newPassword){
         this.password = newPassword;
     }
+
+    public void updateMemberNotification(boolean bool) { this.existNotification = bool; }
 }
