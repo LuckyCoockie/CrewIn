@@ -1,5 +1,6 @@
 package com.luckycookie.crewin.repository;
 
+import com.luckycookie.crewin.domain.Crew;
 import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.domain.MemberCrew;
 import com.luckycookie.crewin.domain.enums.Position;
@@ -18,14 +19,12 @@ public interface MemberCrewRepository extends JpaRepository<MemberCrew, Long> {
     @Query(value = "SELECT mc.isJoined FROM MemberCrew mc WHERE mc.id = :memberId AND mc.crew.id = :crewId")
     Optional<Boolean> findIsJoinedByMemberIdAndCrewId(@Param("memberId") Long memberId, @Param("crewId") Long crewId);
 
-    List<Boolean> existsByMemberAndIsJoinedTrue(Member member);
-
-    @Query("SELECT mc.position FROM MemberCrew mc WHERE mc.member = :member and mc.crew.id = :crewId")
-    Optional<Position> findPositionByMember(@Param("member") Member member, @Param("crewId") Long crewId);
+    @Query("SELECT mc.position FROM MemberCrew mc WHERE mc.member = :member and mc.crew = :crew")
+    Optional<Position> findPositionByMemberAndCrew(@Param("member") Member member, @Param("crew") Crew crew);
 
     @Modifying
-    @Query("DELETE FROM MemberCrew mc WHERE mc.crew.id = :crewId")
-    void deleteByCrewId(@Param("crewId") Long crewId);
+    @Query("DELETE FROM MemberCrew mc WHERE mc.crew = :crew")
+    void deleteByCrewId(@Param("crew") Crew crew);
 
     @Modifying
     @Query("UPDATE MemberCrew mc SET mc.position = :position WHERE mc.id = :memberCrewId")
@@ -36,12 +35,10 @@ public interface MemberCrewRepository extends JpaRepository<MemberCrew, Long> {
     // 해당 크루에 있는 크루원 조회
     List<MemberCrew> findByCrewId(Long crewId);
 
-    List<MemberCrew> findMemberCrewsByMemberId(Long memberId);
-
     @Query("SELECT mc FROM MemberCrew mc WHERE mc.member = :member AND mc.isJoined = true")
     List<MemberCrew> findJoinedMemberCrewsByMember(Member member);
 
-    @Query("SELECT mc.crew.id FROM MemberCrew mc WHERE mc.member.id = :memberId")
-    List<Long> findJoinedCrewIdsByMemberId(@Param("memberId") Long memberId);
+    @Query("SELECT mc.crew FROM MemberCrew mc WHERE mc.member = :member and mc.isJoined = true")
+    List<Crew> findCrewByMemberAndIsJoined(@Param("member") Member member);
 
 }

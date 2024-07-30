@@ -62,14 +62,14 @@ public class CrewRequest {
         private Position position; // 회원의 직급
     }
 
-    // 초대 당한 사람
+    // 초대 당한 사람 (강퇴 당한 사람)
     @Getter
     @SuperBuilder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class CrewInvitedMemberRequest{
-        private Long memberId; // 초대 당한 사람의 memberId
-        private Long crewId; // 초대한 사람의 crewId
+    public static class CrewMemberRequest{
+        private Long memberId; // 초대 당한 사람의 memberId (강퇴 당한 사람)
+        private Long crewId; // 초대한 사람의 crewId (강퇴 당한 사람)
     }
 
     // 초대 당한 사람의 응답
@@ -77,7 +77,7 @@ public class CrewRequest {
     @SuperBuilder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class CrewReplyMemberRequest extends CrewInvitedMemberRequest{
+    public static class CrewReplyMemberRequest extends CrewMemberRequest{
         private Boolean replyStatus; // 수락인지, 거절인지 (수락이면 true, 거절이면 false)
     }
 
