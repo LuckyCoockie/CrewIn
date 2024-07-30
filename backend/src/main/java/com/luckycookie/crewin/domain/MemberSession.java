@@ -26,4 +26,5 @@ public class MemberSession {
     @JoinColumn(name = "session_id")
     private Session session;
 
+    private Boolean isAttend;
 }

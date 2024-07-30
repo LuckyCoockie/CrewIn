@@ -38,8 +38,6 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private int totalAttendance;
-
     private int totalDistance;
 
     private int totalTime;
