@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Carousel } from "react-responsive-carousel";
 import Cropper, { ReactCropperElement } from "react-cropper";
@@ -13,13 +13,14 @@ import InputRadioTypeMolecule from "../molecules/Input/InputRadioTypeMolecule";
 import InputDropdonwTypeMolecule from "../molecules/Input/InputDropdonwTypeMolecule";
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import ImageUploadDropzone from "../molecules/Input/ImageUploadDropzone";
-import { crewNames } from "../../../src/crewname";
+import { createPost } from "../../apis/api/postcreate";
+import { getMyCrews, CrewDto } from "../../apis/api/mycrew";
 
 interface ImageCropProps {
   onComplete: (
-    croppedImages: string[],
-    crewName: string,
-    visibility: string,
+    postImages: string[],
+    crewId: number,
+    isPublic: boolean,
     content: string
   ) => void;
 }
@@ -28,17 +29,30 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
   const navigate = useNavigate();
   const [imagePaths, setImagePaths] = useState<string[]>([]);
   const [cropAspectRatio] = useState<number>(1);
-  const [croppedImages, setCroppedImages] = useState<string[]>([]);
+  const [postImages, setPostImages] = useState<string[]>([]);
   const [originalCroppedImages, setOriginalCroppedImages] = useState<string[]>(
     []
   );
-  const [crewName, setCrewName] = useState<string>("");
-  const [visibility, setVisibility] = useState<string>("전체");
+  const [crewId, setCrewId] = useState<number>(0);
+  const [isPublic, setIsPublic] = useState<boolean>(true);
   const [content, setContent] = useState<string>("");
   const [isCropped, setIsCropped] = useState<boolean>(false);
   const [currentEditIndex, setCurrentEditIndex] = useState<number | null>(null);
+  const [crews, setCrews] = useState<CrewDto[]>([]);
 
   const cropperRefs = useRef<(ReactCropperElement | null)[]>([]);
+
+  useEffect(() => {
+    const fetchCrews = async () => {
+      try {
+        const response = await getMyCrews();
+        setCrews(response.data.crews);
+      } catch (error) {
+        console.error("크루 목록 조회 오류:", error);
+      }
+    };
+    fetchCrews();
+  }, []);
 
   const handleDrop = (acceptedFiles: File[]) => {
     const allowedTypes = ["image/png", "image/jpeg"];
@@ -47,16 +61,16 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
     );
 
     const tempImagePaths: string[] = [];
-    const tempCroppedImages: string[] = [];
+    const tempPostImages: string[] = [];
 
     filteredFiles.forEach((file) => {
       const tempImagePath = URL.createObjectURL(file);
       tempImagePaths.push(tempImagePath);
-      tempCroppedImages.push(tempImagePath);
+      tempPostImages.push(tempImagePath);
     });
 
     setImagePaths(tempImagePaths);
-    setCroppedImages(tempCroppedImages);
+    setPostImages(tempPostImages);
     setOriginalCroppedImages(tempImagePaths);
     setIsCropped(false);
   };
@@ -78,7 +92,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
           (blob: Blob | null) => {
             if (blob) {
               const croppedImageUrl = URL.createObjectURL(blob);
-              setCroppedImages((prevImages) => {
+              setPostImages((prevImages) => {
                 const newImages = [...prevImages];
                 newImages[index] = croppedImageUrl;
                 return newImages;
@@ -106,7 +120,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
 
   const handleFinishEdit = (finalImage: string) => {
     if (currentEditIndex !== null) {
-      setCroppedImages((prevImages) => {
+      setPostImages((prevImages) => {
         const newImages = [...prevImages];
         newImages[currentEditIndex] = finalImage;
         return newImages;
@@ -115,24 +129,24 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
     }
   };
 
-  const handlePost = () => {
-    if (!isCropped) {
-      alert("1:1 비율 이미지만 업로드 가능합니다.");
-      return;
+  const handlePost = async () => {
+    const postData = {
+      postImages,
+      crewId,
+      isPublic,
+      content,
+    };
+
+    console.log("작성할 데이터:", postData);
+
+    try {
+      const response = await createPost(postData);
+      console.log("서버 응답:", response);
+      onComplete(postImages, crewId, isPublic, content);
+      navigate("/home", { state: postData });
+    } catch (error) {
+      console.error("게시글 작성 오류:", error);
     }
-    const postData = { croppedImages, crewName, visibility, content };
-
-    const existingPosts = JSON.parse(localStorage.getItem("postData") || "[]");
-
-    if (Array.isArray(existingPosts)) {
-      existingPosts.push(postData);
-      localStorage.setItem("postData", JSON.stringify(existingPosts));
-    } else {
-      localStorage.setItem("postData", JSON.stringify([postData]));
-    }
-
-    onComplete(croppedImages, crewName, visibility, content);
-    navigate("/home", { state: postData });
   };
 
   return (
@@ -174,7 +188,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
                     <>
                       <div>
                         <img
-                          src={croppedImages[index]}
+                          src={postImages[index]}
                           alt={`Cropped ${index}`}
                           style={{ width: 360, height: 360 }}
                         />
@@ -222,21 +236,24 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
             id="visibility"
             title="공개 범위"
             name="visibility"
-            onChange={(e) => setVisibility(e.target.value)}
+            onChange={(e) => setIsPublic(e.target.value === "전체")}
             value={["전체", "크루"]}
             default="전체"
             hasError={false}
           />
         </div>
 
-        {visibility === "크루" && (
+        {isPublic === false && (
           <div className="w-60">
             <InputDropdonwTypeMolecule
-              id="crewName"
+              id="crewId"
               title=""
-              options={crewNames}
-              value={crewName}
-              onChange={(e) => setCrewName(e.target.value)}
+              options={crews.map((crew) => ({
+                label: crew.crewName,
+                value: crew.crewId,
+              }))}
+              value={crewId}
+              onChange={(e) => setCrewId(Number(e.target.value))}
               text="크루 선택"
               hasError={false}
             />
@@ -271,9 +288,9 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
       {currentEditIndex !== null && (
         <ModalMolecules onClose={() => setCurrentEditIndex(null)}>
           <ImageEditSave
-            images={[originalCroppedImages[currentEditIndex]]}
-            crewName={crewName}
-            visibility={visibility}
+            postImages={[originalCroppedImages[currentEditIndex]]}
+            crewId={crewId}
+            isPublic={isPublic}
             content={content}
             onFinish={handleFinishEdit}
           />

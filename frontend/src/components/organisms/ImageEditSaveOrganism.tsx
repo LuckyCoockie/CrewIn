@@ -3,25 +3,27 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import html2canvas from "html2canvas";
 import { saveAs } from "file-saver";
 import InputMask from "react-input-mask";
-
 import alarmWhite from "../../assets/images/alarm-clockwhite.png";
 import alarmBlack from "../../assets/images/alarm-clockblack.png";
 import meterWhite from "../../assets/images/meterwhite.png";
 import meterBlack from "../../assets/images/meterblack.png";
 
-interface EditorStepProps {
-  images: string[];
-  crewName: string;
-  visibility: string;
+interface ImageEditSaveProps {
+  postImages: string[];
+  crewId: number;
+  isPublic: boolean;
   content: string;
   onFinish: (finalImage: string) => void;
 }
 
-const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
-  const [overlayTotalDistance, setOverlayTotalDistance] = useState("00.00");
-  const [overlayTotalTime, setOverlayTotalTime] = useState("00:00:00");
-  const [overlayPace, setOverlayPace] = useState("0'0''");
-  const [topLeftImage, setTopLeftImage] = useState<string | null>(null);
+const ImageEditSave: React.FC<ImageEditSaveProps> = ({
+  postImages,
+  onFinish,
+}) => {
+  const [totalDistance, setTotalDistance] = useState("00.00");
+  const [totalTime, setTotalTime] = useState("00:00:00");
+  const [pace, setPace] = useState("0'0''");
+  const [topLeftImage] = useState<string | null>(null);
 
   const [showLogoInput, setShowLogoInput] = useState(false);
   const [showDistanceInput, setShowDistanceInput] = useState(false);
@@ -32,25 +34,22 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
   const captureRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (
-      isValidTime(overlayTotalTime) &&
-      isValidDistance(overlayTotalDistance)
-    ) {
-      const timeInSeconds = calculateTimeInSeconds(overlayTotalTime);
-      const distanceInKm = parseFloat(overlayTotalDistance);
+    if (isValidTime(totalTime) && isValidDistance(totalDistance)) {
+      const timeInSeconds = calculateTimeInSeconds(totalTime);
+      const distanceInKm = parseFloat(totalDistance);
 
       if (timeInSeconds > 0 && distanceInKm > 0) {
         const paceInSeconds = timeInSeconds / distanceInKm;
         const paceMinutes = Math.floor(paceInSeconds / 60);
         const paceSeconds = Math.floor(paceInSeconds % 60);
-        setOverlayPace(`${paceMinutes}'${paceSeconds}''`);
+        setPace(`${paceMinutes}'${paceSeconds}''`);
       } else {
-        setOverlayPace("0'0''");
+        setPace("0'0''");
       }
     } else {
-      setOverlayPace("0'0''");
+      setPace("0'0''");
     }
-  }, [overlayTotalTime, overlayTotalDistance]);
+  }, [totalTime, totalDistance]);
 
   const isValidTime = (time: string): boolean => {
     const regex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/;
@@ -66,19 +65,6 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
     const [hours, minutes, seconds] = time.split(":").map(parseFloat);
     return hours * 3600 + minutes * 60 + seconds;
   };
-
-  // const handleTopLeftImageUpload = (
-  //   event: React.ChangeEvent<HTMLInputElement>
-  // ) => {
-  //   const file = event.target.files?.[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onload = (e) => {
-  //       setTopLeftImage(e.target?.result as string);
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
 
   const handleFinish = async () => {
     if (captureRef.current) {
@@ -133,7 +119,7 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
             boxSizing: "border-box",
           }}
         >
-          {images.map((image, index) => (
+          {postImages.map((image, index) => (
             <div key={index}>
               <img src={image} alt={`Cropped ${index}`} />
             </div>
@@ -169,7 +155,7 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
                     showColorInput ? "text-white" : "text-black"
                   } m-0`}
                 >
-                  {overlayTotalTime}
+                  {totalTime}
                 </p>
               </div>
             )}
@@ -180,7 +166,7 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
                     showColorInput ? "text-white" : "text-black"
                   } m-0`}
                 >
-                  {overlayTotalDistance}KM
+                  {totalDistance} KM
                 </p>
               </div>
             )}
@@ -204,7 +190,7 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
                     showColorInput ? "text-white" : "text-black"
                   } m-0`}
                 >
-                  {overlayPace}
+                  {pace}
                 </p>
               </div>
             )}
@@ -242,8 +228,8 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
             <InputMask
               mask="99:99:99"
               maskChar="0"
-              value={overlayTotalTime}
-              onChange={(e) => setOverlayTotalTime(e.target.value)}
+              value={totalTime}
+              onChange={(e) => setTotalTime(e.target.value)}
               placeholder="00:00:00"
               className="border border-gray-300 rounded px-3 py-2 w-24"
             />
@@ -273,8 +259,8 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
             <InputMask
               mask="99.99"
               maskChar="0"
-              value={overlayTotalDistance}
-              onChange={(e) => setOverlayTotalDistance(e.target.value)}
+              value={totalDistance}
+              onChange={(e) => setTotalDistance(e.target.value)}
               placeholder="00.00"
               className="border border-gray-300 rounded px-3 py-2 w-24"
             />
@@ -304,8 +290,8 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
             <InputMask
               mask="9'99''"
               maskChar="0"
-              value={overlayPace}
-              onChange={(e) => setOverlayPace(e.target.value)}
+              value={pace}
+              onChange={(e) => setPace(e.target.value)}
               placeholder="0'00''"
               className="border border-gray-300 rounded px-3 py-2 w-24"
             />
