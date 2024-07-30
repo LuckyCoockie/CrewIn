@@ -3,7 +3,8 @@ package com.luckycookie.crewin.service;
 import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.PostType;
 import com.luckycookie.crewin.dto.PostRequest;
-import com.luckycookie.crewin.dto.PostResponse;
+import com.luckycookie.crewin.dto.PostResponse.PostItem;
+import com.luckycookie.crewin.dto.PostResponse.PostItemsResponse;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
@@ -11,12 +12,16 @@ import com.luckycookie.crewin.exception.post.NotFoundPostException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -72,42 +77,36 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponse> getAllPostsSortedByCreatedAt(String email) {
+    public PostItemsResponse getAllPostsSortedByCreatedAt(String email, int pageNo) {
+        PageRequest pageRequest = PageRequest.of(pageNo, 10);
         Member viewer = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
         List<MemberCrew> crews = memberCrewRepository.findJoinedMemberCrewsByMember(viewer);
-        List<Post> posts = postRepository.findPublicPostsSortedByCreatedAt(
-                crews.stream().map(mc -> mc.getCrew().getId()).collect(Collectors.toList())
+        log.info("pageNo: {}", pageNo);
+        log.info("page: {}", pageRequest);
+        Page<Post> postListPage = postRepository.findPublicPostsSortedByCreatedAt(
+                crews.stream().map(mc -> mc.getCrew().getId()).collect(Collectors.toList()), pageRequest
         );
-        return posts.stream().map(p -> convertToDto(p, viewer.getId())).collect(Collectors.toList());
-    }
 
-    private PostResponse convertToDto(Post post, Long viewerId) {
-        int heartCount = heartRepository.countByPostId(post.getId());
-        List<String> postImages = getPostImages(post.getId());
+        List<Post> postList = postListPage.getContent();
+        int lastPageNo = Math.max(postListPage.getTotalPages() - 1, 0);
 
-        Long authorId;
-        String authorName;
-        if (post.getPostType() == PostType.NOTICE) {
-            authorId = post.getAuthor().getId();
-            authorName = post.getAuthor().getName();
-        } else {
-            authorId = post.getCrew().getId();
-            authorName = post.getCrew().getCrewName();
-        }
-
-        return PostResponse.builder()
+        List<PostItem> postItems = postList.stream().map(post -> PostItem.builder()
                 .id(post.getId())
+                .authorName(post.getAuthor().getName())
+                .authorId(post.getAuthor().getId())
                 .content(post.getContent())
-                .authorId(authorId)
-                .authorName(authorName)
-                .heartCount(heartCount)
+                .heartCount(post.getHearts().size())
+                .isHearted(heartRepository.existsByPostAndMember(post, viewer))
                 .isPublic(post.getIsPublic())
                 .postType(post.getPostType())
                 .title(post.getTitle())
-                .isHearted(heartRepository.existsByPostIdAndMemberId(post.getId(), viewerId))
-                .createdAt(post.getCreatedAt())
-                .updatedAt(post.getUpdatedAt())
-                .postImages(postImages).build();
+                .build()).toList();
+
+        return PostItemsResponse.builder()
+                .postItemList(postItems)
+                .pageNo(pageNo)
+                .lastPageNo(lastPageNo)
+                .build();
     }
 
     private List<String> getPostImages(Long postId) {
