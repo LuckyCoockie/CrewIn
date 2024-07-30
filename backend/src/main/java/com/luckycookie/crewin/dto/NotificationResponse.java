@@ -13,6 +13,7 @@ public class NotificationResponse {
     private Boolean isChecked;
     private NotificationType notificationType;
     private Long senderId;
+    private Long postId;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 }

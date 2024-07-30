@@ -35,10 +35,13 @@ public class Notification {
 
 
     private Long senderId;
+    private Long postId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id")
     private Member receiver;
+
+
 
     @CreatedDate
     @Column(updatable = false)

@@ -1,9 +1,6 @@
 package com.luckycookie.crewin.domain;
 
 import com.luckycookie.crewin.domain.enums.Position;
-import com.luckycookie.crewin.dto.CrewRequest;
-import com.luckycookie.crewin.dto.CrewRequest.CrewInvitedMemberRequest;
-import com.luckycookie.crewin.dto.CrewRequest.CrewReplyMemberRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
