@@ -45,7 +45,7 @@ public class CrewService {
 
     private final NotificationService notificationService;
 
-    public void createCrew(CreateCrewRequest createCrewRequest, CustomUser customUser) {
+    public Crew createCrew(CreateCrewRequest createCrewRequest, CustomUser customUser) {
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
@@ -74,6 +74,8 @@ public class CrewService {
                 .build();
 
         memberCrewRepository.save(memberCrew);
+
+        return crew;
 
     }
 
@@ -467,6 +469,36 @@ public class CrewService {
             throw new CrewUnauthorizedException(); // Member 일때만 가능 해야 함
         }
 
+    }
+
+    // 크루 강퇴
+    public void deleteCrewMember(CustomUser customUser, CrewMemberRequest crewMemberRequest) {
+        // 강퇴 시키는 사람 (CAPTAIN)
+        Member admin = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+        Crew adminCrew = crewRepository.findById(crewMemberRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
+        Position adminPosition = memberCrewRepository.findPositionByMemberAndCrew(admin, adminCrew).orElseThrow();
+
+        // 강퇴 당하는 사람 (MEMBER)
+        Member member = memberRepository.findById(crewMemberRequest.getMemberId()).orElseThrow(NotFoundMemberException::new);
+        Crew crew = crewRepository.findById(crewMemberRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
+        MemberCrew memberCrew = memberCrewRepository.findByMemberIdAndCrewId(member.getId(), crew.getId()).orElseThrow();
+
+        // 강퇴 시키는 사람이 CAPTAIN 인지 확인
+        if(adminPosition == Position.CAPTAIN) {
+            // 강퇴 당하는 사람이 크루에 속해있는지 확인
+            if(memberCrew.getIsInvited() && memberCrew.getIsJoined()) { // 크루에 속해 있으면
+                // 강퇴 당하는 사람은 MEMBER
+                if(memberCrew.getPosition() == Position.MEMBER) {
+                    memberCrewRepository.delete(memberCrew); // 강퇴
+                } else {
+                    throw new CrewMemberDeleteException();
+                }
+            } else {
+                throw new CrewMemberNotExistException(); // 크루에 속해 있지 않음
+            }
+        } else {
+            throw new CrewUnauthorizedException();
+        }
     }
 
 }

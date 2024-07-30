@@ -16,6 +16,13 @@ import java.util.List;
 @NoArgsConstructor
 public class CrewResponse {
 
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CrewCreateResponse {
+        long crewId;
+    }
     // pagenation
     @Getter
     @SuperBuilder

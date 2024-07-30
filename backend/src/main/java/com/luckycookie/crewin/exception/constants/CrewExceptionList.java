@@ -13,7 +13,8 @@ public enum CrewExceptionList {
     CREW_MEMBER_NOT_EXIST_ERROR("C0004", HttpStatus.BAD_REQUEST, "크루에 해당 멤버가 존재하지 않습니다."),
     CREW_UNAUTHORIZED_ERROR("C0005", HttpStatus.FORBIDDEN, "권한이 부족합니다."),
     CREW_DUPLICATE_ERROR("C0006", HttpStatus.BAD_REQUEST, "중복된 요청입니다."),
-    CREW_MEMBER_INVITED_ERROR("C0007", HttpStatus.BAD_REQUEST, "현재 사용자는 초대된 사용자가 아닙니다.");
+    CREW_MEMBER_INVITED_ERROR("C0007", HttpStatus.BAD_REQUEST, "현재 사용자는 초대된 사용자가 아닙니다."),
+    CREW_MEMBER_DELETE_ERROR("C0008", HttpStatus.BAD_REQUEST, "크루 강퇴는 일반 회원만 가능합니다.");
 
     private final String errorCode;
     private final HttpStatus httpStatus;
