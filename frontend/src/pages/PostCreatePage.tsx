@@ -21,7 +21,7 @@ const PostCreatePage: React.FC = () => {
     setCurrentStep(2);
   };
 
-  const handleEditorFinish = (finalImage: string) => {
+  const handleEditorFinish = () => {
     setCurrentStep(1);
   };
 
