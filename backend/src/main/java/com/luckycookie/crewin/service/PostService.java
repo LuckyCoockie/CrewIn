@@ -117,7 +117,9 @@ public class PostService {
     }
 
     private List<String> getPostImages(Long postId) {
-        List<PostImage> postImages = postImageRepository.findByPostId(postId);
+        Post post = postRepository.findById(postId).orElseThrow(NotFoundPostException::new);
+
+        List<PostImage> postImages = postImageRepository.findByPost(post);
         return postImages.stream().map(PostImage::getImageUrl).toList();
     }
 }

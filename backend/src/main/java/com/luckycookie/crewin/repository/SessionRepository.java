@@ -13,9 +13,9 @@ import java.util.List;
 public interface SessionRepository extends JpaRepository<Session, Long> {
 
     @Query("SELECT s FROM Session s WHERE s.sessionType = :sessionType AND s.startAt > CURRENT_TIMESTAMP")
-    List<Session> findUpcomingSessionsByType(@Param("sessionType") SessionType sessionType);
+    List<Session> findUpcomingSessionsByType(SessionType sessionType);
 
     @Query("SELECT s FROM Session s WHERE s.crew.crewName LIKE %:crewName%")
-    List<Session> findSessionsByCrewNameContaining(@Param("crewName") String crewName);
+    List<Session> findSessionsByCrewNameContaining(String crewName);
 
 }

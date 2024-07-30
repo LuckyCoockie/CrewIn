@@ -16,31 +16,27 @@ import java.util.Optional;
 @Repository
 public interface MemberCrewRepository extends JpaRepository<MemberCrew, Long> {
 
-    @Query(value = "SELECT mc.isJoined FROM MemberCrew mc WHERE mc.id = :memberId AND mc.crew.id = :crewId")
-    Optional<Boolean> findIsJoinedByMemberIdAndCrewId(@Param("memberId") Long memberId, @Param("crewId") Long crewId);
+    @Query(value = "SELECT mc.isJoined FROM MemberCrew mc WHERE mc.member = :member AND mc.crew = :crew")
+    Optional<Boolean> findIsJoinedByMemberIdAndCrewId(Member member, Crew crew);
 
     @Query("SELECT mc.position FROM MemberCrew mc WHERE mc.member = :member and mc.crew = :crew")
-    Optional<Position> findPositionByMemberAndCrew(@Param("member") Member member, @Param("crew") Crew crew);
+    Optional<Position> findPositionByMemberAndCrew(Member member, Crew crew);
 
     @Modifying
     @Query("DELETE FROM MemberCrew mc WHERE mc.crew = :crew")
-    void deleteByCrewId(@Param("crew") Crew crew);
+    void deleteByCrewId(Crew crew);
 
-    @Modifying
-    @Query("UPDATE MemberCrew mc SET mc.position = :position WHERE mc.id = :memberCrewId")
-    void updatePosition(@Param("memberCrewId") Long memberCrewId, @Param("position") Position position);
-
-    Optional<MemberCrew> findByMemberIdAndCrewId(Long memberId, Long crewId);
+    Optional<MemberCrew> findByMemberAndCrew(Member member, Crew crew);
 
     boolean existsByMemberAndCrew(Member member, Crew crew);
 
     // 해당 크루에 있는 크루원 조회
-    List<MemberCrew> findByCrewId(Long crewId);
+    List<MemberCrew> findByCrew(Crew crew);
 
     @Query("SELECT mc FROM MemberCrew mc WHERE mc.member = :member AND mc.isJoined = true")
     List<MemberCrew> findJoinedMemberCrewsByMember(Member member);
 
     @Query("SELECT mc.crew FROM MemberCrew mc WHERE mc.member = :member and mc.isJoined = true")
-    List<Crew> findCrewByMemberAndIsJoined(@Param("member") Member member);
+    List<Crew> findCrewByMemberAndIsJoined(Member member);
 
 }

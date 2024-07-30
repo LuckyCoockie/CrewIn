@@ -96,7 +96,7 @@ public class SessionService {
         if (session.getSessionType().equals(SessionType.STANDARD)) {
             Member member = memberRepository.findByEmail(customUser.getEmail())
                     .orElseThrow(NotFoundMemberException::new);
-            if (!memberCrewRepository.findIsJoinedByMemberIdAndCrewId(member.getId(), session.getCrew().getId())
+            if (!memberCrewRepository.findIsJoinedByMemberIdAndCrewId(member, session.getCrew())
                     .orElse(false)) {
                 throw new CrewMemberNotExistException();
             }
@@ -112,7 +112,7 @@ public class SessionService {
             userSessionCompare = false;
         }
 
-        List<SessionPoster> sessionPosters = sessionPosterRepository.findBySessionId(sessionId);
+        List<SessionPoster> sessionPosters = sessionPosterRepository.findBySession(session);
 
 
         List<String> imageUrls = sessionPosters.stream()
@@ -177,7 +177,7 @@ public class SessionService {
     }
 
     private SessionResponse convertToSessionResponse(Session session) {
-        List<SessionPoster> sessionPosters = sessionPosterRepository.findBySessionIdOrderByImageUrlAsc(session.getId());
+        List<SessionPoster> sessionPosters = sessionPosterRepository.findBySessionOrderByImageUrlAsc(session);
         String sessionThumbnail = sessionPosters.isEmpty() ? null : sessionPosters.get(0).getImageUrl();
 
         return SessionResponse.builder()
