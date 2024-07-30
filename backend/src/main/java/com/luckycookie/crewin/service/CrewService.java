@@ -1,5 +1,6 @@
 package com.luckycookie.crewin.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.Position;
 import com.luckycookie.crewin.domain.enums.PostType;
@@ -17,6 +18,7 @@ import com.luckycookie.crewin.exception.post.NotFoundPostException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +33,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @Transactional
 public class CrewService {
 
@@ -223,7 +226,7 @@ public class CrewService {
         Position position = memberCrewRepository.findPositionByMember(member, crewId).orElseThrow(CrewPositionMismatchException::new);
 
         // CAPTAIN 만 수정 가능
-        if(position == Position.CAPTAIN) {
+        if (position == Position.CAPTAIN) {
             crew.updateCrewInfo(createCrewRequest);
         } else {
             throw new CrewUnauthorizedException();
@@ -240,7 +243,7 @@ public class CrewService {
         Position position = memberCrewRepository.findPositionByMember(member, crewId).orElseThrow(CrewPositionMismatchException::new);
 
         // CAPTAIN 만 삭제 가능
-        if(position == Position.CAPTAIN) {
+        if (position == Position.CAPTAIN) {
             // MemberCrew 먼저 삭제
             memberCrewRepository.deleteByCrewId(crewId);
 
@@ -260,7 +263,7 @@ public class CrewService {
                 .orElseThrow(NotFoundMemberException::new);
 
         // 해당 멤버의 position
-        Position position = memberCrewRepository.findPositionByMember(member, crewId).orElseThrow(CrewPositionMismatchException::new);
+        Position position = memberCrewRepository.findPositionByMember(member, crewId).orElseThrow(CrewMemberNotExistException::new);
 
         Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
 
@@ -269,16 +272,14 @@ public class CrewService {
         List<Post> noticeList = noticeListPage.getContent();
         int lastPageNo = Math.max(noticeListPage.getTotalPages() - 1, 0);
 
-        List<CrewResponse.CrewNoticeItem> crewNoticeItems = noticeList.stream().map(notice -> {
-            return CrewResponse.CrewNoticeItem
-                    .builder()
-                    .position(position)
-                    .title(notice.getTitle())
-                    .createdAt(notice.getCreatedAt())
-                    .updatedAt(notice.getUpdatedAt())
-                    .noticeId(notice.getId())
-                    .build();
-        }).collect(Collectors.toList());
+        List<CrewResponse.CrewNoticeItem> crewNoticeItems = noticeList.stream().map(notice -> CrewNoticeItem
+                .builder()
+                .position(position)
+                .title(notice.getTitle())
+                .createdAt(notice.getCreatedAt())
+                .updatedAt(notice.getUpdatedAt())
+                .noticeId(notice.getId())
+                .build()).collect(Collectors.toList());
 
         return CrewNoticeItemResponse.builder()
                 .crewNoticeList(crewNoticeItems)
@@ -300,7 +301,7 @@ public class CrewService {
                     .builder()
                     .postId(post.getId())
                     .imageUrls(post.getPostImages().stream().map(postImage ->
-                        postImage.getImageUrl()
+                            postImage.getImageUrl()
                     ).toList())
                     .build();
         }).collect(Collectors.toList());
@@ -341,10 +342,10 @@ public class CrewService {
         MemberCrew memberCrew = memberCrewRepository.findByMemberIdAndCrewId(updateCrewPositionRequest.getMemberId(), updateCrewPositionRequest.getCrewId()).orElseThrow(NotFoundMemberCrewException::new);
 
         // CAPTAIN 일때만
-        if(position == Position.CAPTAIN) {
+        if (position == Position.CAPTAIN) {
             // 권한 수정
             memberCrewRepository.updatePosition(memberCrew.getId(), updateCrewPositionRequest.getPosition());
-        }else {
+        } else {
             throw new CrewUnauthorizedException();
         }
     }
@@ -408,16 +409,16 @@ public class CrewService {
                 .isInvited(true)
                 .build();
 
-        if(position == Position.CAPTAIN) {
+        if (position == Position.CAPTAIN) {
             // 초대 하면 회원 크루에 넣기 (이미 초대 요청이 보내진 멤버한테는 초대 요청을 보내면 안됨)
             Optional<MemberCrew> memberCrew = memberCrewRepository.findByMemberIdAndCrewId(crewInvitedMemberRequest.getMemberId(), crewInvitedMemberRequest.getCrewId());
-            if(memberCrew.isEmpty()) { // memberCrew 에 없을 때만 요청 보내기
+            if (memberCrew.isEmpty()) { // memberCrew 에 없을 때만 요청 보내기
                 memberCrewRepository.save(invitedMemberCrew);
             } else {
                 // 이미 초대된 요청 입니다. Exception
                 throw new CrewDupulicateException();
             }
-        }else {
+        } else {
             throw new CrewUnauthorizedException(); // CAPTAIN 만 초대 가능
         }
 
@@ -428,7 +429,7 @@ public class CrewService {
 
         // 초대된 사람 (memberId)
         Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
-        if(!Objects.equals(member.getId(), crewReplyMemberRequest.getMemberId())) {
+        if (!Objects.equals(member.getId(), crewReplyMemberRequest.getMemberId())) {
             throw new CrewMemberInvitedException();
         }
 
@@ -438,8 +439,8 @@ public class CrewService {
         MemberCrew memberCrew = memberCrewRepository.findByMemberIdAndCrewId(crewReplyMemberRequest.getMemberId(), crewReplyMemberRequest.getCrewId()).orElseThrow(NotFoundMemberCrewException::new);
 
         // 초대된 사람의 응답 (수락 or 거절)
-        if(memberCrew.getPosition() == Position.MEMBER) {
-            if(memberCrew.getIsInvited() && !memberCrew.getIsJoined()) { // isInvited는 true 이고, isJoined는 false인 상태면 초대 미수락 상태
+        if (memberCrew.getPosition() == Position.MEMBER) {
+            if (memberCrew.getIsInvited() && !memberCrew.getIsJoined()) { // isInvited는 true 이고, isJoined는 false인 상태면 초대 미수락 상태
                 memberCrew.updateMemberCrewInvitation(crewReplyMemberRequest.getReplyStatus());
             }
         } else {
