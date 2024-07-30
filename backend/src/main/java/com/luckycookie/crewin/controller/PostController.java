@@ -1,13 +1,17 @@
 package com.luckycookie.crewin.controller;
 
 import com.luckycookie.crewin.dto.PostRequest;
-import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.dto.PostResponse;
+import com.luckycookie.crewin.dto.PostResponse.PostItem;
+import com.luckycookie.crewin.dto.PostResponse.PostItemsResponse;
+import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.exception.post.ImageRequiredException;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.PostService;
+import io.lettuce.core.dynamic.annotation.Param;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,7 +28,7 @@ public class PostController {
 
     @PostMapping()
     public ResponseEntity<BaseResponse<Void>> createPost(@AuthenticationPrincipal CustomUser customUser, @RequestBody PostRequest.WritePostRequest writePostRequest) {
-        if(writePostRequest.getPostImages().isEmpty()){
+        if (writePostRequest.getPostImages().isEmpty()) {
             throw new ImageRequiredException();
         }
         postService.writePost(writePostRequest, customUser);
@@ -32,9 +36,9 @@ public class PostController {
     }
 
     @GetMapping()
-    public ResponseEntity<BaseResponse<List<PostResponse>>> getAllPostsSortedByCreatedAt(@AuthenticationPrincipal CustomUser customUser) {
-        List<PostResponse> posts = postService.getAllPostsSortedByCreatedAt(customUser.getEmail());
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "게시물 리스트를 조회하는데 성공했습니다", posts));
+    public ResponseEntity<BaseResponse<PostItemsResponse>> getAllPosts(@AuthenticationPrincipal CustomUser customUser, Integer pageNo) {
+        PostItemsResponse postItemsResponse = postService.getAllPostsSortedByCreatedAt(customUser.getEmail(), pageNo);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "게시물 리스트를 조회하는데 성공했습니다", postItemsResponse));
     }
 
     @PutMapping("/{id}")
