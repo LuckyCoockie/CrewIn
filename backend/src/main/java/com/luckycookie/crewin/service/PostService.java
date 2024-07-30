@@ -54,8 +54,7 @@ public class PostService {
                 .author(member)
                 .content(writePostRequest.getContent())
                 .isPublic(writePostRequest.getIsPublic())
-                .postType(PostType.valueOf(writePostRequest.getPostType())) // 문자열을 Enum으로 변환
-                .title(writePostRequest.getTitle())
+                .postType(PostType.STANDARD) // 문자열을 Enum으로 변환
                 .build();
 
         postRepository.save(post);
