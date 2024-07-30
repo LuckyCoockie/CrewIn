@@ -34,7 +34,7 @@ export const postMemberCheck = async (
   return response.data;
 };
 
-// 코드 확인
+// 인증 코드 확인
 
 export type MemberCodeCheckDto = {
   email: string;
