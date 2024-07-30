@@ -49,7 +49,7 @@ public class CourseService {
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
-        List<Course> courseList = courseRepository.findByCreatorId(member.getId());
+        List<Course> courseList = courseRepository.findByCreator(member);
         return courseList.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 

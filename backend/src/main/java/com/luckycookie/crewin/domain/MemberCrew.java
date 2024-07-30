@@ -48,4 +48,7 @@ public class MemberCrew {
         }
     }
 
+    public void updatePosition(Position position) {
+        this.position = position;
+    }
 }

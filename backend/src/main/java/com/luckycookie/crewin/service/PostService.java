@@ -8,6 +8,7 @@ import com.luckycookie.crewin.dto.PostResponse.PostItemsResponse;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
+import com.luckycookie.crewin.exception.memberCrew.NotFoundMemberCrewException;
 import com.luckycookie.crewin.exception.post.NotFoundPostException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
@@ -38,16 +39,22 @@ public class PostService {
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
-        Crew crew = crewRepository.findById(writePostRequest.getCrewId())
-                .orElseThrow(NotFoundCrewException::new);
+        Crew crew = null;
+        if (writePostRequest.getCrewId() != null) {
+            crew = crewRepository.findById(writePostRequest.getCrewId())
+                    .orElseThrow(NotFoundCrewException::new);
+
+            if (!memberCrewRepository.existsByMemberAndCrew(member, crew)) {
+                throw new NotFoundMemberCrewException();
+            }
+        }
 
         Post post = Post.builder()
                 .crew(crew)
                 .author(member)
                 .content(writePostRequest.getContent())
                 .isPublic(writePostRequest.getIsPublic())
-                .postType(PostType.valueOf(writePostRequest.getPostType())) // 문자열을 Enum으로 변환
-                .title(writePostRequest.getTitle())
+                .postType(PostType.STANDARD) // 문자열을 Enum으로 변환
                 .build();
 
         postRepository.save(post);
@@ -110,7 +117,9 @@ public class PostService {
     }
 
     private List<String> getPostImages(Long postId) {
-        List<PostImage> postImages = postImageRepository.findByPostId(postId);
+        Post post = postRepository.findById(postId).orElseThrow(NotFoundPostException::new);
+
+        List<PostImage> postImages = postImageRepository.findByPost(post);
         return postImages.stream().map(PostImage::getImageUrl).toList();
     }
 }

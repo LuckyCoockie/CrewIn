@@ -46,7 +46,7 @@ public class NotificationService {
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
-        List<Notification> notificationList = notificationRepository.findByReceiverId(member.getId());
+        List<Notification> notificationList = notificationRepository.findByReceiver(member);
 
         return notificationList.stream()
                 .map(notification -> NotificationResponse.builder()

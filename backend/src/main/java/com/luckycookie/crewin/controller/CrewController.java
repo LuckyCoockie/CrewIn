@@ -38,7 +38,7 @@ public class CrewController {
     // 전체 크루 조회 (크루 없는 사람)
     @GetMapping()
     public ResponseEntity<BaseResponse<CrewItemResponse>> getAllCrewList(@RequestParam int pageNo) {
-       return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "전체 크루 목록 조회를 성공했습니다.", crewService.getAllCrewList(pageNo)));
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "전체 크루 목록 조회를 성공했습니다.", crewService.getAllCrewList(pageNo)));
     }
 
     // 내가 속한 크루 조회 (크루원 / 비크루원)
@@ -50,9 +50,6 @@ public class CrewController {
     // 크루 공지 생성
     @PostMapping("/notice")
     public ResponseEntity<BaseResponse<Void>> createCrewNotice(@AuthenticationPrincipal CustomUser customUser, @RequestBody CrewRequest.CreateCrewNoticeRequest createCrewNoticeRequest) {
-        if(createCrewNoticeRequest.getNoticeImages().isEmpty()) {
-            throw new ImageRequiredException(); // 이미지 필수
-        }
         crewService.createCrewNotice(createCrewNoticeRequest, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 공지를 생성하는데 성공했습니다."));
     }
