@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../utils/instance";
 
 export type Point = { latitude: number; longitude: number };
 
@@ -10,8 +10,8 @@ export const directionApi = async (
 ): Promise<DirectionDto> => {
   const result: DirectionDto = { polyline: [], distance: 0 };
 
-  const response = await axios.post(
-    "http://limnyn.asuscomm.com:19980/tmap-pedestrian/",
+  const response = await api.post(
+    "/tmap-pedestrian/",
     {
       startX: start.longitude,
       startY: start.latitude,

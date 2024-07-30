@@ -11,22 +11,16 @@ import InfiniteScrollComponent from "../components/molecules/InfinityScrollMolec
 import PostItemComponent, {
   ItemComponentProps,
 } from "../components/templates/PostItemTemplate";
+import api from "../apis";
+import { PostDto } from "../apis/api/postlist";
 
-const fetchPostData = async (page: number): Promise<any[]> => {
-  const storedPostData = localStorage.getItem("postData");
-  if (storedPostData) {
-    const parsedData = JSON.parse(storedPostData);
-    if (Array.isArray(parsedData)) {
-      const pageSize = 10;
-      const startIndex = (page - 1) * pageSize;
-      const endIndex = startIndex + pageSize;
-      return parsedData.slice(startIndex, endIndex);
-    } else {
-      console.error("Parsed data is not an array");
-      return [];
-    }
-  } else {
-    console.error("No post data found in localStorage");
+const fetchPostData = async (page: number): Promise<PostDto[]> => {
+  try {
+    const result = await api.get(`/post?page=${page}`);
+    console.log(result.data); // 서버에서 받아온 데이터 확인
+    return result.data;
+  } catch (error) {
+    console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
     return [];
   }
 };
@@ -61,7 +55,7 @@ const PostMainPage: React.FC = () => {
         <InfiniteScrollComponent
           fetchKey="postData"
           fetchData={fetchPostData}
-          ItemComponent={(props: ItemComponentProps<any>) => (
+          ItemComponent={(props: ItemComponentProps<PostDto>) => (
             <PostItemComponent {...props} />
           )}
           className="post-list"
@@ -73,3 +67,4 @@ const PostMainPage: React.FC = () => {
 };
 
 export default PostMainPage;
+  

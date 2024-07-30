@@ -18,6 +18,7 @@ import SessionSearchPage from "./pages/SessionSearchPage.tsx";
 import CrewSearchPage from "./pages/CrewSearchPage.tsx";
 import FindPasswordPage from "./pages/FindPasswordPage.tsx";
 import NoticeCreatePage from "./pages/NoticeCreatePage.tsx";
+import { ProfileInfoPage } from "./pages/ProfileInfoPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -45,6 +46,7 @@ export const router = createBrowserRouter([
         ],
       },
       { path: "profile", element: <ProfilePage /> },
+      { path: "info", element: <ProfileInfoPage /> },
       { path: "course", element: <CourseCreatePage /> },
       { path: "post", element: <PostCreatePage /> },
       { path: "searchuser", element: <SearchUserPage /> },
