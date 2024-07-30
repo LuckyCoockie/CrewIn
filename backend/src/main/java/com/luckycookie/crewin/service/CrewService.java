@@ -1,6 +1,5 @@
 package com.luckycookie.crewin.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.NotificationType;
 import com.luckycookie.crewin.domain.enums.Position;
@@ -189,6 +188,17 @@ public class CrewService {
                     postImageRepository.save(postImage);
                 }
             }
+
+            // 작성자 제외한 멤버들에 대한 알림 생성
+            List<MemberCrew> memberCrewList = memberCrewRepository.findByCrewId(crew.getId());
+            for (MemberCrew memberCrew : memberCrewList) {
+                Member crewMember = memberCrew.getMember();
+                // 작성자 자신은 제외하고 크루원에게 알림을 생성
+                if (!crewMember.equals(member)) {
+                    notificationService.createNotification(NotificationType.NOTICE, crew.getId(), crewMember.getId(), post.getId());
+                }
+            }
+
         }
 
     }
@@ -418,7 +428,7 @@ public class CrewService {
             Optional<MemberCrew> memberCrew = memberCrewRepository.findByMemberIdAndCrewId(crewInvitedMemberRequest.getMemberId(), crewInvitedMemberRequest.getCrewId());
             if (memberCrew.isEmpty()) { // memberCrew 에 없을 때만 요청 보내기
                 memberCrewRepository.save(invitedMemberCrew);
-                notificationService.createNotification(NotificationType.INVITATION, crewInvitedMemberRequest.getCrewId(),crewInvitedMemberRequest.getMemberId());
+                notificationService.createNotification(NotificationType.INVITATION, crewInvitedMemberRequest.getCrewId(),crewInvitedMemberRequest.getMemberId(), null);
             } else {
                 // 이미 초대된 요청 입니다. Exception
                 throw new CrewDupulicateException();

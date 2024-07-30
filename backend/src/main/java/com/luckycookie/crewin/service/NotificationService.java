@@ -23,7 +23,7 @@ public class NotificationService {
     private final MemberRepository memberRepository;
     private final NotificationRepository notificationRepository;
 
-    public void createNotification(NotificationType notificationType, Long senderId, Long receiverId) {
+    public void createNotification(NotificationType notificationType, Long senderId, Long receiverId, Long postId) {
         Member receiver = memberRepository.findById(receiverId)
                 .orElseThrow(NotFoundMemberException::new);
 
@@ -33,6 +33,7 @@ public class NotificationService {
                         .isChecked(Boolean.FALSE)
                         .notificationType(notificationType)
                         .senderId(senderId)
+                        .postId(postId)
                         .receiver(receiver)
                         .build());
 
@@ -51,6 +52,7 @@ public class NotificationService {
                 .map(notification -> NotificationResponse.builder()
                         .isChecked(notification.getIsChecked())
                         .notificationType(notification.getNotificationType())
+                        .postId(notification.getPostId())
                         .senderId(notification.getSenderId())
                         .createdAt(notification.getCreatedAt())
                         .build())
