@@ -16,6 +16,6 @@ export type CourseInfoDto = {
 export const createCourse = async (
   dto: CreateCourseRequestDto
 ): Promise<void> => {
-  const response = await api.post<void>("/mypage/course", dto);
+  const response = await api.post<void>("/course", dto);
   return response.data;
 };
