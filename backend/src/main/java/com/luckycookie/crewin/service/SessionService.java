@@ -96,7 +96,7 @@ public class SessionService {
         if (session.getSessionType().equals(SessionType.STANDARD)) {
             Member member = memberRepository.findByEmail(customUser.getEmail())
                     .orElseThrow(NotFoundMemberException::new);
-            if (!memberCrewRepository.findIsJoinedByMemberIdAndCrewId(member, session.getCrew())
+            if (!memberCrewRepository.findIsJoinedByMemberAndCrew(member, session.getCrew())
                     .orElse(false)) {
                 throw new CrewMemberNotExistException();
             }

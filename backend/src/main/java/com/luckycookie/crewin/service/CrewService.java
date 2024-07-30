@@ -249,7 +249,7 @@ public class CrewService {
         // CAPTAIN 만 삭제 가능
         if (position == Position.CAPTAIN) {
             // MemberCrew 먼저 삭제
-            memberCrewRepository.deleteByCrewId(crew);
+            memberCrewRepository.deleteByCrew(crew);
 
             // Crew 삭제
             crewRepository.delete(crew);
@@ -481,14 +481,14 @@ public class CrewService {
         // 강퇴 당하는 사람 (MEMBER)
         Member member = memberRepository.findById(crewMemberRequest.getMemberId()).orElseThrow(NotFoundMemberException::new);
         Crew crew = crewRepository.findById(crewMemberRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
-        MemberCrew memberCrew = memberCrewRepository.findByMemberIdAndCrewId(member.getId(), crew.getId()).orElseThrow();
+        MemberCrew memberCrew = memberCrewRepository.findByMemberAndCrew(member, crew).orElseThrow(NotFoundMemberCrewException::new);
 
         // 강퇴 시키는 사람이 CAPTAIN 인지 확인
-        if(adminPosition == Position.CAPTAIN) {
+        if (adminPosition == Position.CAPTAIN) {
             // 강퇴 당하는 사람이 크루에 속해있는지 확인
-            if(memberCrew.getIsInvited() && memberCrew.getIsJoined()) { // 크루에 속해 있으면
+            if (memberCrew.getIsInvited() && memberCrew.getIsJoined()) { // 크루에 속해 있으면
                 // 강퇴 당하는 사람은 MEMBER
-                if(memberCrew.getPosition() == Position.MEMBER) {
+                if (memberCrew.getPosition() == Position.MEMBER) {
                     memberCrewRepository.delete(memberCrew); // 강퇴
                 } else {
                     throw new CrewMemberDeleteException();

@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,14 +16,14 @@ import java.util.Optional;
 public interface MemberCrewRepository extends JpaRepository<MemberCrew, Long> {
 
     @Query(value = "SELECT mc.isJoined FROM MemberCrew mc WHERE mc.member = :member AND mc.crew = :crew")
-    Optional<Boolean> findIsJoinedByMemberIdAndCrewId(Member member, Crew crew);
+    Optional<Boolean> findIsJoinedByMemberAndCrew(Member member, Crew crew);
 
     @Query("SELECT mc.position FROM MemberCrew mc WHERE mc.member = :member and mc.crew = :crew")
     Optional<Position> findPositionByMemberAndCrew(Member member, Crew crew);
 
     @Modifying
     @Query("DELETE FROM MemberCrew mc WHERE mc.crew = :crew")
-    void deleteByCrewId(Crew crew);
+    void deleteByCrew(Crew crew);
 
     Optional<MemberCrew> findByMemberAndCrew(Member member, Crew crew);
 
