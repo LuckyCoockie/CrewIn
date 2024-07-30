@@ -8,6 +8,7 @@ import com.luckycookie.crewin.dto.PostResponse.PostItemsResponse;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
+import com.luckycookie.crewin.exception.memberCrew.NotFoundMemberCrewException;
 import com.luckycookie.crewin.exception.post.NotFoundPostException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
@@ -38,8 +39,15 @@ public class PostService {
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
-        Crew crew = crewRepository.findById(writePostRequest.getCrewId())
-                .orElseThrow(NotFoundCrewException::new);
+        Crew crew = null;
+        if (writePostRequest.getCrewId() != null) {
+            crew = crewRepository.findById(writePostRequest.getCrewId())
+                    .orElseThrow(NotFoundCrewException::new);
+
+            if (!memberCrewRepository.existsByMemberAndCrew(member, crew)) {
+                throw new NotFoundMemberCrewException();
+            }
+        }
 
         Post post = Post.builder()
                 .crew(crew)

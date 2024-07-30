@@ -1,5 +1,6 @@
 package com.luckycookie.crewin.repository;
 
+import com.luckycookie.crewin.domain.Crew;
 import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.domain.MemberCrew;
 import com.luckycookie.crewin.domain.enums.Position;
@@ -32,6 +33,8 @@ public interface MemberCrewRepository extends JpaRepository<MemberCrew, Long> {
     void updatePosition(@Param("memberCrewId") Long memberCrewId, @Param("position") Position position);
 
     Optional<MemberCrew> findByMemberIdAndCrewId(Long memberId, Long crewId);
+
+    boolean existsByMemberAndCrew(Member member, Crew crew);
 
     // 해당 크루에 있는 크루원 조회
     List<MemberCrew> findByCrewId(Long crewId);
