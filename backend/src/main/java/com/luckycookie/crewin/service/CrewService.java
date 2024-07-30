@@ -331,6 +331,16 @@ public class CrewService {
         throw new CrewUnauthorizedException(); // 크루에 속해 있지 않다면 권한이 없는 것
     }
 
+    // 크루 사진첩 상세 조회
+//    @Transactional(readOnly = true)
+//    public CrewGalleryDetailItemResponse getCrewGalleryDetailList(Long crewId, Long postId, String direction, CustomUser customUser) {
+//        // 현재 로그인한 사용자
+//        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+//        Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
+//
+//        // 현재 로그인한 사용자가 해당 crew 에 포함되어 있는지 확인
+//    }
+
     public void updateNotice(Long noticeId, CreateCrewNoticeRequest createCrewNoticeRequest) {
         Post post = postRepository.findById(noticeId)
                 .orElseThrow(NotFoundPostException::new);
