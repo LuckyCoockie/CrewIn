@@ -26,6 +26,7 @@ public class CrewController {
 
     private final CrewService crewService;
 
+    // 크루 생성
     @PostMapping()
     public ResponseEntity<BaseResponse<CrewResponse.CrewCreateResponse>> createCrew(@AuthenticationPrincipal CustomUser customUser, @RequestBody CrewRequest.CreateCrewRequest createCrewRequest) {
         CrewResponse.CrewCreateResponse crewResponse = CrewResponse.CrewCreateResponse.builder()
@@ -153,5 +154,11 @@ public class CrewController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 초대를 응답하는데 성공했습니다."));
     }
 
+    // 크루 강퇴
+    @DeleteMapping("/member")
+    public ResponseEntity<BaseResponse<Void>> deleteCrewMember(@AuthenticationPrincipal CustomUser customUser, @RequestBody CrewMemberRequest crewMemberRequest) {
+        crewService.deleteCrewMember(customUser, crewMemberRequest);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루원을 강퇴하는데 성공했습니다."));
+    }
 
 }
