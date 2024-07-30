@@ -40,8 +40,8 @@ public class CrewController {
 
     // 내가 속한 크루 조회 (크루원 / 비크루원)
     @GetMapping("/my-crew")
-    public ResponseEntity<BaseResponse<CrewItemResponse>> getMyCrewList(@AuthenticationPrincipal CustomUser customUser,@RequestParam int pageNo) {
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "내가 속한 크루 목록 조회를 성공했습니다.", crewService.getMyCrewList(pageNo, customUser)));
+    public ResponseEntity<BaseResponse<CrewResponse.MyCrewItemResponse>> getMyCrewList(@AuthenticationPrincipal CustomUser customUser) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "내가 속한 크루 목록 조회를 성공했습니다.", crewService.getMyCrewList(customUser)));
     }
 
     // 크루 공지 생성

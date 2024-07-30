@@ -18,6 +18,7 @@ import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -73,6 +75,7 @@ public class CrewService {
 
     }
 
+    // 전체 크루 조회
     @Transactional(readOnly = true)
     public CrewItemResponse getAllCrewList(int pageNo) {
         Pageable pageable = PageRequest.of(pageNo, 10); // pageNo 페이지 번호, 10 : 페이지 크기
@@ -108,26 +111,14 @@ public class CrewService {
                 .build();
     }
 
+    // 내가 속한 크루 조회
     @Transactional(readOnly = true)
-    public CrewItemResponse getMyCrewList(int pageNo, CustomUser customUser) {
-        Pageable pageable = PageRequest.of(pageNo, 10); // pageNo 페이지 번호, 10 : 페이지 크기
-
-        Page<Crew> crewsPage;
-        List<Crew> crews;
-        int lastPageNo;
-
+    public MyCrewItemResponse getMyCrewList(CustomUser customUser) {
         // 사용자 정보 가져오기
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
-        // MemberCrewRepository에서 member.getId()로 crewId List를 반환
-        List<Long> crewIds = memberCrewRepository.findCrewIdsByMemberId(member.getId());
-
-        // crewId에 해당하는 Crew 들을 페이징 처리하여 조회
-        crewsPage = crewRepository.findByIdIn(crewIds, pageable);
-
-        crews = crewsPage.getContent();
-        lastPageNo = Math.max(crewsPage.getTotalPages() - 1, 0);
+        List<Crew> crews = memberCrewRepository.findCrewByMemberAndIsJoined(member);
 
         List<CrewItem> crewItems = crews.stream().map(crew -> {
             int crewCount = crewRepository.countMembersByCrewId(crew.getId());
@@ -144,21 +135,20 @@ public class CrewService {
                     .build();
         }).collect(Collectors.toList());
 
-        return CrewItemResponse.builder()
+        return MyCrewItemResponse.builder()
                 .crews(crewItems)
-                .pageNo(pageNo)
-                .lastPageNo(lastPageNo)
                 .build();
     }
+
 
     public void createCrewNotice(CreateCrewNoticeRequest createCrewNoticeRequest, CustomUser customUser) {
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
-        Crew crew = crewRepository.findById(createCrewNoticeRequest.getCrewId()).orElseThrow(() -> new NotFoundCrewException(createCrewNoticeRequest.getCrewId()));
+        Crew crew = crewRepository.findById(createCrewNoticeRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
 
         // 크루 공지는 Pacer 이상
-        Position position = memberCrewRepository.findPositionByMember(member, crew.getId()).orElseThrow(CrewPositionMismatchException::new);
+        Position position = memberCrewRepository.findPositionByMember(member, crew).orElseThrow(CrewPositionMismatchException::new);
 
         // MEMBER 가 아닐 때만
         if (position != Position.MEMBER) {
@@ -188,12 +178,13 @@ public class CrewService {
 
     }
 
+    @Transactional(readOnly = true)
     // 크루 정보 조회
     public CrewInfoItem getCrewInfo(Long crewId) {
 
         // 크루 정보 가져오기
         Crew crew = crewRepository.findById(crewId)
-                .orElseThrow(()->new NotFoundCrewException(crewId));
+                .orElseThrow(NotFoundCrewException::new);
 
         // 크루 인원 수 가져오기
         int crewCount = crewRepository.countMembersByCrewId(crewId);
@@ -216,12 +207,12 @@ public class CrewService {
 
     // 크루 정보 수정
     public void updateCrewInfo(Long crewId, CreateCrewRequest createCrewRequest, CustomUser customUser) {
-        Crew crew = crewRepository.findById(crewId).orElseThrow(()->new NotFoundCrewException(crewId));
+        Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
-        Position position = memberCrewRepository.findPositionByMember(member, crewId).orElseThrow(CrewPositionMismatchException::new);
+        Position position = memberCrewRepository.findPositionByMember(member, crew).orElseThrow(CrewPositionMismatchException::new);
 
         // CAPTAIN 만 수정 가능
         if(position == Position.CAPTAIN) {
@@ -233,17 +224,17 @@ public class CrewService {
 
     // 크루 정보 삭제
     public void deleteCrewInfo(Long crewId, CustomUser customUser) {
-        Crew crew = crewRepository.findById(crewId).orElseThrow(()->new NotFoundCrewException(crewId));
+        Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
-        Position position = memberCrewRepository.findPositionByMember(member, crewId).orElseThrow(CrewPositionMismatchException::new);
+        Position position = memberCrewRepository.findPositionByMember(member, crew).orElseThrow(CrewPositionMismatchException::new);
 
         // CAPTAIN 만 삭제 가능
         if(position == Position.CAPTAIN) {
             // MemberCrew 먼저 삭제
-            memberCrewRepository.deleteByCrewId(crewId);
+            memberCrewRepository.deleteByCrewId(crew);
 
             // Crew 삭제
             crewRepository.delete(crew);
@@ -253,6 +244,7 @@ public class CrewService {
     }
 
     // 공지사항 조회
+    @Transactional(readOnly = true)
     public CrewNoticeItemResponse getCrewNoticeList(int pageNo, Long crewId, CustomUser customUser) {
         Pageable pageable = PageRequest.of(pageNo, 5); // pageNo 페이지 번호, 5 : 페이지 크기
 
@@ -260,13 +252,13 @@ public class CrewService {
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
-        // 해당 멤버의 position
-        Position position = memberCrewRepository.findPositionByMember(member, crewId).orElseThrow(CrewPositionMismatchException::new);
+        Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
 
-        Crew crew = crewRepository.findById(crewId).orElseThrow(()->new NotFoundCrewException(crewId));
+        // 해당 멤버의 position
+        Position position = memberCrewRepository.findPositionByMember(member, crew).orElseThrow(CrewPositionMismatchException::new);
 
         // 해당 크루의 공지사항 게시물 가져오기
-        Page<Post> noticeListPage = postRepository.findByCrewIdAndPostType(crewId, PostType.NOTICE, pageable);
+        Page<Post> noticeListPage = postRepository.findByCrewAndPostType(crew, PostType.NOTICE, pageable);
         List<Post> noticeList = noticeListPage.getContent();
         int lastPageNo = Math.max(noticeListPage.getTotalPages() - 1, 0);
 
@@ -288,31 +280,42 @@ public class CrewService {
                 .build();
     }
 
+    // 크루 사진첩 조회
+    @Transactional(readOnly = true)
     public CrewGalleryItemResponse getCrewGalleryList(int pageNo, Long crewId, CustomUser customUser) {
         Pageable pageable = PageRequest.of(pageNo, 27); // 페이지 크기 : 27
 
-        // 해당 크루의 일반 게시물 가져오기
-        Page<Post> galleryListPage = postRepository.findByCrewIdAndPostType(crewId, PostType.STANDARD, pageable);
-        List<Post> galleryList = galleryListPage.getContent();
-        int lastPageNo = Math.max(galleryListPage.getTotalPages() - 1, 0);
+        // 현재 로그인 된 사용자 정보 가져오기
+        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
 
-        List<CrewResponse.CrewGalleryItem> crewGalleryItems = galleryList.stream().map(post -> {
-            return CrewResponse.CrewGalleryItem
+        // 크루 가져오기
+        Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
+
+        // 내가 그 크루에 속해있는지 확인 (크루에 속해있을 때 사진첩이 보여야 함)
+        MemberCrew memberCrew = memberCrewRepository.findByMemberIdAndCrewId(member.getId(), crewId).orElseThrow(NotFoundMemberCrewException::new);
+
+        // 해당 크루의 일반 게시물 가져오기
+        if(memberCrew != null) {
+            Page<Post> galleryListPage = postRepository.findByCrewAndPostType(crew, PostType.STANDARD, pageable);
+            List<Post> galleryList = galleryListPage.getContent();
+            int lastPageNo = Math.max(galleryListPage.getTotalPages() - 1, 0);
+
+            List<CrewGalleryItem> crewGalleryItems = galleryList.stream().map(post -> CrewGalleryItem
                     .builder()
                     .postId(post.getId())
-                    .imageUrls(post.getPostImages().stream().map(postImage ->
-                        postImage.getImageUrl()
+                    .imageUrls(post.getPostImages().stream().map(PostImage::getImageUrl
                     ).toList())
+                    .build()).collect(Collectors.toList());
+
+            return CrewGalleryItemResponse
+                    .builder()
+                    .crewGalleryList(crewGalleryItems)
+                    .pageNo(pageNo)
+                    .lastPageNo(lastPageNo)
                     .build();
-        }).collect(Collectors.toList());
+        }
 
-        return CrewGalleryItemResponse
-                .builder()
-                .crewGalleryList(crewGalleryItems)
-                .pageNo(pageNo)
-                .lastPageNo(lastPageNo)
-                .build();
-
+        throw new CrewUnauthorizedException(); // 크루에 속해 있지 않다면 권한이 없는 것
     }
 
     public void updateNotice(Long noticeId, CreateCrewNoticeRequest createCrewNoticeRequest) {
@@ -335,8 +338,10 @@ public class CrewService {
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
+        Crew crew = crewRepository.findById(updateCrewPositionRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
+
         // 요청한 사람의 position
-        Position position = memberCrewRepository.findPositionByMember(member, updateCrewPositionRequest.getCrewId()).orElseThrow(CrewUnauthorizedException::new);
+        Position position = memberCrewRepository.findPositionByMember(member, crew).orElseThrow(CrewUnauthorizedException::new);
 
         // 권한을 부여해야 할 사용자
         MemberCrew memberCrew = memberCrewRepository.findByMemberIdAndCrewId(updateCrewPositionRequest.getMemberId(), updateCrewPositionRequest.getCrewId()).orElseThrow(NotFoundMemberCrewException::new);
@@ -353,6 +358,7 @@ public class CrewService {
     // 크루원 조회 (일반, 대기 중 List 나눠서)
     // 일반 : isJoined (true), isInvited (true)
     // 대기 중 : isJoined (false), isInvited (true)
+    @Transactional(readOnly = true)
     public CrewMemberItemResponse getCrewMemberList(Long crewId) {
 
         // 해당 크루에 있는 크루원 조회
@@ -394,8 +400,8 @@ public class CrewService {
 
         // 요청자 (crewId)
         Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
-        Crew crew = crewRepository.findById(crewInvitedMemberRequest.getCrewId()).orElseThrow(() -> new NotFoundCrewException(crewInvitedMemberRequest.getCrewId()));
-        Position position = memberCrewRepository.findPositionByMember(member, crewInvitedMemberRequest.getCrewId()).orElseThrow(() -> new NotFoundCrewException(crewInvitedMemberRequest.getCrewId()));
+        Crew crew = crewRepository.findById(crewInvitedMemberRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
+        Position position = memberCrewRepository.findPositionByMember(member, crew).orElseThrow(NotFoundCrewException::new);
 
         // 초대 당한 사람 (memberId)
         Member invitedMember = memberRepository.findById(crewInvitedMemberRequest.getMemberId()).orElseThrow(NotFoundMemberException::new);
@@ -434,7 +440,7 @@ public class CrewService {
         }
 
         // 초대한 사람 (어떤 크루 인지 crewId)
-        Crew crew = crewRepository.findById(crewReplyMemberRequest.getCrewId()).orElseThrow(()-> new NotFoundCrewException(crewReplyMemberRequest.getCrewId()));
+        Crew crew = crewRepository.findById(crewReplyMemberRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
 
         MemberCrew memberCrew = memberCrewRepository.findByMemberIdAndCrewId(crewReplyMemberRequest.getMemberId(), crewReplyMemberRequest.getCrewId()).orElseThrow(NotFoundMemberCrewException::new);
 

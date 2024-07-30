@@ -49,6 +49,14 @@ public class CrewResponse {
     }
 
     @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class MyCrewItemResponse {
+        List<CrewItem> crews;
+    }
+
+    @Getter
     @AllArgsConstructor
     @NoArgsConstructor
     @SuperBuilder
