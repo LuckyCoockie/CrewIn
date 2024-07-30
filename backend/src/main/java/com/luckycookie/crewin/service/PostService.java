@@ -36,7 +36,7 @@ public class PostService {
                 .orElseThrow(NotFoundMemberException::new);
 
         Crew crew = crewRepository.findById(writePostRequest.getCrewId())
-                .orElseThrow(() -> new NotFoundCrewException(writePostRequest.getCrewId()));
+                .orElseThrow(NotFoundCrewException::new);
 
         Post post = Post.builder()
                 .crew(crew)
