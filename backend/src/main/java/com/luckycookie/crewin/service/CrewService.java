@@ -45,7 +45,7 @@ public class CrewService {
 
     private final NotificationService notificationService;
 
-    public void createCrew(CreateCrewRequest createCrewRequest, CustomUser customUser) {
+    public Crew createCrew(CreateCrewRequest createCrewRequest, CustomUser customUser) {
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
@@ -74,6 +74,8 @@ public class CrewService {
                 .build();
 
         memberCrewRepository.save(memberCrew);
+
+        return crew;
 
     }
 

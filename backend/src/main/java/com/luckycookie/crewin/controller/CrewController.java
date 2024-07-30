@@ -1,5 +1,6 @@
 package com.luckycookie.crewin.controller;
 
+import com.luckycookie.crewin.domain.Crew;
 import com.luckycookie.crewin.dto.CrewRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewMemberRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewReplyMemberRequest;
@@ -26,9 +27,11 @@ public class CrewController {
     private final CrewService crewService;
 
     @PostMapping()
-    public ResponseEntity<BaseResponse<Void>> createCrew(@AuthenticationPrincipal CustomUser customUser, @RequestBody CrewRequest.CreateCrewRequest createCrewRequest) {
-        crewService.createCrew(createCrewRequest, customUser);
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루를 생성하는데 성공했습니다."));
+    public ResponseEntity<BaseResponse<CrewResponse.CrewCreateResponse>> createCrew(@AuthenticationPrincipal CustomUser customUser, @RequestBody CrewRequest.CreateCrewRequest createCrewRequest) {
+        CrewResponse.CrewCreateResponse crewResponse = CrewResponse.CrewCreateResponse.builder()
+                .crewId(crewService.createCrew(createCrewRequest, customUser).getId())
+                .build();
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루를 생성하는데 성공했습니다.", crewResponse));
     }
 
     // 전체 크루 조회 (크루 없는 사람)
