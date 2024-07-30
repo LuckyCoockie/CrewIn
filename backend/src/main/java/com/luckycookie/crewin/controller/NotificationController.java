@@ -8,9 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,4 +26,17 @@ public class NotificationController {
                 , notificationService.getMemberNotifications(customUser))
         );
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse<Void>> deleteNotification(@AuthenticationPrincipal CustomUser customUser, @PathVariable("id") Long notificationId) {
+        try {
+            notificationService.deleteNotification(customUser, notificationId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            String errorMessage = notificationId + "번 알림 삭제를 실패했습니다." + e.getMessage();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(BaseResponse.create(HttpStatus.BAD_REQUEST.value(), errorMessage));
+        }
+    }
+
 }
