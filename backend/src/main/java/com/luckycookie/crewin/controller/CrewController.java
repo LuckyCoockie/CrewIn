@@ -1,8 +1,7 @@
 package com.luckycookie.crewin.controller;
 
-import com.luckycookie.crewin.domain.Crew;
 import com.luckycookie.crewin.dto.CrewRequest;
-import com.luckycookie.crewin.dto.CrewRequest.CrewInvitedMemberRequest;
+import com.luckycookie.crewin.dto.CrewRequest.CrewMemberRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewReplyMemberRequest;
 import com.luckycookie.crewin.dto.CrewRequest.UpdateCrewPositionRequest;
 import com.luckycookie.crewin.dto.CrewResponse;
@@ -139,8 +138,8 @@ public class CrewController {
 
     // 크루원 초대
     @PostMapping("/member/invitation")
-    public ResponseEntity<BaseResponse<Void>> invitedCrewMember(@AuthenticationPrincipal CustomUser customUser, @RequestBody CrewInvitedMemberRequest crewInvitedMemberRequest) {
-        crewService.inviteCrewMember(customUser, crewInvitedMemberRequest);
+    public ResponseEntity<BaseResponse<Void>> invitedCrewMember(@AuthenticationPrincipal CustomUser customUser, @RequestBody CrewMemberRequest crewMemberRequest) {
+        crewService.inviteCrewMember(customUser, crewMemberRequest);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "새로운 크루를 초대하는데 성공했습니다."));
     }
 

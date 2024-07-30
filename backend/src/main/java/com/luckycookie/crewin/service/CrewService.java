@@ -6,7 +6,7 @@ import com.luckycookie.crewin.domain.enums.PostType;
 import com.luckycookie.crewin.dto.CrewRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CreateCrewNoticeRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CreateCrewRequest;
-import com.luckycookie.crewin.dto.CrewRequest.CrewInvitedMemberRequest;
+import com.luckycookie.crewin.dto.CrewRequest.CrewMemberRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewReplyMemberRequest;
 import com.luckycookie.crewin.dto.CrewResponse;
 import com.luckycookie.crewin.dto.CrewResponse.*;
@@ -16,7 +16,6 @@ import com.luckycookie.crewin.exception.memberCrew.NotFoundMemberCrewException;
 import com.luckycookie.crewin.exception.post.NotFoundPostException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -148,7 +147,7 @@ public class CrewService {
         Crew crew = crewRepository.findById(createCrewNoticeRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
 
         // 크루 공지는 Pacer 이상
-        Position position = memberCrewRepository.findPositionByMember(member, crew).orElseThrow(CrewPositionMismatchException::new);
+        Position position = memberCrewRepository.findPositionByMemberAndCrew(member, crew).orElseThrow(CrewPositionMismatchException::new);
 
         // MEMBER 가 아닐 때만
         if (position != Position.MEMBER) {
@@ -212,7 +211,7 @@ public class CrewService {
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
-        Position position = memberCrewRepository.findPositionByMember(member, crew).orElseThrow(CrewPositionMismatchException::new);
+        Position position = memberCrewRepository.findPositionByMemberAndCrew(member, crew).orElseThrow(CrewPositionMismatchException::new);
 
         // CAPTAIN 만 수정 가능
         if(position == Position.CAPTAIN) {
@@ -229,7 +228,7 @@ public class CrewService {
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
-        Position position = memberCrewRepository.findPositionByMember(member, crew).orElseThrow(CrewPositionMismatchException::new);
+        Position position = memberCrewRepository.findPositionByMemberAndCrew(member, crew).orElseThrow(CrewPositionMismatchException::new);
 
         // CAPTAIN 만 삭제 가능
         if(position == Position.CAPTAIN) {
@@ -255,7 +254,7 @@ public class CrewService {
         Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
 
         // 해당 멤버의 position
-        Position position = memberCrewRepository.findPositionByMember(member, crew).orElseThrow(CrewPositionMismatchException::new);
+        Position position = memberCrewRepository.findPositionByMemberAndCrew(member, crew).orElseThrow(CrewPositionMismatchException::new);
 
         // 해당 크루의 공지사항 게시물 가져오기
         Page<Post> noticeListPage = postRepository.findByCrewAndPostType(crew, PostType.NOTICE, pageable);
@@ -341,7 +340,7 @@ public class CrewService {
         Crew crew = crewRepository.findById(updateCrewPositionRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
 
         // 요청한 사람의 position
-        Position position = memberCrewRepository.findPositionByMember(member, crew).orElseThrow(CrewUnauthorizedException::new);
+        Position position = memberCrewRepository.findPositionByMemberAndCrew(member, crew).orElseThrow(CrewUnauthorizedException::new);
 
         // 권한을 부여해야 할 사용자
         MemberCrew memberCrew = memberCrewRepository.findByMemberIdAndCrewId(updateCrewPositionRequest.getMemberId(), updateCrewPositionRequest.getCrewId()).orElseThrow(NotFoundMemberCrewException::new);
@@ -396,15 +395,15 @@ public class CrewService {
     }
 
     // 크루 초대
-    public void inviteCrewMember(CustomUser customUser, CrewInvitedMemberRequest crewInvitedMemberRequest) {
+    public void inviteCrewMember(CustomUser customUser, CrewMemberRequest crewMemberRequest) {
 
         // 요청자 (crewId)
         Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
-        Crew crew = crewRepository.findById(crewInvitedMemberRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
-        Position position = memberCrewRepository.findPositionByMember(member, crew).orElseThrow(NotFoundCrewException::new);
+        Crew crew = crewRepository.findById(crewMemberRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
+        Position position = memberCrewRepository.findPositionByMemberAndCrew(member, crew).orElseThrow(NotFoundCrewException::new);
 
         // 초대 당한 사람 (memberId)
-        Member invitedMember = memberRepository.findById(crewInvitedMemberRequest.getMemberId()).orElseThrow(NotFoundMemberException::new);
+        Member invitedMember = memberRepository.findById(crewMemberRequest.getMemberId()).orElseThrow(NotFoundMemberException::new);
 
         MemberCrew invitedMemberCrew = MemberCrew
                 .builder()
@@ -417,7 +416,7 @@ public class CrewService {
 
         if(position == Position.CAPTAIN) {
             // 초대 하면 회원 크루에 넣기 (이미 초대 요청이 보내진 멤버한테는 초대 요청을 보내면 안됨)
-            Optional<MemberCrew> memberCrew = memberCrewRepository.findByMemberIdAndCrewId(crewInvitedMemberRequest.getMemberId(), crewInvitedMemberRequest.getCrewId());
+            Optional<MemberCrew> memberCrew = memberCrewRepository.findByMemberIdAndCrewId(crewMemberRequest.getMemberId(), crewMemberRequest.getCrewId());
             if(memberCrew.isEmpty()) { // memberCrew 에 없을 때만 요청 보내기
                 memberCrewRepository.save(invitedMemberCrew);
             } else {
@@ -454,5 +453,20 @@ public class CrewService {
         }
 
     }
+
+    // 크루 강퇴
+//    public void deleteCrewMember(CustomUser customUser, CrewMemberRequest crewMemberRequest) {
+//        // 강퇴 시키는 사람 (CAPTAIN)
+//        Member admin = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+//        Crew adminCrew = crewRepository.findById(crewMemberRequest.getCrewId()).orElseThrow(NotFoundMemberException::new);
+//        Position adminPosition = memberCrewRepository.findPositionByMemberAndCrew(admin, adminCrew)
+//
+//        // 강퇴 당하는 사람 (MEMBER)
+//        Member member = memberRepository.findById(crewMemberRequest.getMemberId()).orElseThrow(NotFoundMemberException::new);
+//        Crew crew = crewRepository.findById(crewMemberRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
+//
+//        // 강퇴 당하는 사람이 크루에 속해있는지 확인
+//
+//    }
 
 }

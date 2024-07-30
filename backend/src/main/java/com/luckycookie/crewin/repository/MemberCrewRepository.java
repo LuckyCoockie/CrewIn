@@ -22,7 +22,7 @@ public interface MemberCrewRepository extends JpaRepository<MemberCrew, Long> {
     Optional<Boolean> findIsJoinedByMemberIdAndCrewId(@Param("memberId") Long memberId, @Param("crewId") Long crewId);
 
     @Query("SELECT mc.position FROM MemberCrew mc WHERE mc.member = :member and mc.crew = :crew")
-    Optional<Position> findPositionByMember(@Param("member") Member member, @Param("crew") Crew crew);
+    Optional<Position> findPositionByMemberAndCrew(@Param("member") Member member, @Param("crew") Crew crew);
 
     @Modifying
     @Query("DELETE FROM MemberCrew mc WHERE mc.crew = :crew")
