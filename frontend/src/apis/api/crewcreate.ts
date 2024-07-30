@@ -1,14 +1,14 @@
 import api from "../utils/instance";
 
 export type CrewCreateDto = {
-  crew_name : string;
+  name: string;
   slogan: string;
   area: string;
   introduction: string;
-  main_logo: string;
-  sub_logo: string;
+  mainLogo: string;
+  subLogo: string;
   banner: string;
-  crew_birth: string;
+  crewBirth: string;
 };
 
 export type GetCrewCreateRequestDto = CrewCreateDto;

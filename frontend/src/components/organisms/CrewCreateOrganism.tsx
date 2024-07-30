@@ -92,18 +92,18 @@ const CrewCreatePage: React.FC = () => {
           return `${year}-${month}-${day}`;
         };
         const submitData: CrewCreateDto = {
-          crew_name: data.crew_name,
+          name: data.crew_name,
           slogan: data.slogan,
           area: data.city + data.district,
           introduction: data.introduction,
-          crew_birth: formatDate(data.crewcreatedat!),
-          main_logo: mainLogoImageUrl!,
-          sub_logo: subLogoImageUrl!,
+          crewBirth: formatDate(data.crewcreatedat!),
+          mainLogo: mainLogoImageUrl!,
+          subLogo: subLogoImageUrl!,
           banner: bannerImageUrl!,
         };
 
         console.log(submitData);
-        // 여기에 제출 API 호출 코드 추가
+        // 제출 API
         return postCreateCrew(submitData); // 제출 API 호출
       })
       .then(() => {
