@@ -15,7 +15,6 @@ import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 
 import {
   CrewCreateDto,
-  // GetCrewCreateRequestDto,
   postCreateCrew,
 } from "../../apis/api/crewcreate";
 
@@ -79,6 +78,7 @@ const CrewCreatePage: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
+    
     Promise.all([
       checkUndefined(data.main_logo),
       checkUndefined(data.sub_logo),
@@ -92,19 +92,18 @@ const CrewCreatePage: React.FC = () => {
           return `${year}-${month}-${day}`;
         };
         const submitData: CrewCreateDto = {
-          crew_name: data.crew_name,
+          name: data.crew_name,
           slogan: data.slogan,
           area: data.city + data.district,
           introduction: data.introduction,
-          crew_birth: formatDate(data.crewcreatedat!),
-          main_logo: mainLogoImageUrl!,
-          sub_logo: subLogoImageUrl!,
+          crewBirth: formatDate(data.crewcreatedat!),
+          mainLogo: mainLogoImageUrl!,
+          subLogo: subLogoImageUrl!,
           banner: bannerImageUrl!,
         };
-        console.log(data.crewcreatedat);
 
         console.log(submitData);
-        // 여기에 제출 API 호출 코드 추가
+        // 제출 API
         return postCreateCrew(submitData); // 제출 API 호출
       })
       .then(() => {
@@ -239,6 +238,9 @@ const CrewCreatePage: React.FC = () => {
                   title="메인로고"
                   placeholder="1:1 비율이 가장 적합합니다."
                   {...field}
+                  onChange={(e) => {
+                    setValue("main_logo", e.target.files![0]);
+                  }}
                 />
               )}
             />
@@ -253,6 +255,9 @@ const CrewCreatePage: React.FC = () => {
                   title="서브로고"
                   placeholder="1:1 비율이 가장 적합합니다."
                   {...field}
+                  onChange={(e) => {
+                    setValue("sub_logo", e.target.files![0]);
+                  }}
                 />
               )}
             />
@@ -267,6 +272,9 @@ const CrewCreatePage: React.FC = () => {
                   title="배너"
                   placeholder="3:2 비율이 가장 적합합니다."
                   {...field}
+                  onChange={(e) => {
+                    setValue("banner", e.target.files![0]);
+                  }}
                 />
               )}
             />
