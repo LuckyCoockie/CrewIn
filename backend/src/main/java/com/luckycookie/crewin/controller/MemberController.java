@@ -73,6 +73,7 @@ public class MemberController {
     @PostMapping("/reissue")
     public ResponseEntity<BaseResponse<TokenResponse>> reissue(@CookieValue(value = "refreshToken") Cookie cookie, HttpServletRequest request) {
         String refreshToken = cookie.getValue();
+        log.info("refreshToken: {}", refreshToken);
         Token token = memberService.reissue(refreshToken, request);
         ResponseCookie responseCookie = ResponseCookie.from("refreshToken", token.getRefreshToken()).httpOnly(true)
                 .secure(true).maxAge(Duration.ofDays(7L)).build();
