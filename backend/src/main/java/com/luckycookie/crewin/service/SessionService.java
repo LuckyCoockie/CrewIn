@@ -38,7 +38,8 @@ public class SessionService {
 
     public void createSession(SessionRequest.CreateSessionRequest createSessionRequest, CustomUser customUser) {
 
-        if (createSessionRequest.getStartAt().isAfter(createSessionRequest.getEndAt())) {
+        if (createSessionRequest.getStartAt().isAfter(createSessionRequest.getEndAt()) ||
+                createSessionRequest.getStartAt().isBefore(LocalDateTime.now())) {
             throw new InvalidSessionException();
         }
 
