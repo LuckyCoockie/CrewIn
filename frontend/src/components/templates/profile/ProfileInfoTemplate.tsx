@@ -96,6 +96,7 @@ export const ProfileInfoTemplate = ({
       )}
       {isEditNicknameModalOpen && (
         <EditNicknameOrganism
+          init={data}
           onClose={handleCloseEditNicknameModal}
           onEdit={onNicknameEdit}
         />
