@@ -40,7 +40,7 @@ public class PostService {
                 .orElseThrow(NotFoundMemberException::new);
 
         Crew crew = null;
-        if (writePostRequest.getCrewId() != null) {
+        if (writePostRequest.getCrewId() != null && writePostRequest.getCrewId() != 0) {
             crew = crewRepository.findById(writePostRequest.getCrewId())
                     .orElseThrow(NotFoundCrewException::new);
 

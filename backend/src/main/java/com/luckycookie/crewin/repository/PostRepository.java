@@ -16,7 +16,7 @@ import java.util.Optional;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    @Query("SELECT p from Post p JOIN FETCH p.crew JOIN FETCH p.author WHERE p.isPublic = TRUE OR p.crew.id IN :crews ORDER BY p.createdAt DESC, p.id DESC")
+    @Query("SELECT p from Post p JOIN FETCH p.author WHERE (p.isPublic = true) OR (p.crew.id IN :crews) ORDER BY p.createdAt DESC, p.id DESC")
     Page<Post> findPublicPostsSortedByCreatedAt(List<Long> crews, Pageable pageable);
 
     @Query("SELECT p FROM Post p WHERE p.crew = :crew AND p.postType = :postType ORDER BY p.createdAt DESC")
