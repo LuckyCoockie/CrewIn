@@ -34,6 +34,7 @@ public class SessionService {
     private final CourseRepository courseRepository;
     private final SessionRepository sessionRepository;
     private final SessionPosterRepository sessionPosterRepository;
+    private final SessionQueryRepository sessionQueryRepository;
 
     public void createSession(SessionRequest.CreateSessionRequest createSessionRequest, CustomUser customUser) {
 
@@ -75,12 +76,6 @@ public class SessionService {
                 sessionPosterRepository.save(sessionPoster);
             }
         }
-    }
-
-    public List<SessionResponse> getSessionsByType(SessionType sessionType) {
-        List<Session> sessions = sessionRepository.findUpcomingSessionsByType(sessionType);
-        return sessions.stream().map(this::convertToSessionResponse).collect(Collectors.toList());
-
     }
 
     public List<SessionResponse> getSessionsByCrewName(String crewName) {
@@ -193,8 +188,9 @@ public class SessionService {
                 .build();
     }
 
-    public List<SessionResponse> getAllSessions() {
-        List<Session> sessions = sessionRepository.findAll();
+    public List<SessionResponse> getSessionsByStatusAndType(String status, SessionType sessionType) {
+        List<Session> sessions = sessionQueryRepository.findSessionsByStatusAndType(status, sessionType);
         return sessions.stream().map(this::convertToSessionResponse).collect(Collectors.toList());
     }
+
 }
