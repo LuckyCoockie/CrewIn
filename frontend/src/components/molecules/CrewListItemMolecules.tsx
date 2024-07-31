@@ -3,6 +3,10 @@ import "../../styles/square.css";
 import { IconTextComponent } from "../atoms/text/IconText";
 import React from "react";
 
+import captainImage from "../../assets/icons/captain.png";
+import locationImage from "../../assets/icons/location.png";
+import peopleImage from "../../assets/icons/people.png";
+
 interface OwnProps {
   imageUrl: string;
   title: string;
@@ -75,18 +79,9 @@ const CrewListItem = ({
           </div>
         </div>
         <div className="mt-1">
-          <IconTextComponent
-            icon="./src/assets/icons/captain.png"
-            text={captain}
-          />
-          <IconTextComponent
-            icon="./src/assets/icons/location.png"
-            text={location}
-          />
-          <IconTextComponent
-            icon="./src/assets/icons/people.png"
-            text={`${peopleCount}명`}
-          />
+          <IconTextComponent icon={captainImage} text={captain} />
+          <IconTextComponent icon={locationImage} text={location} />
+          <IconTextComponent icon={peopleImage} text={`${peopleCount}명`} />
         </div>
       </div>
     </div>
