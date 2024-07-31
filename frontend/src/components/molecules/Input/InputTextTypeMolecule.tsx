@@ -11,7 +11,8 @@ type InputData = {
   onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
   name: string;
   hasError?: boolean;
-  disabled? : boolean
+  disabled?: boolean;
+  value?: string;
 };
 
 const InputTextTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
@@ -28,6 +29,7 @@ const InputTextTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
           ref={ref}
           hasError={props.hasError}
           disabled={props.disabled}
+          value={props.value}
         />
         {props.error && (
           <p className="ps-4 pt-1 text-sm font-light text-red-500">
