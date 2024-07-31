@@ -1,0 +1,82 @@
+pipeline {
+    agent any
+    tools {
+        nodejs 'node 20.2.0'
+    }
+    environment {
+        DIST_PATH = 'frontend/dist/**/*'
+        REMOVE_PREFIX = 'frontend/dist'
+        HOST_PATH = 'dev/crewin/react/build/dist'
+        DOCKER_CONTAINER_NAME = 'crewin_nginx'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Prepare Config') {
+            steps {
+                withCredentials([file(credentialsId: 'crewin-front-env', variable: 'CONFIG_FILE')]) {
+                    sh '''
+                        chmod -R 755 frontend
+                        cp $CONFIG_FILE frontend/.env
+                    '''
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                script {
+                    sh '''
+                        cd frontend
+                        npm install
+                        npm run build
+                        chmod -R 755 dist
+                        ls -al dist
+                    '''
+                }
+            }
+        }
+        stage('Transfer') {
+            steps {
+                script {
+                    sh '''
+                        cd frontend/dist
+                        ls -la
+                    ''' // 파일이 빌드 디렉토리에 존재하는지 확인
+                }
+                sshPublisher(
+                    publishers: [
+                        sshPublisherDesc(
+                            configName: 'Gumi-Server',
+                            transfers: [
+                                sshTransfer(
+                                    sourceFiles: "${DIST_PATH}",
+                                    removePrefix: "${REMOVE_PREFIX}",
+                                    remoteDirectory: "${HOST_PATH}",
+                                )
+                            ],
+                            usePromotionTimestamp: false,
+                            alwaysPublishFromMaster: false
+                        )
+                    ]
+                )
+            }
+        }
+        stage('Deploy') {
+            steps {
+                script {
+                    sh "docker restart ${DOCKER_CONTAINER_NAME}"
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo '파이프라인 작업 완료'
+        }
+    }
+}
