@@ -6,6 +6,7 @@ import React from "react";
 import captainImage from "../../assets/icons/captain.png";
 import locationImage from "../../assets/icons/location.png";
 import peopleImage from "../../assets/icons/people.png";
+import crewInLogoImage from "../../assets/images/crewinlogo.png";
 
 interface OwnProps {
   imageUrl: string;
@@ -56,7 +57,7 @@ const CrewListItem = ({
         ) : (
           <img
             alt="crew image"
-            src={"./src/assets/images/crewinlogo.png"}
+            src={crewInLogoImage}
             className="rounded-full b border xs:border-2 border-white w-full"
           />
         )}

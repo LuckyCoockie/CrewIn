@@ -18,6 +18,7 @@ type OwnProps = {
 };
 
 const SessionListComponent: React.FC<OwnProps> = ({ fetchData }) => {
+  // TODO : 들어올때 type=all로 바로가게
   const [type, setType] = useState<SessionRequestType>("all");
   const handelTypeChange = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -36,8 +37,8 @@ const SessionListComponent: React.FC<OwnProps> = ({ fetchData }) => {
   });
 
   return (
-    <div>
-      <div className="mb-3 xs:mb-5">
+    <>
+      <div className="mb-3 xs:mb-5 w-full">
         <DropdownTypeComponent
           id="sessionpaceminutes"
           options={Object.values(SessionRequestTypeData).map((type) => ({
@@ -60,7 +61,7 @@ const SessionListComponent: React.FC<OwnProps> = ({ fetchData }) => {
           />
         )}
       </GridListComponent>
-    </div>
+    </>
   );
 };
 
