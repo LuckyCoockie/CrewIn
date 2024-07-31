@@ -7,11 +7,7 @@ const CrewSearchPage: React.FC = () => {
     return (await getCrewList({ pageNo: page })).crews;
   }, []);
 
-  return (
-    <main>
-      <CrewListTemplate fetchData={fetchData} />
-    </main>
-  );
+  return <CrewListTemplate fetchData={fetchData} />;
 };
 
 export default CrewSearchPage;

@@ -1,7 +1,5 @@
 import api from "../index";
 
-export type GetPostListRequestDto = {};
-
 export type PostDto = {
   id: number;
   authorName: string;
