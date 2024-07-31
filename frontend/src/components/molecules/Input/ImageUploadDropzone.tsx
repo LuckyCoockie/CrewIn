@@ -12,7 +12,7 @@ const ImageUploadDropzone: React.FC<ImageUploadDropzoneProps> = ({
   return (
     <Dropzone onDrop={onDrop}>
       {({ getRootProps, getInputProps }) => (
-        <section className="my-3">
+        <section>
           <div
             {...getRootProps()}
             style={{
