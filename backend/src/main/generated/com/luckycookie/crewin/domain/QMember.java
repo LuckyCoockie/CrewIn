@@ -35,6 +35,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final EnumPath<com.luckycookie.crewin.domain.enums.Role> role = createEnum("role", com.luckycookie.crewin.domain.enums.Role.class);
 
+    public final NumberPath<Integer> totalAttendance = createNumber("totalAttendance", Integer.class);
+
     public final NumberPath<Integer> totalDistance = createNumber("totalDistance", Integer.class);
 
     public final NumberPath<Integer> totalTime = createNumber("totalTime", Integer.class);
