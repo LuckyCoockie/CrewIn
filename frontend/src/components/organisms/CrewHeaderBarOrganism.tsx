@@ -1,37 +1,41 @@
 import React from "react";
+import { useQuery } from "react-query";
 import ListButtonmolecule from "../molecules/List/ListButtonmolecule";
-import black from "../../assets/testimage/black.png";
-import blue from "../../assets/testimage/blue.png";
-import green from "../../assets/testimage/green.png";
-import orange from "../../assets/testimage/orange.png";
-import purple from "../../assets/testimage/purple.png";
-import red from "../../assets/testimage/red.png";
-import sky from "../../assets/testimage/sky.png";
-import yellow from "../../assets/testimage/yellow.png";
 import crewlistplus from "../../assets/images/crewlistplus.png";
+import { getMyCrews, CrewDto } from "../../apis/api/mycrew";
+
+// React Query로 데이터를 fetch하는 함수
+const fetchMyCrews = async () => {
+  const response = await getMyCrews();
+  console.log(response);
+  return response;
+};
 
 const CrewHeaderBarOrganism: React.FC = () => {
-  const crewList = [
-    { src: black, name: "black" },
-    { src: blue, name: "blue" },
-    { src: green, name: "green" },
-    { src: orange, name: "orange" },
-    { src: purple, name: "purple" },
-    { src: red, name: "red" },
-    { src: sky, name: "sky" },
-    { src: yellow, name: "yellow" },
-  ];
+  const {
+    data: crewList,
+    error,
+    isLoading,
+  } = useQuery<CrewDto[]>("crews", fetchMyCrews);
+
+  if (isLoading) {
+    return <div>로딩 중...</div>;
+  }
+
+  if (error) {
+    return <div>크루 목록을 불러오는 데 실패했습니다.</div>;
+  }
 
   return (
     <div>
       <div
         className="whitespace-nowrap overflow-x-auto flex items-center space-x-3"
         style={{
-          msOverflowStyle: "none", 
-          scrollbarWidth: "none", 
+          msOverflowStyle: "none",
+          scrollbarWidth: "none",
         }}
       >
-        {/*횡 스크롤바 삭제 */}
+        {/* 횡 스크롤바 삭제 */}
         <style>
           {`
             .whitespace-nowrap::-webkit-scrollbar {
@@ -40,13 +44,13 @@ const CrewHeaderBarOrganism: React.FC = () => {
           `}
         </style>
         <ListButtonmolecule src={crewlistplus} alt="plus" text="더보기" />
-        {crewList.map((crew, index) => {
+        {crewList?.map((crew) => {
           return (
             <ListButtonmolecule
-              key={index}
-              src={crew.src}
-              alt={crew.name}
-              text={crew.name}
+              key={crew.crewId}
+              src={crew.imageUrl}
+              alt={crew.crewName}
+              text={crew.crewName}
             />
           );
         })}
