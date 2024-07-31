@@ -11,11 +11,7 @@ export type CrewDto = {
 };
 
 export type GetMyCrewsResponseDto = {
-  statusCode: number;
-  message: string;
-  data: {
-    crews: CrewDto[];
-  };
+  crews: CrewDto[];
 };
 
 export const getMyCrews = async (): Promise<GetMyCrewsResponseDto> => {

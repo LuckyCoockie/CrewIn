@@ -16,9 +16,9 @@ import { PostDto } from "../apis/api/postlist";
 
 const fetchPostData = async (page: number): Promise<PostDto[]> => {
   try {
-    const result = await api.get(`/post?page=${page}`);
-    console.log(result.data); // 서버에서 받아온 데이터 확인
-    return result.data;
+    const result = await api.get(`/post?pageNo=${page - 1}`);
+    console.log(result.data.postItemList);
+    return result.data.postItemList;
   } catch (error) {
     console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
     return [];
@@ -67,4 +67,3 @@ const PostMainPage: React.FC = () => {
 };
 
 export default PostMainPage;
-  
