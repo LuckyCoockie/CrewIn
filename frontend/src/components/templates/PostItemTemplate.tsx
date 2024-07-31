@@ -20,6 +20,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     heartCount,
     isHearted,
   } = data;
+
   const [likes, setLikes] = useState<number>(heartCount);
   const [isHeartedState, setIsHeartedState] = useState<boolean>(isHearted);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -64,27 +65,29 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
       <UserProfileBar
         profileImage={crewinLogo}
         username={authorName}
-        timeAgo="3시간 전" // 이 부분은 데이터에 맞게 수정 필요
+        timeAgo="3시간 전"
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
-      <Carousel
-        showThumbs={false}
-        showIndicators={true}
-        showStatus={false}
-        infiniteLoop={false}
-        autoPlay={false}
-      >
-        {croppedImages.map((image, index) => (
-          <div key={index}>
-            <img
-              src={image}
-              alt={`Cropped ${index}`}
-              style={{ width: "100%", height: "auto" }}
-            />
-          </div>
-        ))}
-      </Carousel>
+      {croppedImages && croppedImages.length > 0 && (
+        <Carousel
+          showThumbs={false}
+          showIndicators={true}
+          showStatus={false}
+          infiniteLoop={false}
+          autoPlay={false}
+        >
+          {croppedImages.map((image, index) => (
+            <div key={index}>
+              <img
+                src={image}
+                alt={`Cropped ${index}`}
+                style={{ width: "100%", height: "auto" }}
+              />
+            </div>
+          ))}
+        </Carousel>
+      )}
       <div className="flex items-center mt-2">
         <button onClick={handleLike} className="flex items-center ml-3">
           <img

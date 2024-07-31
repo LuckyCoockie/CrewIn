@@ -22,6 +22,10 @@ export type GetPostListResponseDto = PostDto[];
 export const getPostList = async (
   dto: GetPostListRequestDto
 ): Promise<GetPostListResponseDto> => {
-  const response = await api.get(`/post`);
-  return response.data;
+  const response = await api.get("/post", { params: dto });
+  if (response.status === 200) {
+    return response.data;
+  } else {
+    throw new Error(`Error fetching post list: ${response.statusText}`);
+  }
 };
