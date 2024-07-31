@@ -23,8 +23,9 @@ public class SessionController {
 
     private final SessionService sessionService;
 
+    // 세션 생성
     @PostMapping()
-    public ResponseEntity<BaseResponse<Void>> createPost(@RequestBody SessionRequest.CreateSessionRequest createSessionRequest, @AuthenticationPrincipal CustomUser customUser) {
+    public ResponseEntity<BaseResponse<Void>> createSession(@RequestBody SessionRequest.CreateSessionRequest createSessionRequest, @AuthenticationPrincipal CustomUser customUser) {
         sessionService.createSession(createSessionRequest, customUser);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
