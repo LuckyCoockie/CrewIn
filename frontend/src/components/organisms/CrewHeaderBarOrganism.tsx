@@ -7,8 +7,7 @@ import { getMyCrews, CrewDto } from "../../apis/api/mycrew";
 // React Query로 데이터를 fetch하는 함수
 const fetchMyCrews = async () => {
   const response = await getMyCrews();
-  console.log(response);
-  return response;
+  return response.crews;
 };
 
 const CrewHeaderBarOrganism: React.FC = () => {
@@ -43,10 +42,17 @@ const CrewHeaderBarOrganism: React.FC = () => {
             }
           `}
         </style>
-        <ListButtonmolecule src={crewlistplus} alt="plus" text="더보기" />
+        <ListButtonmolecule
+          src={crewlistplus}
+          alt="plus"
+          text="더보기"
+          router="/crew"
+        />
         {crewList?.map((crew) => {
           return (
             <ListButtonmolecule
+              router="/crew/detail"
+              routerId={crew.crewId}
               key={crew.crewId}
               src={crew.imageUrl}
               alt={crew.crewName}

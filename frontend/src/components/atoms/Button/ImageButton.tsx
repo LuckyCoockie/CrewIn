@@ -1,13 +1,22 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 type Image = {
   src: string;
   alt: string;
+  // string은 Tab 이동을 의미, number면 crew Id 혹은 session Id를 의미
+  router?: string;
+  routerId?: number;
 };
 
-const ImageButton: React.FC<Image> = ({ src, alt }) => {
+const ImageButton: React.FC<Image> = ({ src, alt, router, routerId }) => {
+  const navigate = useNavigate();
   const handleClickButton = () => {
-    console.log(`${alt}버튼 클릭`);
+    if (routerId === undefined && router) {
+      navigate(router);
+    } else {
+      navigate(`${router}/${routerId}`);
+    }
   };
   return (
     <button
@@ -20,7 +29,7 @@ const ImageButton: React.FC<Image> = ({ src, alt }) => {
         background: "none",
         cursor: "pointer",
       }}
-      className="transition-transform duration-300 ease-in-out transform active:scale-90" 
+      className="transition-transform duration-300 ease-in-out transform active:scale-90"
     >
       <img
         src={src}
