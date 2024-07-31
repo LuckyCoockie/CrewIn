@@ -3,7 +3,7 @@ import api from "../utils/instance";
 // 크루 정보
 export type CrewInfoDto = {
   id: number;
-  name: string;
+  crewName: string;
   slogan: string;
   area: string;
   crewCount: number;
