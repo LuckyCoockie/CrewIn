@@ -19,38 +19,45 @@ import CrewSearchPage from "./pages/CrewSearchPage.tsx";
 import FindPasswordPage from "./pages/FindPasswordPage.tsx";
 import NoticeCreatePage from "./pages/NoticeCreatePage.tsx";
 import { ProfileInfoPage } from "./pages/ProfileInfoPage.tsx";
+import ProtectedRoute from "./util/router/ProtectedPage.tsx";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
-      { path: "home", element: <PostMainPage /> },
       {
-        path: "session",
-        element: <SessionPage />,
+        path: "",
+        element: <ProtectedRoute />,
         children: [
-          { path: "", element: <SessionSearchPage /> },
-          { path: "create", element: <SessionCreatePage /> },
-          { path: "detail/:sessionId", element: <SessionDetailPage /> },
+          { path: "home", element: <PostMainPage /> },
+          {
+            path: "session",
+            element: <SessionPage />,
+            children: [
+              { path: "", element: <SessionSearchPage /> },
+              { path: "create", element: <SessionCreatePage /> },
+              { path: "detail/:sessionId", element: <SessionDetailPage /> },
+            ],
+          },
+          {
+            path: "crew",
+            element: <CrewPage />,
+            children: [
+              { path: "", element: <CrewSearchPage /> },
+              { path: "create", element: <CrewCreatePage /> },
+              { path: "detail/:crewId", element: <CrewDetailPage /> },
+              { path: "noticecreate", element: <NoticeCreatePage /> },
+            ],
+          },
+          { path: "profile", element: <ProfilePage /> },
+          { path: "info", element: <ProfileInfoPage /> },
+          { path: "course", element: <CourseCreatePage /> },
+          { path: "post", element: <PostCreatePage /> },
+          { path: "searchuser", element: <SearchUserPage /> },
+          { path: "alarm", element: <AlarmPage /> },
         ],
       },
-      {
-        path: "crew",
-        element: <CrewPage />,
-        children: [
-          { path: "", element: <CrewSearchPage /> },
-          { path: "create", element: <CrewCreatePage /> },
-          { path: "detail/:crewId", element: <CrewDetailPage /> },
-          { path: "noticecreate", element: <NoticeCreatePage /> },
-        ],
-      },
-      { path: "profile", element: <ProfilePage /> },
-      { path: "info", element: <ProfileInfoPage /> },
-      { path: "course", element: <CourseCreatePage /> },
-      { path: "post", element: <PostCreatePage /> },
-      { path: "searchuser", element: <SearchUserPage /> },
-      { path: "alarm", element: <AlarmPage /> },
       { path: "login", element: <LoginPage /> },
       { path: "join", element: <JoinPage /> },
       { path: "find-password", element: <FindPasswordPage /> },
