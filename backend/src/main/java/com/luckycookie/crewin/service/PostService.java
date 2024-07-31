@@ -88,8 +88,6 @@ public class PostService {
         PageRequest pageRequest = PageRequest.of(pageNo, 10);
         Member viewer = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
         List<MemberCrew> crews = memberCrewRepository.findJoinedMemberCrewsByMember(viewer);
-        log.info("pageNo: {}", pageNo);
-        log.info("page: {}", pageRequest);
         Page<Post> postListPage = postRepository.findPublicPostsSortedByCreatedAt(
                 crews.stream().map(mc -> mc.getCrew().getId()).collect(Collectors.toList()), pageRequest
         );
@@ -97,6 +95,8 @@ public class PostService {
         List<Post> postList = postListPage.getContent();
         int lastPageNo = Math.max(postListPage.getTotalPages() - 1, 0);
 
+        log.info("post : {}", postList.get(0).getContent());
+        log.info("images : {}", postList.get(0).getPostImages().isEmpty());
         List<PostItem> postItems = postList.stream().map(post -> PostItem.builder()
                 .id(post.getId())
                 .authorName(post.getAuthor().getName())
@@ -106,6 +106,7 @@ public class PostService {
                 .isHearted(heartRepository.existsByPostAndMember(post, viewer))
                 .isPublic(post.getIsPublic())
                 .postType(post.getPostType())
+                .postImages(post.getPostImages().stream().map(PostImage::getImageUrl).toList())
                 .title(post.getTitle())
                 .build()).toList();
 

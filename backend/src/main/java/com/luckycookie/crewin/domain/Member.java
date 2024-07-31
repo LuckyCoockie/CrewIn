@@ -42,6 +42,8 @@ public class Member {
 
     private int totalTime;
 
+    private int totalAttendance;
+
     public void changePassword(String newPassword){
         this.password = newPassword;
     }
