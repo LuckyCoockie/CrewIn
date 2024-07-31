@@ -1,14 +1,13 @@
 package com.luckycookie.crewin.controller;
 
-import com.luckycookie.crewin.domain.Crew;
 import com.luckycookie.crewin.dto.CrewRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewMemberRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewReplyMemberRequest;
 import com.luckycookie.crewin.dto.CrewRequest.UpdateCrewPositionRequest;
 import com.luckycookie.crewin.dto.CrewResponse;
 import com.luckycookie.crewin.dto.CrewResponse.CrewItemResponse;
+import com.luckycookie.crewin.dto.PostResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
-import com.luckycookie.crewin.exception.post.ImageRequiredException;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.CrewService;
 import lombok.RequiredArgsConstructor;
@@ -158,4 +157,12 @@ public class CrewController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루원을 강퇴하는데 성공했습니다."));
     }
 
+    // 크루 공지 상세 조회
+    @GetMapping("/notice")
+    public ResponseEntity<BaseResponse<PostResponse.PostItem>> getNoticeDetail(
+            @RequestParam("crew-id") Long crewId,
+            @RequestParam("notice-id") Long noticeId,
+            @AuthenticationPrincipal CustomUser customUser) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당 공지 상세 조회를 성공했습니다.", crewService.getNoticeDetail(customUser, crewId, noticeId)));
+    }
 }

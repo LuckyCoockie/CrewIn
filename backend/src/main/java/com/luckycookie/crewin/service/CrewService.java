@@ -11,6 +11,7 @@ import com.luckycookie.crewin.dto.CrewRequest.CrewMemberRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewReplyMemberRequest;
 import com.luckycookie.crewin.dto.CrewResponse;
 import com.luckycookie.crewin.dto.CrewResponse.*;
+import com.luckycookie.crewin.dto.PostResponse;
 import com.luckycookie.crewin.exception.crew.*;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.memberCrew.NotFoundMemberCrewException;
@@ -44,6 +45,8 @@ public class CrewService {
     private final PostImageRepository postImageRepository;
 
     private final NotificationService notificationService;
+    private final HeartRepository heartRepository;
+
 
     public Crew createCrew(CreateCrewRequest createCrewRequest, CustomUser customUser) {
 
@@ -501,4 +504,40 @@ public class CrewService {
         }
     }
 
+    //크루 공지 디테일
+    public PostResponse.PostItem getNoticeDetail(CustomUser customUser, Long crewId, Long noticeId) {
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(NotFoundCrewException::new);
+        memberCrewRepository.findByMemberAndCrew(member,crew)
+                .orElseThrow(NotFoundMemberCrewException::new);
+        Post post = postRepository.findById(noticeId)
+                .orElseThrow(NotFoundPostException::new);
+        if (!post.getPostType().equals(PostType.NOTICE)) {
+            throw new NotFoundPostException();
+        }
+
+        Boolean isHeartCheck = heartRepository.existsByPostAndMember(post, member);
+
+        List<String> imageUrls = postImageRepository.findByPost(post).stream()
+                .map(PostImage::getImageUrl)
+                .collect(Collectors.toList());
+
+         return PostResponse.PostItem.builder()
+                .id(post.getId())
+                .authorName(post.getAuthor().getName())
+                .authorId(post.getAuthor().getId())
+                .content(post.getContent())
+                .heartCount(post.getHearts().size())
+                .isHearted(isHeartCheck)
+                .isPublic(post.getIsPublic())
+                .postType(post.getPostType())
+                .title(post.getTitle())
+                .createdAt(post.getCreatedAt())
+                .updatedAt(post.getUpdatedAt())
+                .postImages(imageUrls)
+                .build();
+
+    }
 }
