@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import "../../styles/square.css";
 import React from "react";
+import sessionLogoImage from "../../assets/images/sessionLogo.png";
 
 interface OwnProps {
   crewName: string;
@@ -58,7 +59,7 @@ const SessionListItem = ({ crewName, area, date, imageUrl }: OwnProps) => {
         ) : (
           <img
             alt="crew image"
-            src={"./src/assets/images/crewinlogo.png"}
+            src={sessionLogoImage}
             className="b border xs:border-2 border-white w-full"
           />
         )}
