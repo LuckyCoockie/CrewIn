@@ -24,6 +24,6 @@ public class SearchController {
                                                                      @RequestParam String query,
                                                                      @RequestParam(defaultValue = "0") int pageNo) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당 크루 검색 결과 조회를 성공했습니다."
-                ,searchService.searchCrew(query, pageNo)));
+                ,searchService.searchCrew(query, pageNo, customUser)));
     }
 }
