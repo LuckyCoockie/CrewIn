@@ -5,7 +5,10 @@ type Text = {
 };
 
 const ImageButtonTitle: React.FC<Text> = ({ text }) => {
-  return <p className="text-center text-sm font-normal">{text}</p>;
+  const truncatedText = text.length > 5 ? `${text.slice(0, 5)}...` : text;
+  return (
+    <span className="text-center text-sm font-normal">{truncatedText}</span>
+  );
 };
 
 export default ImageButtonTitle;

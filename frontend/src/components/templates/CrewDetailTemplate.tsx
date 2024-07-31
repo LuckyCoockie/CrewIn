@@ -33,7 +33,7 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
   fetchGalleryData,
 }) => {
   const [currentTab, setCurrentTab] = useState<string>("정보");
-  const crewId = 2;
+  const crewId = 1;
   const pageNo = 0;
 
   // 크루 정보를 가져오는 React Query 훅
@@ -94,7 +94,7 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
       case "정보":
         return infoData ? (
           <CrewInfoOrganism
-            crewname={infoData.name}
+            crewname={infoData.crewName}
             captain={infoData.captainName}
             slogan={infoData.slogan}
             area={infoData.area}
@@ -116,7 +116,7 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
       default:
         return infoData ? (
           <CrewInfoOrganism
-            crewname={infoData.name}
+            crewname={infoData.crewName}
             captain={infoData.captainName}
             slogan={infoData.slogan}
             area={infoData.area}
@@ -137,7 +137,7 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
       <CrewHeaderBarOrganism />
       <header>
         <BackHeaderMediumOrganism
-          text={infoData ? infoData.name : "Loading..."}
+          text={infoData ? infoData.crewName : "Loading..."}
         />
       </header>
       <ThreeToTwoImageMolecule
