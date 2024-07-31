@@ -43,16 +43,26 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
   const cropperRefs = useRef<(ReactCropperElement | null)[]>([]);
 
   useEffect(() => {
-    const fetchCrews = async () => {
+    (async () => {
       try {
         const response = await getMyCrews();
-        setCrews(response.data.crews);
+        setCrews(response.crews);
+        if (response.crews.length > 0) {
+          setCrewId(response.crews[0].crewId);
+        }
       } catch (error) {
-        console.error("크루 목록 조회 오류:", error);
+        console.error("내가 속한 크루 조회 오류:", error);
       }
-    };
-    fetchCrews();
+    })();
   }, []);
+
+  useEffect(() => {
+    if (isPublic && crews.length > 0) {
+      setCrewId(0);
+    } else if (!isPublic && crews.length > 0) {
+      setCrewId(crews[0].crewId);
+    }
+  }, [isPublic, crews]);
 
   const handleDrop = (acceptedFiles: File[]) => {
     const allowedTypes = ["image/png", "image/jpeg"];
@@ -243,44 +253,42 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
           />
         </div>
 
-        {isPublic === false && (
-          <div className="w-60">
-            <InputDropdonwTypeMolecule
-              id="crewId"
-              title=""
-              options={crews.map((crew) => ({
-                label: crew.crewName,
-                value: crew.crewId,
-              }))}
-              value={crewId}
-              onChange={(e) => setCrewId(Number(e.target.value))}
-              text="크루 선택"
-              hasError={false}
-            />
-          </div>
-        )}
-      </div>
-
-      <div className="w-full">
-        <div className="mb-6">
-          <InputTextAreaNoLimitTypeMolecule
-            id="content"
-            title="내용"
-            name="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="내용을 입력하세요"
+        <div className="w-60">
+          <InputDropdonwTypeMolecule
+            id="crewId"
+            title=""
+            options={crews.map((crew) => ({
+              label: crew.crewName,
+              value: crew.crewId,
+            }))}
+            value={crewId}
+            onChange={(e) => setCrewId(Number(e.target.value))}
+            text={isPublic == true ? "크루 선택" : ""}
             hasError={false}
           />
         </div>
       </div>
 
+      <div className="w-full mb-6">
+        <InputTextAreaNoLimitTypeMolecule
+          id="content"
+          title="내용"
+          name="content"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="내용을 입력하세요"
+          hasError={false}
+        />
+      </div>
+
       <button
         onClick={handlePost}
         className={`w-full bg-[#2b2f40e6] py-4 px-8 text-center rounded-lg ${
-          !isCropped ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+          !isCropped || (!isPublic && crewId === 0)
+            ? "opacity-50 cursor-not-allowed"
+            : "cursor-pointer"
         } text-white font-bold`}
-        disabled={!isCropped}
+        disabled={!isCropped || (!isPublic && crewId === 0)}
       >
         작성
       </button>
