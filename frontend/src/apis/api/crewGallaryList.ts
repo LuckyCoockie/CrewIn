@@ -17,7 +17,7 @@ export type PostDto = {
 
 export type GetCrewGalleryListDetailReqeustParams = {
   postId: number;
-  direction: "increase" | "decrease" | "both";
+  direction: "increase" | "decrease";
   offset: number;
 };
 

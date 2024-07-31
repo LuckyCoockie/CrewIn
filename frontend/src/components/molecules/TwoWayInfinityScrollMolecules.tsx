@@ -3,7 +3,7 @@ import { useInfiniteQuery } from "react-query";
 
 type fetchParams = {
   postId: number;
-  direction: "increase" | "decrease" | "both";
+  direction: "increase" | "decrease";
   offset: number;
 };
 
@@ -41,7 +41,7 @@ const TwoWayInfiniteScrollComponent = <T extends { id: number }>({
     ({
       pageParam = {
         postId: postId,
-        direction: "both",
+        direction: "decrease",
         offset: 5,
       },
     }) => fetchData(pageParam),
