@@ -8,6 +8,7 @@ type InputData = {
   name: string;
   hasError?: boolean;
   disabled?: boolean;
+  value?: string;
 };
 
 const InputTextTypeComponent = forwardRef<HTMLInputElement, InputData>(
@@ -26,6 +27,7 @@ const InputTextTypeComponent = forwardRef<HTMLInputElement, InputData>(
         }`}
         ref={ref}
         disabled={props.disabled}
+        value={props.value}
       />
     );
   }
