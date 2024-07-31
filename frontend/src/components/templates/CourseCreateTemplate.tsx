@@ -14,18 +14,20 @@ import { useCallback, useRef } from "react";
 import html2canvas from "html2canvas";
 import canvg from "canvg";
 
-import { Point, directionApiWithWayPoints } from "../../util/maps/tmap/api";
+import {
+  Point,
+  directionApiWithWayPoints,
+} from "../../util/maps/tmap/apis/api/directionApi";
 import {
   addPolyline,
   clearPolyline,
   moveToCenter,
   useNaverMapDispatch,
 } from "../../util/maps/naver_map/context";
-import { uploadImage } from "../../apis/api/presigned";
 
 type OwnProps = {
   initPosition: Point;
-  onSave: ({ polylines, markers, title, image }: FormValues) => void;
+  onSave: ({ polylines, markers, title, image }: FormValues) => Promise<void>;
 };
 
 type FormValues = {
@@ -33,7 +35,7 @@ type FormValues = {
   markers: Point[];
   polylines?: Point[][];
   length?: number;
-  image?: string;
+  image?: File;
 };
 
 const CourseCreateTemplate: React.FC<OwnProps> = ({
@@ -70,7 +72,7 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
         .required()
     ),
     length: yup.number(),
-    image: yup.string(),
+    image: yup.mixed(),
   });
 
   const dispatch = useNaverMapDispatch();
@@ -132,7 +134,7 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
   );
 
   const setImage = useCallback(
-    (image: string) => {
+    (image: File) => {
       setValue("image", image);
     },
     [setValue]
@@ -175,12 +177,7 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
 
       canvas.toBlob(
         async (blob) => {
-          // TODO : upload file
-          if (blob) {
-            const file = new File([blob], "temp.png");
-            const imageUrl = await uploadImage(file);
-            setImage(imageUrl);
-          }
+          if (blob) setImage(new File([blob], "temp.png"));
         },
         "image/png",
         1

@@ -15,6 +15,7 @@ import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import ImageUploadDropzone from "../molecules/Input/ImageUploadDropzone";
 import { createPost } from "../../apis/api/postcreate";
 import { getMyCrews, CrewDto } from "../../apis/api/mycrew";
+import { uploadImage } from "../../apis/api/presigned";
 
 interface ImageCropProps {
   onComplete: (
@@ -29,7 +30,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
   const navigate = useNavigate();
   const [imagePaths, setImagePaths] = useState<string[]>([]);
   const [cropAspectRatio] = useState<number>(1);
-  const [postImages, setPostImages] = useState<string[]>([]);
+  const [croppedImages, setCroppedImages] = useState<string[]>([]);
   const [originalCroppedImages, setOriginalCroppedImages] = useState<string[]>(
     []
   );
@@ -71,17 +72,17 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
     );
 
     const tempImagePaths: string[] = [];
-    const tempPostImages: string[] = [];
+    const tempOriginalCroppedImages: string[] = [];
 
     filteredFiles.forEach((file) => {
       const tempImagePath = URL.createObjectURL(file);
       tempImagePaths.push(tempImagePath);
-      tempPostImages.push(tempImagePath);
+      tempOriginalCroppedImages.push(tempImagePath);
     });
 
     setImagePaths(tempImagePaths);
-    setPostImages(tempPostImages);
-    setOriginalCroppedImages(tempImagePaths);
+    setCroppedImages(tempImagePaths); // Save as cropped images initially
+    setOriginalCroppedImages(tempOriginalCroppedImages);
     setIsCropped(false);
   };
 
@@ -90,8 +91,8 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
     if (cropperRef && cropperRef.cropper) {
       const cropper = cropperRef.cropper;
       const croppedCanvas = cropper.getCroppedCanvas({
-        width: 360,
-        height: 360,
+        // width: 360,
+        // height: 360,
         fillColor: "#fff",
         imageSmoothingEnabled: true,
         imageSmoothingQuality: "high",
@@ -99,10 +100,10 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
 
       if (croppedCanvas) {
         croppedCanvas.toBlob(
-          (blob: Blob | null) => {
+          async (blob: Blob | null) => {
             if (blob) {
               const croppedImageUrl = URL.createObjectURL(blob);
-              setPostImages((prevImages) => {
+              setCroppedImages((prevImages) => {
                 const newImages = [...prevImages];
                 newImages[index] = croppedImageUrl;
                 return newImages;
@@ -115,7 +116,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
             }
           },
           "image/jpeg",
-          0.8
+          1.0
         );
       }
     }
@@ -130,7 +131,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
 
   const handleFinishEdit = (finalImage: string) => {
     if (currentEditIndex !== null) {
-      setPostImages((prevImages) => {
+      setCroppedImages((prevImages) => {
         const newImages = [...prevImages];
         newImages[currentEditIndex] = finalImage;
         return newImages;
@@ -140,19 +141,28 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
   };
 
   const handlePost = async () => {
-    const postData = {
-      postImages,
-      crewId,
-      isPublic,
-      content,
-    };
-
-    console.log("작성할 데이터:", postData);
-
     try {
+      const uploadedImages = await Promise.all(
+        croppedImages.map(async (imageUrl) => {
+          const response = await fetch(imageUrl);
+          const blob = await response.blob();
+          const file = new File([blob], "image.png", { type: blob.type });
+          return uploadImage(file);
+        })
+      );
+
+      const postData = {
+        crewId: isPublic ? 0 : crewId,
+        content,
+        isPublic,
+        postImages: uploadedImages,
+      };
+
+      console.log("작성할 데이터:", postData);
+
       const response = await createPost(postData);
       console.log("서버 응답:", response);
-      onComplete(postImages, crewId, isPublic, content);
+      onComplete(uploadedImages, crewId, isPublic, content);
       navigate("/home", { state: postData });
     } catch (error) {
       console.error("게시글 작성 오류:", error);
@@ -198,7 +208,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
                     <>
                       <div>
                         <img
-                          src={postImages[index]}
+                          src={croppedImages[index]}
                           alt={`Cropped ${index}`}
                           style={{ width: 360, height: 360 }}
                         />
@@ -263,7 +273,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
             }))}
             value={crewId}
             onChange={(e) => setCrewId(Number(e.target.value))}
-            text={isPublic == true ? "크루 선택" : ""}
+            text={isPublic ? "크루 선택" : ""}
             hasError={false}
           />
         </div>
