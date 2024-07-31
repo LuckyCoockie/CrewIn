@@ -1,6 +1,7 @@
 package com.luckycookie.crewin.controller;
 
 import com.luckycookie.crewin.dto.CrewResponse.CrewItemResponse;
+import com.luckycookie.crewin.dto.MemberResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.SearchService;
@@ -25,5 +26,13 @@ public class SearchController {
                                                                      @RequestParam(defaultValue = "0") int pageNo) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당 크루 검색 결과 조회를 성공했습니다."
                 ,searchService.searchCrew(query, pageNo, customUser)));
+    }
+
+    @GetMapping("/member")
+    public ResponseEntity<BaseResponse<MemberResponse.MemberSearchResponse>> searchMember(@AuthenticationPrincipal CustomUser customUser,
+                                                                                        @RequestParam String query,
+                                                                                        @RequestParam(defaultValue = "0") int pageNo) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당 멤버 검색 결과 조회를 성공했습니다."
+                ,searchService.searchMember(query, pageNo, customUser)));
     }
 }
