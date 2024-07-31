@@ -162,7 +162,7 @@ public class SessionService {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(NotFoundSessionException::new);
 
-        if (session.getStartAt().isAfter(LocalDateTime.now())) {
+        if (session.getStartAt().isBefore(LocalDateTime.now())) {
             throw new SessionInProgressException();
         }
 
