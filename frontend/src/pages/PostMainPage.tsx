@@ -18,7 +18,7 @@ const fetchPostData = async (page: number): Promise<PostDto[]> => {
   try {
     return [];
     const result = await api.get(`/post?pageNo=${page - 1}`);
-    console.log(result.data.postItemList);
+    console.log("Fetched post data:", result.data.postItemList);
     return result.data.postItemList;
   } catch (error) {
     console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
