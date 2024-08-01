@@ -107,6 +107,8 @@ public class PostService {
                 .isPublic(post.getIsPublic())
                 .postType(post.getPostType())
                 .postImages(post.getPostImages().stream().map(PostImage::getImageUrl).toList())
+                .createdAt(post.getCreatedAt())
+                .updatedAt(post.getUpdatedAt())
                 .title(post.getTitle())
                 .build()).toList();
 

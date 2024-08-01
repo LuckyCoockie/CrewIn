@@ -14,7 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedHeaders("*", "X-PINGOTHER")
+                .allowedHeaders("*")
                 .exposedHeaders("*")
                 .allowedOrigins(frontURL) // 허용할 출처
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD") // 허용할 HTTP method
@@ -23,7 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
 
         // 로컬 테스트 허용
         registry.addMapping("/**")
-                .allowedHeaders("*", "X-PINGOTHER")
+                .allowedHeaders("*")
                 .exposedHeaders("*")
                 .allowedOrigins("http://localhost:5173") // 허용할 출처
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD") // 허용할 HTTP method
