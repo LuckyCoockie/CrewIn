@@ -16,8 +16,6 @@ import { PWAInstallPrompt } from "../components/templates/PWAInstallPrompt";
 
 const fetchPostData = async (page: number): Promise<PostDto[]> => {
   try {
-    // TODO : return []; 빼기
-    return [];
     const result = await api.get(`/post?pageNo=${page - 1}`);
     console.log("Fetched post data:", result.data.postItemList);
     return result.data.postItemList;
