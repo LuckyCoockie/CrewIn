@@ -153,7 +153,7 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
         src={infoData ? infoData.imageUrl : ""}
         alt="crewbanner"
       />
-      <div className="pb-12">
+      <div>
         <NavTabMolecule
           texts={texts}
           onTabClick={handleTabClick}

@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "./App";
 import CrewCreatePage from "./pages/CrewCreatePage";
 import PostCreatePage from "./pages/PostCreatePage";
@@ -13,13 +13,23 @@ import SessionDetailPage from "./pages/SessionDetailPage";
 import PostMainPage from "./pages/PostMainPage";
 import SearchUserPage from "./pages/SearchUserPage";
 import CrewDetailPage from "./pages/CrewDetailPage";
-import AlarmPage from "./pages/AlarmPage.tsx";
-import SessionSearchPage from "./pages/SessionSearchPage.tsx";
-import CrewSearchPage from "./pages/CrewSearchPage.tsx";
-import FindPasswordPage from "./pages/FindPasswordPage.tsx";
-import NoticeCreatePage from "./pages/NoticeCreatePage.tsx";
-import { ProfileInfoPage } from "./pages/ProfileInfoPage.tsx";
-import MemberSearchPage from "./pages/MemberSearchPage.tsx";
+import AlarmPage from "./pages/AlarmPage";
+import SessionSearchPage from "./pages/SessionSearchPage";
+import CrewSearchPage from "./pages/CrewSearchPage";
+import FindPasswordPage from "./pages/FindPasswordPage";
+import NoticeCreatePage from "./pages/NoticeCreatePage";
+import { ProfileInfoPage } from "./pages/ProfileInfoPage";
+import MemberSearchPage from "./pages/MemberSearchPage";
+import { getMyCrews } from "./apis/api/mycrew";
+
+const loader = async () => {
+  const response = await getMyCrews();
+  if (response.crews.length > 0) {
+    return <Navigate to={`/crew/detail/${response.crews[0].crewId}`} />;
+  } else {
+    return <CrewSearchPage />;
+  }
+};
 
 export const router = createBrowserRouter([
   {
@@ -40,7 +50,7 @@ export const router = createBrowserRouter([
         path: "crew",
         element: <CrewPage />,
         children: [
-          { path: "", element: <CrewSearchPage /> },
+          { path: "", element: <CrewSearchPage />, loader }, // 조건부 로더 설정
           { path: "create", element: <CrewCreatePage /> },
           { path: "detail/:crewId", element: <CrewDetailPage /> },
           { path: "noticecreate", element: <NoticeCreatePage /> },
