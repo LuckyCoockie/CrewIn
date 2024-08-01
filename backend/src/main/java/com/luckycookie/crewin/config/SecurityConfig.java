@@ -47,23 +47,18 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint)
                         .accessDeniedHandler(jwtAccessDeniedHandler))
                 .addFilterBefore(new JwtFilter(tokenUtil, memberRepository), UsernamePasswordAuthenticationFilter.class)
-                .cors(Customizer.withDefaults())
-//                .authorizeHttpRequests((a) -> {
-//                    a.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-//                            .requestMatchers("/member/signup/**").permitAll()
-//                            .requestMatchers("/member/check-email").permitAll()
-//                            .requestMatchers("/member/check-nickname").permitAll()
-//                            .requestMatchers("/member/email").permitAll()
-//                            .requestMatchers("/member/login").permitAll()
-//                            .requestMatchers("/member/reissue").permitAll()
-//                            .requestMatchers("/member/email").permitAll() // 이메일(id) 찾기
-//                            .requestMatchers(HttpMethod.POST, "/member/password").permitAll() // 임시 비밀번호 발급만 접근 허용
-//                            .anyRequest().authenticated();
-//                });
-                .authorizeHttpRequests(a ->
-                        a.requestMatchers("/**").permitAll()
-                                .anyRequest().authenticated()
-                );
+                .authorizeHttpRequests((a) -> {
+                    a.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                            .requestMatchers("/member/signup/**").permitAll()
+                            .requestMatchers("/member/check-email").permitAll()
+                            .requestMatchers("/member/check-nickname").permitAll()
+                            .requestMatchers("/member/email").permitAll()
+                            .requestMatchers("/member/login").permitAll()
+                            .requestMatchers("/member/reissue").permitAll()
+                            .requestMatchers("/member/email").permitAll() // 이메일(id) 찾기
+                            .requestMatchers(HttpMethod.POST, "/member/password").permitAll() // 임시 비밀번호 발급만 접근 허용
+                            .anyRequest().authenticated();
+                });
 
         return http.build();
     }
