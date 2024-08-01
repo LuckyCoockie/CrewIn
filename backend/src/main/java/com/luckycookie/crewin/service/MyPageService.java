@@ -4,9 +4,12 @@ import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.domain.Session;
 import com.luckycookie.crewin.domain.SessionPoster;
 import com.luckycookie.crewin.dto.MyPageRequest.UpdateProfileRequest;
+import com.luckycookie.crewin.dto.MyPageRequest.MyPageNicknameRequest;
 import com.luckycookie.crewin.dto.MyPageResponse.MyPageSessionItem;
 import com.luckycookie.crewin.dto.MyPageResponse.MyPageSessionResponse;
 import com.luckycookie.crewin.dto.MyPageResponse.MyProfileResponse;
+import com.luckycookie.crewin.exception.member.DuplicateNicknameException;
+import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.repository.MemberRepository;
 import com.luckycookie.crewin.repository.MemberSessionRepository;
@@ -21,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +37,7 @@ public class MyPageService {
     private final MemberSessionRepository memberSessionRepository;
 
     // 내 프로필 조회
+    @Transactional(readOnly = true)
     public MyProfileResponse getMyProfile(CustomUser customUser) {
         // 현재 로그인한 사용자 조회
         Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
@@ -48,6 +53,7 @@ public class MyPageService {
     }
 
     // 내가 만든, 참가한 세션 조회
+    @Transactional(readOnly = true)
     public MyPageSessionResponse getCreatedMySession(CustomUser customUser, int pageNo, String type) {
         // 현재 로그인한 사용자 조회
         Member member = memberRepository.findByEmail(customUser.getEmail())
@@ -95,6 +101,28 @@ public class MyPageService {
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
         member.updateProfileImage(updateProfileRequest.getProfileImageUrl());
+    }
+
+    // 닉네임 변경
+    public void changeNickname(CustomUser customUser, MyPageNicknameRequest myPageNicknameRequest) {
+        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(MemberNotFoundException::new);
+
+        // 변경하고자 하는 nickname
+        String nickname = myPageNicknameRequest.getNickname();
+
+        // 현재 닉네임이랑 같은지 확인
+        if (member.getNickname().equals(nickname)) {
+            throw new DuplicateNicknameException();
+        }
+
+        // 닉네임 중복 체크
+        Optional<Member> existingMember = memberRepository.findByNickname(nickname);
+        if (existingMember.isPresent()) {
+            throw new DuplicateNicknameException();
+        }
+
+        // 닉네임 변경
+        member.changeNickname(nickname);
     }
 
 }

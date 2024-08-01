@@ -1,6 +1,7 @@
 package com.luckycookie.crewin.controller;
 
 import com.luckycookie.crewin.dto.MyPageRequest;
+import com.luckycookie.crewin.dto.MyPageRequest.MyPageNicknameRequest;
 import com.luckycookie.crewin.dto.MyPageResponse;
 import com.luckycookie.crewin.dto.MyPageResponse.MyProfileResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
@@ -43,5 +44,13 @@ public class MyPageController {
         myPageService.updateProfileImage(customUser, updateProfileRequest);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "프로필 사진 변경을 완료했습니다!."));
     }
+
+    // 닉네임 변경
+    @PutMapping("/profile/nickname")
+    public ResponseEntity<BaseResponse<Void>> updateNickname(@AuthenticationPrincipal CustomUser customUser, @RequestBody MyPageNicknameRequest myPageNicknameRequest) {
+        myPageService.changeNickname(customUser, myPageNicknameRequest);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "닉네임을 변경하는데 성공했습니다."));
+    }
+
 
 }

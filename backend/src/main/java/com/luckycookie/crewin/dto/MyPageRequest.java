@@ -17,4 +17,12 @@ public class MyPageRequest {
     }
 
 
+    @Getter
+    @NoArgsConstructor
+    @Builder
+    @AllArgsConstructor
+    public static class MyPageNicknameRequest{
+        private String nickname;
+    }
+
 }

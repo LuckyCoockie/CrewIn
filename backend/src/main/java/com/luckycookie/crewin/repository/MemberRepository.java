@@ -22,4 +22,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("SELECT m FROM Member m WHERE m.name LIKE %:query% or m.nickname LIKE %:query%")
     Page<Member> findAllByName(@Param("query") String query, Pageable pageable);
 
+    Optional<Member> findByNickname(String nickname);
+
 }

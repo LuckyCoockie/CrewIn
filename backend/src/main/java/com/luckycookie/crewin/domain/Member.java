@@ -53,4 +53,7 @@ public class Member {
     public void updateProfileImage(String profileImageUrl) {
         this.imageUrl = profileImageUrl;
     }
+
+    public void changeNickname(String newNickname){ this.nickname = newNickname; }
+
 }
