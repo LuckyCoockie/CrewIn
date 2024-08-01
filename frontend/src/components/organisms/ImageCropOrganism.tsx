@@ -11,7 +11,6 @@ import checkButton from "../../assets/images/checkbutton.png";
 import InputTextAreaNoLimitTypeMolecule from "../molecules/Input/InputTextAreaNoLimitTypeMolecule";
 import InputRadioTypeMolecule from "../molecules/Input/InputRadioTypeMolecule";
 import InputDropdonwTypeMolecule from "../molecules/Input/InputDropdonwTypeMolecule";
-import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import ImageUploadDropzone from "../molecules/Input/ImageUploadDropzone";
 import { createPost } from "../../apis/api/postcreate";
 import { getMyCrews, CrewDto } from "../../apis/api/mycrew";
@@ -171,15 +170,12 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="self-start">
-        <BackHeaderMediumOrganism text="게시글 작성" />
-      </div>
       {imagePaths.length === 0 ? (
         <ImageUploadDropzone onDrop={handleDrop} />
       ) : (
         <>
           <div
-            className="relative w-full bg-white rounded-lg mb-6"
+            className="relative w-full bg-white rounded-lg"
             style={{ width: 360, height: 360 }}
           >
             <Carousel
@@ -191,7 +187,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
               className="mb-6"
             >
               {imagePaths.map((imagePath, index) => (
-                <div key={index} className="relative my-2">
+                <div key={index} className="relative">
                   {!isCropped ? (
                     <Cropper
                       src={imagePath}
@@ -215,7 +211,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
                       </div>
                       <button
                         onClick={() => setCurrentEditIndex(index)}
-                        className="absolute bottom-5 right-3 z-1 bg-transparent p-1"
+                        className="absolute bottom-16 right-3 z-1 bg-transparent p-1"
                       >
                         <img
                           src={editButton}
@@ -227,7 +223,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
                   )}
                   <button
                     onClick={handleCropAll}
-                    className="absolute bottom-14 right-3 bg-transparent z-1 p-1"
+                    className="absolute bottom-8 right-3 bg-transparent z-1 p-1"
                   >
                     {isCropped ? (
                       <img
@@ -249,71 +245,75 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
           </div>
         </>
       )}
+      <main>
+        <div className="w-full flex">
+          <div className="w-full">
+            <InputRadioTypeMolecule
+              id="visibility"
+              title="공개 범위"
+              name="visibility"
+              onChange={(e) => setIsPublic(e.target.value === "전체")}
+              value={["전체", "크루"]}
+              default="전체"
+              hasError={false}
+            />
+          </div>
 
-      <div className="w-full flex">
-        <div className="w-full">
-          <InputRadioTypeMolecule
-            id="visibility"
-            title="공개 범위"
-            name="visibility"
-            onChange={(e) => setIsPublic(e.target.value === "전체")}
-            value={["전체", "크루"]}
-            default="전체"
+          <div className="w-60">
+            <InputDropdonwTypeMolecule
+              id="crewId"
+              title=""
+              options={crews.map((crew) => ({
+                label: crew.crewName,
+                value: crew.crewId,
+              }))}
+              value={crewId}
+              onChange={(e) => setCrewId(Number(e.target.value))}
+              text={isPublic ? "크루 선택" : ""}
+              hasError={false}
+            />
+          </div>
+        </div>
+
+        <div className="w-full mb-6">
+          <InputTextAreaNoLimitTypeMolecule
+            id="content"
+            title="내용"
+            name="content"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="내용을 입력하세요"
             hasError={false}
           />
         </div>
 
-        <div className="w-60">
-          <InputDropdonwTypeMolecule
-            id="crewId"
-            title=""
-            options={crews.map((crew) => ({
-              label: crew.crewName,
-              value: crew.crewId,
-            }))}
-            value={crewId}
-            onChange={(e) => setCrewId(Number(e.target.value))}
-            text={isPublic ? "크루 선택" : ""}
-            hasError={false}
-          />
-        </div>
-      </div>
+        <button
+          onClick={handlePost}
+          className={`w-full bg-[#2b2f40e6] py-4 px-8 text-center rounded-lg ${
+            !isCropped || (!isPublic && crewId === 0)
+              ? "opacity-50 cursor-not-allowed"
+              : "cursor-pointer"
+          } text-white font-bold`}
+          disabled={!isCropped || (!isPublic && crewId === 0)}
+        >
+          작성
+        </button>
 
-      <div className="w-full mb-6">
-        <InputTextAreaNoLimitTypeMolecule
-          id="content"
-          title="내용"
-          name="content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="내용을 입력하세요"
-          hasError={false}
-        />
-      </div>
-
-      <button
-        onClick={handlePost}
-        className={`w-full bg-[#2b2f40e6] py-4 px-8 text-center rounded-lg ${
-          !isCropped || (!isPublic && crewId === 0)
-            ? "opacity-50 cursor-not-allowed"
-            : "cursor-pointer"
-        } text-white font-bold`}
-        disabled={!isCropped || (!isPublic && crewId === 0)}
-      >
-        작성
-      </button>
-
-      {currentEditIndex !== null && (
-        <ModalMolecules onClose={() => setCurrentEditIndex(null)}>
-          <ImageEditSave
-            postImages={[originalCroppedImages[currentEditIndex]]}
-            crewId={crewId}
-            isPublic={isPublic}
-            content={content}
-            onFinish={handleFinishEdit}
-          />
-        </ModalMolecules>
-      )}
+        {currentEditIndex !== null && (
+          <ModalMolecules
+            title="사진 편집"
+            onClose={() => setCurrentEditIndex(null)}
+          >
+            <ImageEditSave
+              postImages={[originalCroppedImages[currentEditIndex]]}
+              crewId={crewId}
+              isPublic={isPublic}
+              content={content}
+              onFinish={handleFinishEdit}
+            />
+          </ModalMolecules>
+        )}
+      </main>
     </div>
   );
 };

@@ -13,10 +13,6 @@ export const login = async (
 
 export const refreshAccessToken =
   async (): Promise<RefreshTokenResponseDto> => {
-    const response = await api.post<RefreshTokenResponseDto>(
-      `/user/reissue`,
-      null,
-      { withCredentials: true }
-    );
+    const response = await api.post<RefreshTokenResponseDto>(`/member/reissue`);
     return response.data;
   };

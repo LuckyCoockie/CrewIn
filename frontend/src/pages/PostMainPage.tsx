@@ -16,6 +16,8 @@ import { PWAInstallPrompt } from "../components/templates/PWAInstallPrompt";
 
 const fetchPostData = async (page: number): Promise<PostDto[]> => {
   try {
+    // TODO : return []; 빼기
+    return [];
     const result = await api.get(`/post?pageNo=${page - 1}`);
     console.log("Fetched post data:", result.data.postItemList);
     return result.data.postItemList;
@@ -51,7 +53,7 @@ const PostMainPage: React.FC = () => {
           <Alarmicon className="w-6 h-6" onClick={handleAlarm} />
         </div>
       </div>
-      <div className="post-main-page">
+      <div>
         <InfiniteScrollComponent
           fetchKey="postData"
           fetchData={fetchPostData}

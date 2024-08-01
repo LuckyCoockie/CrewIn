@@ -166,3 +166,7 @@ header {
   background-color: transparent !important;
   border-color: transparent !important;
 }
+
+.font-weight-sm {
+  font-weight: 400;
+}

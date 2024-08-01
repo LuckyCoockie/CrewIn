@@ -3,14 +3,16 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import html2canvas from "html2canvas";
 import { saveAs } from "file-saver";
 import InputMask from "react-input-mask";
+import ToggleButton from "../atoms/Button/ToggleButton";
 import alarmWhite from "../../assets/images/alarm-clockwhite.png";
 import alarmBlack from "../../assets/images/alarm-clockblack.png";
 import meterWhite from "../../assets/images/meterwhite.png";
 import meterBlack from "../../assets/images/meterblack.png";
+import { getMyCrews } from "../../apis/api/mycrew";
 
 interface ImageEditSaveProps {
-  postImages: string[];
   crewId: number;
+  postImages: string[];
   isPublic: boolean;
   content: string;
   onFinish: (finalImage: string) => void;
@@ -23,15 +25,30 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
   const [totalDistance, setTotalDistance] = useState("00.00");
   const [totalTime, setTotalTime] = useState("00:00:00");
   const [pace, setPace] = useState("0'0''");
-  const [topLeftImage] = useState<string | null>(null);
 
   const [showLogoInput, setShowLogoInput] = useState(false);
   const [showDistanceInput, setShowDistanceInput] = useState(false);
   const [showTimeInput, setShowTimeInput] = useState(false);
   const [showPaceInput, setShowPaceInput] = useState(false);
   const [showColorInput, setShowColorInput] = useState(false);
+  const [crewImageUrl, setCrewImageUrl] = useState<string | null>(null);
 
   const captureRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const fetchCrewData = async () => {
+      try {
+        const response = await getMyCrews();
+        if (response.crews.length > 0) {
+          setCrewImageUrl(response.crews[0].imageUrl);
+        }
+      } catch (error) {
+        console.error("크루 데이터 로딩 오류:", error);
+      }
+    };
+
+    fetchCrewData();
+  }, []);
 
   useEffect(() => {
     if (isValidTime(totalTime) && isValidDistance(totalDistance)) {
@@ -106,7 +123,7 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
   };
 
   return (
-    <div className="p-6">
+    <div className="">
       <div className="flex items-center justify-center mb-6">
         <div
           id="capture"
@@ -124,11 +141,11 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
               <img src={image} alt={`Cropped ${index}`} />
             </div>
           ))}
-          {showLogoInput && topLeftImage && (
+          {showLogoInput && crewImageUrl && (
             <div className="logo absolute top-2 left-2 overflow-hidden rounded-full w-16 h-16">
               <img
-                src={topLeftImage}
-                alt="Top Left"
+                src={crewImageUrl}
+                alt="crew image"
                 className="w-full h-full object-cover"
                 style={{ borderRadius: "50%" }}
               />
@@ -202,20 +219,11 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
         <label className="block text-md font-bold text-gray-700 mb-1">
           크루 로고
         </label>
-        <div className="flex items-center space-x-4">
-          <div
-            className={`relative rounded-full w-12 h-6 transition-colors duration-200 ease-in-out ${
-              showLogoInput ? "bg-[#2b2f40e6]" : "bg-[#2b2f401a]"
-            }`}
-            onClick={() => setShowLogoInput(!showLogoInput)}
-            style={{ cursor: "pointer" }}
-          >
-            <div
-              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${
-                showLogoInput ? "translate-x-full bg-white" : "bg-gray-500"
-              }`}
-            />
-          </div>
+        <div className="flex">
+          <ToggleButton
+            isActive={showLogoInput}
+            onToggle={() => setShowLogoInput(!showLogoInput)}
+          />
         </div>
       </div>
 
@@ -234,19 +242,10 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
               className="border border-gray-300 rounded px-3 py-2 w-24"
             />
           )}
-          <div
-            className={`relative rounded-full w-12 h-6 transition-colors duration-200 ease-in-out ${
-              showTimeInput ? "bg-[#2b2f40e6]" : "bg-[#2b2f401a]"
-            }`}
-            onClick={() => setShowTimeInput(!showTimeInput)}
-            style={{ cursor: "pointer" }}
-          >
-            <div
-              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${
-                showTimeInput ? "translate-x-full bg-white" : "bg-gray-500"
-              }`}
-            />
-          </div>
+          <ToggleButton
+            isActive={showTimeInput}
+            onToggle={() => setShowTimeInput(!showTimeInput)}
+          />
         </div>
       </div>
 
@@ -265,19 +264,10 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
               className="border border-gray-300 rounded px-3 py-2 w-24"
             />
           )}
-          <div
-            className={`relative rounded-full w-12 h-6 transition-colors duration-200 ease-in-out ${
-              showDistanceInput ? "bg-[#2b2f40e6]" : "bg-[#2b2f401a]"
-            }`}
-            onClick={() => setShowDistanceInput(!showDistanceInput)}
-            style={{ cursor: "pointer" }}
-          >
-            <div
-              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${
-                showDistanceInput ? "translate-x-full bg-white" : "bg-gray-500"
-              }`}
-            />
-          </div>
+          <ToggleButton
+            isActive={showDistanceInput}
+            onToggle={() => setShowDistanceInput(!showDistanceInput)}
+          />
         </div>
       </div>
 
@@ -296,19 +286,10 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
               className="border border-gray-300 rounded px-3 py-2 w-24"
             />
           )}
-          <div
-            className={`relative rounded-full w-12 h-6 transition-colors duration-200 ease-in-out ${
-              showPaceInput ? "bg-[#2b2f40e6]" : "bg-[#2b2f401a]"
-            }`}
-            onClick={() => setShowPaceInput(!showPaceInput)}
-            style={{ cursor: "pointer" }}
-          >
-            <div
-              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${
-                showPaceInput ? "translate-x-full bg-white" : "bg-gray-500"
-              }`}
-            />
-          </div>
+          <ToggleButton
+            isActive={showPaceInput}
+            onToggle={() => setShowPaceInput(!showPaceInput)}
+          />
         </div>
       </div>
 
@@ -317,19 +298,10 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
           색상
         </label>
         <div className="flex items-center space-x-4">
-          <div
-            className={`relative rounded-full w-12 h-6 mt-2 transition-colors duration-200 ease-in-out ${
-              showColorInput ? "bg-[#2b2f40e6]" : "bg-[#2b2f401a]"
-            }`}
-            onClick={() => setShowColorInput(!showColorInput)}
-            style={{ cursor: "pointer" }}
-          >
-            <div
-              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${
-                showColorInput ? "translate-x-full bg-white" : "bg-gray-500"
-              }`}
-            />
-          </div>
+          <ToggleButton
+            isActive={showColorInput}
+            onToggle={() => setShowColorInput(!showColorInput)}
+          />
         </div>
       </div>
 
