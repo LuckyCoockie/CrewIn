@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import UserProfileBar from "../../components/molecules/UserProfileBarMolecule";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -7,6 +8,7 @@ import filledFire from "../../assets/images/filledfire.png";
 import emptyFire from "../../assets/images/emptyfire.png";
 import shareIcon from "../../assets/images/shareicon.png";
 import { PostDto } from "../../apis/api/postlist";
+import { deletePost } from "../../apis/api/postdelete";
 
 export interface ItemComponentProps<T> {
   data: T;
@@ -14,23 +16,37 @@ export interface ItemComponentProps<T> {
 
 const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   const {
+    id,
     postImages: croppedImages,
     content,
     authorName,
     heartCount,
     isHearted,
+    createdAt,
   } = data;
 
   const [likes, setLikes] = useState<number>(heartCount);
   const [isHeartedState, setIsHeartedState] = useState<boolean>(isHearted);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
+  const navigate = useNavigate();
+
   const handleEdit = () => {
     console.log("Edit action");
   };
 
-  const handleDelete = () => {
-    console.log("Delete action");
+  const handleDelete = async () => {
+    try {
+      const response = await deletePost(id);
+      if (response.statusCode === 204) {
+        navigate(0);
+      } else {
+        console.error(response.message);
+        alert(response.message);
+      }
+    } catch (error) {
+      console.error("게시물 삭제 요청 중 오류가 발생했습니다:", error);
+    }
   };
 
   const handleLike = () => {
@@ -65,7 +81,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
       <UserProfileBar
         profileImage={crewinLogo}
         username={authorName}
-        timeAgo="3시간 전"
+        timeAgo={createdAt}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />

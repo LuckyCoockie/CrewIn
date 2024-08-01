@@ -51,7 +51,7 @@ const PostMainPage: React.FC = () => {
           <Alarmicon className="w-6 h-6" onClick={handleAlarm} />
         </div>
       </div>
-      <div className="post-main-page">
+      <div>
         <InfiniteScrollComponent
           fetchKey="postData"
           fetchData={fetchPostData}
