@@ -24,6 +24,14 @@ pipeline {
                     '''
                 }
             }
+            steps {
+                withCredentials([file(credentialsId: 'crewin-keystore', variable: 'CONFIG_FILE')]) {
+                    sh '''
+                        chmod -R 755 backend
+                        cp $CONFIG_FILE backend/keystore.p12
+                    '''
+                }
+            }
         }
         stage('Build & Test') {
             steps {
