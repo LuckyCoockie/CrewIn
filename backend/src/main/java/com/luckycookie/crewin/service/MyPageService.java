@@ -3,6 +3,7 @@ package com.luckycookie.crewin.service;
 import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.domain.Session;
 import com.luckycookie.crewin.domain.SessionPoster;
+import com.luckycookie.crewin.dto.MyPageRequest.UpdateProfileRequest;
 import com.luckycookie.crewin.dto.MyPageResponse.MyPageSessionItem;
 import com.luckycookie.crewin.dto.MyPageResponse.MyPageSessionResponse;
 import com.luckycookie.crewin.dto.MyPageResponse.MyProfileResponse;
@@ -49,7 +50,8 @@ public class MyPageService {
     // 내가 만든, 참가한 세션 조회
     public MyPageSessionResponse getCreatedMySession(CustomUser customUser, int pageNo, String type) {
         // 현재 로그인한 사용자 조회
-        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
 
         Pageable pageable = PageRequest.of(pageNo, 10); // pageNo 페이지 번호, 10 : 페이지 크기
 
@@ -87,6 +89,12 @@ public class MyPageService {
                 .lastPageNo(lastPageNo)
                 .build();
 
+    }
+
+    public void updateProfileImage(CustomUser customUser, UpdateProfileRequest updateProfileRequest) {
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+        member.updateProfileImage(updateProfileRequest.getProfileImageUrl());
     }
 
 }

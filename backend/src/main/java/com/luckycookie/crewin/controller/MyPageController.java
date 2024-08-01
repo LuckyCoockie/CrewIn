@@ -1,5 +1,6 @@
 package com.luckycookie.crewin.controller;
 
+import com.luckycookie.crewin.dto.MyPageRequest;
 import com.luckycookie.crewin.dto.MyPageResponse;
 import com.luckycookie.crewin.dto.MyPageResponse.MyProfileResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
@@ -10,10 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController()
 @RequestMapping("/mypage")
@@ -39,5 +37,11 @@ public class MyPageController {
         }
     }
 
+    // 프로필 사진 업데이트
+    @PutMapping("/profile/image")
+    public ResponseEntity<BaseResponse<Void>> updateProfileImage(@AuthenticationPrincipal CustomUser customUser, @RequestBody MyPageRequest.UpdateProfileRequest updateProfileRequest) {
+        myPageService.updateProfileImage(customUser, updateProfileRequest);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "프로필 사진 변경을 완료했습니다!."));
+    }
 
 }
