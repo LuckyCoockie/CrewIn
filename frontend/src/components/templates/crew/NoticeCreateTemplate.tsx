@@ -1,5 +1,8 @@
-// src/components/templates/NoticeCreateTemplate.tsx
 import React, { useState, useRef } from "react";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
 import { Carousel } from "react-responsive-carousel";
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
@@ -9,14 +12,63 @@ import InputTextAreaNoLimitTypeMolecule from "../../molecules/Input/InputTextAre
 import InputTextTypeMolecule from "../../molecules/Input/InputTextTypeMolecule";
 import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
 import ImageUploadDropzone from "../../molecules/Input/ImageUploadDropzone";
+import LargeAbleButton from "../../atoms/Button/LargeAbleButton";
+import LargeDisableButton from "../../atoms/Button/LargeDisableButton";
+
+import { uploadImage } from "../../../apis/api/presigned";
+
+// 유효성 검사 스키마 정의
+const schema = yup.object({
+  title: yup.string().required(),
+  content: yup.string().required(),
+});
+
+type FormValues = {
+  title: string;
+  content: string;
+};
 
 const NoticeCreateTemplate: React.FC = () => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<FormValues>({
+    resolver: yupResolver(schema),
+    mode: "onChange",
+    defaultValues: {},
+  });
+
+  const checkUndefined = async (files: File[]) => {
+    if (files) {
+      const uploadPromises = files.map(async (file) => {
+        const result = await uploadImage(file);
+        return result;
+      });
+      return Promise.all(uploadPromises);
+    } else {
+      return [];
+    }
+  };
+
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    const urls = await checkUndefined(croppedFiles);
+
+    const submitData = {
+      crewId: 1,
+      title: data.title,
+      content: data.content,
+      noticeImages: urls,
+    };
+
+    console.log(submitData);
+    // 여기에 API 호출 코드를 추가하여 submitData를 서버에 전송합니다.
+  };
+
   const [imagePaths, setImagePaths] = useState<string[]>([]);
   const [cropAspectRatio] = useState<number>(1);
   const [croppedImages, setCroppedImages] = useState<string[]>([]);
-
-  const [, setTitle] = useState<string>("");
-  const [content, setContent] = useState<string>("");
+  const [croppedFiles, setCroppedFiles] = useState<File[]>([]);
   const [isCropped, setIsCropped] = useState<boolean>(false);
 
   const cropperRefs = useRef<(ReactCropperElement | null)[]>([]);
@@ -46,8 +98,6 @@ const NoticeCreateTemplate: React.FC = () => {
     if (cropperRef && cropperRef.cropper) {
       const cropper = cropperRef.cropper;
       const croppedCanvas = cropper.getCroppedCanvas({
-        width: 360,
-        height: 360,
         fillColor: "#fff",
         imageSmoothingEnabled: true,
         imageSmoothingQuality: "high",
@@ -58,15 +108,25 @@ const NoticeCreateTemplate: React.FC = () => {
           (blob: Blob | null) => {
             if (blob) {
               const croppedImageUrl = URL.createObjectURL(blob);
+              const file = new File([blob], `cropped_image_${index}.png`, {
+                type: blob.type,
+              });
+
               setCroppedImages((prevImages) => {
                 const newImages = [...prevImages];
                 newImages[index] = croppedImageUrl;
                 return newImages;
               });
+
+              setCroppedFiles((prevFiles) => {
+                const newFiles = [...prevFiles];
+                newFiles[index] = file;
+                return newFiles;
+              });
             }
           },
           "image/jpeg",
-          0.8
+          1.0
         );
       }
     }
@@ -80,17 +140,17 @@ const NoticeCreateTemplate: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[550px] pt-4 pb-20">
+    <div className="mx-auto w-full max-w-[550px]">
       <div className="flex flex-col items-center justify-center">
-        <div className="self-start">
+        <header>
           <BackHeaderMediumOrganism text="공지글 작성" />
-        </div>
+        </header>
         {imagePaths.length === 0 ? (
           <ImageUploadDropzone onDrop={handleDrop} />
         ) : (
           <>
             <div
-              className="relative w-full bg-white rounded-lg mb-6"
+              className="relative w-full bg-white rounded-lg"
               style={{ width: 360, height: 360 }}
             >
               <Carousel
@@ -102,7 +162,7 @@ const NoticeCreateTemplate: React.FC = () => {
                 className="mb-6"
               >
                 {imagePaths.map((imagePath, index) => (
-                  <div key={index} className="relative my-2">
+                  <div key={index} className="relative">
                     {!isCropped ? (
                       <Cropper
                         src={imagePath}
@@ -128,7 +188,7 @@ const NoticeCreateTemplate: React.FC = () => {
                     )}
                     <button
                       onClick={handleCropAll}
-                      className="absolute bottom-2 right-3 bg-transparent z-1 p-1"
+                      className="absolute bottom-8 right-3 bg-transparent z-1 p-1"
                     >
                       {isCropped ? (
                         <img
@@ -151,39 +211,49 @@ const NoticeCreateTemplate: React.FC = () => {
           </>
         )}
 
-        <div className="w-full">
-          <div className="mb-6">
-            <InputTextTypeMolecule
-              id="title"
-              title="제목"
-              placeholder="제목을 입력하세요"
-              name="title"
-              onChange={(e) => setTitle(e.target.value)}
-              onBlur={() => {}}
-              hasError={false}
-            />
-          </div>
-          <div className="mb-6">
-            <InputTextAreaNoLimitTypeMolecule
-              id="content"
-              title="내용"
-              name="content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="내용을 입력하세요"
-              hasError={false}
-            />
-          </div>
-        </div>
-
-        <button
-          className={`w-full bg-[#2b2f40e6] py-4 px-8 text-center rounded-lg ${
-            !isCropped ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-          } text-white font-bold`}
-          disabled={!isCropped}
-        >
-          작성
-        </button>
+        <main className="w-full">
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="mb-6">
+              <Controller
+                name="title"
+                control={control}
+                render={({ field }) => (
+                  <InputTextTypeMolecule
+                    id="title"
+                    title="제목"
+                    placeholder="제목을 입력하세요"
+                    {...field}
+                    error={errors.title?.message}
+                    hasError={!!errors.title}
+                  />
+                )}
+              />
+            </div>
+            <div className="mb-6">
+              <Controller
+                name="content"
+                control={control}
+                render={({ field }) => (
+                  <InputTextAreaNoLimitTypeMolecule
+                    id="content"
+                    title="내용"
+                    {...field}
+                    placeholder="내용을 입력하세요"
+                    error={errors.content?.message}
+                    hasError={!!errors.content}
+                  />
+                )}
+              />
+            </div>
+            <div>
+              {isValid ? (
+                <LargeAbleButton text="작성" />
+              ) : (
+                <LargeDisableButton text="작성" />
+              )}
+            </div>
+          </form>
+        </main>
       </div>
     </div>
   );

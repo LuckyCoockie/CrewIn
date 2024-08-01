@@ -80,8 +80,7 @@ const SessionCreateOrganism: React.FC = () => {
     },
   });
 
-  console.log(errors);
-  console.log(isValid);
+
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     console.log(data);
     console.log(errors);
