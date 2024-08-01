@@ -36,7 +36,7 @@ public class MemberController {
     public ResponseEntity<BaseResponse<TokenResponse>> signIn(@RequestBody SignInRequest signInRequest) {
         Token token = memberService.signIn(signInRequest);
         ResponseCookie responseCookie = ResponseCookie.from("refreshToken", token.getRefreshToken()).sameSite("None")
-                .secure(true).maxAge(Duration.ofDays(7L)).build();
+                .maxAge(Duration.ofDays(7L)).build();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .body(BaseResponse.create(HttpStatus.OK.value(), "로그인에 성공했습니다.", TokenResponse.builder().accessToken(token.getAccessToken()).build()));
     }
@@ -76,7 +76,7 @@ public class MemberController {
         log.info("refreshToken: {}", refreshToken);
         Token token = memberService.reissue(refreshToken, request);
         ResponseCookie responseCookie = ResponseCookie.from("refreshToken", token.getRefreshToken()).sameSite("None")
-                .secure(true).maxAge(Duration.ofDays(7L)).build();
+                .maxAge(Duration.ofDays(7L)).build();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .body(BaseResponse.create(HttpStatus.OK.value(), "토큰 재발급에 성공했습니다.", TokenResponse.builder().accessToken(token.getAccessToken()).build()));
     }
