@@ -47,7 +47,6 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint)
                         .accessDeniedHandler(jwtAccessDeniedHandler))
                 .addFilterBefore(new JwtFilter(tokenUtil, memberRepository), UsernamePasswordAuthenticationFilter.class)
-                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests((a) -> {
                     a.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                             .requestMatchers("/member/signup/**").permitAll()
