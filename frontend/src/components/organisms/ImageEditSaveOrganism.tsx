@@ -106,7 +106,7 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
   };
 
   return (
-    <div className="p-6">
+    <div className="">
       <div className="flex items-center justify-center mb-6">
         <div
           id="capture"

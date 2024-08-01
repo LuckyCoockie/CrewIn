@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { ReactComponent as CrewinLogo } from "../assets/icons/crewinlogo.svg";
 import { ReactComponent as Alarmicon } from "../assets/icons/alarm_deactivated.svg";
-// import { ReactComponent as AlarmOnicon } from "../assets/icons/alarm_activated.svg";
 import { ReactComponent as Searchicon } from "../assets/icons/searchicon.svg";
 import { ReactComponent as Postcreateicon } from "../assets/icons/postcreateicon.svg";
 import FloatingActionButton from "../components/atoms/Button/FloatingActionButton";
@@ -13,6 +12,7 @@ import PostItemComponent, {
 } from "../components/templates/PostItemTemplate";
 import api from "../apis";
 import { PostDto } from "../apis/api/postlist";
+import { PWAInstallPrompt } from "../components/templates/PWAInstallPrompt";
 
 const fetchPostData = async (page: number): Promise<PostDto[]> => {
   try {
@@ -62,6 +62,7 @@ const PostMainPage: React.FC = () => {
         />
       </div>
       <FloatingActionButton icon={Postcreateicon} onClick={handlePostCreate} />
+      <PWAInstallPrompt />
     </div>
   );
 };

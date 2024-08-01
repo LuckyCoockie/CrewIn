@@ -46,7 +46,7 @@ export const EditProfileImageOrganism = ({
   });
 
   return (
-    <ModalMolecules onClose={onClose}>
+    <ModalMolecules title="프로필 사진 변경" onClose={onClose}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="w-full">
           <Controller
