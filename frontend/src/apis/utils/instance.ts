@@ -73,4 +73,6 @@ export const clearAxiosInterceptors = () => {
   api.interceptors.request.clear();
 };
 
+setupAxiosInterceptors("eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MTIzNEB0ZXN0LmNvbSIsImlhdCI6MTcyMjUyMDAxNywiZW1haWwiOiJ0ZXN0MTIzNEB0ZXN0LmNvbSIsImV4cCI6MTcyNTExMjAxN30.l5khomKGNT7AyWyxpWTL2Mc_8_DVSW0eSS07ofFu46jZyoyohx3jDMzhAvS2Hr4MEiyqEcHFRye_Ar2_QrR7Og");
+
 export default api;

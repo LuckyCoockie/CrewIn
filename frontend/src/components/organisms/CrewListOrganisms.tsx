@@ -22,6 +22,7 @@ const CrewListComponent: React.FC<OwnProps> = ({ fetchData }) => {
       className="grid grid-cols-2 gap-2 xs:gap-4 mb-2 xs:mb-4"
       fetchKey={["CrewList"]}
       fetchData={fetchData}
+      pageSize={6}
       ItemComponent={({ data }) => (
         <CrewListItem
           key={data.id}

@@ -29,7 +29,7 @@ export const getCrewList = async (
     lastPageNo: 10,
     crews: [
       {
-        id: 0,
+        id: dto.pageNo * 6 + 0,
         name: "Crew In",
         slogan: "같이의 가치",
         area: "서울특별시 강남구",
@@ -39,7 +39,7 @@ export const getCrewList = async (
           "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
       },
       {
-        id: 1,
+        id: dto.pageNo * 6 + 1,
         name: "Crew In",
         slogan: "같이의 가치",
         area: "서울특별시 강남구",
@@ -49,7 +49,7 @@ export const getCrewList = async (
           "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
       },
       {
-        id: 2,
+        id: dto.pageNo * 6 + 2,
         name: "Crew In",
         slogan: "같이의 가치",
         area: "서울특별시 강남구",
@@ -59,7 +59,7 @@ export const getCrewList = async (
           "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
       },
       {
-        id: 3,
+        id: dto.pageNo * 6 + 3,
         name: "Crew In",
         slogan: "같이의 가치",
         area: "서울특별시 강남구",
@@ -69,7 +69,7 @@ export const getCrewList = async (
           "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
       },
       {
-        id: 4,
+        id: dto.pageNo * 6 + 4,
         name: "Crew In",
         slogan: "같이의 가치",
         area: "서울특별시 강남구",
@@ -79,7 +79,7 @@ export const getCrewList = async (
           "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
       },
       {
-        id: 5,
+        id: dto.pageNo * 6 + 5,
         name: "Crew In",
         slogan: "같이의 가치",
         area: "서울특별시 강남구",

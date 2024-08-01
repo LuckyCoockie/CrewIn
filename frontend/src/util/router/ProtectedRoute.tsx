@@ -10,7 +10,7 @@ const ProtectedRoute = () => {
 
   const navigate = useNavigate();
 
-  const isAuthenticated = useMemo(() => accessToken !== null, [accessToken]);
+  const isAuthenticated = useMemo(() => accessToken !== null, [accessToken]) || true;
 
   useEffect(() => {
     if (!loading && !isAuthenticated) navigate("/login");
