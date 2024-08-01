@@ -1,8 +1,6 @@
 package com.luckycookie.crewin.service;
 
-import com.luckycookie.crewin.domain.Member;
-import com.luckycookie.crewin.domain.Session;
-import com.luckycookie.crewin.domain.SessionPoster;
+import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.dto.MyPageResponse.MyPageSessionItem;
 import com.luckycookie.crewin.dto.MyPageResponse.MyPageSessionResponse;
 import com.luckycookie.crewin.dto.MyPageResponse.MyProfileResponse;
@@ -32,6 +30,7 @@ public class MyPageService {
     private final MemberSessionRepository memberSessionRepository;
 
     // 내 프로필 조회
+    @Transactional(readOnly = true)
     public MyProfileResponse getMyProfile(CustomUser customUser) {
         // 현재 로그인한 사용자 조회
         Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
@@ -47,6 +46,7 @@ public class MyPageService {
     }
 
     // 내가 만든, 참가한 세션 조회
+    @Transactional(readOnly = true)
     public MyPageSessionResponse getCreatedMySession(CustomUser customUser, int pageNo, String type) {
         // 현재 로그인한 사용자 조회
         Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
@@ -88,5 +88,4 @@ public class MyPageService {
                 .build();
 
     }
-
 }
