@@ -1,94 +1,53 @@
 import { Dispatch } from "redux";
-import { AxiosError } from "axios";
 import {
   clearAxiosInterceptors,
   setupAxiosInterceptors,
 } from "../../apis/utils/instance";
-import * as api from "../../apis/api/authorization";
-import { UNKNOWN_ERROR_MESSAGE } from "./util";
 
 /* ----------------- 액션 타입 ------------------ */
 const BASE_ACTION_TYPE = "api/auth";
-export const LOGIN_REQUEST = `${BASE_ACTION_TYPE}/LOGIN_REQUEST`;
-export const LOGIN_SUCCESS = `${BASE_ACTION_TYPE}/LOGIN_SUCCESS`;
-export const LOGIN_FAILURE = `${BASE_ACTION_TYPE}/LOGIN_FAILURE`;
-export const REFRESH_TOKEN_SUCCESS = `${BASE_ACTION_TYPE}/REFRESH_TOKEN_SUCCESS`;
-export const REFRESH_TOKEN_FAILURE = `${BASE_ACTION_TYPE}/REFRESH_TOKEN_FAILURE`;
+export const LOADING = `${BASE_ACTION_TYPE}/LOADING`;
+export const SET_ACCESS_TOKEN = `${BASE_ACTION_TYPE}/SET_ACCESS_TOKEN`;
+export const CLEAR_ACCESS_TOKEN = `${BASE_ACTION_TYPE}/CLEAR_ACCESS_TOKEN`;
 
 /* ----------------- 액션 ------------------ */
-type LoginRequestAction = {
-  type: typeof LOGIN_REQUEST;
+type Loading = {
+  type: typeof LOADING;
 };
 
-type LoginSuccessAction = {
-  type: typeof LOGIN_SUCCESS;
-  payload: string; // access token
+type SetAccessTokenAction = {
+  type: typeof SET_ACCESS_TOKEN;
+  accessToken: string; // access token
 };
 
-type LoginFailureAction = {
-  type: typeof LOGIN_FAILURE;
-  error: string;
-};
-
-type RefreshTokenSuccessAction = {
-  type: typeof REFRESH_TOKEN_SUCCESS;
-  payload: string; // new access token
-};
-
-type RefreshTokenFailureAction = {
-  type: typeof REFRESH_TOKEN_FAILURE;
-  error: string;
+type ClearAccessTokenAction = {
+  type: typeof CLEAR_ACCESS_TOKEN;
+  error?: string;
 };
 
 export type AuthActionTypes =
-  | LoginRequestAction
-  | LoginSuccessAction
-  | LoginFailureAction
-  | RefreshTokenSuccessAction
-  | RefreshTokenFailureAction;
+  | Loading
+  | SetAccessTokenAction
+  | ClearAccessTokenAction;
 
 /* ----------------- 액션 함수 ------------------ */
-export const login = (email: string, password: string) => {
+export const loading = () => {
   return async (dispatch: Dispatch<AuthActionTypes>) => {
-    dispatch({ type: LOGIN_REQUEST });
-
-    try {
-      const response = await api.login({ email: email, password: password });
-      const { accessToken } = response;
-
-      // axios interceptor 설정
-      setupAxiosInterceptors(accessToken);
-
-      dispatch({ type: LOGIN_SUCCESS, payload: accessToken });
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        dispatch({ type: LOGIN_FAILURE, error: error.response?.data.message });
-      } else {
-        dispatch({ type: LOGIN_FAILURE, error: UNKNOWN_ERROR_MESSAGE });
-      }
-    }
+    dispatch({ type: LOADING });
   };
 };
 
-export const refreshAccessToken = () => {
+export const setAccessToken = (accessToken: string) => {
   return async (dispatch: Dispatch<AuthActionTypes>) => {
-    try {
-      const response = await api.refreshAccessToken();
-      const { accessToken } = response;
+    dispatch({ type: SET_ACCESS_TOKEN, accessToken: accessToken });
+    setupAxiosInterceptors(accessToken);
+  };
+};
 
-      setupAxiosInterceptors(accessToken);
-
-      dispatch({ type: REFRESH_TOKEN_SUCCESS, payload: accessToken });
-      return accessToken;
-    } catch (error) {
-      clearAxiosInterceptors();
-      if (error instanceof AxiosError) {
-        dispatch({ type: LOGIN_FAILURE, error: error.response?.data.message });
-      } else {
-        dispatch({ type: LOGIN_FAILURE, error: UNKNOWN_ERROR_MESSAGE });
-      }
-      throw error;
-    }
+export const clearAccessToken = (error?: string) => {
+  return async (dispatch: Dispatch<AuthActionTypes>) => {
+    dispatch({ type: CLEAR_ACCESS_TOKEN, error: error });
+    clearAxiosInterceptors();
   };
 };
 
@@ -96,14 +55,13 @@ export const refreshAccessToken = () => {
 type AuthState = {
   accessToken: string | null;
   loading: boolean;
-  error: string | null;
+  error?: string;
 };
 
 /* ----------------- 모듈의 초기 상태 ------------------ */
 const initialState: AuthState = {
   accessToken: null,
   loading: false,
-  error: null,
 };
 
 /* ----------------- 리듀서 ------------------ */
@@ -112,26 +70,12 @@ const authReducer = (
   action: AuthActionTypes
 ): AuthState => {
   switch (action.type) {
-    case LOGIN_REQUEST:
-      return { ...state, loading: true, error: null };
-    case LOGIN_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        accessToken: action.payload,
-        error: null,
-      };
-    case LOGIN_FAILURE:
-      return {
-        ...state,
-        loading: false,
-        accessToken: null,
-        error: action.error,
-      };
-    case REFRESH_TOKEN_SUCCESS:
-      return { ...state, accessToken: action.payload };
-    case REFRESH_TOKEN_FAILURE:
-      return { ...state, accessToken: null, error: action.error };
+    case LOADING:
+      return { ...state, loading: true };
+    case SET_ACCESS_TOKEN:
+      return { accessToken: action.accessToken, loading: false };
+    case CLEAR_ACCESS_TOKEN:
+      return { accessToken: null, loading: false, error: action.error };
     default:
       return state;
   }

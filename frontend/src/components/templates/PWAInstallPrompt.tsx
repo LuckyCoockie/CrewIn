@@ -7,7 +7,6 @@ export const PWAInstallPrompt = () => {
   const [isInstalled, handleInstallClick] = usePWAInstallPrompt({});
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const handleClose = () => setIsOpen(false);
-  console.log(isInstalled, isOpen);
   return (
     !isInstalled &&
     isOpen && (

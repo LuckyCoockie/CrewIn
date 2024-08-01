@@ -7,8 +7,8 @@ import InputPasswordTypeMolecule from "../molecules/Input/InputPasswordTypeMolec
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import { useSelector } from "react-redux";
-import { login } from "../../modules/reducers/auth";
-import store, { RootState } from "../../modules";
+import { RootState } from "../../modules";
+import { login } from "../../apis/api/authorization";
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({
@@ -37,7 +37,7 @@ const LoginOrganism = () => {
 
   const { error } = useSelector((state: RootState) => state.auth);
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    store.dispatch(login(data.email, data.password));
+    login(data);
   };
 
   return (
