@@ -23,6 +23,7 @@ export type GetCrewListResponseDto = {
 export const getCrewList = async (
   dto: GetCrewListRequestDto
 ): Promise<GetCrewListResponseDto> => {
+  // TODO : 더미 데이터 삭제
   return {
     pageNo: 0,
     lastPageNo: 10,
