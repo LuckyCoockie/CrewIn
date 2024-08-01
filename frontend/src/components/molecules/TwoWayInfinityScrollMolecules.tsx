@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useInfiniteQuery } from "react-query";
 
-type fetchParams = {
+type FetchParams = {
   postId: number;
   direction: "increase" | "decrease";
   offset: number;
@@ -14,7 +14,7 @@ export interface ItemComponentProps<T extends { id: number }> {
 type OwnProps<T extends { id: number }> = {
   postId: number;
   fetchKey: string | string[];
-  fetchData: (params: fetchParams) => Promise<T[]>;
+  fetchData: (params: FetchParams) => Promise<T[]>;
   ItemComponent: (
     props: ItemComponentProps<T>
   ) => React.ReactElement<HTMLElement>;

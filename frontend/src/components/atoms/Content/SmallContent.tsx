@@ -1,7 +1,7 @@
 import React from "react";
 
 type ContentData = {
-  data: string;
+  data?: string;
 };
 
 const SmallContent: React.FC<ContentData> = (props) => {

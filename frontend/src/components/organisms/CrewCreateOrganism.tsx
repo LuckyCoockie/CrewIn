@@ -4,7 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
 import InputTextTypeMolecule from "../molecules/Input/InputTextTypeMolecule";
-import ImageTypeMolecule from "../molecules/Input/InputImageTypeMolecule";
+import InputImageTypeMolecule from "../molecules/Input/InputImageTypeMolecule";
 import InputDateTypeMolecule from "../molecules/Input/InputDateTypeMolecule";
 import InputTextAreaTypeMolecule from "../molecules/Input/InputTextAreaTypeMolecule";
 import ImageTypeBannerMolecule from "../molecules/Input/InputImageTypeBannerMolecule";
@@ -13,21 +13,28 @@ import { regions } from "../../regions";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 
+import {
+  CrewCreateDto,
+  postCreateCrew,
+} from "../../apis/api/crewcreate";
+
+import { uploadImage } from "../../apis/api/presigned";
+
 // 유효성 검사 스키마 정의
 const schema = yup.object({
-  crewname: yup
+  crew_name: yup
     .string()
     .max(20, "20글자 이내로 입력해주세요.")
     .required("크루명을 입력해주세요."),
-  crewslogan: yup
+  slogan: yup
     .string()
     .max(50, "50글자 이내로 입력해주세요.")
     .required("슬로건을 입력해주세요."),
-  crewmainlogo: yup.mixed(),
-  crewsublogo: yup.mixed(),
-  crewbanner: yup.mixed(),
+  main_logo: yup.mixed(),
+  sub_logo: yup.mixed(),
+  banner: yup.mixed(),
   crewcreatedat: yup.date().nullable(),
-  crewintroduce: yup
+  introduction: yup
     .string()
     .max(255, "255글자를 초과할 수 없습니다.")
     .required("크루 소개를 입력해주세요."),
@@ -35,13 +42,13 @@ const schema = yup.object({
   district: yup.string().required("시/군/구를 선택해주세요."),
 });
 type FormValues = {
-  crewname: string;
-  crewslogan: string;
-  crewmainlogo?: FileList;
-  crewsublogo?: FileList;
-  crewbanner?: FileList;
+  crew_name: string;
+  slogan: string;
+  main_logo?: File;
+  sub_logo?: File;
+  banner?: File;
   crewcreatedat?: Date | null;
-  crewintroduce: string;
+  introduction: string;
   city: string;
   district: string;
 };
@@ -64,8 +71,48 @@ const CrewCreatePage: React.FC = () => {
     },
   });
 
+  const checkUndefined = async (file?: File) => {
+    if (file) {
+      return uploadImage(file);
+    }
+  };
+
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log(data);
+    
+    Promise.all([
+      checkUndefined(data.main_logo),
+      checkUndefined(data.sub_logo),
+      checkUndefined(data.banner),
+    ])
+      .then(([mainLogoImageUrl, subLogoImageUrl, bannerImageUrl]) => {
+        const formatDate = (date: Date) => {
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, "0");
+          const day = String(date.getDate()).padStart(2, "0");
+          return `${year}-${month}-${day}`;
+        };
+        const submitData: CrewCreateDto = {
+          name: data.crew_name,
+          slogan: data.slogan,
+          area: data.city + data.district,
+          introduction: data.introduction,
+          crewBirth: formatDate(data.crewcreatedat!),
+          mainLogo: mainLogoImageUrl!,
+          subLogo: subLogoImageUrl!,
+          banner: bannerImageUrl!,
+        };
+
+        console.log(submitData);
+        // 제출 API
+        return postCreateCrew(submitData); // 제출 API 호출
+      })
+      .then(() => {
+        console.log("Crew created successfully");
+        // 성공 시 처리
+      })
+      .catch((error) => {
+        console.error("Image upload failed:", error);
+      });
   };
 
   // 도시 선택 이후 시/군/구 함수
@@ -86,32 +133,32 @@ const CrewCreatePage: React.FC = () => {
         <div className="flex flex-wrap">
           <div className="w-full">
             <Controller
-              name="crewname"
+              name="crew_name"
               control={control}
               render={({ field }) => (
                 <InputTextTypeMolecule
-                  id="crewname"
+                  id="crew_name"
                   title="크루명*"
                   placeholder="멋진 크루명을 입력해주세요!"
                   {...field}
-                  error={errors.crewname?.message}
-                  hasError={!!errors.crewname}
+                  error={errors.crew_name?.message}
+                  hasError={!!errors.crew_name}
                 />
               )}
             />
           </div>
           <div className="w-full">
             <Controller
-              name="crewslogan"
+              name="slogan"
               control={control}
               render={({ field }) => (
                 <InputTextTypeMolecule
-                  id="crewslogan"
+                  id="slogan"
                   title="슬로건*"
                   placeholder="ex) 같이의 가치"
                   {...field}
-                  error={errors.crewslogan?.message}
-                  hasError={!!errors.crewslogan}
+                  error={errors.slogan?.message}
+                  hasError={!!errors.slogan}
                 />
               )}
             />
@@ -183,58 +230,67 @@ const CrewCreatePage: React.FC = () => {
           </div>
           <div className="w-full">
             <Controller
-              name="crewmainlogo"
+              name="main_logo"
               control={control}
               render={({ field }) => (
-                <ImageTypeMolecule
-                  id="crewmainlogo"
+                <InputImageTypeMolecule
+                  id="main_logo"
                   title="메인로고"
                   placeholder="1:1 비율이 가장 적합합니다."
                   {...field}
+                  onChange={(e) => {
+                    setValue("main_logo", e.target.files![0]);
+                  }}
                 />
               )}
             />
           </div>
           <div className="w-full">
             <Controller
-              name="crewsublogo"
+              name="sub_logo"
               control={control}
               render={({ field }) => (
-                <ImageTypeMolecule
-                  id="crewsublogo"
+                <InputImageTypeMolecule
+                  id="sub_logo"
                   title="서브로고"
                   placeholder="1:1 비율이 가장 적합합니다."
                   {...field}
+                  onChange={(e) => {
+                    setValue("sub_logo", e.target.files![0]);
+                  }}
                 />
               )}
             />
           </div>
           <div className="w-full">
             <Controller
-              name="crewbanner"
+              name="banner"
               control={control}
               render={({ field }) => (
                 <ImageTypeBannerMolecule
-                  id="crewbanner"
+                  id="banner"
                   title="배너"
                   placeholder="3:2 비율이 가장 적합합니다."
                   {...field}
+                  onChange={(e) => {
+                    setValue("banner", e.target.files![0]);
+                  }}
                 />
               )}
             />
           </div>
           <div className="w-full">
             <Controller
-              name="crewintroduce"
+              name="introduction"
               control={control}
               render={({ field }) => (
                 <InputTextAreaTypeMolecule
-                  id="crewintroduce"
+                  id="introduction"
                   title="크루 소개*"
                   placeholder="크루에 대한 설명을 입력해주세요."
                   {...field}
-                  error={errors.crewintroduce?.message}
-                  hasError={!!errors.crewintroduce}
+                  error={errors.introduction?.message}
+                  hasError={!!errors.introduction}
                 />
               )}
             />

@@ -9,7 +9,7 @@ const CrewSearchPage: React.FC = () => {
 
   return (
     <main>
-      <CrewListTemplate fetchData={fetchData} />
+      <CrewListTemplate fetchData={fetchData} />;
     </main>
   );
 };

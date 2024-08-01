@@ -3,54 +3,70 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import html2canvas from "html2canvas";
 import { saveAs } from "file-saver";
 import InputMask from "react-input-mask";
-
+import ToggleButton from "../atoms/Button/ToggleButton";
 import alarmWhite from "../../assets/images/alarm-clockwhite.png";
 import alarmBlack from "../../assets/images/alarm-clockblack.png";
 import meterWhite from "../../assets/images/meterwhite.png";
 import meterBlack from "../../assets/images/meterblack.png";
+import { getMyCrews } from "../../apis/api/mycrew";
 
-interface EditorStepProps {
-  images: string[];
-  crewName: string;
-  visibility: string;
+interface ImageEditSaveProps {
+  crewId: number;
+  postImages: string[];
+  isPublic: boolean;
   content: string;
   onFinish: (finalImage: string) => void;
 }
 
-const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
-  const [overlayTotalDistance, setOverlayTotalDistance] = useState("00.00");
-  const [overlayTotalTime, setOverlayTotalTime] = useState("00:00:00");
-  const [overlayPace, setOverlayPace] = useState("0'0''");
-  const [topLeftImage, setTopLeftImage] = useState<string | null>(null);
+const ImageEditSave: React.FC<ImageEditSaveProps> = ({
+  postImages,
+  onFinish,
+}) => {
+  const [totalDistance, setTotalDistance] = useState("00.00");
+  const [totalTime, setTotalTime] = useState("00:00:00");
+  const [pace, setPace] = useState("0'0''");
 
   const [showLogoInput, setShowLogoInput] = useState(false);
   const [showDistanceInput, setShowDistanceInput] = useState(false);
   const [showTimeInput, setShowTimeInput] = useState(false);
   const [showPaceInput, setShowPaceInput] = useState(false);
   const [showColorInput, setShowColorInput] = useState(false);
+  const [crewImageUrl, setCrewImageUrl] = useState<string | null>(null);
 
   const captureRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (
-      isValidTime(overlayTotalTime) &&
-      isValidDistance(overlayTotalDistance)
-    ) {
-      const timeInSeconds = calculateTimeInSeconds(overlayTotalTime);
-      const distanceInKm = parseFloat(overlayTotalDistance);
+    const fetchCrewData = async () => {
+      try {
+        const response = await getMyCrews();
+        if (response.crews.length > 0) {
+          setCrewImageUrl(response.crews[0].imageUrl);
+        }
+      } catch (error) {
+        console.error("크루 데이터 로딩 오류:", error);
+      }
+    };
+
+    fetchCrewData();
+  }, []);
+
+  useEffect(() => {
+    if (isValidTime(totalTime) && isValidDistance(totalDistance)) {
+      const timeInSeconds = calculateTimeInSeconds(totalTime);
+      const distanceInKm = parseFloat(totalDistance);
 
       if (timeInSeconds > 0 && distanceInKm > 0) {
         const paceInSeconds = timeInSeconds / distanceInKm;
         const paceMinutes = Math.floor(paceInSeconds / 60);
         const paceSeconds = Math.floor(paceInSeconds % 60);
-        setOverlayPace(`${paceMinutes}'${paceSeconds}''`);
+        setPace(`${paceMinutes}'${paceSeconds}''`);
       } else {
-        setOverlayPace("0'0''");
+        setPace("0'0''");
       }
     } else {
-      setOverlayPace("0'0''");
+      setPace("0'0''");
     }
-  }, [overlayTotalTime, overlayTotalDistance]);
+  }, [totalTime, totalDistance]);
 
   const isValidTime = (time: string): boolean => {
     const regex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/;
@@ -65,19 +81,6 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
   const calculateTimeInSeconds = (time: string): number => {
     const [hours, minutes, seconds] = time.split(":").map(parseFloat);
     return hours * 3600 + minutes * 60 + seconds;
-  };
-
-  const handleTopLeftImageUpload = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setTopLeftImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   const handleFinish = async () => {
@@ -120,7 +123,7 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
   };
 
   return (
-    <div className="p-6">
+    <div className="">
       <div className="flex items-center justify-center mb-6">
         <div
           id="capture"
@@ -133,24 +136,24 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
             boxSizing: "border-box",
           }}
         >
-          {images.map((image, index) => (
+          {postImages.map((image, index) => (
             <div key={index}>
               <img src={image} alt={`Cropped ${index}`} />
             </div>
           ))}
-          {showLogoInput && topLeftImage && (
+          {showLogoInput && crewImageUrl && (
             <div className="logo absolute top-2 left-2 overflow-hidden rounded-full w-16 h-16">
               <img
-                src={topLeftImage}
-                alt="Top Left"
+                src={crewImageUrl}
+                alt="crew image"
                 className="w-full h-full object-cover"
                 style={{ borderRadius: "50%" }}
               />
             </div>
           )}
-          <div className="absolute bottom-4 left-4 right-4 flex justify-around items-center">
+          <div className="absolute bottom-4 left-2 right-2 flex justify-around items-center">
             {showTimeInput && (
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1">
                 {showColorInput ? (
                   <img
                     src={alarmWhite}
@@ -169,7 +172,7 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
                     showColorInput ? "text-white" : "text-black"
                   } m-0`}
                 >
-                  {overlayTotalTime}
+                  {totalTime}
                 </p>
               </div>
             )}
@@ -180,12 +183,12 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
                     showColorInput ? "text-white" : "text-black"
                   } m-0`}
                 >
-                  {overlayTotalDistance}KM
+                  {totalDistance} KM
                 </p>
               </div>
             )}
             {showPaceInput && (
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1">
                 {showColorInput ? (
                   <img
                     src={meterWhite}
@@ -204,7 +207,7 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
                     showColorInput ? "text-white" : "text-black"
                   } m-0`}
                 >
-                  {overlayPace}
+                  {pace}
                 </p>
               </div>
             )}
@@ -216,26 +219,11 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
         <label className="block text-md font-bold text-gray-700 mb-1">
           크루 로고
         </label>
-        <div className="flex items-center space-x-4">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleTopLeftImageUpload}
-            className="border border-gray-300 rounded px-2 py-1 text-sm cursor-pointer w-24 sm:w-32"
+        <div className="flex">
+          <ToggleButton
+            isActive={showLogoInput}
+            onToggle={() => setShowLogoInput(!showLogoInput)}
           />
-          <div
-            className={`relative rounded-full w-12 h-6 transition-colors duration-200 ease-in-out ${
-              showLogoInput ? "bg-[#2b2f40e6]" : "bg-[#2b2f401a]"
-            }`}
-            onClick={() => setShowLogoInput(!showLogoInput)}
-            style={{ cursor: "pointer" }}
-          >
-            <div
-              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${
-                showLogoInput ? "translate-x-full bg-white" : "bg-gray-500"
-              }`}
-            />
-          </div>
         </div>
       </div>
 
@@ -248,25 +236,16 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
             <InputMask
               mask="99:99:99"
               maskChar="0"
-              value={overlayTotalTime}
-              onChange={(e) => setOverlayTotalTime(e.target.value)}
+              value={totalTime}
+              onChange={(e) => setTotalTime(e.target.value)}
               placeholder="00:00:00"
               className="border border-gray-300 rounded px-3 py-2 w-24"
             />
           )}
-          <div
-            className={`relative rounded-full w-12 h-6 transition-colors duration-200 ease-in-out ${
-              showTimeInput ? "bg-[#2b2f40e6]" : "bg-[#2b2f401a]"
-            }`}
-            onClick={() => setShowTimeInput(!showTimeInput)}
-            style={{ cursor: "pointer" }}
-          >
-            <div
-              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${
-                showTimeInput ? "translate-x-full bg-white" : "bg-gray-500"
-              }`}
-            />
-          </div>
+          <ToggleButton
+            isActive={showTimeInput}
+            onToggle={() => setShowTimeInput(!showTimeInput)}
+          />
         </div>
       </div>
 
@@ -279,25 +258,16 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
             <InputMask
               mask="99.99"
               maskChar="0"
-              value={overlayTotalDistance}
-              onChange={(e) => setOverlayTotalDistance(e.target.value)}
+              value={totalDistance}
+              onChange={(e) => setTotalDistance(e.target.value)}
               placeholder="00.00"
               className="border border-gray-300 rounded px-3 py-2 w-24"
             />
           )}
-          <div
-            className={`relative rounded-full w-12 h-6 transition-colors duration-200 ease-in-out ${
-              showDistanceInput ? "bg-[#2b2f40e6]" : "bg-[#2b2f401a]"
-            }`}
-            onClick={() => setShowDistanceInput(!showDistanceInput)}
-            style={{ cursor: "pointer" }}
-          >
-            <div
-              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${
-                showDistanceInput ? "translate-x-full bg-white" : "bg-gray-500"
-              }`}
-            />
-          </div>
+          <ToggleButton
+            isActive={showDistanceInput}
+            onToggle={() => setShowDistanceInput(!showDistanceInput)}
+          />
         </div>
       </div>
 
@@ -310,25 +280,16 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
             <InputMask
               mask="9'99''"
               maskChar="0"
-              value={overlayPace}
-              onChange={(e) => setOverlayPace(e.target.value)}
+              value={pace}
+              onChange={(e) => setPace(e.target.value)}
               placeholder="0'00''"
               className="border border-gray-300 rounded px-3 py-2 w-24"
             />
           )}
-          <div
-            className={`relative rounded-full w-12 h-6 transition-colors duration-200 ease-in-out ${
-              showPaceInput ? "bg-[#2b2f40e6]" : "bg-[#2b2f401a]"
-            }`}
-            onClick={() => setShowPaceInput(!showPaceInput)}
-            style={{ cursor: "pointer" }}
-          >
-            <div
-              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${
-                showPaceInput ? "translate-x-full bg-white" : "bg-gray-500"
-              }`}
-            />
-          </div>
+          <ToggleButton
+            isActive={showPaceInput}
+            onToggle={() => setShowPaceInput(!showPaceInput)}
+          />
         </div>
       </div>
 
@@ -337,19 +298,10 @@ const ImageEditSave: React.FC<EditorStepProps> = ({ images, onFinish }) => {
           색상
         </label>
         <div className="flex items-center space-x-4">
-          <div
-            className={`relative rounded-full w-12 h-6 mt-2 transition-colors duration-200 ease-in-out ${
-              showColorInput ? "bg-[#2b2f40e6]" : "bg-[#2b2f401a]"
-            }`}
-            onClick={() => setShowColorInput(!showColorInput)}
-            style={{ cursor: "pointer" }}
-          >
-            <div
-              className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${
-                showColorInput ? "translate-x-full bg-white" : "bg-gray-500"
-              }`}
-            />
-          </div>
+          <ToggleButton
+            isActive={showColorInput}
+            onToggle={() => setShowColorInput(!showColorInput)}
+          />
         </div>
       </div>
 

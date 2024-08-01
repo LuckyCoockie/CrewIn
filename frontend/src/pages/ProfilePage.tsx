@@ -1,8 +1,9 @@
 import React from 'react'
+import MyProfileTemplate from '../components/templates/MyProfileTemplate'
 
 const ProfilePage:React.FC = () => {
   return (
-    <h1>ProfilePage</h1>
+    <MyProfileTemplate/>
   )
 }
 

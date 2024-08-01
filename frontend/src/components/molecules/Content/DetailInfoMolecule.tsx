@@ -4,7 +4,7 @@ import SmallContent from "../../atoms/Content/SmallContent";
 
 type InfoData = {
   title: string;
-  content: string;
+  content?: string;
 };
 
 const DetailInfoMolecule: React.FC<InfoData> = (props) => {

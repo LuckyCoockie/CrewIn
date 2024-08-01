@@ -12,10 +12,10 @@ const AlarmPage: React.FC = () => {
 
   return (
     <div className="flex flex-col max-w-[550px] mx-auto">
-      <div className="flex items-center justify-between">
+      <header>
         <BackHeaderMediumOrganism text="알림" />
-      </div>
-      <div className="mt-14">
+      </header>
+      <div>
         <div className="border-b border-gray-400"></div>
         {alarms.length > 0 ? (
           alarms

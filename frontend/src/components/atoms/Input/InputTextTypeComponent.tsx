@@ -7,6 +7,8 @@ type InputData = {
   onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
   name: string;
   hasError?: boolean;
+  disabled?: boolean;
+  value?: string;
 };
 
 const InputTextTypeComponent = forwardRef<HTMLInputElement, InputData>(
@@ -24,6 +26,8 @@ const InputTextTypeComponent = forwardRef<HTMLInputElement, InputData>(
             : "border-gray-300"
         }`}
         ref={ref}
+        disabled={props.disabled}
+        defaultValue={props.value}
       />
     );
   }
