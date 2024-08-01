@@ -23,8 +23,6 @@ pipeline {
                         cp $CONFIG_FILE backend/src/main/resources/application.yml
                     '''
                 }
-            }
-            steps {
                 withCredentials([file(credentialsId: 'crewin-keystore', variable: 'CONFIG_FILE')]) {
                     sh '''
                         chmod -R 755 backend
@@ -99,4 +97,3 @@ pipeline {
         }
     }
 }
-
