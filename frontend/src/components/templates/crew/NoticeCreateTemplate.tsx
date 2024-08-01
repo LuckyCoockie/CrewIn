@@ -15,6 +15,8 @@ import ImageUploadDropzone from "../../molecules/Input/ImageUploadDropzone";
 import LargeAbleButton from "../../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../../atoms/Button/LargeDisableButton";
 
+import { uploadImage } from "../../../apis/api/presigned";
+
 // 유효성 검사 스키마 정의
 const schema = yup.object({
   title: yup.string().required(),
@@ -33,26 +35,40 @@ const NoticeCreateTemplate: React.FC = () => {
     formState: { errors, isValid },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
-    // 유효성 검사 mode
     mode: "onChange",
     defaultValues: {},
   });
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    
+
+  const checkUndefined = async (files: File[]) => {
+    if (files) {
+      const uploadPromises = files.map(async (file) => {
+        const result = await uploadImage(file);
+        return result;
+      });
+      return Promise.all(uploadPromises);
+    } else {
+      return [];
+    }
+  };
+
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    const urls = await checkUndefined(croppedFiles);
+
     const submitData = {
       crewId: 1,
       title: data.title,
       content: data.content,
-      noticeImages: croppedImages,
+      noticeImages: urls,
     };
 
     console.log(submitData);
+    // 여기에 API 호출 코드를 추가하여 submitData를 서버에 전송합니다.
   };
 
   const [imagePaths, setImagePaths] = useState<string[]>([]);
   const [cropAspectRatio] = useState<number>(1);
   const [croppedImages, setCroppedImages] = useState<string[]>([]);
-
+  const [croppedFiles, setCroppedFiles] = useState<File[]>([]);
   const [isCropped, setIsCropped] = useState<boolean>(false);
 
   const cropperRefs = useRef<(ReactCropperElement | null)[]>([]);
@@ -92,10 +108,20 @@ const NoticeCreateTemplate: React.FC = () => {
           (blob: Blob | null) => {
             if (blob) {
               const croppedImageUrl = URL.createObjectURL(blob);
+              const file = new File([blob], `cropped_image_${index}.png`, {
+                type: blob.type,
+              });
+
               setCroppedImages((prevImages) => {
                 const newImages = [...prevImages];
                 newImages[index] = croppedImageUrl;
                 return newImages;
+              });
+
+              setCroppedFiles((prevFiles) => {
+                const newFiles = [...prevFiles];
+                newFiles[index] = file;
+                return newFiles;
               });
             }
           },
@@ -124,7 +150,7 @@ const NoticeCreateTemplate: React.FC = () => {
         ) : (
           <>
             <div
-              className="relative w-full bg-white rounded-lg mb-6"
+              className="relative w-full bg-white rounded-lg"
               style={{ width: 360, height: 360 }}
             >
               <Carousel
@@ -136,7 +162,7 @@ const NoticeCreateTemplate: React.FC = () => {
                 className="mb-6"
               >
                 {imagePaths.map((imagePath, index) => (
-                  <div key={index} className="relative my-2">
+                  <div key={index} className="relative">
                     {!isCropped ? (
                       <Cropper
                         src={imagePath}
@@ -162,7 +188,7 @@ const NoticeCreateTemplate: React.FC = () => {
                     )}
                     <button
                       onClick={handleCropAll}
-                      className="absolute bottom-2 right-3 bg-transparent z-1 p-1"
+                      className="absolute bottom-8 right-3 bg-transparent z-1 p-1"
                     >
                       {isCropped ? (
                         <img
