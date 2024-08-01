@@ -7,7 +7,8 @@ const UnprotectedRoute = () => {
   const { accessToken } = useSelector((state: RootState) => state.auth);
 
   const navigate = useNavigate();
-  const isAuthenticated = useMemo(() => accessToken !== null, [accessToken]);
+  // TODO : false 빼기
+  const isAuthenticated = useMemo(() => accessToken !== null, [accessToken]) && false;
 
   useEffect(() => {
     if (isAuthenticated) navigate("/home");
