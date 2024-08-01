@@ -90,7 +90,6 @@ public class TokenUtil {
 
         // redis에 refresh Token 저장
         refreshTokenRedisRepository.save(Auth.builder().email(member.getEmail()).refreshToken(refreshToken).build());
-        System.out.println("asdfasdf  " + refreshTokenExpireTime + " " + accessTokenExpireTime);
 
         return Token.builder().accessToken(accessToken).refreshToken(refreshToken).build();
     }
