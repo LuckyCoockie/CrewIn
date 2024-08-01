@@ -144,6 +144,7 @@ public class CrewResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class CrewGalleryDetailItem{
+        private Long postId; // 임시
         // 게시글 작성자 nickname
         private String nickname;
         // 작성자 profile image

@@ -1,6 +1,5 @@
 package com.luckycookie.crewin.controller;
 
-import com.luckycookie.crewin.domain.Crew;
 import com.luckycookie.crewin.dto.CrewRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewMemberRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewReplyMemberRequest;
@@ -8,7 +7,6 @@ import com.luckycookie.crewin.dto.CrewRequest.UpdateCrewPositionRequest;
 import com.luckycookie.crewin.dto.CrewResponse;
 import com.luckycookie.crewin.dto.CrewResponse.CrewItemResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
-import com.luckycookie.crewin.exception.post.ImageRequiredException;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.CrewService;
 import lombok.RequiredArgsConstructor;
@@ -122,6 +120,12 @@ public class CrewController {
     @GetMapping("/gallery/{crewId}")
     public ResponseEntity<BaseResponse<CrewResponse.CrewGalleryItemResponse>> getCrewGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long crewId, @RequestParam int pageNo) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 사진첩 조회를 성공했습니다.", crewService.getCrewGalleryList(pageNo, crewId, customUser)));
+    }
+
+    // 크루 사진첩 상세 조회
+    @GetMapping("/gallery/detail/{crewId}")
+    public ResponseEntity<BaseResponse<CrewResponse.CrewGalleryDetailItemResponse>> getCrewGalleryDetailList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long crewId, @RequestParam Long postId, @RequestParam String direction) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 사진첩 상세 조회를 성공했습니다.", crewService.getCrewGalleryDetailList(crewId, postId, direction, customUser)));
     }
 
     // 크루 권한 부여
