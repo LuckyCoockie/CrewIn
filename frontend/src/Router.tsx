@@ -19,7 +19,8 @@ import CrewSearchPage from "./pages/CrewSearchPage.tsx";
 import FindPasswordPage from "./pages/FindPasswordPage.tsx";
 import NoticeCreatePage from "./pages/NoticeCreatePage.tsx";
 import { ProfileInfoPage } from "./pages/ProfileInfoPage.tsx";
-import ProtectedRoute from "./util/router/ProtectedPage.tsx";
+import ProtectedRoute from "./util/router/ProtectedRoute.tsx";
+import UnprotectedRoute from "./util/router/UnprotectedRoute.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -58,9 +59,15 @@ export const router = createBrowserRouter([
           { path: "alarm", element: <AlarmPage /> },
         ],
       },
-      { path: "login", element: <LoginPage /> },
-      { path: "join", element: <JoinPage /> },
-      { path: "find-password", element: <FindPasswordPage /> },
+      {
+        path: "",
+        element: <UnprotectedRoute />,
+        children: [
+          { path: "login", element: <LoginPage /> },
+          { path: "join", element: <JoinPage /> },
+          { path: "find-password", element: <FindPasswordPage /> },
+        ],
+      },
     ],
   },
 ]);
