@@ -8,6 +8,10 @@ import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import CrewAlbumOrganism from "../organisms/CrewAlbumOrganism";
 import CrewHeaderBarOrganism from "../organisms/CrewHeaderBarOrganism";
 
+import GroupsButton from "../atoms/Button/GroupsButton";
+import MemberPlusButton from "../atoms/Button/MemberPlusButton";
+import MoreVerticalButton from "../atoms/Button/MoreVerticalButton";
+
 import {
   CrewInfoDto,
   CrewNoticeDto,
@@ -139,6 +143,11 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
         <BackHeaderMediumOrganism
           text={infoData ? infoData.crewName : "Loading..."}
         />
+              <div className="flex ms-auto">
+        <GroupsButton />
+        <MemberPlusButton />
+        <MoreVerticalButton />
+      </div>
       </header>
       <ThreeToTwoImageMolecule
         src={infoData ? infoData.imageUrl : ""}
