@@ -20,6 +20,7 @@ const InputTextTypeComponent = forwardRef<HTMLInputElement, InputData>(
         onChange={props.onChange}
         onBlur={props.onBlur}
         name={props.name}
+        type="email"
         className={`data-input bg-white border focus:outline-none ${
           props.hasError
             ? "border-red-500 focus:border-red-500"
