@@ -17,7 +17,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders("*")
                 .exposedHeaders("*")
                 .allowedOrigins(frontURL) // 허용할 출처
-                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS") // 허용할 HTTP method
+                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD") // 허용할 HTTP method
                 .allowCredentials(true) // 쿠키 인증 요청 허용
                 .maxAge(3000); // 원하는 시간만큼 pre-flight 리퀘스트를 캐싱
 
@@ -26,7 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders("*")
                 .exposedHeaders("*")
                 .allowedOrigins("http://localhost:5173") // 허용할 출처
-                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS") // 허용할 HTTP method
+                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD") // 허용할 HTTP method
                 .allowCredentials(true) // 쿠키 인증 요청 허용
                 .maxAge(3000); // 원하는 시간만큼 pre-flight 리퀘스트를 캐싱
     }
