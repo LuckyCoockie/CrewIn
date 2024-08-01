@@ -1,5 +1,7 @@
 package com.luckycookie.crewin.controller;
 
+import com.luckycookie.crewin.dto.MyPageRequest;
+import com.luckycookie.crewin.dto.MyPageRequest.MyPageNicknameRequest;
 import com.luckycookie.crewin.dto.MyPageResponse;
 import com.luckycookie.crewin.dto.MyPageResponse.MyProfileResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
@@ -10,10 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController()
 @RequestMapping("/mypage")
@@ -38,6 +37,14 @@ public class MyPageController {
             return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "내가 참가한 세션 조회를 성공했습니다.", myPageService.getCreatedMySession(customUser, pageNo, type)));
         }
     }
+
+    // 닉네임 변경
+    @PutMapping("/profile/nickname")
+    public ResponseEntity<BaseResponse<Void>> updateNickname(@AuthenticationPrincipal CustomUser customUser, @RequestBody MyPageNicknameRequest myPageNicknameRequest) {
+        myPageService.changeNickname(customUser, myPageNicknameRequest);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "닉네임을 변경하는데 성공했습니다."));
+    }
+
 
 
 }

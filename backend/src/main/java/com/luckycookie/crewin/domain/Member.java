@@ -49,4 +49,7 @@ public class Member {
     }
 
     public void updateMemberNotification(boolean bool) { this.existNotification = bool; }
+
+    public void changeNickname(String newNickname){ this.nickname = newNickname; }
+
 }
