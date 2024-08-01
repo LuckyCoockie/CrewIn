@@ -8,7 +8,9 @@ const ProtectedRoute = () => {
   const { accessToken } = useSelector((state: RootState) => state.auth);
 
   const navigate = useNavigate();
-  const isAuthenticated = useMemo(() => accessToken !== null, [accessToken]);
+
+  // TODO : true 빼기
+  const isAuthenticated = useMemo(() => accessToken !== null, [accessToken]) || true;
 
   useEffect(() => {
     if (!isAuthenticated) {
