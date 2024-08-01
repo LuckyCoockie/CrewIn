@@ -16,24 +16,17 @@ pipeline {
         }
         stage('Prepare Config') {
             steps {
-                withCredentials([file(credentialsId: 'crewin-keystore', variable: 'CONFIG_FILE')]) {
-                    sh '''
-                        chmod -R 755 backend
-                        cp $CONFIG_FILE backend/keystore.p12
-                        echo "keystore.p12 파일이 backend 경로에 복사되었습니다."
-                        if [ -f backend/keystore.p12 ]; then
-                            echo "backend/keystore.p12 파일이 존재합니다."
-                        else
-                            echo "backend/keystore.p12 파일이 존재하지 않습니다."
-                        fi
-                    '''
-                }
                 withCredentials([file(credentialsId: 'crewin-application-yml', variable: 'CONFIG_FILE')]) {
                     sh '''
                         mkdir -p backend/src/main/resources
                         chmod -R 755 backend/src/main/resources
                         cp $CONFIG_FILE backend/src/main/resources/application.yml
-                        echo "application.yml 파일이 backend/src/main/resources/ 경로에 복사되었습니다."
+                    '''
+                }
+                withCredentials([file(credentialsId: 'crewin-keystore', variable: 'CONFIG_FILE')]) {
+                    sh '''
+                        chmod -R 755 backend/src/main/resources
+                        cp $CONFIG_FILE backend/src/main/resources/keystore.p12
                     '''
                 }
             }
