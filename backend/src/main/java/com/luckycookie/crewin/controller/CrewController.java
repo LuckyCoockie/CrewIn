@@ -123,6 +123,12 @@ public class CrewController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 사진첩 조회를 성공했습니다.", crewService.getCrewGalleryList(pageNo, crewId, customUser)));
     }
 
+    // 크루 사진첩 상세 조회
+    @GetMapping("/gallery/detail/{crewId}")
+    public ResponseEntity<BaseResponse<CrewResponse.CrewGalleryDetailItemResponse>> getCrewGalleryDetailList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long crewId, @RequestParam Long postId, @RequestParam String direction) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 사진첩 상세 조회를 성공했습니다.", crewService.getCrewGalleryDetailList(crewId, postId, direction, customUser)));
+    }
+
     // 크루 권한 부여
     @PostMapping("/member/authority")
     public ResponseEntity<BaseResponse<Void>> updateMemberCrewPosition(@AuthenticationPrincipal CustomUser customUser, @RequestBody UpdateCrewPositionRequest updateCrewPositionRequest) {

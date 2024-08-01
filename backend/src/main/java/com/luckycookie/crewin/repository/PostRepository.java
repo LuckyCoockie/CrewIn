@@ -22,4 +22,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p WHERE p.crew = :crew AND p.postType = :postType ORDER BY p.createdAt DESC")
     Page<Post> findByCrewAndPostType(Crew crew, PostType postType, Pageable pageable);
 
+    // PostId가 기준보다 큰 포스트들을 오름차순으로 가져오는 메서드
+    Page<Post> findByCrewAndIdGreaterThanAndPostTypeOrderByIdAsc(Crew crew, Long id, PostType postType, Pageable pageable);
+
+    // PostId가 기준보다 작은 포스트들을 내림차순으로 가져오는 메서드
+    Page<Post> findByCrewAndIdLessThanAndPostTypeOrderByIdAsc(Crew crew, Long id, PostType postType, Pageable pageable);
+
 }
