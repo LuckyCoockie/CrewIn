@@ -27,7 +27,7 @@ const InputTextTypeComponent = forwardRef<HTMLInputElement, InputData>(
         }`}
         ref={ref}
         disabled={props.disabled}
-        value={props.value}
+        defaultValue={props.value}
       />
     );
   }

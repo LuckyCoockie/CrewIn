@@ -101,6 +101,7 @@ type AuthState = {
 
 /* ----------------- 모듈의 초기 상태 ------------------ */
 const initialState: AuthState = {
+  // TODO : initail access token null로 바꾸기
   accessToken: null,
   loading: false,
   error: null,

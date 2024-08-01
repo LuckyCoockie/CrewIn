@@ -11,14 +11,12 @@ const App: React.FC = () => {
   const shouldHideBottomBar = hideBottomBarRoutes.includes(location.pathname);
 
   return (
-    <>
-      <div className="mx-auto w-full max-w-[550px]">
-        <Outlet />
-        {!shouldHideBottomBar && (
-          <BottomBarOrganism current={location.pathname} />
-        )}{" "}
-      </div>
-    </>
+    <div className="mx-auto w-full max-w-[550px]">
+      <Outlet />
+      {!shouldHideBottomBar && (
+        <BottomBarOrganism current={location.pathname} />
+      )}{" "}
+    </div>
   );
 };
 
