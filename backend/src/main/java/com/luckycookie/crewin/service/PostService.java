@@ -3,6 +3,8 @@ package com.luckycookie.crewin.service;
 import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.PostType;
 import com.luckycookie.crewin.dto.PostRequest;
+import com.luckycookie.crewin.dto.PostResponse.PostGalleryItem;
+import com.luckycookie.crewin.dto.PostResponse.PostGalleryItemResponse;
 import com.luckycookie.crewin.dto.PostResponse.PostItem;
 import com.luckycookie.crewin.dto.PostResponse.PostItemsResponse;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
@@ -10,6 +12,7 @@ import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.memberCrew.NotFoundMemberCrewException;
 import com.luckycookie.crewin.exception.post.NotFoundPostException;
+import com.luckycookie.crewin.exception.session.NotFoundSessionException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +36,9 @@ public class PostService {
     private final HeartRepository heartRepository;
     private final PostImageRepository postImageRepository;
     private final MemberCrewRepository memberCrewRepository;
+    private final SessionRepository sessionRepository;
+    private final SessionImageRepository sessionImageRepository;
+    private final MemberSessionRepository memberSessionRepository;
 
     public void writePost(PostRequest.WritePostRequest writePostRequest, CustomUser customUser) {
 
@@ -83,6 +89,18 @@ public class PostService {
 
     }
 
+
+
+    private List<String> getPostImages(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(NotFoundPostException::new);
+
+        List<PostImage> postImages = postImageRepository.findByPost(post);
+        return postImages.stream().map(PostImage::getImageUrl).toList();
+    }
+
+
+
+
     @Transactional(readOnly = true)
     public PostItemsResponse getAllPostsSortedByCreatedAt(String email, int pageNo) {
         PageRequest pageRequest = PageRequest.of(pageNo, 10);
@@ -119,10 +137,64 @@ public class PostService {
                 .build();
     }
 
-    private List<String> getPostImages(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(NotFoundPostException::new);
-
-        List<PostImage> postImages = postImageRepository.findByPost(post);
-        return postImages.stream().map(PostImage::getImageUrl).toList();
+    public PostGalleryItemResponse getCrewPostGallery(int pageNo, long crewId, CustomUser customUser) {
+        PageRequest pageRequest = PageRequest.of(pageNo, 27);
+        Member viewer = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(MemberNotFoundException::new);
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(NotFoundCrewException::new);
+        if (!memberCrewRepository.existsByMemberAndCrew(viewer, crew)) {
+            throw new NotFoundMemberCrewException();
+        }
+        Page<Post> postListPage = postRepository.findByCrewAndPostType(crew, PostType.STANDARD, pageRequest);
+        return convertToGalleryItemResponse(pageNo, postListPage);
     }
+
+    public PostGalleryItemResponse getUserPostGallery(int pageNo, long targetMemgerId, CustomUser customUser) {
+        PageRequest pageRequest = PageRequest.of(pageNo, 27);
+        Member targetMember = memberRepository.findById(targetMemgerId)
+                .orElseThrow(NotFoundMemberException::new);
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(MemberNotFoundException::new);
+        // 1. isPublic이 true인 글 (isPublic은 tinyInt형임) or
+        // 2. 남(targetMember)이 작성한 게시글 중 크루가 null인(태그되지 않은)글 or
+        // 3. 크루가 태그되었다면 해당 크루에 targetMember와 Member가 속해있는 글들
+
+        Page<Post> postListPage = postRepository.findByMemberAndTargetMember(member, targetMember, pageRequest);
+        return convertToGalleryItemResponse(pageNo, postListPage);
+    }
+
+    public PostGalleryItemResponse getMyPostGallery(int pageNo, CustomUser customUser) {
+        PageRequest pageRequest = PageRequest.of(pageNo, 27);
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(MemberNotFoundException::new);
+        // 내가 작성한 게시글(type이 standard인 글 중 작성자가 본인인 글)
+        Page<Post> postListPage = postRepository.findByMember(member, pageRequest);
+        return convertToGalleryItemResponse(pageNo, postListPage);
+    }
+
+
+    //Page<Post>를 받아서 갤러리 response로 변환
+    private PostGalleryItemResponse convertToGalleryItemResponse(int pageNo, Page<Post> postListPage) {
+        List<Post> postList = postListPage.getContent();
+        int lastPageNo = Math.max(postListPage.getTotalPages() - 1, 0);
+        List<PostGalleryItem> postGalleryItems = postList.stream()
+                .map(post -> new PostGalleryItem(
+                        post.getId(),
+                        post.getPostImages().isEmpty() ? null : post.getPostImages().get(0).getImageUrl()
+                ))
+                .toList();
+        return PostGalleryItemResponse.builder()
+                .pageNo(pageNo)
+                .lastPageNo(lastPageNo)
+                .postGalleryList(postGalleryItems)
+                .build();
+    }
+
+
+
+
+
+
+
 }

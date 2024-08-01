@@ -4,9 +4,11 @@ import com.luckycookie.crewin.dto.MyPageRequest;
 import com.luckycookie.crewin.dto.MyPageRequest.MyPageNicknameRequest;
 import com.luckycookie.crewin.dto.MyPageResponse;
 import com.luckycookie.crewin.dto.MyPageResponse.MyProfileResponse;
+import com.luckycookie.crewin.dto.PostResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.MyPageService;
+import com.luckycookie.crewin.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class MyPageController {
 
     private final MyPageService myPageService;
+    private final PostService postService;
 
     // 내 프로필 조회
     @GetMapping()
@@ -51,6 +54,14 @@ public class MyPageController {
         myPageService.changeNickname(customUser, myPageNicknameRequest);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "닉네임을 변경하는데 성공했습니다."));
     }
+
+
+    // 내 사진첩(갤러리) 조회 - 페이징
+    @GetMapping("/detail/gallery")
+    public ResponseEntity<BaseResponse<PostResponse.PostGalleryItemResponse>> getMyGalleryList(@AuthenticationPrincipal CustomUser customUser, @RequestParam int pageNo) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "멤버 사진첩 조회를 성공했습니다.", postService.getMyPostGallery(pageNo, customUser)));
+    }
+
 
 
 }

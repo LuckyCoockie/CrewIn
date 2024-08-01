@@ -9,7 +9,6 @@ import com.luckycookie.crewin.dto.CrewRequest.CreateCrewNoticeRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CreateCrewRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewMemberRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewReplyMemberRequest;
-import com.luckycookie.crewin.dto.CrewResponse;
 import com.luckycookie.crewin.dto.CrewResponse.*;
 import com.luckycookie.crewin.dto.PostResponse;
 import com.luckycookie.crewin.exception.crew.*;
@@ -294,44 +293,6 @@ public class CrewService {
                 .pageNo(pageNo)
                 .lastPageNo(lastPageNo)
                 .build();
-    }
-
-    // 크루 사진첩 조회
-    @Transactional(readOnly = true)
-    public CrewGalleryItemResponse getCrewGalleryList(int pageNo, Long crewId, CustomUser customUser) {
-        Pageable pageable = PageRequest.of(pageNo, 27); // 페이지 크기 : 27
-
-        // 현재 로그인 된 사용자 정보 가져오기
-        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
-
-        // 크루 가져오기
-        Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
-
-        // 내가 그 크루에 속해있는지 확인 (크루에 속해있을 때 사진첩이 보여야 함)
-        MemberCrew memberCrew = memberCrewRepository.findByMemberAndCrew(member, crew).orElseThrow(NotFoundMemberCrewException::new);
-
-        // 해당 크루의 일반 게시물 가져오기
-        if (memberCrew != null) {
-            Page<Post> galleryListPage = postRepository.findByCrewAndPostType(crew, PostType.STANDARD, pageable);
-            List<Post> galleryList = galleryListPage.getContent();
-            int lastPageNo = Math.max(galleryListPage.getTotalPages() - 1, 0);
-
-            List<CrewGalleryItem> crewGalleryItems = galleryList.stream().map(post -> CrewGalleryItem
-                    .builder()
-                    .postId(post.getId())
-                    .imageUrls(post.getPostImages().stream().map(PostImage::getImageUrl
-                    ).toList())
-                    .build()).collect(Collectors.toList());
-
-            return CrewGalleryItemResponse
-                    .builder()
-                    .crewGalleryList(crewGalleryItems)
-                    .pageNo(pageNo)
-                    .lastPageNo(lastPageNo)
-                    .build();
-        }
-
-        throw new CrewUnauthorizedException(); // 크루에 속해 있지 않다면 권한이 없는 것
     }
 
     // 크루 사진첩 상세 조회

@@ -7,9 +7,11 @@ import com.luckycookie.crewin.dto.CrewRequest.UpdateCrewPositionRequest;
 import com.luckycookie.crewin.dto.CrewResponse;
 import com.luckycookie.crewin.dto.CrewResponse.CrewItemResponse;
 import com.luckycookie.crewin.dto.PostResponse;
+import com.luckycookie.crewin.dto.PostResponse.PostGalleryItemResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.CrewService;
+import com.luckycookie.crewin.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class CrewController {
 
     private final CrewService crewService;
-
+    private final PostService postService;
     // 크루 생성
     @PostMapping()
     public ResponseEntity<BaseResponse<CrewResponse.CrewCreateResponse>> createCrew(@AuthenticationPrincipal CustomUser customUser, @RequestBody CrewRequest.CreateCrewRequest createCrewRequest) {
@@ -117,10 +119,10 @@ public class CrewController {
         }
     }
 
-    // 크루 사진첩 조회
-    @GetMapping("/gallery/{crewId}")
-    public ResponseEntity<BaseResponse<CrewResponse.CrewGalleryItemResponse>> getCrewGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long crewId, @RequestParam int pageNo) {
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 사진첩 조회를 성공했습니다.", crewService.getCrewGalleryList(pageNo, crewId, customUser)));
+    // 크루 사진첩(갤러리) 조회 - 페이징
+    @GetMapping("/detail/gallery/{crewId}")
+    public ResponseEntity<BaseResponse<PostGalleryItemResponse>> getCrewGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long crewId, @RequestParam int pageNo) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 사진첩 조회를 성공했습니다.", postService.getCrewPostGallery(pageNo, crewId, customUser)));
     }
 
     // 크루 사진첩 상세 조회
