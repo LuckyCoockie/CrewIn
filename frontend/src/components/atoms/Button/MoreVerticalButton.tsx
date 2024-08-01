@@ -1,10 +1,12 @@
-import React from 'react'
-import { ReactComponent as MoreVerticalIcon } from "../../../assets/icons/more_vertical.svg"
+import React from "react";
+import { ReactComponent as MoreVerticalIcon } from "../../../assets/icons/more_vertical.svg";
 
-const MoreVerticalButton:React.FC = () => {
-  return (
-    <MoreVerticalIcon/>
-  )
-}
+type Props = {
+  onDropdownClick: () => void;
+};
 
-export default MoreVerticalButton
+const MoreVerticalButton: React.FC<Props> = ({ onDropdownClick }) => {
+  return <MoreVerticalIcon onClick={onDropdownClick} />;
+};
+
+export default MoreVerticalButton;
