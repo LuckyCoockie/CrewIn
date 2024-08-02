@@ -61,7 +61,7 @@ export const getCodeCheck = async (
 export type JoinMemberInfoDto = {
   name: string;
   nickname: string;
-  email?: string;
+  email: string;
   password: string;
 };
 
