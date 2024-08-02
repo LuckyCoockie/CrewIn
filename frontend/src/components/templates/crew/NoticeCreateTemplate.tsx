@@ -62,7 +62,7 @@ const NoticeCreateTemplate: React.FC = () => {
     };
 
     console.log(submitData);
-    // 여기에 API 호출 코드를 추가하여 submitData를 서버에 전송합니다.
+    // 여기에 API 호출 코드를 추가
   };
 
   const [imagePaths, setImagePaths] = useState<string[]>([]);
