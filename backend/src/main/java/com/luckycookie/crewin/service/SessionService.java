@@ -1,6 +1,7 @@
 package com.luckycookie.crewin.service;
 
 import com.luckycookie.crewin.domain.*;
+import com.luckycookie.crewin.domain.enums.Position;
 import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.*;
 import com.luckycookie.crewin.dto.SessionImageResponse.SessionGalleryItem;
@@ -17,6 +18,7 @@ import com.luckycookie.crewin.exception.session.SessionAuthorizationException;
 import com.luckycookie.crewin.exception.session.SessionInProgressException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
+import jakarta.persistence.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.luckycookie.crewin.domain.enums.SessionType.*;
 
 
 @Service
@@ -92,13 +96,18 @@ public class SessionService {
                 sessionPosterRepository.save(sessionPoster);
             }
         }
+
+        memberSessionRepository.save(MemberSession.builder()
+                .member(member)
+                .session(session)
+                .build());
     }
 
     public SessionDetailResponse getSessionDetail(Long sessionId, CustomUser customUser) {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(NotFoundSessionException::new);
 
-        if (session.getSessionType().equals(SessionType.STANDARD)) {
+        if (session.getSessionType().equals(STANDARD)) {
             Member member = memberRepository.findByEmail(customUser.getEmail())
                     .orElseThrow(NotFoundMemberException::new);
             if (!memberCrewRepository.findIsJoinedByMemberAndCrew(member, session.getCrew())
@@ -181,7 +190,7 @@ public class SessionService {
         List<SessionPoster> sessionPosters = sessionPosterRepository.findBySessionOrderByImageUrlAsc(session);
         String sessionThumbnail = sessionPosters.isEmpty() ? null : sessionPosters.get(0).getImageUrl();
         String crewName = "";
-        if(session.getCrew() != null)
+        if (session.getCrew() != null)
             crewName = session.getCrew().getCrewName();
 
         return SessionResponse.builder()
@@ -235,8 +244,39 @@ public class SessionService {
                 .build();
     }
 
-    public void applySession(){
+    public void applySession(Long sessionId, String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
+        Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundSessionException::new);
 
+        // 호스트가 신청하거나, 신청시간이 세션 시작 이후면 안 받음
+        if (session.getHost().getId().equals(member.getId()) ||
+                LocalDateTime.now().isAfter(session.getStartAt())
+        ) {
+            throw new InvalidSessionException();
+        }
+
+        boolean joinStatus = false;
+        if (session.getSessionType() != THUNDER) {
+            joinStatus = memberCrewRepository.existsByMemberAndCrew(member, session.getCrew());
+        }
+
+        // 크루원이 아닌 회원이 정규런 신청할 경우 예외처리
+        if (session.getSessionType() == STANDARD && !joinStatus) {
+            throw new SessionAuthorizationException();
+        } else if (session.getSessionType() == OPEN && !joinStatus) {
+            // 크루원 아닌 회원이 오픈런 신청할 경우 멤버-크루 테이블에 넣어줌
+            MemberCrew memberCrew = MemberCrew.builder()
+                    .member(member)
+                    .crew(session.getCrew())
+                    .build();
+            memberCrewRepository.save(memberCrew);
+        }
+
+        MemberSession memberSession = MemberSession.builder()
+                .member(member)
+                .session(session)
+                .isAttend(false).build();
+        memberSessionRepository.save(memberSession);
     }
 
 }

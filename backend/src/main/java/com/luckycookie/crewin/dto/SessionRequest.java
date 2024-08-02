@@ -73,4 +73,12 @@ public class SessionRequest {
         private int maxPeople;
 
     }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class ApplySessionRequest {
+        private Long sessionId;
+    }
 }

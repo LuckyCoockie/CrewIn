@@ -124,13 +124,14 @@ public class CrewService {
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
-        List<Crew> crews = memberCrewRepository.findCrewByMemberAndIsJoined(member);
+        List<MemberCrew> crews = memberCrewRepository.findCrewByMemberAndIsJoined(member);
 
-        List<CrewItem> crewItems = crews.stream().map(crew -> {
+        List<MyCrewItem> crewItems = crews.stream().map(memberCrew -> {
+            Crew crew = memberCrew.getCrew();
             int crewCount = crewRepository.countMembersByCrew(crew);
             String captainName = crew.getCaptain().getName();
 
-            return CrewItem.builder()
+            return MyCrewItem.builder()
                     .crewId(crew.getId())
                     .crewName(crew.getCrewName())
                     .slogan(crew.getSlogan())
@@ -138,6 +139,7 @@ public class CrewService {
                     .crewCount(crewCount)
                     .captainName(captainName)
                     .imageUrl(crew.getMainLogo())
+                    .position(memberCrew.getPosition())
                     .build();
         }).collect(Collectors.toList());
 
@@ -516,7 +518,7 @@ public class CrewService {
                 .orElseThrow(NotFoundMemberException::new);
         Crew crew = crewRepository.findById(crewId)
                 .orElseThrow(NotFoundCrewException::new);
-        memberCrewRepository.findByMemberAndCrew(member,crew)
+        memberCrewRepository.findByMemberAndCrew(member, crew)
                 .orElseThrow(NotFoundMemberCrewException::new);
         Post post = postRepository.findById(noticeId)
                 .orElseThrow(NotFoundPostException::new);
@@ -530,7 +532,7 @@ public class CrewService {
                 .map(PostImage::getImageUrl)
                 .collect(Collectors.toList());
 
-         return PostResponse.PostItem.builder()
+        return PostResponse.PostItem.builder()
                 .id(post.getId())
                 .authorName(post.getAuthor().getName())
                 .authorId(post.getAuthor().getId())
