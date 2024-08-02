@@ -2,7 +2,7 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import InputTextTypeMolecule from "../molecules/Input/InputTextTypeMolecule";
+import InputEmailTypeMolecule from "../molecules/Input/InputEmailTypeMolecule";
 import InputPasswordTypeMolecule from "../molecules/Input/InputPasswordTypeMolecule";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
@@ -49,7 +49,7 @@ const LoginOrganism = () => {
             name="email"
             control={control}
             render={({ field }) => (
-              <InputTextTypeMolecule
+              <InputEmailTypeMolecule
                 id="email"
                 title="이메일"
                 placeholder="ex) mycrew@crew.co.kr"
