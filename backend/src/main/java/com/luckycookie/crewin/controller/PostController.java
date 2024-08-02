@@ -71,13 +71,13 @@ public class PostController {
 
     // 사진첩 조회
     // 크루 사진첩(갤러리) 조회 - 페이징
-    @GetMapping("/crew/detail/gallery/{crewId}")
+    @GetMapping("/crew/gallery/{crewId}")
     public ResponseEntity<BaseResponse<PostGalleryItemResponse>> getCrewGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long crewId, @RequestParam int pageNo) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 사진첩 조회를 성공했습니다.", postService.getCrewPostGallery(pageNo, crewId, customUser)));
     }
 
     // 멤버 사진첩(갤러리) 조회 - 페이징
-    @GetMapping("/member/detail/gallery/{memberId}")
+    @GetMapping("/member/gallery/{memberId}")
     public ResponseEntity<BaseResponse<PostGalleryItemResponse>> getMemberGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long memberId, @RequestParam int pageNo) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "멤버 사진첩 조회를 성공했습니다.", postService.getUserPostGallery(pageNo, memberId, customUser)));
     }
@@ -89,5 +89,10 @@ public class PostController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 사진첩 상세 조회를 성공했습니다.", postService.getCrewPostGalleryDetailResponse(crewId, postId, direction, customUser)));
     }
 
+    // 멤버 사진첩 상세 조회
+    @GetMapping("/member/gallery/detail/{memberId}")
+    public ResponseEntity<BaseResponse<PostItemsResponse>> getMemberGalleryDetailList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long memberId, @RequestParam Long postId, @RequestParam String direction) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "멤버 사진첩 상세 조회를 성공했습니다.", postService.getMemberPostGalleryDetailResponse(memberId, postId, direction, customUser)));
+    }
 
 }
