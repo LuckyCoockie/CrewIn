@@ -57,10 +57,10 @@ const SearchUserPage: React.FC = () => {
         <BackHeaderMediumOrganism text="" />
         <div className="relative flex-1 font-weight-sm">
           <input
-            className="border-2 border-gray-300 bg-white h-10 px-4 pr-12 rounded-lg text-sm focus:outline-none w-full"
-            type="search"
-            name="search"
-            placeholder="아이디, 이름, 닉네임"
+            className="h-10 px-4 pr-12 text-sm w-full"
+            type=""
+            name=""
+            placeholder="이름, 닉네임"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onBlur={() => setTimeout(() => setShowDropdown(false), 200)}

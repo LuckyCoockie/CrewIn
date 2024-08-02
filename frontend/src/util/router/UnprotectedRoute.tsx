@@ -8,7 +8,7 @@ const UnprotectedRoute = () => {
 
   const navigate = useNavigate();
   // TODO : false 빼기
-  const isAuthenticated = useMemo(() => accessToken !== null, [accessToken]) && false;
+  const isAuthenticated = useMemo(() => accessToken !== null, [accessToken]);
 
   useEffect(() => {
     if (isAuthenticated) navigate("/home");
