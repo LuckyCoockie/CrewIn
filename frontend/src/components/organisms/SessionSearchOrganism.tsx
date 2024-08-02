@@ -1,9 +1,8 @@
 import React, { useCallback, useState } from "react";
 import {
   GetSessionListRequestDto,
-  SessionRequestType,
-  SessionRequestTypeData,
-  sessionRequestTypeToLabel,
+  SessionType,
+  sessionTypeToLabel,
 } from "../../apis/api/session";
 import DropdownTypeComponent from "../atoms/Input/DropdownItemComponent";
 import qs from "query-string";
@@ -21,9 +20,7 @@ type OwnProps = {
 const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
   const query = qs.parse(location.search);
 
-  const [type, setType] = useState<SessionRequestType>(
-    query.sessionType ?? "all"
-  );
+  const [type, setType] = useState<SessionType>(query.sessionType);
   const [input, setInput] = useState<string | undefined>(query["crew-name"]);
   const [date, setDate] = useState<Date | null>(query.date);
 
@@ -42,7 +39,7 @@ const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
 
   const handelTypeChange = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
-      const value = event.target.value as SessionRequestType;
+      const value = event.target.value as SessionType;
       setType(value);
       onSearch({
         sessionType: value,
@@ -75,10 +72,13 @@ const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
       <div className="mb-3 xs:mb-5 flex items-center bg-white w-full">
         <DropdownTypeComponent
           id="sessionpaceminutes"
-          options={Object.values(SessionRequestTypeData).map((type) => ({
-            label: sessionRequestTypeToLabel(type),
-            value: type,
-          }))}
+          options={[
+            { label: "전체", value: undefined },
+            ...Object.values(SessionType).map((type) => ({
+              label: sessionTypeToLabel(type),
+              value: type,
+            })),
+          ]}
           value={type}
           onChange={handelTypeChange}
           className="border rounded-md text-white bg-primary"

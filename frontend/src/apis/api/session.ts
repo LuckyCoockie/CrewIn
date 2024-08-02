@@ -1,41 +1,18 @@
 import api from "../utils/instance";
 
-export const SessionTypeData = {
+export const SessionType = {
   STANDARD: "STANDARD",
   OPEN: "OPEN",
   THUNDER: "THUNDER",
 } as const;
-export type SessionType =
-  (typeof SessionTypeData)[keyof typeof SessionTypeData];
+export type SessionType = (typeof SessionType)[keyof typeof SessionType];
 export const sessionTypeToLabel = (type: SessionType) => {
   switch (type) {
-    case SessionTypeData.STANDARD:
+    case SessionType.STANDARD:
       return "정규런";
-    case SessionTypeData.OPEN:
+    case SessionType.OPEN:
       return "오픈런";
-    case SessionTypeData.THUNDER:
-      return "번개런";
-  }
-};
-
-export const SessionRequestTypeData = {
-  ALL: "all",
-  STANDARD: "standard",
-  OPEN: "open",
-  THUNDER: "thunder",
-} as const;
-export type SessionRequestType =
-  (typeof SessionRequestTypeData)[keyof typeof SessionRequestTypeData];
-
-export const sessionRequestTypeToLabel = (type: SessionRequestType) => {
-  switch (type) {
-    case SessionRequestTypeData.ALL:
-      return "전체";
-    case SessionRequestTypeData.STANDARD:
-      return "정규런";
-    case SessionRequestTypeData.OPEN:
-      return "오픈런";
-    case SessionRequestTypeData.THUNDER:
+    case SessionType.THUNDER:
       return "번개런";
   }
 };
@@ -68,7 +45,7 @@ export type SessionDto = {
 };
 
 export type GetSessionListRequestDto = {
-  sessionType?: SessionRequestType;
+  sessionType?: SessionType;
   "crew-name"?: string;
   date?: string;
   status?: SessionStatusType;
@@ -77,6 +54,8 @@ export type GetSessionListRequestDto = {
 export const getSessionList = async (
   dto: GetSessionListRequestDto
 ): Promise<SessionDto[]> => {
-  const response = await api.get("/session", { params: dto });
-  return response.data;
+  const response = await api.get<SessionDto[]>("/session", { params: dto });
+  return response.data.filter((value) =>
+    value.startAt.includes(dto.date ?? "")
+  );
 };

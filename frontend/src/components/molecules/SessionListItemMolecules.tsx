@@ -36,7 +36,7 @@ const SessionListItem = ({ crewName, area, date, imageUrl }: OwnProps) => {
     const year = temp.getFullYear();
     const month = String(temp.getMonth() + 1).padStart(2, "0");
     const day = String(temp.getDate()).padStart(2, "0");
-    return `${year}년 ${month}월 ${day}일`;
+    return `${year % 100}.${month}.${day}`;
   }, [date]);
 
   const parsedTime = useMemo(() => {
@@ -44,7 +44,7 @@ const SessionListItem = ({ crewName, area, date, imageUrl }: OwnProps) => {
     const dayOfWeek = ["일", "월", "화", "수", "목", "금", "토"][temp.getDay()];
     const hours = String(temp.getHours()).padStart(2, "0");
     const minutes = String(temp.getMinutes()).padStart(2, "0");
-    return `(${dayOfWeek}) ${hours}시 ${minutes}분`;
+    return `(${dayOfWeek}) ${hours}:${minutes}`;
   }, [date]);
 
   return (
@@ -73,7 +73,9 @@ const SessionListItem = ({ crewName, area, date, imageUrl }: OwnProps) => {
             >
               {crewName}
             </p>
-            <p className="text-white text-[10px] xs:text-xs sm:text-sm truncate">{area}</p>
+            <p className="text-white text-[10px] xs:text-xs sm:text-sm truncate">
+              {area}
+            </p>
           </div>
           <div className="right-element text-right items-center overflow-hidden">
             <p

@@ -2,7 +2,7 @@ import React from "react";
 
 type Option = {
   label: string;
-  value: string | number;
+  value?: string | number;
 };
 
 type InputData = {
@@ -33,7 +33,7 @@ const DropdownTypeComponent = React.forwardRef<HTMLSelectElement, InputData>(
         {props.options.map((option) => (
           <option
             key={option.value}
-            value={option.value}
+            value={option.value ?? ""}
             className="text-center text-black bg-white"
           >
             {option.label}
