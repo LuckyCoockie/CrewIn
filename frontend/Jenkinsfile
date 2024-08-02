@@ -32,7 +32,6 @@ pipeline {
                     sh '''
                         cd frontend
                         npm install
-                        rm -rf node_modules
                         rm package-lock.json
                         npm run build
                         chmod -R 755 dist
