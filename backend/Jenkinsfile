@@ -23,12 +23,12 @@ pipeline {
                         cp $CONFIG_FILE backend/src/main/resources/application.yml
                     '''
                 }
-                withCredentials([file(credentialsId: 'crewin-keystore', variable: 'CONFIG_FILE')]) {
-                    sh '''
-                        chmod -R 755 backend/src/main/resources
-                        cp $CONFIG_FILE backend/src/main/resources/keystore.p12
-                    '''
-                }
+//                 withCredentials([file(credentialsId: 'crewin-keystore', variable: 'CONFIG_FILE')]) {
+//                     sh '''
+//                         chmod -R 755 backend/src/main/resources
+//                         cp $CONFIG_FILE backend/src/main/resources/keystore.p12
+//                     '''
+//                 }
             }
         }
         stage('Build & Test') {
