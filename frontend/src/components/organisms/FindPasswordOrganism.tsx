@@ -7,6 +7,8 @@ import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import Modal from "../molecules/ModalMolecules";
 
+import { useNavigate } from "react-router";
+
 import {
   temporarilyPassword,
   temporarilyPasswordDto,
@@ -29,6 +31,7 @@ type FormValues = {
 };
 
 const FindPasswordOrganism: React.FC = () => {
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     control,
@@ -47,14 +50,16 @@ const FindPasswordOrganism: React.FC = () => {
     try {
       await temporarilyPassword(submitData);
       console.log("임시 비밀번호 발송");
+      setIsModalOpen(true);
     } catch (error) {
       console.log("비밀번호 발송 실패");
+      window.alert("인증번호를 확인해주세요.");
     }
-    setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
+    navigate(`/login`);
   };
 
   return (
@@ -106,15 +111,11 @@ const FindPasswordOrganism: React.FC = () => {
 
       {/* 모달 */}
       {isModalOpen && (
-        <Modal onClose={closeModal}>
-          <h2 className="text-xl font-bold mb-4">비밀번호 찾기</h2>
-          <p>이메일로 비밀번호 재설정 링크가 전송되었습니다.</p>
-          <button
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-            onClick={closeModal}
-          >
-            닫기
-          </button>
+        <Modal onClose={closeModal} title="비밀번호 찾기">
+          <p className="mb-4">
+            이메일로 비밀번호 재설정 링크가 전송되었습니다.
+          </p>
+          <LargeAbleButton text="닫기" onClick={closeModal} />
         </Modal>
       )}
     </>
