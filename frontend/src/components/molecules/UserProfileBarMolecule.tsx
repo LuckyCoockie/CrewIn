@@ -59,7 +59,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           <img src={menuicon} alt="menu-icon" />
         </button>
         {isDropdownOpen && (
-          <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-300 rounded-md z-10">
+          <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-400 rounded-sm z-10">
             <button
               onClick={() => {
                 onEdit();
@@ -74,7 +74,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                 onDelete();
                 setIsDropdownOpen(false);
               }}
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-sm w-full text-left"
             >
               삭제
             </button>

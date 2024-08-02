@@ -65,7 +65,9 @@ const PostMainPage: React.FC = () => {
           className="post-list"
         />
       </div>
-      <FloatingActionButton icon={Postcreateicon} onClick={handlePostCreate} />
+      <FloatingActionButton onClick={handlePostCreate}>
+        <Postcreateicon />
+      </FloatingActionButton>
       <PWAInstallPrompt />
     </div>
   );
