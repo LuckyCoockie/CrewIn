@@ -15,13 +15,13 @@ export const ProfileInfoPage = () => {
   };
 
   return (
-    <main>
+    <>
       <ProfileInfoTemplate
         fetchData={getProfileInfo}
         onProfileImageEdit={onProfileImageEdit}
         onNicknameEdit={onNicknameEdit}
         onPasswordEdit={onPasswordEdit}
       />
-    </main>
+    </>
   );
 };
