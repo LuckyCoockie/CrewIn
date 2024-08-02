@@ -11,7 +11,13 @@ import InputPasswordTypeMolecule from "../molecules/Input/InputPasswordTypeMolec
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 
-import { getEmailDuplicationCheck } from "../../apis/api/signup";
+import {
+  getEmailDuplicationCheck,
+  postMemberCheck,
+  getCodeCheck,
+  joinMember,
+  JoinMemberInfoDto,
+} from "../../apis/api/signup";
 
 // 비밀번호 규칙 설정
 const passwordRules = /^(?=.*[a-z])(?=.*[A-Z]).{0,}$/;
@@ -58,14 +64,12 @@ yup.addMethod<yup.StringSchema>(
               createError({ path, message: "이메일 확인 중 오류 발생" })
             );
           }
-        }, 1000);
+        }, 300);
 
-        // 기존 디바운스 함수가 있으면 취소
         if (debounceFunc) {
           debounceFunc.cancel();
         }
 
-        // 새로운 디바운스 함수 할당 및 실행
         debounceFunc = debouncedCheck;
         debounceFunc(value, resolve, createError);
       });
@@ -115,6 +119,7 @@ const LoginOrganism: React.FC = () => {
     control,
     handleSubmit,
     formState: { errors, isValid },
+    getValues,
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onChange",
@@ -126,20 +131,43 @@ const LoginOrganism: React.FC = () => {
   const [isCodeVerified, setIsCodeVerified] = useState(false);
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log(data);
+    const submitData: JoinMemberInfoDto = {
+      ...data,
+    };
+    // 회원가입 API
+    joinMember(submitData);
   };
 
-  const handleEmailVerification = () => {
-    setIsCodeInput(true);
-    setIsEmailValid(true);
+  const handleEmailVerification = async () => {
+    const email = getValues("email");
+    try {
+      if (email) {
+        await postMemberCheck({ email });
+        setIsCodeInput(true);
+        setIsEmailValid(true);
+      } else return;
+    } catch (error) {
+      console.error("이메일 인증 실패:", error);
+    }
   };
 
-  const handleCodeVerification = () => {
-    if (verificationCode === "123456") {
-      console.log("인증번호 일치");
-      setIsCodeVerified(true);
-    } else {
-      console.log("인증번호 미일치");
+  const handleCodeVerification = async () => {
+    const email = getValues("email"); // 이메일 값 가져오기
+    if (!email) {
+      console.error("이메일이 유효하지 않습니다.");
+      return;
+    }
+    try {
+      const response = await getCodeCheck({ email, code: verificationCode }); // getCodeCheck 함수 호출
+      if (response.verified) {
+        console.log("인증번호 일치");
+        setIsCodeVerified(true);
+      } else {
+        console.log("인증번호 미일치");
+        setIsCodeVerified(false);
+      }
+    } catch (error) {
+      console.log("인증번호 검증 중 오류 발생:", error);
       setIsCodeVerified(false);
     }
   };
@@ -256,7 +284,7 @@ const LoginOrganism: React.FC = () => {
             <div className="w-2/3 mb-4">
               <input
                 type="text"
-                className="data-input border border-gray-300"
+                className="data-input"
                 placeholder="인증번호"
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value)}

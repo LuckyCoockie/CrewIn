@@ -1,27 +1,26 @@
 import api from "../utils/instance";
 
-
 export type EmailCheckDto = {
-    email: string;
+  email: string;
 };
 
 // 이메일 중복 확인
-export type CheckEmailDuplicationDto = EmailCheckDto
+export type CheckEmailDuplicationDto = EmailCheckDto;
 
 export type DuplicatedEmailResponseDto = {
-    duplicated: boolean
-}
+  duplicated: boolean;
+};
 
 export const getEmailDuplicationCheck = async (
-    dto:CheckEmailDuplicationDto
+  dto: CheckEmailDuplicationDto
 ): Promise<DuplicatedEmailResponseDto> => {
-    const response = await api.get(`/member/check-email`, {
-        params: {
-            email: dto.email
-        }
-    })
-    return response.data
-}
+  const response = await api.get(`/member/check-email`, {
+    params: {
+      email: dto.email,
+    },
+  });
+  return response.data;
+};
 
 // 이메일 확인 후 인증 메일
 
@@ -41,9 +40,13 @@ export type MemberCodeCheckDto = {
   code: string;
 };
 
+export type MemberCodeCheckResponseDto = {
+  verified: boolean;
+};
+
 export const getCodeCheck = async (
   dto: MemberCodeCheckDto
-): Promise<void> => {
+): Promise<MemberCodeCheckResponseDto> => {
   const response = await api.get(`/member/signup/email`, {
     params: {
       email: dto.email,
@@ -54,3 +57,15 @@ export const getCodeCheck = async (
 };
 
 // 회원가입
+
+export type JoinMemberInfoDto = {
+  name: string;
+  nickname: string;
+  email?: string;
+  password: string;
+};
+
+export const joinMember = async (dto: JoinMemberInfoDto): Promise<void> => {
+  const response = await api.post(`/member/signup`, dto);
+  return response.data;
+};
