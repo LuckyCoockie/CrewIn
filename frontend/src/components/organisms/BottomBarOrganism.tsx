@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import HomeTabMolecule from "../molecules/Tab/HomeTabMolecule";
 import SessionTabMolecule from "../molecules/Tab/SessionTabMolecule";
 import ProfileTabMolecule from "../molecules/Tab/ProfileTabMolecule";
@@ -11,12 +11,11 @@ type Current = {
 };
 
 const BottomBarOrganism: React.FC<Current> = (props) => {
-  const [currentTab, setcurrentTab] = useState(props.current.split(/[?/]/)[1]);
   const navigator = useNavigate();
-  console.log(currentTab);
+
+  const currentTab = props.current.split(/[?/]/)[1];
 
   const selectedTab = (tab: string) => {
-    setcurrentTab(tab);
     navigator(`/${tab}`);
   };
 
