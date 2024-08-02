@@ -24,6 +24,7 @@ import java.util.List;
 @RequestMapping("/post")
 @Slf4j
 public class PostController {
+
     private final PostService postService;
 
     @PostMapping()
@@ -35,7 +36,7 @@ public class PostController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.CREATED.value(), "게시물을 등록하는데 성공했습니다."));
     }
 
-    @GetMapping()
+    @GetMapping("/home")
     public ResponseEntity<BaseResponse<PostItemsResponse>> getAllPosts(@AuthenticationPrincipal CustomUser customUser, Integer pageNo) {
         PostItemsResponse postItemsResponse = postService.getAllPostsSortedByCreatedAt(customUser.getEmail(), pageNo);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "게시물 리스트를 조회하는데 성공했습니다", postItemsResponse));
@@ -64,5 +65,19 @@ public class PostController {
                     .body(BaseResponse.create(HttpStatus.BAD_REQUEST.value(), "게시물 삭제를 실패했습니다." + e.getMessage()));
         }
     }
+
+    // 사진첩 조회
+    // 크루 사진첩(갤러리) 조회
+    @GetMapping("/crew/detail/gallery/{crewId}")
+    public ResponseEntity<BaseResponse<PostResponse.PostGalleryItemResponse>> getCrewGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long crewId, @RequestParam int pageNo) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 사진첩 조회를 성공했습니다.", postService.getCrewPostGallery(pageNo, crewId, customUser)));
+    }
+
+    // 멤버 사진첩(갤러리) 조회 - 페이징
+    @GetMapping("/member/detail/gallery/{memberId}")
+    public ResponseEntity<BaseResponse<PostResponse.PostGalleryItemResponse>> getMemberGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long memberId, @RequestParam int pageNo) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "멤버 사진첩 조회를 성공했습니다.", postService.getUserPostGallery(pageNo, memberId, customUser)));
+    }
+
 
 }
