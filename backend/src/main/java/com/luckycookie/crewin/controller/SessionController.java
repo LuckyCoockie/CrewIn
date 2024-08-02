@@ -71,10 +71,10 @@ public class SessionController {
     }
 
     // 세션 참가 신청
-    @PostMapping
-    public ResponseEntity<BaseResponse<Void>> applySession(SessionRequest.ApplySessionRequest sessionRequest, @AuthenticationPrincipal CustomUser customUser) {
-        sessionService.applySession(sessionRequest.getSessionId(), customUser.getEmail());
-
+    @PostMapping("/{sessionId}")
+    public ResponseEntity<BaseResponse<Void>> applySession(@PathVariable("sessionId") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
+        sessionService.applySession(sessionId, customUser.getEmail());
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 참가 신청이 완료되었습니다."));
     }
 
 }

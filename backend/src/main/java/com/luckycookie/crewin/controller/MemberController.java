@@ -4,13 +4,11 @@ import com.luckycookie.crewin.domain.Token;
 import com.luckycookie.crewin.dto.MemberRequest.*;
 import com.luckycookie.crewin.dto.MemberResponse.DuplicateResponse;
 import com.luckycookie.crewin.dto.MemberResponse.EmailResponse;
-import com.luckycookie.crewin.dto.PostResponse;
 import com.luckycookie.crewin.dto.TokenResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.MailService;
 import com.luckycookie.crewin.service.MemberService;
-import com.luckycookie.crewin.service.PostService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +30,6 @@ public class MemberController {
 
     private final MemberService memberService;
     private final MailService mailService;
-    private final PostService postService;
 
     @PostMapping("/login")
     public ResponseEntity<BaseResponse<TokenResponse>> signIn(@RequestBody SignInRequest signInRequest) {
@@ -100,13 +97,6 @@ public class MemberController {
     public ResponseEntity<BaseResponse<Void>> changePassword(@AuthenticationPrincipal CustomUser customUser, @RequestBody ChangePasswordRequest changePasswordRequest) {
         memberService.changePassword(customUser.getEmail(), changePasswordRequest.getOldPassword(), changePasswordRequest.getNewPassword());
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "비밀번호가 변경되었습니다."));
-    }
-
-
-    // 멤버 사진첩(갤러리) 조회 - 페이징
-    @GetMapping("/detail/gallery/{memberId}")
-    public ResponseEntity<BaseResponse<PostResponse.PostGalleryItemResponse>> getMemberGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long memberId, @RequestParam int pageNo) {
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "멤버 사진첩 조회를 성공했습니다.", postService.getUserPostGallery(pageNo, memberId, customUser)));
     }
 
 }

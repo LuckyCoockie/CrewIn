@@ -19,4 +19,6 @@ public interface MemberSessionRepository extends JpaRepository<MemberSession, Lo
     // 특정 member와 session에 해당하는 MemberSession 조회
     @Query("SELECT ms FROM MemberSession ms WHERE ms.member = :member AND ms.session = :session")
     Optional<MemberSession> findByMemberAndSession(Member member, Session session);
+
+    boolean existsByMemberAndSession(Member member, Session session);
 }
