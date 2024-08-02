@@ -8,7 +8,7 @@ import {
 } from "../apis/api/crewmemberlist";
 
 const CrewMemberSearchPage: React.FC = () => {
-  const [crewId, setCrewId] = useState<number>(1); // 나중에 동적으로 설정
+  const [crewId] = useState<number>(1); // 나중에 동적으로 설정
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [joinedMembers, setJoinedMembers] = useState<CrewMemberDto[]>([]);
