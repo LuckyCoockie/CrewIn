@@ -63,6 +63,7 @@ export type GetSessionListResponseDto = {
 export const getSessionList = async (
   dto: GetSessionListRequestDto
 ): Promise<GetSessionListResponseDto> => {
+  // TODO : 더미 데이터 삭제
   return {
     sessions: [
       {

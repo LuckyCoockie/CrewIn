@@ -12,6 +12,7 @@ type OwnProps<T> = {
     props: ItemComponentProps<T>
   ) => React.ReactElement<HTMLElement>;
   className?: string;
+  pageSize: number;
 };
 
 const InfiniteScrollComponent = <T,>({
@@ -19,10 +20,13 @@ const InfiniteScrollComponent = <T,>({
   fetchData,
   ItemComponent,
   className,
+  pageSize,
 }: OwnProps<T>) => {
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
     useInfiniteQuery(fetchKey, ({ pageParam = 1 }) => fetchData(pageParam), {
-      getNextPageParam: (_, allPages) => {
+      getNextPageParam: (lastPage, allPages) => {
+        console.log(lastPage.length);
+        if (lastPage.length < pageSize) return;
         const nextPage = allPages.length + 1;
         return nextPage;
       },

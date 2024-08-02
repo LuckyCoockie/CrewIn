@@ -38,7 +38,7 @@ export const EditNicknameOrganism = ({ init, onClose, onEdit }: OwnProps) => {
   });
 
   return (
-    <ModalMolecules onClose={onClose}>
+    <ModalMolecules title="닉네임 변경" onClose={onClose}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="w-full">
           <Controller

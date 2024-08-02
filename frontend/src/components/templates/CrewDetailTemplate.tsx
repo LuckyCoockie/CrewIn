@@ -7,6 +7,10 @@ import ThreeToTwoImageMolecule from "../molecules/Image/ThreeToTwoImageMolecule"
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import CrewAlbumOrganism from "../organisms/CrewAlbumOrganism";
 import CrewHeaderBarOrganism from "../organisms/CrewHeaderBarOrganism";
+import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
+
+import GroupsButton from "../atoms/Button/GroupsButton";
+import MemberPlusButton from "../atoms/Button/MemberPlusButton";
 
 import {
   CrewInfoDto,
@@ -33,7 +37,7 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
   fetchGalleryData,
 }) => {
   const [currentTab, setCurrentTab] = useState<string>("정보");
-  const crewId = 2;
+  const crewId = 1;
   const pageNo = 0;
 
   // 크루 정보를 가져오는 React Query 훅
@@ -94,7 +98,7 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
       case "정보":
         return infoData ? (
           <CrewInfoOrganism
-            crewname={infoData.name}
+            crewname={infoData.crewName}
             captain={infoData.captainName}
             slogan={infoData.slogan}
             area={infoData.area}
@@ -116,7 +120,7 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
       default:
         return infoData ? (
           <CrewInfoOrganism
-            crewname={infoData.name}
+            crewname={infoData.crewName}
             captain={infoData.captainName}
             slogan={infoData.slogan}
             area={infoData.area}
@@ -137,14 +141,19 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
       <CrewHeaderBarOrganism />
       <header>
         <BackHeaderMediumOrganism
-          text={infoData ? infoData.name : "Loading..."}
+          text={infoData ? infoData.crewName : "Loading..."}
         />
+        <div className="flex ms-auto">
+          <GroupsButton />
+          <MemberPlusButton />
+          <EditDeleteDropdownOrganism />
+        </div>
       </header>
       <ThreeToTwoImageMolecule
         src={infoData ? infoData.imageUrl : ""}
         alt="crewbanner"
       />
-      <div className="pb-12">
+      <div>
         <NavTabMolecule
           texts={texts}
           onTabClick={handleTabClick}

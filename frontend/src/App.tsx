@@ -7,18 +7,16 @@ const App: React.FC = () => {
   const location = useLocation();
 
   // 제외할 페이지
-  const hideBottomBarRoutes = ["/login", "/join", "/find-password"];
+  const hideBottomBarRoutes = ["/login", "/join", "/find-password", "/info"];
   const shouldHideBottomBar = hideBottomBarRoutes.includes(location.pathname);
 
   return (
-    <>
-      <div className="mx-auto w-full max-w-[550px]">
-        <Outlet />
-        {!shouldHideBottomBar && (
-          <BottomBarOrganism current={location.pathname} />
-        )}{" "}
-      </div>
-    </>
+    <div className="mx-auto w-full max-w-[550px]">
+      <Outlet />
+      {!shouldHideBottomBar && (
+        <BottomBarOrganism current={location.pathname} />
+      )}{" "}
+    </div>
   );
 };
 

@@ -8,6 +8,7 @@ type InputData = {
   name: string;
   hasError?: boolean;
   disabled?: boolean;
+  value?: string;
 };
 
 const InputTextTypeComponent = forwardRef<HTMLInputElement, InputData>(
@@ -19,13 +20,14 @@ const InputTextTypeComponent = forwardRef<HTMLInputElement, InputData>(
         onChange={props.onChange}
         onBlur={props.onBlur}
         name={props.name}
-        className={`data-input border focus:outline-none ${
+        className={`data-input bg-white border focus:outline-none ${
           props.hasError
             ? "border-red-500 focus:border-red-500"
             : "border-gray-300"
         }`}
         ref={ref}
         disabled={props.disabled}
+        defaultValue={props.value}
       />
     );
   }

@@ -1,7 +1,7 @@
 import React from "react";
 
 type Info = {
-  id: string;
+  id?: string;
   title: string;
 };
 

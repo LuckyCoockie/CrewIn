@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import UserProfileBar from "../../components/molecules/UserProfileBarMolecule";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -7,6 +8,7 @@ import filledFire from "../../assets/images/filledfire.png";
 import emptyFire from "../../assets/images/emptyfire.png";
 import shareIcon from "../../assets/images/shareicon.png";
 import { PostDto } from "../../apis/api/postlist";
+import { deletePost } from "../../apis/api/postdelete";
 
 export interface ItemComponentProps<T> {
   data: T;
@@ -14,22 +16,37 @@ export interface ItemComponentProps<T> {
 
 const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   const {
+    id,
     postImages: croppedImages,
     content,
     authorName,
     heartCount,
     isHearted,
+    createdAt,
   } = data;
+
   const [likes, setLikes] = useState<number>(heartCount);
   const [isHeartedState, setIsHeartedState] = useState<boolean>(isHearted);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   const handleEdit = () => {
     console.log("Edit action");
   };
 
-  const handleDelete = () => {
-    console.log("Delete action");
+  const handleDelete = async () => {
+    try {
+      const response = await deletePost(id);
+      if (response.statusCode === 204) {
+        navigate(0);
+      } else {
+        console.error(response.message);
+        alert(response.message);
+      }
+    } catch (error) {
+      console.error("게시물 삭제 요청 중 오류가 발생했습니다:", error);
+    }
   };
 
   const handleLike = () => {
@@ -64,27 +81,29 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
       <UserProfileBar
         profileImage={crewinLogo}
         username={authorName}
-        timeAgo="3시간 전" // 이 부분은 데이터에 맞게 수정 필요
+        timeAgo={createdAt}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
-      <Carousel
-        showThumbs={false}
-        showIndicators={true}
-        showStatus={false}
-        infiniteLoop={false}
-        autoPlay={false}
-      >
-        {croppedImages.map((image, index) => (
-          <div key={index}>
-            <img
-              src={image}
-              alt={`Cropped ${index}`}
-              style={{ width: "100%", height: "auto" }}
-            />
-          </div>
-        ))}
-      </Carousel>
+      {croppedImages && croppedImages.length > 0 && (
+        <Carousel
+          showThumbs={false}
+          showIndicators={true}
+          showStatus={false}
+          infiniteLoop={false}
+          autoPlay={false}
+        >
+          {croppedImages.map((image, index) => (
+            <div key={index}>
+              <img
+                src={image}
+                alt={`Cropped ${index}`}
+                style={{ width: "100%", height: "auto" }}
+              />
+            </div>
+          ))}
+        </Carousel>
+      )}
       <div className="flex items-center mt-2">
         <button onClick={handleLike} className="flex items-center ml-3">
           <img

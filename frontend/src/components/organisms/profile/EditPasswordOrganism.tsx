@@ -49,7 +49,7 @@ export const EditPasswordOrganism = ({ init, onClose, onEdit }: OwnProps) => {
   });
 
   return (
-    <ModalMolecules onClose={onClose}>
+    <ModalMolecules title="비밀번호 변경" onClose={onClose}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="w-full">
           <Controller
