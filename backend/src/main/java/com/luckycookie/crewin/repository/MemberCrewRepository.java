@@ -35,7 +35,7 @@ public interface MemberCrewRepository extends JpaRepository<MemberCrew, Long> {
     @Query("SELECT mc FROM MemberCrew mc WHERE mc.member = :member AND mc.isJoined = true")
     List<MemberCrew> findJoinedMemberCrewsByMember(Member member);
 
-    @Query("SELECT mc.crew FROM MemberCrew mc WHERE mc.member = :member and mc.isJoined = true")
-    List<Crew> findCrewByMemberAndIsJoined(Member member);
+    @Query("SELECT mc FROM MemberCrew mc WHERE mc.member = :member and mc.isJoined = true")
+    List<MemberCrew> findCrewByMemberAndIsJoined(Member member);
 
 }

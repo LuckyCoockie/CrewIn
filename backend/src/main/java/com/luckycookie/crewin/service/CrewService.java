@@ -124,13 +124,14 @@ public class CrewService {
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
-        List<Crew> crews = memberCrewRepository.findCrewByMemberAndIsJoined(member);
+        List<MemberCrew> crews = memberCrewRepository.findCrewByMemberAndIsJoined(member);
 
-        List<CrewItem> crewItems = crews.stream().map(crew -> {
+        List<MyCrewItem> crewItems = crews.stream().map(memberCrew -> {
+            Crew crew = memberCrew.getCrew();
             int crewCount = crewRepository.countMembersByCrew(crew);
             String captainName = crew.getCaptain().getName();
 
-            return CrewItem.builder()
+            return MyCrewItem.builder()
                     .crewId(crew.getId())
                     .crewName(crew.getCrewName())
                     .slogan(crew.getSlogan())
@@ -138,6 +139,7 @@ public class CrewService {
                     .crewCount(crewCount)
                     .captainName(captainName)
                     .imageUrl(crew.getMainLogo())
+                    .position(memberCrew.getPosition())
                     .build();
         }).collect(Collectors.toList());
 
@@ -294,51 +296,6 @@ public class CrewService {
                 .lastPageNo(lastPageNo)
                 .build();
     }
-
-    // 크루 사진첩 상세 조회
-    @Transactional(readOnly = true)
-    public CrewGalleryDetailItemResponse getCrewGalleryDetailList(Long crewId, Long postId, String direction, CustomUser customUser) {
-
-        // 현재 로그인한 사용자
-        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
-        Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
-
-        // 현재 로그인한 사용자가 해당 crew 에 포함되어 있는지 확인
-        memberCrewRepository.findByMemberAndCrew(member, crew).orElseThrow(NotFoundMemberCrewException::new);
-
-        List<Post> galleryList = List.of();
-
-        // postId 기준으로 increase나 decrease에 따라 데이터 조회
-        if (direction.equals("increase")) {
-            // postId 보다 작은 포스트들을 가져옴
-            galleryList = postRepository.findByCrewAndIdLessThanAndPostTypeOrderByIdAsc(crew, postId, PostType.STANDARD, PageRequest.of(0, 10)).getContent();
-        } else if (direction.equals("decrease")) {
-            // postId 보다 큰 포스트들을 가져옴
-            galleryList = postRepository.findByCrewAndIdGreaterThanAndPostTypeOrderByIdAsc(crew, postId, PostType.STANDARD, PageRequest.of(0, 10)).getContent();
-        }
-
-        List<CrewGalleryDetailItem> crewGalleryDetailItemList = galleryList
-                .stream()
-                .map(post -> CrewGalleryDetailItem
-                        .builder()
-                        .postId(post.getId())
-                        .nickname(post.getAuthor().getNickname())
-                        .profileImageUrl(post.getAuthor().getImageUrl())
-                        .postImageUrls(post.getPostImages().stream().map(PostImage::getImageUrl).toList())
-                        .heartCount(post.getHearts().size())
-                        .isHearted(post.getHearts().stream().anyMatch(heart -> heart.getMember().getId().equals(member.getId())))
-                        .memberId(post.getAuthor().getId())
-                        .content(post.getContent())
-                        .createdAt(post.getCreatedAt())
-                        .build())
-                .collect(Collectors.toList());
-
-        return CrewGalleryDetailItemResponse
-                .builder()
-                .crewGalleryDetailList(crewGalleryDetailItemList)
-                .build();
-    }
-
 
     public void updateNotice(Long noticeId, CreateCrewNoticeRequest createCrewNoticeRequest) {
         Post post = postRepository.findById(noticeId)
@@ -516,7 +473,7 @@ public class CrewService {
                 .orElseThrow(NotFoundMemberException::new);
         Crew crew = crewRepository.findById(crewId)
                 .orElseThrow(NotFoundCrewException::new);
-        memberCrewRepository.findByMemberAndCrew(member,crew)
+        memberCrewRepository.findByMemberAndCrew(member, crew)
                 .orElseThrow(NotFoundMemberCrewException::new);
         Post post = postRepository.findById(noticeId)
                 .orElseThrow(NotFoundPostException::new);
@@ -530,7 +487,7 @@ public class CrewService {
                 .map(PostImage::getImageUrl)
                 .collect(Collectors.toList());
 
-         return PostResponse.PostItem.builder()
+        return PostResponse.PostItem.builder()
                 .id(post.getId())
                 .authorName(post.getAuthor().getName())
                 .authorId(post.getAuthor().getId())
