@@ -5,6 +5,7 @@ import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.*;
 import com.luckycookie.crewin.dto.SessionImageResponse.SessionGalleryItem;
 import com.luckycookie.crewin.dto.SessionImageResponse.SessionGalleryItemsResponse;
+import com.luckycookie.crewin.dto.SessionRequest.UploadSessionImageRequest;
 import com.luckycookie.crewin.exception.course.NotFoundCourseException;
 import com.luckycookie.crewin.exception.crew.CrewMemberNotExistException;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
@@ -15,6 +16,7 @@ import com.luckycookie.crewin.exception.session.InvalidSessionException;
 import com.luckycookie.crewin.exception.session.NotFoundSessionException;
 import com.luckycookie.crewin.exception.session.SessionAuthorizationException;
 import com.luckycookie.crewin.exception.session.SessionInProgressException;
+import com.luckycookie.crewin.exception.sessionImage.SessionImageUploadException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
@@ -233,6 +235,35 @@ public class SessionService {
                 .lastPageNo(lastPageNo)
                 .sessionImages(sessionGalleryItems)
                 .build();
+    }
+
+    // 세션 사진첩 사진 업로드
+    public void uploadSessionImage(UploadSessionImageRequest uploadSessionImageRequest, CustomUser customUser) {
+
+        Session session = sessionRepository.findById(uploadSessionImageRequest.getSessionId())
+                .orElseThrow(NotFoundSessionException::new);
+
+        // 내가 그 세션에 참여 했는지 안했는지 검증
+        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+        MemberSession memberSession = memberSessionRepository.findByMemberAndSession(member, session).orElseThrow(NotFoundMemberSessionException::new);
+
+        if(memberSession.getIsAttend()) { // 참석 했음`
+            if (uploadSessionImageRequest.getSessionImageUrls() != null) {
+                for (String imageUrl : uploadSessionImageRequest.getSessionImageUrls()) {
+                    SessionImage sessionImage = SessionImage
+                            .builder()
+                            .session(session)
+                            .imageUrl(imageUrl)
+                            .build();
+                    sessionImageRepository.save(sessionImage);
+                }
+            } else {
+                throw new SessionImageUploadException();
+            }
+        } else { // 참석 안함
+            throw new NotFoundMemberSessionException();
+        }
+
     }
 
     public void applySession(){

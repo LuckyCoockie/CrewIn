@@ -2,6 +2,7 @@ package com.luckycookie.crewin.controller;
 
 import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.*;
+import com.luckycookie.crewin.dto.SessionRequest.UploadSessionImageRequest;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.SessionService;
@@ -69,5 +70,13 @@ public class SessionController {
     public ResponseEntity<BaseResponse<SessionImageResponse.SessionGalleryItemsResponse>> getSessionGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable("sessionId") Long sessionId, @RequestParam int pageNo) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 사진첩 조회를 성공했습니다.", sessionService.getSessionGallery(pageNo, sessionId, customUser)));
     }
+
+    // 세션 사진첩 사진 업로드
+    @PostMapping("/detail/gallery")
+    public ResponseEntity<BaseResponse<Void>> uploadSessionImage (@AuthenticationPrincipal CustomUser customUser, @RequestBody UploadSessionImageRequest uploadSessionImageRequest) {
+        sessionService.uploadSessionImage(uploadSessionImageRequest, customUser);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 사진 업로드를 성공했습니다."));
+    }
+
 
 }
