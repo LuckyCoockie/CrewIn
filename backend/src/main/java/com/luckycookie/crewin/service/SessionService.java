@@ -6,6 +6,7 @@ import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.*;
 import com.luckycookie.crewin.dto.SessionImageResponse.SessionGalleryItem;
 import com.luckycookie.crewin.dto.SessionImageResponse.SessionGalleryItemsResponse;
+import com.luckycookie.crewin.dto.SessionRequest.UploadSessionImageRequest;
 import com.luckycookie.crewin.exception.course.NotFoundCourseException;
 import com.luckycookie.crewin.exception.crew.CrewMemberNotExistException;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
@@ -17,6 +18,7 @@ import com.luckycookie.crewin.exception.session.InvalidSessionException;
 import com.luckycookie.crewin.exception.session.NotFoundSessionException;
 import com.luckycookie.crewin.exception.session.SessionAuthorizationException;
 import com.luckycookie.crewin.exception.session.SessionInProgressException;
+import com.luckycookie.crewin.exception.sessionImage.SessionImageUploadException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import jakarta.persistence.*;
@@ -245,43 +247,71 @@ public class SessionService {
                 .build();
     }
 
+    // 세션 사진첩 사진 업로드
+    public void uploadSessionImage(UploadSessionImageRequest uploadSessionImageRequest, CustomUser customUser) {
+
+        Session session = sessionRepository.findById(uploadSessionImageRequest.getSessionId())
+                .orElseThrow(NotFoundSessionException::new);
+
+        // 내가 그 세션에 참여 했는지 안했는지 검증
+        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+        MemberSession memberSession = memberSessionRepository.findByMemberAndSession(member, session).orElseThrow(NotFoundMemberSessionException::new);
+
+        if (memberSession.getIsAttend()) { // 참석 했음`
+            if (uploadSessionImageRequest.getSessionImageUrls() != null) {
+                for (String imageUrl : uploadSessionImageRequest.getSessionImageUrls()) {
+                    SessionImage sessionImage = SessionImage
+                            .builder()
+                            .session(session)
+                            .imageUrl(imageUrl)
+                            .build();
+                    sessionImageRepository.save(sessionImage);
+                }
+            } else {
+                throw new SessionImageUploadException();
+            }
+        } else { // 참석 안함
+            throw new NotFoundMemberSessionException();
+        }
+    }
+
     public void applySession(Long sessionId, String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
         Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundSessionException::new);
 
-        // 호스트가 신청하거나, 신청시간이 세션 시작 이후면 안 받음
-        if (session.getHost().getId().equals(member.getId()) ||
-                LocalDateTime.now().isAfter(session.getStartAt())
-        ) {
-            throw new InvalidSessionException();
-        }
+            // 호스트가 신청하거나, 신청시간이 세션 시작 이후면 안 받음
+            if (session.getHost().getId().equals(member.getId()) ||
+                    LocalDateTime.now().isAfter(session.getStartAt())
+            ) {
+                throw new InvalidSessionException();
+            }
 
-        if (memberSessionRepository.existsByMemberAndSession(member, session)) {
-            throw new DuplicateApplyException();
-        }
+            if (memberSessionRepository.existsByMemberAndSession(member, session)) {
+                throw new DuplicateApplyException();
+            }
 
-        boolean joinStatus = false;
-        if (session.getSessionType() != THUNDER) {
-            joinStatus = memberCrewRepository.existsByMemberAndCrew(member, session.getCrew());
-        }
+            boolean joinStatus = false;
+            if (session.getSessionType() != THUNDER) {
+                joinStatus = memberCrewRepository.existsByMemberAndCrew(member, session.getCrew());
+            }
 
-        // 크루원이 아닌 회원이 정규런 신청할 경우 예외처리
-        if (session.getSessionType() == STANDARD && !joinStatus) {
-            throw new SessionAuthorizationException();
-        } else if (session.getSessionType() == OPEN && !joinStatus) {
-            // 크루원 아닌 회원이 오픈런 신청할 경우 멤버-크루 테이블에 넣어줌
-            MemberCrew memberCrew = MemberCrew.builder()
+            // 크루원이 아닌 회원이 정규런 신청할 경우 예외처리
+            if (session.getSessionType() == STANDARD && !joinStatus) {
+                throw new SessionAuthorizationException();
+            } else if (session.getSessionType() == OPEN && !joinStatus) {
+                // 크루원 아닌 회원이 오픈런 신청할 경우 멤버-크루 테이블에 넣어줌
+                MemberCrew memberCrew = MemberCrew.builder()
+                        .member(member)
+                        .crew(session.getCrew())
+                        .build();
+                memberCrewRepository.save(memberCrew);
+            }
+
+            MemberSession memberSession = MemberSession.builder()
                     .member(member)
-                    .crew(session.getCrew())
-                    .build();
-            memberCrewRepository.save(memberCrew);
-        }
-
-        MemberSession memberSession = MemberSession.builder()
-                .member(member)
-                .session(session)
-                .isAttend(false).build();
-        memberSessionRepository.save(memberSession);
+                    .session(session)
+                    .isAttend(false).build();
+            memberSessionRepository.save(memberSession);
     }
 
 }
