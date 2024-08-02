@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import BackHeaderMediumOrganism from "../components/organisms/BackHeaderMediumOrganism";
 import { ReactComponent as Searchicon } from "../assets/icons/searchicon.svg";
 import {
@@ -7,8 +8,9 @@ import {
   CrewMemberDto,
 } from "../apis/api/crewmemberlist";
 
-const MemberSearchPage: React.FC = () => {
-  const [crewId, setCrewId] = useState<number>(1); // set dynamically
+const CrewMemberPage: React.FC = () => {
+  const navigate = useNavigate();
+  const [crewId, setCrewId] = useState<number>(1); // 나중에 동적으로 설정
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [joinedMembers, setJoinedMembers] = useState<CrewMemberDto[]>([]);
@@ -34,22 +36,24 @@ const MemberSearchPage: React.FC = () => {
     fetchMembers();
   }, [crewId]);
 
+  const onSearchClick = () => {
+    navigate("/crew/membersearch");
+  };
+
   return (
     <div className="relative flex flex-col max-w-[550px] mx-auto">
       <header className="mb-1">
         <BackHeaderMediumOrganism text="크루원 조회" />
         <div className="flex items-center flex-grow justify-end">
-          <Searchicon className="w-6 h-6" />
+          <Searchicon className="cursor-pointer" onClick={onSearchClick} />
         </div>
       </header>
       <hr />
 
-      {loading && <div className="text-center mt-4">Loading...</div>}
-      {error && <div className="text-red-500 text-center mt-4">{error}</div>}
+      {loading && <div className="text-center">Loading...</div>}
+      {error && <div className="text-red-500 text-center">{error}</div>}
 
-      <div className="mt-4">
-        <h2 className="font-bold text-lg">크루원 목록</h2>
-        <h3 className="font-semibold mt-2">가입된 크루원</h3>
+      <div>
         {joinedMembers.length === 0 ? (
           <div className="text-center">가입된 크루원이 없습니다.</div>
         ) : (
@@ -59,13 +63,16 @@ const MemberSearchPage: React.FC = () => {
                 <div className="flex-1">
                   <div className="font-bold">{member.name}</div>
                   <div className="text-gray-600">{member.nickname}</div>
-                  <div className="text-gray-600">{member.position}</div>
+                </div>
+                <div>
+                  <button className="w-20 bg-gray-200 rounded-full px-2 py-1 text-xs">
+                    {member.position}
+                  </button>
                 </div>
               </li>
             ))}
           </ul>
         )}
-        <h3 className="font-semibold mt-2">초대된 크루원</h3>
         {invitedMembers.length === 0 ? (
           <div className="text-center">초대된 크루원이 없습니다.</div>
         ) : (
@@ -75,7 +82,11 @@ const MemberSearchPage: React.FC = () => {
                 <div className="flex-1">
                   <div className="font-bold">{member.name}</div>
                   <div className="text-gray-600">{member.nickname}</div>
-                  <div className="text-gray-600">{member.position}</div>
+                </div>
+                <div>
+                  <button className="w-20 bg-gray-200 rounded-full px-2 py-1 text-xs">
+                    WAITING
+                  </button>
                 </div>
               </li>
             ))}
@@ -86,4 +97,4 @@ const MemberSearchPage: React.FC = () => {
   );
 };
 
-export default MemberSearchPage;
+export default CrewMemberPage;

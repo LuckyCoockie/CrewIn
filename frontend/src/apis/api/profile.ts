@@ -8,6 +8,7 @@ export type ProfileInfoDto = {
 };
 
 export const getProfileInfo = async (): Promise<ProfileInfoDto> => {
+  // TODO : 더미 데이터 삭제하기
   return {
     email: "email",
     name: "name",

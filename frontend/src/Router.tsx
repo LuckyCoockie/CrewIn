@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "./App";
 import CrewCreatePage from "./pages/CrewCreatePage";
 import PostCreatePage from "./pages/PostCreatePage";
@@ -21,7 +21,18 @@ import NoticeCreatePage from "./pages/NoticeCreatePage.tsx";
 import { ProfileInfoPage } from "./pages/ProfileInfoPage.tsx";
 import ProtectedRoute from "./util/router/ProtectedRoute.tsx";
 import UnprotectedRoute from "./util/router/UnprotectedRoute.tsx";
-import MemberSearchPage from "./pages/MemberSearchPage.tsx";
+import CrewMemberPage from "./pages/CrewMemberPage.tsx";
+import CrewMemberSearchPage from "./pages/CrewMemberSearchPage.tsx";
+import { getMyCrews } from "./apis/api/mycrew";
+
+const loader = async () => {
+  const response = await getMyCrews();
+  if (response.crews.length > 0) {
+    return <Navigate to={`/crew/detail/${response.crews[0].crewId}`} />;
+  } else {
+    return <CrewSearchPage />;
+  }
+};
 
 export const router = createBrowserRouter([
   {
@@ -50,7 +61,8 @@ export const router = createBrowserRouter([
               { path: "create", element: <CrewCreatePage /> },
               { path: "detail/:crewId", element: <CrewDetailPage /> },
               { path: "noticecreate", element: <NoticeCreatePage /> },
-              { path: "membersearch", element: <MemberSearchPage /> },
+              { path: "member", element: <CrewMemberPage /> },
+              { path: "membersearch", element: <CrewMemberSearchPage /> },
             ],
           },
           { path: "profile", element: <ProfilePage /> },
@@ -70,6 +82,36 @@ export const router = createBrowserRouter([
           { path: "find-password", element: <FindPasswordPage /> },
         ],
       },
+      { path: "home", element: <PostMainPage /> },
+      {
+        path: "session",
+        element: <SessionPage />,
+        children: [
+          { path: "", element: <SessionSearchPage /> },
+          { path: "create", element: <SessionCreatePage /> },
+          { path: "detail/:sessionId", element: <SessionDetailPage /> },
+        ],
+      },
+      {
+        path: "crew",
+        element: <CrewPage />,
+        children: [
+          { path: "", element: <CrewSearchPage />, loader }, // 조건부 로더 설정
+          { path: "create", element: <CrewCreatePage /> },
+          { path: "detail/:crewId", element: <CrewDetailPage /> },
+          { path: "noticecreate", element: <NoticeCreatePage /> },
+          { path: "membersearch", element: <CrewMemberPage /> },
+        ],
+      },
+      { path: "profile", element: <ProfilePage /> },
+      { path: "info", element: <ProfileInfoPage /> },
+      { path: "course", element: <CourseCreatePage /> },
+      { path: "post", element: <PostCreatePage /> },
+      { path: "searchuser", element: <SearchUserPage /> },
+      { path: "alarm", element: <AlarmPage /> },
+      { path: "login", element: <LoginPage /> },
+      { path: "join", element: <JoinPage /> },
+      { path: "find-password", element: <FindPasswordPage /> },
     ],
   },
 ]);

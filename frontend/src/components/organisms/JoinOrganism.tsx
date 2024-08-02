@@ -6,6 +6,7 @@ import * as yup from "yup";
 import { debounce } from "lodash";
 
 import InputTextTypeMolecule from "../molecules/Input/InputTextTypeMolecule";
+import InputEmailTypeMolecule from "../molecules/Input/InputEmailTypeMolecule";
 import InputPasswordTypeMolecule from "../molecules/Input/InputPasswordTypeMolecule";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
@@ -39,7 +40,7 @@ yup.addMethod<yup.StringSchema>(
     return this.test("emailDuplicationCheck", message, function (value) {
       const { path, createError } = this;
 
-      if (!value) return true; 
+      if (!value) return true;
 
       return new Promise((resolve) => {
         // 디바운스된 함수 정의
@@ -188,7 +189,7 @@ const LoginOrganism: React.FC = () => {
             name="email"
             control={control}
             render={({ field }) => (
-              <InputTextTypeMolecule
+              <InputEmailTypeMolecule
                 id="email"
                 title="이메일"
                 placeholder="ex) mycrew@crew.co.kr"

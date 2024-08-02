@@ -11,6 +11,7 @@ const UnprotectedRoute = () => {
   const isAuthenticated = useMemo(() => accessToken !== null, [accessToken]);
 
   useEffect(() => {
+    // TODO : 로그인 되어있으면 login page로 못가게 하기...
     if (isAuthenticated) navigate("/home");
   }, [isAuthenticated, navigate]);
 
