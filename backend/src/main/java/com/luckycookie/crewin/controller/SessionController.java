@@ -60,14 +60,14 @@ public class SessionController {
 
     // 세션 수정
     @PutMapping("/detail/{id}")
-    public ResponseEntity<BaseResponse<Void>> updatePost(@PathVariable("id") Long sessionId, @RequestBody SessionRequest.UpdateSessionRequest updateSessionRequest, @AuthenticationPrincipal CustomUser customUser) {
+    public ResponseEntity<BaseResponse<Void>> updateSession(@PathVariable("id") Long sessionId, @RequestBody SessionRequest.UpdateSessionRequest updateSessionRequest, @AuthenticationPrincipal CustomUser customUser) {
         sessionService.updateSession(sessionId, updateSessionRequest, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 정보를 수정하는데 성공했습니다."));
     }
 
     // 세션 삭제
     @DeleteMapping("/detail/{id}")
-    public ResponseEntity<BaseResponse<Void>> deletePost(@PathVariable("id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
+    public ResponseEntity<BaseResponse<Void>> deleteSession(@PathVariable("id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
         sessionService.deleteSession(sessionId, customUser);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -77,4 +77,10 @@ public class SessionController {
     public ResponseEntity<BaseResponse<SessionImageResponse.SessionGalleryItemsResponse>> getSessionGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable("sessionId") Long sessionId, @RequestParam int pageNo) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 사진첩 조회를 성공했습니다.", sessionService.getSessionGallery(pageNo, sessionId, customUser)));
     }
+//    // 세션 참가 신청
+//    @PostMapping
+//    public ResponseEntity<BaseResponse<Void>> applySession() {
+//
+//    }
+
 }

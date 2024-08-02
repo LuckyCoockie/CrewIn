@@ -45,6 +45,9 @@ public class SessionService {
 
     public void createSession(SessionRequest.CreateSessionRequest createSessionRequest, CustomUser customUser) {
 
+        if (createSessionRequest.getSessionType() == SessionType.THUNDER && createSessionRequest.getCrewId() != null) {
+            throw new InvalidSessionException();
+        }
         if (createSessionRequest.getStartAt().isAfter(createSessionRequest.getEndAt()) ||
                 createSessionRequest.getStartAt().isBefore(LocalDateTime.now())) {
             throw new InvalidSessionException();
@@ -52,7 +55,10 @@ public class SessionService {
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
-        Crew crew = crewRepository.findById(createSessionRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
+        Crew crew = null;
+        if (createSessionRequest.getCrewId() != null) {
+            crew = crewRepository.findById(createSessionRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
+        }
         Course course = courseRepository.findById(createSessionRequest.getCourseId())
                 .orElseThrow(NotFoundCourseException::new);
 
@@ -222,10 +228,10 @@ public class SessionService {
         int lastPageNo = Math.max(sessionImageListPage.getTotalPages() - 1, 0);
         List<SessionGalleryItem> sessionGalleryItems = sessionImageList.stream()
                 .map(sessionImage -> SessionGalleryItem.builder()
-                                .sessionImageId(sessionImage.getId())
-                                .ThumbnailImage(sessionImage.getImageUrl())
-                                .build()
-                        )
+                        .sessionImageId(sessionImage.getId())
+                        .ThumbnailImage(sessionImage.getImageUrl())
+                        .build()
+                )
                 .toList();
         return SessionGalleryItemsResponse.builder()
                 .pageNo(pageNo)
