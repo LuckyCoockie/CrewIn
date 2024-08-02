@@ -40,8 +40,6 @@ public class PostController {
     @GetMapping()
     public ResponseEntity<BaseResponse<PostItemsResponse>> getAllPosts(@AuthenticationPrincipal CustomUser customUser, Integer pageNo) {
         PostItemsResponse postItemsResponse = postService.getAllPostsSortedByCreatedAt(customUser.getEmail(), pageNo);
-        log.info("TimeZone.getDefault().getID(): {}", TimeZone.getDefault().getID());
-        log.info("ZoneId.systemDefault(): {}", ZoneId.systemDefault());
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "게시물 리스트를 조회하는데 성공했습니다", postItemsResponse));
     }
 
