@@ -3,83 +3,45 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import { debounce } from "lodash";
-
 import InputTextTypeMolecule from "../molecules/Input/InputTextTypeMolecule";
 import InputEmailTypeMolecule from "../molecules/Input/InputEmailTypeMolecule";
 import InputPasswordTypeMolecule from "../molecules/Input/InputPasswordTypeMolecule";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 
-import { getEmailDuplicationCheck } from "../../apis/api/signup";
+import {
+  getEmailDuplicationCheck,
+  postMemberCheck,
+  getCodeCheck,
+  joinMember,
+  JoinMemberInfoDto,
+} from "../../apis/api/signup";
+import { useNavigate } from "react-router";
 
 // 비밀번호 규칙 설정
 const passwordRules = /^(?=.*[a-z])(?=.*[A-Z]).{0,}$/;
 
-// yup 스키마에 이메일 중복 확인 메서드 추가
-yup.addMethod<yup.StringSchema>(
-  yup.string,
-  "emailDuplicationCheck",
-  function (message) {
-    let debounceFunc: {
-      (
-        arg0: string,
-        arg1: (
-          value:
-            | boolean
-            | yup.ValidationError
-            | PromiseLike<boolean | yup.ValidationError>
-        ) => void,
-        arg2: (
-          params?: yup.CreateErrorOptions | undefined
-        ) => yup.ValidationError
-      ): void;
-      cancel: () => void;
-    } | null = null;
-
-    return this.test("emailDuplicationCheck", message, function (value) {
-      const { path, createError } = this;
-
-      if (!value) return true;
-
-      return new Promise((resolve) => {
-        // 디바운스된 함수 정의
-        const debouncedCheck = debounce(async (value, resolve, createError) => {
-          try {
-            const { duplicated } = await getEmailDuplicationCheck({
-              email: value,
-            });
-            if (duplicated) {
-              return resolve(createError({ path, message }));
-            }
-            return resolve(true);
-          } catch (error) {
-            return resolve(
-              createError({ path, message: "이메일 확인 중 오류 발생" })
-            );
-          }
-        }, 1000);
-
-        // 기존 디바운스 함수가 있으면 취소
-        if (debounceFunc) {
-          debounceFunc.cancel();
-        }
-
-        // 새로운 디바운스 함수 할당 및 실행
-        debounceFunc = debouncedCheck;
-        debounceFunc(value, resolve, createError);
-      });
-    });
-  }
-);
-
-// 유효성 검사 스키마 정의
+// yup 스키마 정의
 const schema = yup.object({
   email: yup
     .string()
     .email("이메일 형식으로 입력해주세요")
     .required("이메일을 입력해주세요.")
-    .emailDuplicationCheck("이미 사용 중인 이메일입니다."),
+    .test(
+      "emailDuplicationCheck",
+      "이미 사용 중인 이메일입니다.",
+      async (value) => {
+        if (!value) return true;
+        try {
+          const { duplicated } = await getEmailDuplicationCheck({
+            email: value,
+          });
+          return !duplicated;
+        } catch (error) {
+          return false;
+        }
+      }
+    ),
   password: yup
     .string()
     .required("비밀번호를 입력해주세요.")
@@ -103,7 +65,7 @@ const schema = yup.object({
 });
 
 type FormValues = {
-  email?: string;
+  email: string;
   password: string;
   confirmPassword: string;
   nickname: string;
@@ -111,10 +73,12 @@ type FormValues = {
 };
 
 const LoginOrganism: React.FC = () => {
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
     formState: { errors, isValid },
+    getValues,
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onChange",
@@ -125,21 +89,51 @@ const LoginOrganism: React.FC = () => {
   const [verificationCode, setVerificationCode] = useState("");
   const [isCodeVerified, setIsCodeVerified] = useState(false);
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    const submitData: JoinMemberInfoDto = {
+      ...data,
+    };
+    try {
+      // 회원가입 API 호출
+      await joinMember(submitData);
+      console.log("회원가입 성공");
+      navigate(`/login`);
+    } catch (error) {
+      console.error("회원가입 실패:", error);
+      window.alert("회원가입에 실패했습니다.");
+    }
   };
 
-  const handleEmailVerification = () => {
-    setIsCodeInput(true);
-    setIsEmailValid(true);
+  const handleEmailVerification = async () => {
+    const email = getValues("email");
+    try {
+      if (email) {
+        await postMemberCheck({ email });
+        setIsCodeInput(true);
+        setIsEmailValid(true);
+      } else return;
+    } catch (error) {
+      console.error("이메일 인증 실패:", error);
+    }
   };
 
-  const handleCodeVerification = () => {
-    if (verificationCode === "123456") {
-      console.log("인증번호 일치");
-      setIsCodeVerified(true);
-    } else {
-      console.log("인증번호 미일치");
+  const handleCodeVerification = async () => {
+    const email = getValues("email"); // 이메일 값 가져오기
+    if (!email) {
+      console.error("이메일이 유효하지 않습니다.");
+      return;
+    }
+    try {
+      const response = await getCodeCheck({ email, code: verificationCode }); // getCodeCheck 함수 호출
+      if (response.verified) {
+        console.log("인증번호 일치");
+        setIsCodeVerified(true);
+      } else {
+        console.log("인증번호 미일치");
+        setIsCodeVerified(false);
+      }
+    } catch (error) {
+      console.log("인증번호 검증 중 오류 발생:", error);
       setIsCodeVerified(false);
     }
   };
@@ -256,7 +250,7 @@ const LoginOrganism: React.FC = () => {
             <div className="w-2/3 mb-4">
               <input
                 type="text"
-                className="data-input border border-gray-300"
+                className="data-input"
                 placeholder="인증번호"
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value)}
