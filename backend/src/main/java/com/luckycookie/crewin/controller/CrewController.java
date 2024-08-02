@@ -7,11 +7,9 @@ import com.luckycookie.crewin.dto.CrewRequest.UpdateCrewPositionRequest;
 import com.luckycookie.crewin.dto.CrewResponse;
 import com.luckycookie.crewin.dto.CrewResponse.CrewItemResponse;
 import com.luckycookie.crewin.dto.PostResponse;
-import com.luckycookie.crewin.dto.PostResponse.PostGalleryItemResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.CrewService;
-import com.luckycookie.crewin.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class CrewController {
 
     private final CrewService crewService;
-    private final PostService postService;
+
     // 크루 생성
     @PostMapping()
     public ResponseEntity<BaseResponse<CrewResponse.CrewCreateResponse>> createCrew(@AuthenticationPrincipal CustomUser customUser, @RequestBody CrewRequest.CreateCrewRequest createCrewRequest) {
@@ -117,18 +115,6 @@ public class CrewController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(BaseResponse.create(HttpStatus.BAD_REQUEST.value(), "공지 삭제를 실패했습니다." + e.getMessage()));
         }
-    }
-
-    // 크루 사진첩(갤러리) 조회 - 페이징
-    @GetMapping("/detail/gallery/{crewId}")
-    public ResponseEntity<BaseResponse<PostGalleryItemResponse>> getCrewGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long crewId, @RequestParam int pageNo) {
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 사진첩 조회를 성공했습니다.", postService.getCrewPostGallery(pageNo, crewId, customUser)));
-    }
-
-    // 크루 사진첩 상세 조회
-    @GetMapping("/gallery/detail/{crewId}")
-    public ResponseEntity<BaseResponse<CrewResponse.CrewGalleryDetailItemResponse>> getCrewGalleryDetailList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long crewId, @RequestParam Long postId, @RequestParam String direction) {
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 사진첩 상세 조회를 성공했습니다.", crewService.getCrewGalleryDetailList(crewId, postId, direction, customUser)));
     }
 
     // 크루 권한 부여

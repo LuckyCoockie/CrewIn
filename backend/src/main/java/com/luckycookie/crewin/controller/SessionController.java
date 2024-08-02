@@ -70,10 +70,4 @@ public class SessionController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 사진첩 조회를 성공했습니다.", sessionService.getSessionGallery(pageNo, sessionId, customUser)));
     }
 
-//    // 세션 참가 신청
-//    @PostMapping
-//    public ResponseEntity<BaseResponse<Void>> applySession( ,@AuthenticationPrincipal CustomUser customUser) {
-//
-//    }
-
 }
