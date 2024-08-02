@@ -102,7 +102,7 @@ public class MemberService {
             throw new InvalidCredentialException();
         }
         String temporaryPassword = generateRandomPassword();
-        member.changePassword(temporaryPassword);
+        member.changePassword(passwordEncoder.encode(temporaryPassword));
         mailService.sendTemporaryPasswordMail(email, temporaryPassword);
     }
 
