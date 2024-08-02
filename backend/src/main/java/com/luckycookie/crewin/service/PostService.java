@@ -37,9 +37,6 @@ public class PostService {
     private final HeartRepository heartRepository;
     private final PostImageRepository postImageRepository;
     private final MemberCrewRepository memberCrewRepository;
-    private final SessionRepository sessionRepository;
-    private final SessionImageRepository sessionImageRepository;
-    private final MemberSessionRepository memberSessionRepository;
 
     public void writePost(PostRequest.WritePostRequest writePostRequest, CustomUser customUser) {
 
@@ -191,7 +188,7 @@ public class PostService {
 
     // 사진첩 상세 조회
     // 크루
-    private PostItemsResponse getCrewPostGalleryDetailResponse(Long crewId, Long postId, String direction, CustomUser customUser) {
+    public PostItemsResponse getCrewPostGalleryDetailResponse(Long crewId, Long postId, String direction, CustomUser customUser) {
         // 현재 로그인한 사용자
         Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
         Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
@@ -239,6 +236,8 @@ public class PostService {
                         .title(post.getTitle())
                         .isHearted(post.getHearts().stream().anyMatch(heart -> heart.getMember().getId().equals(member.getId())))
                         .profileImage(post.getAuthor().getImageUrl())
+                        .createdAt(post.getCreatedAt())
+                        .updatedAt(post.getUpdatedAt())
                         .postImages(post.getPostImages().stream().map(PostImage::getImageUrl).toList())
                         .build())
                 .collect(Collectors.toList());
