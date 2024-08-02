@@ -3,9 +3,10 @@ import { useRef, useState } from "react";
 type OwnProps = {
   text?: string;
   onChange?: (text: string) => void;
+  children?: React.ReactNode;
 };
 
-const EditableText = ({ text, onChange }: OwnProps) => {
+const EditableText = ({ text, onChange, children }: OwnProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(text);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -30,7 +31,7 @@ const EditableText = ({ text, onChange }: OwnProps) => {
   };
 
   return (
-    <div>
+    <div className="flex min-w-10 items-center">
       {isEditing ? (
         <input
           type="text"
@@ -47,6 +48,7 @@ const EditableText = ({ text, onChange }: OwnProps) => {
           {value}
         </p>
       )}
+      <div onClick={() => setIsEditing(true)}>{children}</div>
     </div>
   );
 };

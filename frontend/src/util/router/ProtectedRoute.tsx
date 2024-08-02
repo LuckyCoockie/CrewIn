@@ -1,22 +1,20 @@
 import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
-import store, { RootState } from "../../modules";
-import { refreshAccessToken } from "../../modules/reducers/auth";
+import { RootState } from "../../modules";
 
 const ProtectedRoute = () => {
-  const { accessToken } = useSelector((state: RootState) => state.auth);
+  const { accessToken, loading } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   const navigate = useNavigate();
 
-  // TODO : true 빼기
   const isAuthenticated = useMemo(() => accessToken !== null, [accessToken]) || true;
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      store.dispatch(refreshAccessToken()).catch(() => navigate("/login"));
-    }
-  }, [isAuthenticated, navigate]);
+    if (!loading && !isAuthenticated) navigate("/login");
+  }, [isAuthenticated, loading, navigate]);
 
   return <Outlet />;
 };
