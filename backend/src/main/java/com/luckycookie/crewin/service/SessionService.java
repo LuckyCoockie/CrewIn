@@ -18,6 +18,7 @@ import com.luckycookie.crewin.exception.session.SessionInProgressException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class SessionService {
 
     private final MemberRepository memberRepository;
@@ -114,12 +116,8 @@ public class SessionService {
         Member host = memberRepository.findById(session.getHost().getId())
                 .orElseThrow(NotFoundMemberException::new);
 
-        Boolean userSessionCompare;
-        if (customUser.getEmail().equals(host.getEmail())) {
-            userSessionCompare = true;
-        } else {
-            userSessionCompare = false;
-        }
+        boolean userSessionCompare;
+        userSessionCompare = customUser.getEmail().equals(host.getEmail());
 
         List<SessionPoster> sessionPosters = sessionPosterRepository.findBySession(session);
 
@@ -188,11 +186,14 @@ public class SessionService {
     private SessionResponse convertToSessionResponse(Session session) {
         List<SessionPoster> sessionPosters = sessionPosterRepository.findBySessionOrderByImageUrlAsc(session);
         String sessionThumbnail = sessionPosters.isEmpty() ? null : sessionPosters.get(0).getImageUrl();
+        String crewName = "";
+        if(session.getCrew() != null)
+            crewName = session.getCrew().getCrewName();
 
         return SessionResponse.builder()
                 .sessionId(session.getId())
                 .sessionThumbnail(sessionThumbnail)
-                .crewName(session.getCrew().getCrewName())
+                .crewName(crewName)
                 .sessionName(session.getName())
                 .spot(session.getSpot())
                 .area(session.getArea())
@@ -240,5 +241,8 @@ public class SessionService {
                 .build();
     }
 
+    public void applySession(){
+
+    }
 
 }
