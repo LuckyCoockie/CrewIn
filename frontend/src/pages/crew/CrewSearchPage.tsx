@@ -1,6 +1,6 @@
 import { useCallback } from "react";
-import CrewListTemplate from "../components/templates/crew/CrewListTemplate";
-import { getCrewList } from "../apis/api/crewlist";
+import CrewListTemplate from "../../components/templates/crew/CrewListTemplate";
+import { getCrewList } from "../../apis/api/crewlist";
 
 const CrewSearchPage: React.FC = () => {
   const fetchData = useCallback(async (page: number) => {
@@ -9,7 +9,7 @@ const CrewSearchPage: React.FC = () => {
 
   return (
     <main>
-      <CrewListTemplate fetchData={fetchData} />;
+      <CrewListTemplate fetchData={fetchData} />
     </main>
   );
 };

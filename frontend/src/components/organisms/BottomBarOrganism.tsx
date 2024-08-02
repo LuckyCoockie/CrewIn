@@ -11,7 +11,7 @@ type Current = {
 };
 
 const BottomBarOrganism: React.FC<Current> = (props) => {
-  const [currentTab, setcurrentTab] = useState(props.current.split("/")[1]);
+  const [currentTab, setcurrentTab] = useState(props.current.split(/[?/]/)[1]);
   const navigator = useNavigate();
   console.log(currentTab);
 
@@ -22,7 +22,7 @@ const BottomBarOrganism: React.FC<Current> = (props) => {
 
   return (
     <>
-      <div className="mx-auto w-full max-w-[550px] bg-white fixed bottom-0 left-0 right-0 flex justify-center items-center border-gray-200 border-t">
+      <div className="mx-auto w-full max-w-[550px] bg-white fixed bottom-0 left-0 right-0 flex justify-center items-center border-gray-200 border-t z-50">
         <div className="w-full h-full button">
           <HomeTabMolecule
             name="Home"
@@ -35,7 +35,7 @@ const BottomBarOrganism: React.FC<Current> = (props) => {
             name="Session"
             tab={currentTab === "session"}
             //TODO : ?type=all 빼기
-            onClick={() => selectedTab("session?type=all")}
+            onClick={() => selectedTab("session?sessionType=all&status=active")}
           />
         </div>
         <div className="w-full h-full button">

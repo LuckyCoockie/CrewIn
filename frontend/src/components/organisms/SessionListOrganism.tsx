@@ -5,7 +5,6 @@ import { GetSessionListRequestDto, SessionDto } from "../../apis/api/session";
 import { useQuery } from "react-query";
 import { AxiosError } from "axios";
 import ErrorResponseDto from "../../apis/utils/errorCode/ErrorResponseDto";
-import { removeUndefinedKey } from "../../util/removeUndefinedKey";
 import qs from "query-string";
 
 type OwnProps = {
@@ -13,20 +12,20 @@ type OwnProps = {
 };
 
 const SessionListComponent: React.FC<OwnProps> = ({ fetchData }) => {
-  const query = removeUndefinedKey(qs.parse(location.search));
+  const query = qs.parse(location.search) as GetSessionListRequestDto;
 
   const { data, isError } = useQuery<
     SessionDto[],
     AxiosError<ErrorResponseDto>
-  >({
-    queryKey: [`SessionList`, query["crew-name"], query.date, query.type],
-    queryFn: () => fetchData(query),
+  >([`session`, query], () => fetchData(query), {
+    refetchOnWindowFocus: false,
+    refetchOnMount: true,
   });
 
-  if (isError) return "데이터를 불러오지 못했습니다.";
+  if (isError || !data) return "데이터를 불러오지 못했습니다.";
 
   return (
-    <GridListComponent items={data ?? []}>
+    <GridListComponent items={data}>
       {({ item }) => (
         <SessionListItemMolecules
           key={item.sessionId}

@@ -40,84 +40,43 @@ export const sessionRequestTypeToLabel = (type: SessionRequestType) => {
   }
 };
 
+export const SessionStatusType = {
+  ALL: "all",
+  ACTIVE: "active",
+} as const;
+export type SessionStatusType =
+  (typeof SessionStatusType)[keyof typeof SessionStatusType];
+export const sessionStatusTypeToLabel = (type: SessionStatusType) => {
+  switch (type) {
+    case SessionStatusType.ALL:
+      return "전체 세션 조회";
+    case SessionStatusType.ACTIVE:
+      return "진행 중 인 세션 조회";
+  }
+};
+
 export type SessionDto = {
-  sessionId: number;
-  sessionName: string;
   crewName: string;
-  area: string;
+  sessionName: string;
   spot: string;
+  area: string;
+  sessionThumbnail: string;
   sessionType: SessionType;
   maxPeople: number;
-  sessionThumbnail: string;
+  sessionId: number;
   startAt: string;
 };
 
 export type GetSessionListRequestDto = {
-  type?: SessionRequestType;
+  sessionType?: SessionRequestType;
   "crew-name"?: string;
   date?: string;
-};
-
-export type GetSessionListResponseDto = {
-  sessions: SessionDto[];
+  status?: SessionStatusType;
 };
 
 export const getSessionList = async (
   dto: GetSessionListRequestDto
-): Promise<GetSessionListResponseDto> => {
-  // TODO : 더미 데이터 삭제
-  return {
-    sessions: [
-      {
-        sessionId: 1,
-        crewName: "CAUON",
-        sessionName: "러닝",
-        spot: "세븐일레븐",
-        area: "진평동",
-        sessionThumbnail:
-          "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
-        sessionType: "STANDARD",
-        maxPeople: 20,
-        startAt: "2025-07-20 06:00:00",
-      },
-      {
-        sessionId: 2,
-        crewName: "CAUON",
-        sessionName: "러닝",
-        spot: "세븐일레븐",
-        area: "진평동",
-        sessionThumbnail:
-          "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
-        sessionType: "STANDARD",
-        maxPeople: 20,
-        startAt: "2025-07-20 06:00:00",
-      },
-      {
-        sessionId: 3,
-        crewName: "CAUON",
-        sessionName: "러닝",
-        spot: "세븐일레븐",
-        area: "진평동",
-        sessionThumbnail:
-          "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
-        sessionType: "STANDARD",
-        maxPeople: 20,
-        startAt: "2025-07-20 06:00:00",
-      },
-      {
-        sessionId: 4,
-        crewName: "CAUON",
-        sessionName: "러닝",
-        spot: "세븐일레븐",
-        area: "진평동",
-        sessionThumbnail:
-          "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
-        sessionType: "STANDARD",
-        maxPeople: 20,
-        startAt: "2025-07-20 06:00:00",
-      },
-    ],
-  };
+): Promise<SessionDto[]> => {
   const response = await api.get("/session", { params: dto });
   return response.data;
 };

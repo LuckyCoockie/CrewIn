@@ -1,32 +1,70 @@
 import { ReactComponent as InfoIcon } from "../../../assets/icons/info_icon.svg";
 import { ReactComponent as RunningIcon } from "../../../assets/icons/running_icon.svg";
-import { GetSessionListRequestDto } from "../../../apis/api/session";
+import {
+  GetSessionListRequestDto,
+  SessionStatusType,
+  sessionStatusTypeToLabel,
+} from "../../../apis/api/session";
 import FloatingActionButton from "../../atoms/Button/FloatingActionButton";
-import { Outlet } from "react-router";
 import SessionSearchOrganism from "../../organisms/SessionSearchOrganism";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
+
+import qs from "query-string";
+import DropdownTypeComponent from "../../atoms/Input/DropdownItemComponent";
+import SessionListTemplate from "./SessionListTemplate";
 
 type OwnProps = {
   fetchData: (dto: GetSessionListRequestDto) => Promise<void>;
 };
 
 const SessionSearchTemplate: React.FC<OwnProps> = ({ fetchData }) => {
-  const onSearch = useCallback(fetchData, [fetchData]);
+  const query = qs.parse(location.search);
+
+  const [status, setStatus] = useState<SessionStatusType>(
+    query.status ?? "active"
+  );
+
+  const onSearch = useCallback(
+    (data: GetSessionListRequestDto) => fetchData({ status: status, ...data }),
+    [fetchData, status]
+  );
+
+  const handelStatusChange = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const value = event.target.value as SessionStatusType;
+      setStatus(value);
+      fetchData({ status: value, sessionType: query.sessionType });
+    },
+    [fetchData, query.sessionType]
+  );
 
   return (
-    <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20 relative">
-      <div className="flex items-center bg-white w-full mb-10">
-        <p className="text-xl font-bold pr-1">진행중인 세션</p>
-        <div className="flex items-center">
-          <InfoIcon />
+    <main>
+      <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20 relative">
+        <div className="flex items-center bg-white w-full mb-10">
+          <p className="text-xl font-bold pr-1">
+            <DropdownTypeComponent
+              id={""}
+              options={Object.values(SessionStatusType).map((type) => ({
+                label: sessionStatusTypeToLabel(type),
+                value: type,
+              }))}
+              value={status}
+              onChange={handelStatusChange}
+              className="text-xl font-black tracking-tighter p-0 text-left"
+            ></DropdownTypeComponent>
+          </p>
+          <div className="flex items-center">
+            <InfoIcon />
+          </div>
         </div>
+        <SessionSearchOrganism onSearch={onSearch} />
+        <SessionListTemplate />
+        <FloatingActionButton>
+          <RunningIcon className="w-6 h-6" />
+        </FloatingActionButton>
       </div>
-      <SessionSearchOrganism onSearch={onSearch} />
-      <Outlet />
-      <FloatingActionButton>
-        <RunningIcon className="w-6 h-6" />
-      </FloatingActionButton>
-    </div>
+    </main>
   );
 };
 

@@ -24,6 +24,7 @@ const InfiniteScrollComponent = <T,>({
 }: OwnProps<T>) => {
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
     useInfiniteQuery(fetchKey, ({ pageParam = 1 }) => fetchData(pageParam), {
+      refetchOnWindowFocus: false,
       getNextPageParam: (lastPage, allPages) => {
         console.log(lastPage.length);
         if (lastPage.length < pageSize) return;
