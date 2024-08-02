@@ -9,8 +9,8 @@ import com.luckycookie.crewin.dto.CrewRequest.CreateCrewNoticeRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CreateCrewRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewMemberRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewReplyMemberRequest;
-import com.luckycookie.crewin.dto.CrewResponse;
 import com.luckycookie.crewin.dto.CrewResponse.*;
+import com.luckycookie.crewin.dto.PostResponse;
 import com.luckycookie.crewin.exception.crew.*;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.memberCrew.NotFoundMemberCrewException;
@@ -44,6 +44,8 @@ public class CrewService {
     private final PostImageRepository postImageRepository;
 
     private final NotificationService notificationService;
+    private final HeartRepository heartRepository;
+
 
     public Crew createCrew(CreateCrewRequest createCrewRequest, CustomUser customUser) {
 
@@ -277,7 +279,7 @@ public class CrewService {
         List<Post> noticeList = noticeListPage.getContent();
         int lastPageNo = Math.max(noticeListPage.getTotalPages() - 1, 0);
 
-        List<CrewResponse.CrewNoticeItem> crewNoticeItems = noticeList.stream().map(notice -> CrewNoticeItem
+        List<CrewNoticeItem> crewNoticeItems = noticeList.stream().map(notice -> CrewNoticeItem
                 .builder()
                 .position(position)
                 .title(notice.getTitle())
@@ -293,43 +295,50 @@ public class CrewService {
                 .build();
     }
 
-    // 크루 사진첩 조회
+    // 크루 사진첩 상세 조회
     @Transactional(readOnly = true)
-    public CrewGalleryItemResponse getCrewGalleryList(int pageNo, Long crewId, CustomUser customUser) {
-        Pageable pageable = PageRequest.of(pageNo, 27); // 페이지 크기 : 27
+    public CrewGalleryDetailItemResponse getCrewGalleryDetailList(Long crewId, Long postId, String direction, CustomUser customUser) {
 
-        // 현재 로그인 된 사용자 정보 가져오기
+        // 현재 로그인한 사용자
         Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
-
-        // 크루 가져오기
         Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
 
-        // 내가 그 크루에 속해있는지 확인 (크루에 속해있을 때 사진첩이 보여야 함)
-        MemberCrew memberCrew = memberCrewRepository.findByMemberAndCrew(member, crew).orElseThrow(NotFoundMemberCrewException::new);
+        // 현재 로그인한 사용자가 해당 crew 에 포함되어 있는지 확인
+        memberCrewRepository.findByMemberAndCrew(member, crew).orElseThrow(NotFoundMemberCrewException::new);
 
-        // 해당 크루의 일반 게시물 가져오기
-        if (memberCrew != null) {
-            Page<Post> galleryListPage = postRepository.findByCrewAndPostType(crew, PostType.STANDARD, pageable);
-            List<Post> galleryList = galleryListPage.getContent();
-            int lastPageNo = Math.max(galleryListPage.getTotalPages() - 1, 0);
+        List<Post> galleryList = List.of();
 
-            List<CrewGalleryItem> crewGalleryItems = galleryList.stream().map(post -> CrewGalleryItem
-                    .builder()
-                    .postId(post.getId())
-                    .imageUrls(post.getPostImages().stream().map(PostImage::getImageUrl
-                    ).toList())
-                    .build()).collect(Collectors.toList());
-
-            return CrewGalleryItemResponse
-                    .builder()
-                    .crewGalleryList(crewGalleryItems)
-                    .pageNo(pageNo)
-                    .lastPageNo(lastPageNo)
-                    .build();
+        // postId 기준으로 increase나 decrease에 따라 데이터 조회
+        if (direction.equals("increase")) {
+            // postId 보다 작은 포스트들을 가져옴
+            galleryList = postRepository.findByCrewAndIdLessThanAndPostTypeOrderByIdAsc(crew, postId, PostType.STANDARD, PageRequest.of(0, 10)).getContent();
+        } else if (direction.equals("decrease")) {
+            // postId 보다 큰 포스트들을 가져옴
+            galleryList = postRepository.findByCrewAndIdGreaterThanAndPostTypeOrderByIdAsc(crew, postId, PostType.STANDARD, PageRequest.of(0, 10)).getContent();
         }
 
-        throw new CrewUnauthorizedException(); // 크루에 속해 있지 않다면 권한이 없는 것
+        List<CrewGalleryDetailItem> crewGalleryDetailItemList = galleryList
+                .stream()
+                .map(post -> CrewGalleryDetailItem
+                        .builder()
+                        .postId(post.getId())
+                        .nickname(post.getAuthor().getNickname())
+                        .profileImageUrl(post.getAuthor().getImageUrl())
+                        .postImageUrls(post.getPostImages().stream().map(PostImage::getImageUrl).toList())
+                        .heartCount(post.getHearts().size())
+                        .isHearted(post.getHearts().stream().anyMatch(heart -> heart.getMember().getId().equals(member.getId())))
+                        .memberId(post.getAuthor().getId())
+                        .content(post.getContent())
+                        .createdAt(post.getCreatedAt())
+                        .build())
+                .collect(Collectors.toList());
+
+        return CrewGalleryDetailItemResponse
+                .builder()
+                .crewGalleryDetailList(crewGalleryDetailItemList)
+                .build();
     }
+
 
     public void updateNotice(Long noticeId, CreateCrewNoticeRequest createCrewNoticeRequest) {
         Post post = postRepository.findById(noticeId)
@@ -501,4 +510,40 @@ public class CrewService {
         }
     }
 
+    //크루 공지 디테일
+    public PostResponse.PostItem getNoticeDetail(CustomUser customUser, Long crewId, Long noticeId) {
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(NotFoundCrewException::new);
+        memberCrewRepository.findByMemberAndCrew(member,crew)
+                .orElseThrow(NotFoundMemberCrewException::new);
+        Post post = postRepository.findById(noticeId)
+                .orElseThrow(NotFoundPostException::new);
+        if (!post.getPostType().equals(PostType.NOTICE)) {
+            throw new NotFoundPostException();
+        }
+
+        Boolean isHeartCheck = heartRepository.existsByPostAndMember(post, member);
+
+        List<String> imageUrls = postImageRepository.findByPost(post).stream()
+                .map(PostImage::getImageUrl)
+                .collect(Collectors.toList());
+
+         return PostResponse.PostItem.builder()
+                .id(post.getId())
+                .authorName(post.getAuthor().getName())
+                .authorId(post.getAuthor().getId())
+                .content(post.getContent())
+                .heartCount(post.getHearts().size())
+                .isHearted(isHeartCheck)
+                .isPublic(post.getIsPublic())
+                .postType(post.getPostType())
+                .title(post.getTitle())
+                .createdAt(post.getCreatedAt())
+                .updatedAt(post.getUpdatedAt())
+                .postImages(imageUrls)
+                .build();
+
+    }
 }

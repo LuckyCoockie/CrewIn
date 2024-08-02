@@ -1,10 +1,7 @@
 package com.luckycookie.crewin.controller;
 
-import com.luckycookie.crewin.domain.Session;
 import com.luckycookie.crewin.domain.enums.SessionType;
-import com.luckycookie.crewin.dto.SessionDetailResponse;
-import com.luckycookie.crewin.dto.SessionRequest;
-import com.luckycookie.crewin.dto.SessionResponse;
+import com.luckycookie.crewin.dto.*;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.exception.session.NotFoundSessionTypeException;
 import com.luckycookie.crewin.security.dto.CustomUser;
@@ -73,5 +70,11 @@ public class SessionController {
     public ResponseEntity<BaseResponse<Void>> deletePost(@PathVariable("id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
         sessionService.deleteSession(sessionId, customUser);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    // 세션 사진첩(갤러리) 조회 - 페이징
+    @GetMapping("/detail/gallery/{sessionId}")
+    public ResponseEntity<BaseResponse<SessionImageResponse.SessionGalleryItemsResponse>> getSessionGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable("sessionId") Long sessionId, @RequestParam int pageNo) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 사진첩 조회를 성공했습니다.", sessionService.getSessionGallery(pageNo, sessionId, customUser)));
     }
 }

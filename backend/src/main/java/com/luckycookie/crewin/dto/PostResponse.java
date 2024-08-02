@@ -12,6 +12,26 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class PostResponse {
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class PostGalleryItem {
+        private Long postId;
+        private String ThumbnailImage;
+    }
+
+    @Getter
+    @SuperBuilder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class PostGalleryItemResponse extends PostItemBaseResponse {
+        List<PostGalleryItem> postGalleryList;
+    }
+
+
+
     @Getter
     @Builder
     public static class PostItem {
@@ -39,7 +59,7 @@ public class PostResponse {
     @SuperBuilder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class PagingBaseResponse {
+    public static class PostItemBaseResponse {
         int pageNo;
         int lastPageNo;
     }
@@ -48,7 +68,7 @@ public class PostResponse {
     @SuperBuilder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class PostItemsResponse extends PagingBaseResponse {
+    public static class PostItemsResponse extends PostItemBaseResponse {
         List<PostItem> postItemList;
     }
 

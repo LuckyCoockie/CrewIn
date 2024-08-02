@@ -1,0 +1,41 @@
+package com.luckycookie.crewin.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+import java.util.List;
+
+public class SessionImageResponse {
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class SessionGalleryItem {
+        private Long sessionImageId;
+        private String ThumbnailImage;
+    }
+
+    // pagenation
+    @Getter
+    @SuperBuilder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class SessionItemBaseResponse {
+        int pageNo;
+        int lastPageNo;
+    }
+
+    @Getter
+    @SuperBuilder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class SessionGalleryItemsResponse extends SessionItemBaseResponse {
+        List<SessionGalleryItem> sessionImages;
+    }
+
+
+}

@@ -12,6 +12,7 @@ import com.luckycookie.crewin.repository.RefreshTokenRedisRepository;
 import com.luckycookie.crewin.security.util.TokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import java.util.Random;
 
 @Service
 @Transactional
+@Slf4j
 @RequiredArgsConstructor
 public class MemberService {
 
@@ -72,6 +74,8 @@ public class MemberService {
         if (tokenUtil.validateToken(refreshToken, request)) {
             String email = tokenUtil.getSubject(refreshToken);
             Auth auth = refreshTokenRedisRepository.findById(email).orElseThrow(InvalidTokenException::new);
+            log.info("input refreshToken: {}", refreshToken);
+            log.info("redis refreshToken: {}", auth.getRefreshToken());
             if (auth.getRefreshToken().equals(refreshToken)) {
                 return tokenUtil.generateToken(Member.builder().email(email).build());
             }

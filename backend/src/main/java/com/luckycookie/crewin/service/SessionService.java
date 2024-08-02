@@ -2,13 +2,15 @@ package com.luckycookie.crewin.service;
 
 import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.SessionType;
-import com.luckycookie.crewin.dto.SessionDetailResponse;
-import com.luckycookie.crewin.dto.SessionRequest;
-import com.luckycookie.crewin.dto.SessionResponse;
+import com.luckycookie.crewin.dto.*;
+import com.luckycookie.crewin.dto.SessionImageResponse.SessionGalleryItem;
+import com.luckycookie.crewin.dto.SessionImageResponse.SessionGalleryItemsResponse;
 import com.luckycookie.crewin.exception.course.NotFoundCourseException;
 import com.luckycookie.crewin.exception.crew.CrewMemberNotExistException;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
+import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
+import com.luckycookie.crewin.exception.memberSession.NotFoundMemberSessionException;
 import com.luckycookie.crewin.exception.session.InvalidSessionException;
 import com.luckycookie.crewin.exception.session.NotFoundSessionException;
 import com.luckycookie.crewin.exception.session.SessionAuthorizationException;
@@ -16,12 +18,15 @@ import com.luckycookie.crewin.exception.session.SessionInProgressException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +40,8 @@ public class SessionService {
     private final SessionRepository sessionRepository;
     private final SessionPosterRepository sessionPosterRepository;
     private final SessionQueryRepository sessionQueryRepository;
+    private final SessionImageRepository sessionImageRepository;
+    private final MemberSessionRepository memberSessionRepository;
 
     public void createSession(SessionRequest.CreateSessionRequest createSessionRequest, CustomUser customUser) {
 
@@ -193,5 +200,39 @@ public class SessionService {
         List<Session> sessions = sessionQueryRepository.findSessionsByStatusAndType(status, sessionType);
         return sessions.stream().map(this::convertToSessionResponse).collect(Collectors.toList());
     }
+
+    public SessionGalleryItemsResponse getSessionGallery(int pageNo, Long sessionId, CustomUser customUser) {
+        PageRequest pageRequest = PageRequest.of(pageNo, 27);
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(MemberNotFoundException::new);
+        Session session = sessionRepository.findById(sessionId)
+                .orElseThrow(NotFoundSessionException::new);
+        memberSessionRepository.findByMemberAndSession(member, session)
+                .orElseThrow(NotFoundMemberSessionException::new);
+
+
+        Page<SessionImage> sessionImageListPage = sessionImageRepository.findBySession(session, pageRequest);
+
+        return convertToGalleryItemResponse(pageNo, sessionImageListPage);
+    }
+
+    //Page<SessionImage>를 받아서 갤러리 response로 변환
+    private SessionGalleryItemsResponse convertToGalleryItemResponse(int pageNo, Page<SessionImage> sessionImageListPage) {
+        List<SessionImage> sessionImageList = sessionImageListPage.getContent();
+        int lastPageNo = Math.max(sessionImageListPage.getTotalPages() - 1, 0);
+        List<SessionGalleryItem> sessionGalleryItems = sessionImageList.stream()
+                .map(sessionImage -> SessionGalleryItem.builder()
+                                .sessionImageId(sessionImage.getId())
+                                .ThumbnailImage(sessionImage.getImageUrl())
+                                .build()
+                        )
+                .toList();
+        return SessionGalleryItemsResponse.builder()
+                .pageNo(pageNo)
+                .lastPageNo(lastPageNo)
+                .sessionImages(sessionGalleryItems)
+                .build();
+    }
+
 
 }

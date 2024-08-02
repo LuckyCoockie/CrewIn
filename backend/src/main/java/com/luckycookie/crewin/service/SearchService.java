@@ -3,8 +3,11 @@ package com.luckycookie.crewin.service;
 
 
 import com.luckycookie.crewin.domain.Crew;
-import com.luckycookie.crewin.dto.CrewResponse;
+import com.luckycookie.crewin.domain.Member;
+import com.luckycookie.crewin.dto.CrewResponse.CrewItem;
 import com.luckycookie.crewin.dto.CrewResponse.CrewItemResponse;
+import com.luckycookie.crewin.dto.MemberResponse.MemberItem;
+import com.luckycookie.crewin.dto.MemberResponse.MemberSearchResponse;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.repository.CrewRepository;
 import com.luckycookie.crewin.repository.MemberRepository;
@@ -29,7 +32,40 @@ public class SearchService {
     private final CrewRepository crewRepository;
 
     @Transactional(readOnly = true)
-    public CrewItemResponse searchCrew(String query, int pageNo, CustomUser customUser){
+    public MemberSearchResponse searchMember(String query, int pageNo, CustomUser customUser) {
+        //CustomUser 검증
+        memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+
+        Pageable pageable = PageRequest.of(pageNo, 10); // pageNo 페이지 번호, 10 : 페이지 크기
+
+        Page<Member> membersPage;
+        List<Member> members;
+        int lastPageNo;
+
+        membersPage = memberRepository.findAllByName(query, pageable);
+
+        members = membersPage.getContent();
+        lastPageNo = Math.max(membersPage.getTotalPages() - 1, 0);
+
+        List<MemberItem> memberItems = members.stream().map(member ->
+            MemberItem.builder()
+                .memberId(member.getId())
+                .memberName(member.getName())
+                .memberNickName(member.getNickname())
+                .profileUrl(member.getImageUrl())
+                .build()
+        ).collect(Collectors.toList());
+
+        return MemberSearchResponse.builder()
+                .pageNo(pageNo)
+                .lastPageNo(lastPageNo)
+                .members(memberItems)
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public CrewItemResponse searchCrew(String query, int pageNo, CustomUser customUser) {
         // CustomUser 검증
         memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
@@ -45,11 +81,11 @@ public class SearchService {
         crews = crewsPage.getContent();
         lastPageNo = Math.max(crewsPage.getTotalPages() - 1, 0);
 
-        List<CrewResponse.CrewItem> crewItems = crews.stream().map(crew -> {
+        List<CrewItem> crewItems = crews.stream().map(crew -> {
             int crewCount = crewRepository.countMembersByCrew(crew);
             String captainName = crew.getCaptain().getName();
 
-            return CrewResponse.CrewItem.builder()
+            return CrewItem.builder()
                     .crewId(crew.getId())
                     .crewName(crew.getCrewName())
                     .slogan(crew.getSlogan())
