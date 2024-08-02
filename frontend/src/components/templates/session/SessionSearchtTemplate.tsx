@@ -12,12 +12,15 @@ import { useCallback, useState } from "react";
 import qs from "query-string";
 import DropdownTypeComponent from "../../atoms/Input/DropdownItemComponent";
 import SessionListTemplate from "./SessionListTemplate";
+import { useNavigate } from "react-router";
 
 type OwnProps = {
   fetchData: (dto: GetSessionListRequestDto) => Promise<void>;
 };
 
 const SessionSearchTemplate: React.FC<OwnProps> = ({ fetchData }) => {
+  const navigate = useNavigate();
+
   const query = qs.parse(location.search);
 
   const [status, setStatus] = useState<SessionStatusType>(
@@ -37,6 +40,10 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({ fetchData }) => {
     },
     [fetchData, query.sessionType]
   );
+
+  const handleSessionCreateRoute = () => {
+    navigate(`/session/create`);
+  };
 
   return (
     <main>
@@ -60,7 +67,7 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({ fetchData }) => {
         </div>
         <SessionSearchOrganism onSearch={onSearch} />
         <SessionListTemplate />
-        <FloatingActionButton>
+        <FloatingActionButton onClick={handleSessionCreateRoute}>
           <RunningIcon className="w-6 h-6" />
         </FloatingActionButton>
       </div>
