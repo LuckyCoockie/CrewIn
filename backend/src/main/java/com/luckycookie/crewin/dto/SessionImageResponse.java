@@ -16,7 +16,7 @@ public class SessionImageResponse {
     @Builder
     public static class SessionGalleryItem {
         private Long sessionImageId;
-        private String ThumbnailImage;
+        private String imageUrl;
     }
 
     // pagenation

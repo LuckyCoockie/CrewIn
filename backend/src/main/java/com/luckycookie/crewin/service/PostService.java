@@ -2,6 +2,7 @@ package com.luckycookie.crewin.service;
 
 import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.PostType;
+import com.luckycookie.crewin.dto.CrewResponse;
 import com.luckycookie.crewin.dto.PostRequest;
 import com.luckycookie.crewin.dto.PostResponse.PostGalleryItem;
 import com.luckycookie.crewin.dto.PostResponse.PostGalleryItemResponse;
@@ -90,15 +91,12 @@ public class PostService {
     }
 
 
-
     private List<String> getPostImages(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(NotFoundPostException::new);
 
         List<PostImage> postImages = postImageRepository.findByPost(post);
         return postImages.stream().map(PostImage::getImageUrl).toList();
     }
-
-
 
 
     @Transactional(readOnly = true)
@@ -137,6 +135,7 @@ public class PostService {
                 .build();
     }
 
+    // 사진첩 조회
     public PostGalleryItemResponse getCrewPostGallery(int pageNo, long crewId, CustomUser customUser) {
         PageRequest pageRequest = PageRequest.of(pageNo, 27);
         Member viewer = memberRepository.findByEmail(customUser.getEmail())
@@ -173,8 +172,7 @@ public class PostService {
         return convertToGalleryItemResponse(pageNo, postListPage);
     }
 
-
-    //Page<Post>를 받아서 갤러리 response로 변환
+    // Page<Post>를 받아서 갤러리 response로 변환
     private PostGalleryItemResponse convertToGalleryItemResponse(int pageNo, Page<Post> postListPage) {
         List<Post> postList = postListPage.getContent();
         int lastPageNo = Math.max(postListPage.getTotalPages() - 1, 0);
@@ -191,10 +189,65 @@ public class PostService {
                 .build();
     }
 
+    // 사진첩 상세 조회
+    // 크루
+    private PostItemsResponse getCrewPostGalleryDetailResponse(Long crewId, Long postId, String direction, CustomUser customUser) {
+        // 현재 로그인한 사용자
+        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+        Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
 
+        // 현재 로그인한 사용자가 해당 crew 에 포함되어 있는지 확인
+        memberCrewRepository.findByMemberAndCrew(member, crew).orElseThrow(NotFoundMemberCrewException::new);
 
+        Page<Post> postListPage = null;
+        PageRequest pageRequest = PageRequest.of(0, 10);
 
+        // postId 기준으로 increase나 decrease에 따라 데이터 조회
+        if (direction.equals("increase")) {
+            // postId 보다 작은 포스트들을 가져옴
+            postListPage = postRepository.findByCrewAndIdLessThanAndPostTypeOrderByIdAsc(crew, postId, PostType.STANDARD, pageRequest);
+        } else if (direction.equals("decrease")) {
+            // postId 보다 큰 포스트들을 가져옴
+            postListPage = postRepository.findByCrewAndIdGreaterThanAndPostTypeOrderByIdAsc(crew, postId, PostType.STANDARD, pageRequest);
+        }
 
+        assert postListPage != null;
+        return convertToPostItemsResponse(postListPage, customUser);
+    }
 
+    // Page<Post> 받아서 상세조회 response 반환
+    private PostItemsResponse convertToPostItemsResponse(Page<Post> postListPage, CustomUser customUser) {
+        /*
+         * 1. 하트 테이블에서 게시글 번호로 하트 개수
+         * 2. 하트 테이블에서 isHearted
+         * */
+
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+
+        List<PostItem> postList = postListPage.getContent()
+                .stream()
+                .map(post -> PostItem
+                        .builder()
+                        .id(post.getId())
+                        .authorName(post.getAuthor().getName())
+                        .authorId(post.getId())
+                        .content(post.getContent())
+                        .heartCount(post.getHearts().size())
+                        .isPublic(post.getIsPublic())
+                        .postType(post.getPostType())
+                        .title(post.getTitle())
+                        .isHearted(post.getHearts().stream().anyMatch(heart -> heart.getMember().getId().equals(member.getId())))
+                        .profileImage(post.getAuthor().getImageUrl())
+                        .postImages(post.getPostImages().stream().map(PostImage::getImageUrl).toList())
+                        .build())
+                .collect(Collectors.toList());
+
+        return PostItemsResponse
+                .builder()
+                .postItemList(postList)
+                .build();
+
+    }
 
 }

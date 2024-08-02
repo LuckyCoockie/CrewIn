@@ -215,14 +215,14 @@ public class SessionService {
         return convertToGalleryItemResponse(pageNo, sessionImageListPage);
     }
 
-    //Page<SessionImage>를 받아서 갤러리 response로 변환
+    // Page<SessionImage>를 받아서 갤러리 response로 변환
     private SessionGalleryItemsResponse convertToGalleryItemResponse(int pageNo, Page<SessionImage> sessionImageListPage) {
         List<SessionImage> sessionImageList = sessionImageListPage.getContent();
         int lastPageNo = Math.max(sessionImageListPage.getTotalPages() - 1, 0);
         List<SessionGalleryItem> sessionGalleryItems = sessionImageList.stream()
                 .map(sessionImage -> SessionGalleryItem.builder()
                                 .sessionImageId(sessionImage.getId())
-                                .ThumbnailImage(sessionImage.getImageUrl())
+                                .imageUrl(sessionImage.getImageUrl())
                                 .build()
                         )
                 .toList();
