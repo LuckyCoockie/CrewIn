@@ -7,6 +7,11 @@ import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import Modal from "../molecules/ModalMolecules";
 
+import {
+  temporarilyPassword,
+  temporarilyPasswordDto,
+} from "../../apis/api/findpassword";
+
 const schema = yup.object({
   email: yup
     .string()
@@ -34,13 +39,22 @@ const FindPasswordOrganism: React.FC = () => {
     mode: "onChange",
   });
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
     console.log(data);
-    setIsModalOpen(true); // 모달 열기
+    const submitData: temporarilyPasswordDto = {
+      ...data,
+    };
+    try {
+      await temporarilyPassword(submitData);
+      console.log("임시 비밀번호 발송");
+    } catch (error) {
+      console.log("비밀번호 발송 실패");
+    }
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {
-    setIsModalOpen(false); // 모달 닫기
+    setIsModalOpen(false);
   };
 
   return (
