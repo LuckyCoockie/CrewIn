@@ -21,7 +21,8 @@ import NoticeCreatePage from "./pages/NoticeCreatePage.tsx";
 import { ProfileInfoPage } from "./pages/ProfileInfoPage.tsx";
 import ProtectedRoute from "./util/router/ProtectedRoute.tsx";
 import UnprotectedRoute from "./util/router/UnprotectedRoute.tsx";
-import MemberSearchPage from "./pages/MemberSearchPage.tsx";
+import CrewMemberPage from "./pages/CrewMemberPage.tsx";
+import CrewMemberSearchPage from "./pages/CrewMemberSearchPage.tsx";
 import { getMyCrews } from "./apis/api/mycrew";
 
 const loader = async () => {
@@ -60,7 +61,8 @@ export const router = createBrowserRouter([
               { path: "create", element: <CrewCreatePage /> },
               { path: "detail/:crewId", element: <CrewDetailPage /> },
               { path: "noticecreate", element: <NoticeCreatePage /> },
-              { path: "membersearch", element: <MemberSearchPage /> },
+              { path: "member", element: <CrewMemberPage /> },
+              { path: "membersearch", element: <CrewMemberSearchPage /> },
             ],
           },
           { path: "profile", element: <ProfilePage /> },
@@ -98,7 +100,8 @@ export const router = createBrowserRouter([
           { path: "create", element: <CrewCreatePage /> },
           { path: "detail/:crewId", element: <CrewDetailPage /> },
           { path: "noticecreate", element: <NoticeCreatePage /> },
-          { path: "membersearch", element: <MemberSearchPage /> },
+          { path: "member", element: <CrewMemberPage /> },
+          { path: "membersearch", element: <CrewMemberSearchPage /> },
         ],
       },
       { path: "profile", element: <ProfilePage /> },
