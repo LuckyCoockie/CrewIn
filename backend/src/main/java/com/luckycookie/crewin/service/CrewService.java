@@ -156,7 +156,7 @@ public class CrewService {
         Crew crew = crewRepository.findById(createCrewNoticeRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
 
         // 크루 공지는 Pacer 이상
-        Position position = memberCrewRepository.findPositionByMemberAndCrew(member, crew).orElseThrow(CrewPositionMismatchException::new);
+        Position position = memberCrewRepository.findPositionByMemberAndCrew(member, crew).orElseThrow(NotFoundMemberCrewException::new);
 
         // MEMBER 가 아닐 때만
         if (position != Position.MEMBER) {
