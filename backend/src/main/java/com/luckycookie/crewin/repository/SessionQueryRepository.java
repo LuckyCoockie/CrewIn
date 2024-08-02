@@ -22,13 +22,21 @@ public class SessionQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
     private final QSession session = QSession.session;
 
-    public List<Session> findSessionsByStatusAndType(String status, SessionType sessionType) {
+    public List<Session> findSessionsByStatusAndTypeAndCrewName(String status, SessionType sessionType, String crewName) {
         return jpaQueryFactory
                 .select(session)
                 .from(session)
-                .where(statusEq(status), typeEq(sessionType))
+                .where(statusEq(status), typeEq(sessionType), crewNameEq(crewName))
                 .orderBy(session.id.desc())
                 .fetch();
+    }
+
+    private BooleanExpression crewNameEq(String crewName) {
+        if (crewName.isEmpty())
+            return null;
+        else
+            return
+                    session.crew.crewName.contains(crewName);
     }
 
     private BooleanExpression statusEq(String status) {

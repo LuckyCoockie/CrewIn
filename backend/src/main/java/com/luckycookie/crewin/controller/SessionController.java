@@ -3,7 +3,6 @@ package com.luckycookie.crewin.controller;
 import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.*;
 import com.luckycookie.crewin.dto.base.BaseResponse;
-import com.luckycookie.crewin.exception.session.NotFoundSessionTypeException;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.SessionService;
 import lombok.RequiredArgsConstructor;
@@ -34,22 +33,15 @@ public class SessionController {
 
     // 세션 조회
     @GetMapping()
-    public ResponseEntity<BaseResponse<List<SessionResponse>>> getSessionsByType(String status, String sessionType) {
+    public ResponseEntity<BaseResponse<List<SessionResponse>>> getSessionsByType(
+            @RequestParam(value = "status", defaultValue = "") String status,
+            @RequestParam(value = "sessionType", defaultValue = "") String sessionType,
+            @RequestParam(value = "crewname", defaultValue = "") String crewName) {
         SessionType enumSessionType = SessionType.stringToSessionType(sessionType);
-        if (enumSessionType == null) {
-            throw new NotFoundSessionTypeException();
-        }
-
-        List<SessionResponse> sessions = sessionService.getSessionsByStatusAndType(status, enumSessionType);
+        List<SessionResponse> sessions = sessionService.getSessionsByStatusAndTypeAndCrewName(status, enumSessionType, crewName);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 정보를 조회하는데 성공했습니다.", sessions));
     }
 
-    // 크루명으로 세션 조회
-    @GetMapping("/crew-name")
-    public ResponseEntity<BaseResponse<List<SessionResponse>>> getSessionsByCrewName(@RequestParam("crew-name") String crewName, @AuthenticationPrincipal CustomUser customUser) {
-        List<SessionResponse> sessions = sessionService.getSessionsByCrewName(crewName);
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당하는 크루의 세션을 조회하는데 성공했습니다.", sessions));
-    }
 
     // 세션 상세 조회
     @GetMapping("/detail/{id}")

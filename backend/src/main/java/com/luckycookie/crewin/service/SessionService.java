@@ -94,12 +94,6 @@ public class SessionService {
         }
     }
 
-    public List<SessionResponse> getSessionsByCrewName(String crewName) {
-        List<Session> sessions = sessionRepository.findSessionsByCrewNameContaining(crewName);
-        return sessions.stream().map(this::convertToSessionResponse).collect(Collectors.toList());
-
-    }
-
     public SessionDetailResponse getSessionDetail(Long sessionId, CustomUser customUser) {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(NotFoundSessionException::new);
@@ -203,8 +197,8 @@ public class SessionService {
                 .build();
     }
 
-    public List<SessionResponse> getSessionsByStatusAndType(String status, SessionType sessionType) {
-        List<Session> sessions = sessionQueryRepository.findSessionsByStatusAndType(status, sessionType);
+    public List<SessionResponse> getSessionsByStatusAndTypeAndCrewName(String status, SessionType sessionType, String crewName) {
+        List<Session> sessions = sessionQueryRepository.findSessionsByStatusAndTypeAndCrewName(status, sessionType, crewName);
         return sessions.stream().map(this::convertToSessionResponse).collect(Collectors.toList());
     }
 
