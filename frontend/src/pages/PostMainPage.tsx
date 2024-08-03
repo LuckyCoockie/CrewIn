@@ -10,8 +10,7 @@ import InfiniteScrollComponent from "../components/molecules/InfinityScrollMolec
 import PostItemComponent, {
   ItemComponentProps,
 } from "../components/templates/PostItemTemplate";
-import api from "../apis";
-import { PostDto } from "../apis/api/postlist";
+import { getPostList, PostDto } from "../apis/api/postlist";
 import { PWAInstallPrompt } from "../components/templates/PWAInstallPrompt";
 
 const PostMainPage: React.FC = () => {
@@ -20,9 +19,9 @@ const PostMainPage: React.FC = () => {
   const fetchPostData = useCallback(
     async (page: number): Promise<PostDto[]> => {
       try {
-        const result = await api.get(`/post/home?pageNo=${page - 1}`);
-        console.log("Fetched post data:", result.data.postItemList);
-        return result.data.postItemList;
+        const result = await getPostList(page - 1);
+        console.log("Fetched post data:", result);
+        return result;
       } catch (error) {
         console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
         return [];

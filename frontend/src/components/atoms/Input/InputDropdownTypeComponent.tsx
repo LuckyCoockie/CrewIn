@@ -8,7 +8,7 @@ type Option = {
 type InputData = {
   id: string;
   options: Option[];
-  value: string | number;
+  value: string | number | undefined;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   hasError?: boolean;
   disabled?: boolean;

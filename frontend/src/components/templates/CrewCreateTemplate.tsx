@@ -8,7 +8,7 @@ const CrewCreateTemplate: React.FC = () => {
       <header>
         <BackHeaderMediumOrganism text="크루 생성" />
       </header>
-      <main className="flex items-center justify-center pt-4 pb-20">
+      <main className="flex items-center justify-center">
         <CrewCreateOrganism />
       </main>
     </>
