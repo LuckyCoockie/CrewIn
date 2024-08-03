@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import CrewCreatePage from "./pages/CrewCreatePage";
 import PostCreatePage from "./pages/PostCreatePage";
@@ -24,15 +24,15 @@ import ProtectedRoute from "./util/router/ProtectedRoute.tsx";
 import UnprotectedRoute from "./util/router/UnprotectedRoute.tsx";
 import CrewMemberPage from "./pages/CrewMemberPage.tsx";
 import CrewMemberSearchPage from "./pages/CrewMemberSearchPage.tsx";
-import { getMyCrews } from "./apis/api/mycrew";
+// import { getMyCrews } from "./apis/api/mycrew";
 
 const loader = async () => {
-  const response = await getMyCrews();
-  if (response.crews.length > 0) {
-    return <Navigate to={`/crew/detail/${response.crews[0].crewId}`} />;
-  } else {
+  // const response = await getMyCrews();
+  // if (response.crews.length > 0) {
+  //   return <Navigate to={`/crew/detail/${response.crews[0].crewId}`} />;
+  // } else {
     return <CrewSearchPage />;
-  }
+  // }
 };
 
 export const router = createBrowserRouter([

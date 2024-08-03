@@ -26,7 +26,7 @@ const InputRadioTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
     return (
       <div className="mb-4">
         <InputLabelComponent id={props.id} title={props.title} />
-        <div className="flex space-x-4">
+        <div className="flex space-x-1">
           {props.value.map((value, index) => (
             <InputRadioComponent
               key={index}
