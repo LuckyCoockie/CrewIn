@@ -13,8 +13,22 @@ export const getProfileInfo = async (): Promise<ProfileInfoDto> => {
     email: "email",
     name: "name",
     nickname: "nickname",
-    imageUrl: "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
+    imageUrl:
+      "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
   };
   const response = await api.get("/mypage/profile");
+  return response.data;
+};
+
+// 비밀번호 변경 api
+export type NewPasswordRequestDto = {
+  oldPassword: string;
+  newPassword: string;
+};
+
+export const editPassword = async (
+  dto: NewPasswordRequestDto
+): Promise<void> => {
+  const response = await api.put(`/member/password`, dto);
   return response.data;
 };
