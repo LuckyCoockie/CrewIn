@@ -20,7 +20,7 @@ const PostMainPage: React.FC = () => {
   const fetchPostData = useCallback(
     async (page: number): Promise<PostDto[]> => {
       try {
-        const result = await api.get(`/post?pageNo=${page - 1}`);
+        const result = await api.get(`/post/home?pageNo=${page - 1}`);
         console.log("Fetched post data:", result.data.postItemList);
         return result.data.postItemList;
       } catch (error) {
