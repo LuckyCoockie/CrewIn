@@ -20,7 +20,7 @@ export type GetPostListResponseDto = PostDto[];
 export const getPostList = async (
   dto: PostDto
 ): Promise<GetPostListResponseDto> => {
-  const response = await api.get("/post", { params: dto });
+  const response = await api.get("/post/home", { params: dto });
   if (response.status === 200) {
     return response.data;
   } else {

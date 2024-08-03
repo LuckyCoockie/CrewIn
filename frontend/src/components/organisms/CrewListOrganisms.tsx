@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useCallback } from "react";
 import CrewListItem from "../molecules/CrewListItemMolecules";
 import InfiniteScrollComponent from "../molecules/InfinityScrollMolecules";
+import qs from "query-string";
+import { GetCrewListRequestDto } from "../../apis/api/crewlist";
 
 type CrewData = {
   id: number;
@@ -13,16 +15,26 @@ type CrewData = {
 };
 
 type OwnProps = {
-  fetchData: (page: number) => Promise<CrewData[]>;
+  fetchData: (dto: GetCrewListRequestDto) => Promise<CrewData[]>;
 };
 
 const CrewListComponent: React.FC<OwnProps> = ({ fetchData }) => {
+  const query = qs.parse(location.search) as GetCrewListRequestDto;
+
+  const handleFetchData = useCallback(
+    (page: number) => {
+      return fetchData({ query: query.query, pageNo: page.toString() });
+    },
+    [fetchData, query.query]
+  );
+
   return (
     <InfiniteScrollComponent
       className="grid grid-cols-2 gap-2 xs:gap-4 mb-2 xs:mb-4"
       fetchKey={["CrewList"]}
-      fetchData={fetchData}
+      fetchData={handleFetchData}
       pageSize={6}
+      initPage={parseInt(query.pageNo ?? "1")}
       ItemComponent={({ data }) => (
         <CrewListItem
           key={data.id}

@@ -1,121 +1,61 @@
 import api from "../utils/instance";
 
-export const SessionTypeData = {
+export const SessionType = {
   STANDARD: "STANDARD",
   OPEN: "OPEN",
   THUNDER: "THUNDER",
 } as const;
-export type SessionType =
-  (typeof SessionTypeData)[keyof typeof SessionTypeData];
+export type SessionType = (typeof SessionType)[keyof typeof SessionType];
 export const sessionTypeToLabel = (type: SessionType) => {
   switch (type) {
-    case SessionTypeData.STANDARD:
+    case SessionType.STANDARD:
       return "정규런";
-    case SessionTypeData.OPEN:
+    case SessionType.OPEN:
       return "오픈런";
-    case SessionTypeData.THUNDER:
+    case SessionType.THUNDER:
       return "번개런";
   }
 };
 
-export const SessionRequestTypeData = {
+export const SessionStatusType = {
   ALL: "all",
-  STANDARD: "standard",
-  OPEN: "open",
-  THUNDER: "thunder",
+  ACTIVE: "active",
 } as const;
-export type SessionRequestType =
-  (typeof SessionRequestTypeData)[keyof typeof SessionRequestTypeData];
-
-export const sessionRequestTypeToLabel = (type: SessionRequestType) => {
+export type SessionStatusType =
+  (typeof SessionStatusType)[keyof typeof SessionStatusType];
+export const sessionStatusTypeToLabel = (type: SessionStatusType) => {
   switch (type) {
-    case SessionRequestTypeData.ALL:
-      return "전체";
-    case SessionRequestTypeData.STANDARD:
-      return "정규런";
-    case SessionRequestTypeData.OPEN:
-      return "오픈런";
-    case SessionRequestTypeData.THUNDER:
-      return "번개런";
+    case SessionStatusType.ALL:
+      return "전체 세션 조회";
+    case SessionStatusType.ACTIVE:
+      return "진행 중 인 세션 조회";
   }
 };
 
 export type SessionDto = {
-  sessionId: number;
-  sessionName: string;
   crewName: string;
-  area: string;
+  sessionName: string;
   spot: string;
+  area: string;
+  sessionThumbnail: string;
   sessionType: SessionType;
   maxPeople: number;
-  sessionThumbnail: string;
+  sessionId: number;
   startAt: string;
 };
 
 export type GetSessionListRequestDto = {
-  type: SessionRequestType;
-};
-
-export type GetSessionListResponseDto = {
-  sessions: SessionDto[];
+  sessionType?: SessionType;
+  "crew-name"?: string;
+  date?: string;
+  status?: SessionStatusType;
 };
 
 export const getSessionList = async (
   dto: GetSessionListRequestDto
-): Promise<GetSessionListResponseDto> => {
-  // TODO : 더미 데이터 삭제
-  return {
-    sessions: [
-      {
-        sessionId: 1,
-        crewName: "CAUON",
-        sessionName: "러닝",
-        spot: "세븐일레븐",
-        area: "진평동",
-        sessionThumbnail:
-          "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
-        sessionType: "STANDARD",
-        maxPeople: 20,
-        startAt: "2025-07-20 06:00:00",
-      },
-      {
-        sessionId: 2,
-        crewName: "CAUON",
-        sessionName: "러닝",
-        spot: "세븐일레븐",
-        area: "진평동",
-        sessionThumbnail:
-          "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
-        sessionType: "STANDARD",
-        maxPeople: 20,
-        startAt: "2025-07-20 06:00:00",
-      },
-      {
-        sessionId: 3,
-        crewName: "CAUON",
-        sessionName: "러닝",
-        spot: "세븐일레븐",
-        area: "진평동",
-        sessionThumbnail:
-          "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
-        sessionType: "STANDARD",
-        maxPeople: 20,
-        startAt: "2025-07-20 06:00:00",
-      },
-      {
-        sessionId: 4,
-        crewName: "CAUON",
-        sessionName: "러닝",
-        spot: "세븐일레븐",
-        area: "진평동",
-        sessionThumbnail:
-          "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
-        sessionType: "STANDARD",
-        maxPeople: 20,
-        startAt: "2025-07-20 06:00:00",
-      },
-    ],
-  };
-  const response = await api.get("/session", { params: dto });
-  return response.data;
+): Promise<SessionDto[]> => {
+  const response = await api.get<SessionDto[]>("/session", { params: dto });
+  return response.data.filter((value) =>
+    value.startAt.includes(dto.date ?? "")
+  );
 };
