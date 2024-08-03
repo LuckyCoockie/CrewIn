@@ -8,6 +8,7 @@ export type CrewDto = {
   crewCount: number;
   captainName: string;
   imageUrl: string;
+  position: string;
 };
 
 export type GetMyCrewsResponseDto = {

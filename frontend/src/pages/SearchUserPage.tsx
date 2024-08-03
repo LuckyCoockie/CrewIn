@@ -57,10 +57,10 @@ const SearchUserPage: React.FC = () => {
         <BackHeaderMediumOrganism text="" />
         <div className="relative flex-1 font-weight-sm">
           <input
-            className="border-2 border-gray-300 bg-white h-10 px-4 pr-12 rounded-lg text-sm focus:outline-none w-full"
+            className="h-6 px-4 pr-12 text-md w-full focus:outline-none focus:ring-0 border-none"
             type="search"
-            name="search"
-            placeholder="아이디, 이름, 닉네임"
+            name=""
+            placeholder="이름, 닉네임"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
@@ -134,7 +134,7 @@ const SearchUserPage: React.FC = () => {
                       className="w-10 h-10 rounded-full mr-2"
                     />
                   ) : (
-                    <CrewinLogo className="w-10 h-10 rounded-full mr-2" />
+                    <CrewinLogo className="w-10 h-10 rounded-full mr-4" />
                   )}
                   <div className="flex-1">
                     <div className="font-bold">{member.memberName}</div>

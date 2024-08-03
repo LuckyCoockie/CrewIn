@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import NoticeMolecule from "../molecules/Content/NoticeMolecule";
 import FloatingActionButton from "../atoms/Button/FloatingActionButton";
 import PaginationMolecule from "../molecules/Pagination/PaginationMolecule";
-import { ReactComponent as Plus} from "../../assets/icons/plus.svg"
+import { ReactComponent as Plus } from "../../assets/icons/plus.svg";
 import { useNavigate } from "react-router";
 
 type Notice = {
@@ -24,10 +24,10 @@ const CrewNoticeOrganism: React.FC<NoticesProps> = ({ notices }) => {
   const itemsPerPage = 5;
   const btnRange = 5;
   const totalItems = Math.ceil(notices.length / itemsPerPage);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleRouter = () => {
-    navigate("/crew/noticecreate")
-  }
+    navigate("/crew/noticecreate");
+  };
 
   useEffect(() => {
     const startIndex = (page - 1) * itemsPerPage;
@@ -52,7 +52,9 @@ const CrewNoticeOrganism: React.FC<NoticesProps> = ({ notices }) => {
         btn={btnRange}
         setPage={setPage}
       />
-      <FloatingActionButton icon={Plus} onClick={handleRouter}/>
+      <FloatingActionButton onClick={handleRouter}>
+        <Plus />
+      </FloatingActionButton>
     </main>
   );
 };

@@ -7,7 +7,7 @@ import { ProfileInfoDto } from "../../../apis/api/profile";
 import { AxiosError } from "axios";
 import ErrorResponseDto from "../../../apis/utils/errorCode/ErrorResponseDto";
 import DetailInfoMolecule from "../../molecules/Content/DetailInfoMolecule";
-import SmallTitle from "../../atoms/Title/SmallTitle";
+import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
 import EditableDetailInfoMolecule from "../../molecules/Content/EditableDetailInfoMolecule";
 import cameraButton from "../../../assets/images/camerabutton.png";
 
@@ -60,53 +60,57 @@ export const ProfileInfoTemplate = ({
 
   return (
     <>
-      <SmallTitle data={"프로필 사진"} />
-      <div className="w-full flex justify-center py-10">
-        <div className="flex relative w-40 h-40 ">
-          <img
-            src={data?.imageUrl}
-            alt="Preview"
-            className="mx-auto border-2 rounded-full object-cover"
-          />
-          <div
-            className="absolute bottom-2 right-2"
-            onClick={handleOpenEditProfileImageModal}
-          >
-            <img src={cameraButton} alt="check Button" className="w-8 h-8" />
+      <header>
+        <BackHeaderMediumOrganism text={"내정보 변경"} />
+      </header>
+      <main>
+        <div className="w-full flex justify-center py-10">
+          <div className="flex relative w-40 h-40 ">
+            <img
+              src={data?.imageUrl}
+              alt="Preview"
+              className="mx-auto border-2 rounded-full object-cover"
+            />
+            <div
+              className="absolute bottom-2 right-2"
+              onClick={handleOpenEditProfileImageModal}
+            >
+              <img src={cameraButton} alt="check Button" className="w-8 h-8" />
+            </div>
           </div>
         </div>
-      </div>
-      <DetailInfoMolecule title="이메일" content={data?.email} />
-      <DetailInfoMolecule title="이름" content={data?.name} />
-      <EditableDetailInfoMolecule
-        title="닉네임"
-        content={data?.nickname}
-        onClick={handleOpenEditNicknameModal}
-      />
-      <EditableDetailInfoMolecule
-        title="비밀번호"
-        content={"********"}
-        onClick={handleOpenEditPasswordModal}
-      />
-      {isEditProfileImageModalOpen && (
-        <EditProfileImageOrganism
-          onClose={handleCloseEditProfileImageModal}
-          onEdit={onProfileImageEdit}
+        <DetailInfoMolecule title="이메일" content={data?.email} />
+        <DetailInfoMolecule title="이름" content={data?.name} />
+        <EditableDetailInfoMolecule
+          title="닉네임"
+          content={data?.nickname}
+          onClick={handleOpenEditNicknameModal}
         />
-      )}
-      {isEditNicknameModalOpen && (
-        <EditNicknameOrganism
-          init={data}
-          onClose={handleCloseEditNicknameModal}
-          onEdit={onNicknameEdit}
+        <EditableDetailInfoMolecule
+          title="비밀번호"
+          content={"⦁⦁⦁⦁⦁⦁"}
+          onClick={handleOpenEditPasswordModal}
         />
-      )}
-      {isEditPasswordModalOpen && (
-        <EditPasswordOrganism
-          onClose={handleCloseEditPasswordModal}
-          onEdit={onPasswordEdit}
-        />
-      )}
+        {isEditProfileImageModalOpen && (
+          <EditProfileImageOrganism
+            onClose={handleCloseEditProfileImageModal}
+            onEdit={onProfileImageEdit}
+          />
+        )}
+        {isEditNicknameModalOpen && (
+          <EditNicknameOrganism
+            init={data}
+            onClose={handleCloseEditNicknameModal}
+            onEdit={onNicknameEdit}
+          />
+        )}
+        {isEditPasswordModalOpen && (
+          <EditPasswordOrganism
+            onClose={handleCloseEditPasswordModal}
+            onEdit={onPasswordEdit}
+          />
+        )}
+      </main>
     </>
   );
 };

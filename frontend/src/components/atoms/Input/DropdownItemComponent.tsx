@@ -2,7 +2,7 @@ import React from "react";
 
 type Option = {
   label: string;
-  value: string | number;
+  value?: string | number;
 };
 
 type InputData = {
@@ -12,6 +12,7 @@ type InputData = {
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   hasError?: boolean;
   disabled?: boolean;
+  className?: string;
 };
 
 const DropdownTypeComponent = React.forwardRef<HTMLSelectElement, InputData>(
@@ -22,7 +23,7 @@ const DropdownTypeComponent = React.forwardRef<HTMLSelectElement, InputData>(
         value={props.value}
         onChange={props.onChange}
         ref={ref}
-        className={`border rounded-md text-white bg-primary focus:ring-0 text-xs xs:text-sm ${
+        className={`border-0 focus:ring-0 text-sm ${props.className} ${
           props.hasError
             ? "border-red-500 focus:border-red-500"
             : "border-gray-300"
@@ -32,7 +33,7 @@ const DropdownTypeComponent = React.forwardRef<HTMLSelectElement, InputData>(
         {props.options.map((option) => (
           <option
             key={option.value}
-            value={option.value}
+            value={option.value ?? ""}
             className="text-center text-black bg-white"
           >
             {option.label}
