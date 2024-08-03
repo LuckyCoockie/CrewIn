@@ -20,6 +20,19 @@ export const getProfileInfo = async (): Promise<ProfileInfoDto> => {
   return response.data;
 };
 
+
+// 개인 프로필 이미지 변경 api
+export type ImageDto = {
+  profileImageUrl : string
+}
+
+export type ImageRequestDto = ImageDto
+
+export const editProfileImage = async (dto:ImageRequestDto): Promise<void> => {
+  const response = await api.put("/mypage/profile/image",dto)
+  return response.data
+}
+
 // 비밀번호 변경 api
 export type NewPasswordRequestDto = {
   oldPassword: string;
