@@ -1,5 +1,9 @@
 import { uploadImage } from "../apis/api/presigned";
-import { editProfileImage, getProfileInfo } from "../apis/api/profile";
+import {
+  editProfileImage,
+  getProfileInfo,
+  editNickname,
+} from "../apis/api/profile";
 import { ProfileInfoTemplate } from "../components/templates/profile/ProfileInfoTemplate";
 
 export const ProfileInfoPage = () => {
@@ -12,12 +16,17 @@ export const ProfileInfoPage = () => {
         await editProfileImage(imageDto);
       }
     } catch (error) {
-      console.error("업로드 에러:", error);
+      console.error("프로필 이미지 업로드 에러:", error);
     }
   };
 
   const onNicknameEdit = async ({ nickname }: { nickname: string }) => {
-    console.log(nickname);
+    try {
+      const nicknameDto = { nickname: nickname };
+      await editNickname(nicknameDto);
+    } catch (error) {
+      console.error("닉네임 변경 에러", error);
+    }
   };
 
   const onPasswordEdit = async ({ password }: { password: string }) => {
