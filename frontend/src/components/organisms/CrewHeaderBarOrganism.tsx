@@ -1,8 +1,8 @@
 import React from "react";
 import { useQuery } from "react-query";
-import ListButtonmolecule from "../molecules/List/ListButtonmolecule";
 import crewlistplus from "../../assets/images/crewlistplus.png";
 import { getMyCrews, CrewDto } from "../../apis/api/mycrew";
+import ListButtonMolecule from "../molecules/List/ListButtonMolecule";
 
 // React Query로 데이터를 fetch하는 함수
 const fetchMyCrews = async () => {
@@ -42,7 +42,7 @@ const CrewHeaderBarOrganism: React.FC = () => {
             }
           `}
         </style>
-        <ListButtonmolecule
+        <ListButtonMolecule
           src={crewlistplus}
           alt="plus"
           text="더보기"
@@ -50,7 +50,7 @@ const CrewHeaderBarOrganism: React.FC = () => {
         />
         {crewList?.map((crew) => {
           return (
-            <ListButtonmolecule
+            <ListButtonMolecule
               router="/crew/detail"
               routerId={crew.crewId}
               key={crew.crewId}
