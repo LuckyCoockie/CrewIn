@@ -11,7 +11,7 @@ type InputData = {
   id: string;
   title: string;
   options: Option[];
-  value: string | number;
+  value: string | number | undefined;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   error?: string;
   hasError?: boolean;

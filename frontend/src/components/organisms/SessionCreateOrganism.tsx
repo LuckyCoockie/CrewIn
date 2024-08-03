@@ -21,6 +21,7 @@ import {
 } from "../../apis/api/sessioncreate";
 
 import { uploadImage } from "../../apis/api/presigned";
+import { getMyCrews, CrewDto } from "../../apis/api/mycrew";
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({
@@ -69,6 +70,10 @@ type FormValues = {
 
 const SessionCreateOrganism: React.FC = () => {
   const [selectedMinutes, setSelectedMinutes] = useState<number>();
+  const [crews, setCrews] = useState<CrewDto[]>([]);
+  const [userRole, setUserRole] = useState<string>(""); // User's role (Captain, Pacer, etc.)
+  const [hasCrew, setHasCrew] = useState<boolean>(false);
+  const [crewId, setCrewId] = useState<number>(0);
 
   const {
     control,
@@ -87,6 +92,26 @@ const SessionCreateOrganism: React.FC = () => {
     },
   });
 
+  useEffect(() => {
+    const fetchCrews = async () => {
+      try {
+        const response = await getMyCrews();
+        console.log(response);
+
+        setCrews(response.crews);
+        setHasCrew(response.crews.length > 0);
+        if (response.crews.length > 0) {
+          // Assuming user role information is provided in the response
+          const userCrew = response.crews[0]; // Adjust this based on your actual data structure
+          setUserRole(userCrew.position);
+        }
+      } catch (error) {
+        console.error("내가 속한 크루 조회 오류:", error);
+      }
+    };
+    fetchCrews();
+  }, []);
+
   const checkUndefined = async (files: FileList) => {
     if (files) {
       const uploadPromises = Array.from(files).map(async (file) => {
@@ -98,6 +123,7 @@ const SessionCreateOrganism: React.FC = () => {
       return [];
     }
   };
+
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const urls = await checkUndefined(data.sessionposter!);
     const formatDate = (date: Date): string => {
@@ -118,9 +144,10 @@ const SessionCreateOrganism: React.FC = () => {
         return "OPEN";
       }
     };
+    // crewId null처리 함수
     const submitData: SessionCreateDto = {
       courseId: 1,
-      crewId: 1,
+      crewId: crewId,
       sessionType: formType(data.sessiontype)!,
       name: data.sessiontitle,
       images: urls!,
@@ -135,17 +162,15 @@ const SessionCreateOrganism: React.FC = () => {
 
     return postCreateSession(submitData); // 제출 API 호출
   };
-  // 분 선택 이후 초 함수
+
   const handleMinutesChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const minutes = Number(event.target.value);
     setSelectedMinutes(minutes);
     setValue("sessionpaceminutes", minutes);
-    setValue("sessionpaceseconds", 0); //
+    setValue("sessionpaceseconds", 0);
   };
 
-  // watch 함수를 사용하여 실시간으로 minutes 필드 값 모니터링
   const watchedMinutes = watch("sessionpaceminutes", selectedMinutes);
-
   const watchedSessionStart = watch("sessionstart");
   const watchedSessionEnd = watch("sessionend");
 
@@ -155,26 +180,58 @@ const SessionCreateOrganism: React.FC = () => {
     }
   }, [watchedSessionStart, setValue]);
 
+  const renderSessionTypeOptions = () => {
+    if (!hasCrew) {
+      return ["번개런"];
+    }
+
+    if (userRole === "CAPTAIN" || userRole === "PACER") {
+      return ["번개런", "정규런", "오픈런"];
+    }
+
+    return ["번개런"];
+  };
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-wrap w-full">
-          <Controller
-            name="sessiontype"
-            control={control}
-            render={({ field }) => (
-              <InputRadioTypeMolecule
-                id="sessiontype"
-                title="세션 종류"
-                default="번개런"
-                {...field}
-                value={["번개런", "정규런", "오픈런"]}
-                error={errors.sessiontype?.message}
-                hasError={!!errors.sessiontype}
+          <div className="w-full">
+            <Controller
+              name="sessiontype"
+              control={control}
+              render={({ field }) => (
+                <InputRadioTypeMolecule
+                  id="sessiontype"
+                  title="세션 종류"
+                  default="번개런"
+                  {...field}
+                  value={renderSessionTypeOptions()}
+                  error={errors.sessiontype?.message}
+                  hasError={!!errors.sessiontype}
+                  onChange={(e) => {
+                    field.onChange(e);
+                  }}
+                />
+              )}
+            />
+            {hasCrew && (userRole === "CAPTAIN" || userRole === "PACER") && (
+              <InputDropdonwTypeMolecule
+                id="crewId"
+                title="크루 선택"
+                text=""
+                options={crews.map((crew) => ({
+                  label: crew.crewName,
+                  value: crew.crewId,
+                }))}
+                value={crewId}
+                onChange={(e) => {
+                  setCrewId(Number(e.target.value));
+                }}
+                hasError={false}
               />
             )}
-          />
-          {/* 세션명 */}
+          </div>
           <div className="w-7/12">
             <Controller
               name="sessiontitle"
@@ -191,7 +248,6 @@ const SessionCreateOrganism: React.FC = () => {
               )}
             />
           </div>
-          {/* 인원수 */}
           <div className="ms-auto w-3/12 me-auto">
             <Controller
               name="sessionmembers"
@@ -208,7 +264,6 @@ const SessionCreateOrganism: React.FC = () => {
               )}
             />
           </div>
-          {/* 페이스(분) */}
           <div className="w-1/3 me-4">
             <Controller
               name="sessionpaceminutes"
@@ -233,7 +288,6 @@ const SessionCreateOrganism: React.FC = () => {
               )}
             />
           </div>
-          {/* 페이스(초) */}
           <div className="w-1/3">
             <Controller
               name="sessionpaceseconds"
@@ -258,7 +312,6 @@ const SessionCreateOrganism: React.FC = () => {
               )}
             />
           </div>
-          {/* 포스터 */}
           <Controller
             name="sessionposter"
             control={control}
@@ -274,7 +327,6 @@ const SessionCreateOrganism: React.FC = () => {
               />
             )}
           />
-          {/* 집결지 */}
           <Controller
             name="sessionspot"
             control={control}
@@ -289,20 +341,6 @@ const SessionCreateOrganism: React.FC = () => {
               />
             )}
           />
-          {/* <Controller
-          name="sessioncourse"
-          control={control}
-          render={({field}) => (<InputDropdonwTypeMolecule
-          id="sessioncourse"
-          title="코스"
-          text="선택"
-          redux에서 개인 지도 불러오는 부분
-          options={
-          }
-          {...field}
-          />)}
-          /> */}
-          {/* 상세내용 */}
           <Controller
             name="sessioninfo"
             control={control}
@@ -317,7 +355,6 @@ const SessionCreateOrganism: React.FC = () => {
               />
             )}
           />
-          {/* 시작시간 */}
           <div className="w-5/12">
             <Controller
               name="sessionstart"
@@ -332,7 +369,6 @@ const SessionCreateOrganism: React.FC = () => {
               )}
             />
           </div>
-          {/* 종료시간 */}
           <div className="ms-auto me-auto w-5/12">
             <Controller
               name="sessionend"
@@ -348,7 +384,6 @@ const SessionCreateOrganism: React.FC = () => {
               )}
             />
           </div>
-          {/* 시작시간 종료시간 error 출력 */}
           {errors.sessionend &&
           watchedSessionStart &&
           watchedSessionEnd &&
@@ -361,7 +396,6 @@ const SessionCreateOrganism: React.FC = () => {
           )}
         </div>
         <div>
-          {/* 유효성 검사 통과 여부에 따라 버튼 교체 */}
           {isValid ? (
             <LargeAbleButton text="생성" />
           ) : (
