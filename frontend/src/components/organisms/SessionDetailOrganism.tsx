@@ -28,6 +28,8 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
     content,
     sessionPosters,
   } = detailData;
+  const isSessionStarted = detailData ? new Date(startAt) < new Date() : false;
+
   return (
     <>
       <Carousel
@@ -54,7 +56,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
         <DetailInfoMolecule title="집결지" content={spot} />
         <DetailInfoMolecule title="코스" content={area} />
         <DetailInfoMolecule title="내용" content={content} />
-        <LargeAbleButton text="참가 신청" />
+        {!isSessionStarted && <LargeAbleButton text="참가 신청" />}
       </main>
     </>
   );
