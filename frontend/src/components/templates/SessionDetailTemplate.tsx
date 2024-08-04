@@ -6,6 +6,8 @@ import {
   SessionDetailDto,
   GetSessionInfoRequestDto,
 } from "../../apis/api/sessiondetail";
+import AttendanceButton from "../atoms/Button/AttendanceButton";
+import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
 
 // 스피너 컴포넌트
 const Spinner = () => (
@@ -40,10 +42,17 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
 
   return (
     <>
-      <header className="">
+      <header>
         <BackHeaderMediumOrganism
           text={detailData?.sessionName || "Loading..."}
         />
+        <div className="flex ms-auto">
+          <AttendanceButton />
+          <EditDeleteDropdownOrganism
+            type="SESSION"
+            idData={detailData?.sessionId}
+          />
+        </div>
       </header>
       <div className="">
         {detailLoading ? ( // detailLoading이 true일 때 스피너를 표시

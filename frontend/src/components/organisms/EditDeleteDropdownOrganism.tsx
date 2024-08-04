@@ -29,7 +29,7 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({ type, idData }) => {
     if (type === "CREW") {
       navigate(`/crew/edit/${idData}`); // 페이지 이동
     } else if (type === "SESSION") {
-      navigate(`/session/edit/${idData}`) // 페이지 이동
+      navigate(`/session/edit/${idData}`); // 페이지 이동
     }
   };
 
@@ -39,7 +39,7 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({ type, idData }) => {
     if (type === "CREW") {
       deleteCrew(idData!);
     } else if (type === "SESSION") {
-      deleteSession(idData!)
+      deleteSession(idData!);
     }
   };
 
@@ -60,7 +60,7 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({ type, idData }) => {
   }, [dropdownRef]);
 
   return (
-    <div className="ml-auto mr-2 relative" ref={dropdownRef}>
+    <div className=" relative" ref={dropdownRef}>
       <MoreVerticalButton onDropdownClick={toggleDropdownClick} />
       {isDropdownOpen && (
         <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-300 rounded-md z-10">
