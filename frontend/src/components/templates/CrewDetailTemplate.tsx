@@ -164,7 +164,9 @@ const CrewDetailTemplate: React.FC = () => {
 
   return (
     <>
-      <CrewHeaderBarOrganism crewList={myCrewsData!.crews}/>
+      {!myCrewsLoading && !myCrewsError && myCrewsData && (
+        <CrewHeaderBarOrganism crewList={myCrewsData.crews} />
+      )}
       <header>
         <BackHeaderMediumOrganism
           text={infoData ? infoData.crewName : "Loading..."}
