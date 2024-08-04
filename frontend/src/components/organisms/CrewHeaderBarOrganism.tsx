@@ -1,29 +1,13 @@
 import React from "react";
-import { useQuery } from "react-query";
 import crewlistplus from "../../assets/images/crewlistplus.png";
-import { getMyCrews, CrewDto } from "../../apis/api/mycrew";
 import ListButtonMolecule from "../molecules/List/ListButtonMolecule";
+import { CrewDto } from "../../apis/api/mycrew";
 
-// React Query로 데이터를 fetch하는 함수
-const fetchMyCrews = async () => {
-  const response = await getMyCrews();
-  return response.crews;
-};
+type CrewHeaderBarOrganismProps = {
+  crewList:CrewDto[]
+}
 
-const CrewHeaderBarOrganism: React.FC = () => {
-  const {
-    data: crewList,
-    error,
-    isLoading,
-  } = useQuery<CrewDto[]>("crews", fetchMyCrews);
-
-  if (isLoading) {
-    return <div>로딩 중...</div>;
-  }
-
-  if (error) {
-    return <div>크루 목록을 불러오는 데 실패했습니다.</div>;
-  }
+const CrewHeaderBarOrganism: React.FC<CrewHeaderBarOrganismProps> = ({crewList}) => {
 
   return (
     <div>

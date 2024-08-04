@@ -73,7 +73,7 @@ const CrewDetailTemplate: React.FC = () => {
 
   console.log("isUserCrewMember:", isUserCrewMember);
   console.log("userPosition:", userPosition);
-  
+
   // 오류 로그 출력
   // if (infoError) console.error("infoError", infoError);
   // if (noticeError) console.error("noticeError", noticeError);
@@ -164,7 +164,7 @@ const CrewDetailTemplate: React.FC = () => {
 
   return (
     <>
-      <CrewHeaderBarOrganism />
+      <CrewHeaderBarOrganism crewList={myCrewsData!.crews}/>
       <header>
         <BackHeaderMediumOrganism
           text={infoData ? infoData.crewName : "Loading..."}
