@@ -28,7 +28,7 @@ export const sessionStatusTypeToLabel = (type: SessionStatusType) => {
     case SessionStatusType.ALL:
       return "전체 세션 조회";
     case SessionStatusType.ACTIVE:
-      return "진행 중 인 세션 조회";
+      return "진행 중인 세션 조회";
   }
 };
 
@@ -46,7 +46,7 @@ export type SessionDto = {
 
 export type GetSessionListRequestDto = {
   sessionType?: SessionType;
-  "crew-name"?: string;
+  crewname?: string;
   date?: string;
   status?: SessionStatusType;
 };

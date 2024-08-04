@@ -23,7 +23,7 @@ const CrewListComponent: React.FC<OwnProps> = ({ fetchData }) => {
 
   const handleFetchData = useCallback(
     (page: number) => {
-      return fetchData({ query: query.query, pageNo: page.toString() });
+      return fetchData({ query: query.query ?? "", pageNo: page.toString() });
     },
     [fetchData, query.query]
   );
@@ -31,9 +31,9 @@ const CrewListComponent: React.FC<OwnProps> = ({ fetchData }) => {
   return (
     <InfiniteScrollComponent
       className="grid grid-cols-2 gap-2 xs:gap-4 mb-2 xs:mb-4"
-      fetchKey={["CrewList"]}
+      fetchKey={["CrewList", query.query ?? ""]}
       fetchData={handleFetchData}
-      pageSize={6}
+      pageSize={10}
       initPage={parseInt(query.pageNo ?? "1")}
       ItemComponent={({ data }) => (
         <CrewListItem

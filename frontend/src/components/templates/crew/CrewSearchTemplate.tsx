@@ -29,6 +29,7 @@ const CrewSearchTemplate: React.FC<OwnProps> = ({ fetchData }: OwnProps) => {
     <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20">
       <div className="flex items-center bg-white w-full mb-10">
         <div className="flex items-center">
+          {/*TODO : 작아지면 2줄되는 문제 해결 */}
           <LargeTitleMolecule text="전체 크루 목록" />
         </div>
         <div className="flex items-center flex-grow justify-end ml-4">
