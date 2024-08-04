@@ -169,9 +169,16 @@ const CrewDetailTemplate: React.FC = () => {
           text={infoData ? infoData.crewName : "Loading..."}
         />
         <div className="flex ms-auto">
-          <GroupsButton />
-          <MemberPlusButton />
-          <EditDeleteDropdownOrganism type="CREW" idData={infoData?.crewId} />
+          {isUserCrewMember && <GroupsButton />}
+          {isUserCrewMember && userPosition === "CAPTAIN" && (
+            <>
+              <MemberPlusButton />
+              <EditDeleteDropdownOrganism
+                type="CREW"
+                idData={infoData?.crewId}
+              />
+            </>
+          )}
         </div>
       </header>
       <ThreeToTwoImageMolecule
