@@ -15,10 +15,13 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
   detailData,
 }) => {
   const {
+    hostname,
     hostNickname,
+    maxPeople,
     crewName,
     sessionType,
     startAt,
+    endAt,
     pace,
     spot,
     area,
@@ -40,10 +43,14 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
       </Carousel>
       <main>
         <DetailInfoMolecule title="크루명" content={crewName} />
-        <DetailInfoMolecule title="개최자" content={hostNickname} />
+        <DetailInfoMolecule
+          title="개최자"
+          content={hostNickname + `(${hostname})`}
+        />
         <DetailInfoMolecule title="세션 유형" content={sessionType} />
-        <DetailInfoMolecule title="일시" content={startAt} />
+        <DetailInfoMolecule title="일시" content={startAt + endAt} />
         <DetailInfoPaceMolecule title="페이스" content={pace} />
+        <DetailInfoMolecule title="제한인원" content={`${maxPeople}명`} />
         <DetailInfoMolecule title="집결지" content={spot} />
         <DetailInfoMolecule title="코스" content={area} />
         <DetailInfoMolecule title="내용" content={content} />
