@@ -2,7 +2,7 @@ import api from "../utils/instance";
 
 export type CrewDto = {
   id: number;
-  name: string;
+  crewName: string;
   slogan: string;
   area: string;
   crewCount: number;

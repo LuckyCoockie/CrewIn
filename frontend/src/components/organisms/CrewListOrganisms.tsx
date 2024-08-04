@@ -6,7 +6,7 @@ import { GetCrewListRequestDto } from "../../apis/api/crewlist";
 
 type CrewData = {
   id: number;
-  name: string;
+  crewName: string;
   slogan: string;
   area: string;
   crewCount: number;
@@ -30,7 +30,7 @@ const CrewListComponent: React.FC<OwnProps> = ({ fetchData }) => {
 
   return (
     <InfiniteScrollComponent
-      className="grid grid-cols-2 gap-2 xs:gap-4 mb-2 xs:mb-4"
+      className="grid grid-cols-2 gap-2 xs:gap-4 mb-2 xs:mb-4 w-full"
       fetchKey={["CrewList", query.query ?? ""]}
       fetchData={handleFetchData}
       pageSize={10}
@@ -39,7 +39,7 @@ const CrewListComponent: React.FC<OwnProps> = ({ fetchData }) => {
         <CrewListItem
           key={data.id}
           imageUrl={data.imageUrl}
-          title={data.name}
+          title={data.crewName}
           description={data.slogan}
           captain={data.captainName}
           location={data.area}
