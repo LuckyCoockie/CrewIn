@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import CrewCreatePage from "./pages/CrewCreatePage";
 import PostCreatePage from "./pages/PostCreatePage";
-import CourseCreatePage from "./pages/CourseCreatePage";
+import CourseCreatePage from "./pages/course/CourseCreatePage.tsx";
 import LoginPage from "./pages/LoginPage";
 import SessionCreatePage from "./pages/SessionCreatePage";
 import SessionPage from "./pages/SessionPage";
@@ -24,6 +24,8 @@ import ProtectedRoute from "./util/router/ProtectedRoute.tsx";
 import UnprotectedRoute from "./util/router/UnprotectedRoute.tsx";
 import CrewMemberPage from "./pages/CrewMemberPage.tsx";
 import CrewMemberSearchPage from "./pages/CrewMemberSearchPage.tsx";
+import CourseEditPage from "./pages/course/CourseEditPage.tsx";
+import CoursePage from "./pages/course/CoursePage.tsx";
 // import { getMyCrews } from "./apis/api/mycrew";
 
 const loader = async () => {
@@ -31,7 +33,7 @@ const loader = async () => {
   // if (response.crews.length > 0) {
   //   return <Navigate to={`/crew/detail/${response.crews[0].crewId}`} />;
   // } else {
-    return <CrewSearchPage />;
+  return <CrewSearchPage />;
   // }
 };
 
@@ -72,7 +74,20 @@ export const router = createBrowserRouter([
           },
           { path: "profile", element: <ProfilePage /> },
           { path: "info", element: <ProfileInfoPage /> },
-          { path: "course", element: <CourseCreatePage /> },
+          {
+            path: "course",
+            element: <CoursePage />,
+            children: [
+              {
+                path: "create",
+                element: <CourseCreatePage />,
+              },
+              {
+                path: ":courseId/edit",
+                element: <CourseEditPage />,
+              },
+            ],
+          },
           { path: "post", element: <PostCreatePage /> },
           { path: "searchuser", element: <SearchUserPage /> },
           { path: "alarm", element: <AlarmPage /> },
