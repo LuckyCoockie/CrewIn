@@ -146,7 +146,7 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
         <div className="flex ms-auto">
           <GroupsButton />
           <MemberPlusButton />
-          <EditDeleteDropdownOrganism />
+          <EditDeleteDropdownOrganism type="CREW" idData={infoData?.id} />
         </div>
       </header>
       <ThreeToTwoImageMolecule

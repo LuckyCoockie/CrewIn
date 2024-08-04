@@ -57,3 +57,36 @@ export const getSessionDetail = async (
   const response = await api.get(`/session/detail/${dto.sessionId}`);
   return response.data;
 };
+
+// 세션 수정
+export type EditSessionRequestDto = {
+  sessionId: number;
+  courseId: number;
+  sessionType: string;
+  name: string;
+  images: string[];
+  pace: number;
+  spot: string;
+  startAt: string;
+  endAt: string;
+  content: string;
+  maxPeople: number;
+};
+
+export const editSession = async (
+  dto: EditSessionRequestDto
+): Promise<void> => {
+  return console.log("세션 수정 요청 정보: ", dto);
+
+  const { sessionId, ...body } = dto;
+  const response = await api.put(`/session/detail/${sessionId}`, body);
+  return response.data;
+};
+
+// 세션 삭제
+export const deleteSession = async (sessionId: number): Promise<void> => {
+  return console.log("크루 삭제 요청 ID: ", sessionId);
+
+  const response = await api.delete(`/session/detail/${sessionId}`);
+  return response.data;
+};
