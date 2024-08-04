@@ -147,8 +147,8 @@ export default function NaverMapReducer(
         map: state.map,
         draggable: action.data.ondragend ? true : false,
         icon: {
-          url: "./src/assets/icons/marker-default.png",
-          scaledSize: new naver.maps.Size(22, 33),
+          url: "./src/assets/icons/custom_marker.svg",
+          scaledSize: new naver.maps.Size(44, 66),
         },
       });
 
@@ -262,6 +262,8 @@ export default function NaverMapReducer(
             new naver.maps.LatLng(latitude, longitude)
         ),
         map: state.map,
+        strokeColor: "#2B2F40",
+        strokeWeight: 2,
       });
       return {
         ...state,
