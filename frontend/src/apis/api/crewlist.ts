@@ -24,6 +24,6 @@ export type GetCrewListResponseDto = {
 export const getCrewList = async (
   dto: GetCrewListRequestDto
 ): Promise<GetCrewListResponseDto> => {
-  const response = await api.get("/crew", { params: dto });
+  const response = await api.get("/search/crew", { params: dto });
   return response.data;
 };

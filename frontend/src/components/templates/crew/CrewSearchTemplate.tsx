@@ -31,9 +31,9 @@ const CrewSearchTemplate: React.FC<OwnProps> = ({ fetchData }: OwnProps) => {
         <div className="flex items-center">
           <LargeTitleMolecule text="전체 크루 목록" />
         </div>
-        <div className="flex items-center flex-grow justify-end mr-2">
+        <div className="flex items-center flex-grow justify-end ml-4">
           <SearchInputMolecule hint={"크루명"} onSubmit={handleFetchData} />
-          <CrewCreateIcon className="w-6 h-6" onClick={handleCrewCreateRoute} />
+          <CrewCreateIcon className="w-6 h-6 ml-2" onClick={handleCrewCreateRoute} />
         </div>
       </div>
       <CrewListTemplate />
