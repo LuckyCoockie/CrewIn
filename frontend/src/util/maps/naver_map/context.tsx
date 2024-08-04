@@ -26,7 +26,7 @@ export const moveToCenter = (mapDim: number) => ({
 export const addMarker = (data: {
   latitude: number;
   longitude: number;
-  title: string;
+  title?: string;
   ondragend?: (marker: naver.maps.Marker) => void;
 }) => ({
   type: ADD_MARKER,
@@ -143,7 +143,7 @@ export default function NaverMapReducer(
           action.data.latitude,
           action.data.longitude
         ),
-        title: action.data.title,
+        title: action.data.title ?? `경유지 ${state.markers.length + 1}`,
         map: state.map,
         draggable: action.data.ondragend ? true : false,
         icon: {

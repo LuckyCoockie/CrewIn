@@ -35,7 +35,6 @@ const NaverMap: React.FC<props> = ({ lat, lng, zoom, onChange }: props) => {
         addMarker({
           longitude: x,
           latitude: y,
-          title: `새로운 경유지`,
           ondragend: () => dispatch(updateMarkerList()),
         })
       );
