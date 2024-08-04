@@ -219,7 +219,7 @@ const LoginOrganism: React.FC = () => {
             <InputPasswordTypeMolecule
               id="password"
               title="비밀번호"
-              placeholder="소문자, 대문자 조합 4~60자"
+              placeholder="영문, 숫자 조합 4~60자"
               {...field}
               error={errors.password?.message}
               hasError={!!errors.password}
