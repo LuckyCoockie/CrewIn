@@ -3,7 +3,7 @@ import MediumTitleMolecule from "../../molecules/Title/MediumTitleMolecule";
 import { MyMapsDto } from "../../../apis/api/mypage";
 import GaroScrollMolecule from "../../molecules/List/GaroScrollMolecule";
 import ListButtonMolecule from "../../molecules/List/ListButtonMolecule";
-import crewlistplus from "../../../assets/images/crewlistplus.png"
+import crewlistplus from "../../../assets/images/crewlistplus.png";
 
 type FetchDataProps = {
   mapsData: MyMapsDto[];
@@ -18,8 +18,8 @@ const MyPageMapOrganism: React.FC<FetchDataProps> = ({ mapsData }) => {
       <ListButtonMolecule
         src={crewlistplus}
         alt="plus"
-        text="더보기"
-        router="/crew"
+        text="추가"
+        router="/course"
       />
       <GaroScrollMolecule
         propsData={mapsData}
