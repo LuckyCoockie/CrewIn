@@ -14,7 +14,7 @@ const SessionDetailPage: React.FC = () => {
 
   return (
     <>
-      <SessionDetailTemplate fetchDetailData={fetchDetailData} />;
+      <SessionDetailTemplate fetchDetailData={fetchDetailData} />
     </>
   );
 };
