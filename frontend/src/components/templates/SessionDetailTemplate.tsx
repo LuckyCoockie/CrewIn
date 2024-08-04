@@ -2,11 +2,17 @@ import React, { useState } from "react";
 import { useQuery } from "react-query";
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import SessionDetailOrganism from "../organisms/SessionDetailOrganism";
-
 import {
   SessionDetailDto,
   GetSessionInfoRequestDto,
 } from "../../apis/api/sessiondetail";
+
+// 스피너 컴포넌트
+const Spinner = () => (
+  <div className="flex justify-center items-center h-full">
+    <div className="loader">Loading...</div>
+  </div>
+);
 
 type OwnDetailProps = {
   fetchDetailData: (dto: GetSessionInfoRequestDto) => Promise<SessionDetailDto>;
@@ -19,7 +25,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
 
   const {
     data: detailData,
-    // isLoading: detailLoading,
+    isLoading: detailLoading, // isLoading 상태 사용
     error: detailError,
   } = useQuery(["detailData", { sessionId }], () =>
     fetchDetailData({ sessionId })
@@ -27,17 +33,24 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
 
   // 로그 출력
   console.log("detailData", detailData);
+  console.log(detailData?.isSessionHost);
 
   // 오류 로그 출력
   if (detailError) console.error("detailError", detailError);
 
   return (
     <>
-      <header className="py-6">
-        <BackHeaderMediumOrganism text={detailData?.sessionName || "Loading..."} />
+      <header className="">
+        <BackHeaderMediumOrganism
+          text={detailData?.sessionName || "Loading..."}
+        />
       </header>
-      <div className="pb-20">
-        {detailData && <SessionDetailOrganism detailData={detailData} />}
+      <div className="">
+        {detailLoading ? ( // detailLoading이 true일 때 스피너를 표시
+          <Spinner />
+        ) : (
+          detailData && <SessionDetailOrganism detailData={detailData} />
+        )}
       </div>
     </>
   );
