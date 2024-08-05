@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   GetSessionListRequestDto,
   SessionType,
@@ -67,6 +67,16 @@ const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
     [input, onSearch, type]
   );
 
+  const dateRef = useRef<DatePicker>(null);
+  const iconRef = useRef<SVGSVGElement>(null);
+
+  const CalenderButton = React.forwardRef<SVGSVGElement>(() => (
+    <CalenderIcon
+      className="w-6 h-6"
+      onClick={() => dateRef.current?.onInputClick()}
+    />
+  ));
+
   return (
     <>
       <div className="mb-3 xs:mb-5 flex items-center bg-white w-full">
@@ -101,7 +111,8 @@ const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
               maxDate={addDays(new Date(), 30)}
               withPortal
               portalId="root-portal"
-              customInput={<CalenderIcon className="w-6 h-6" />}
+              ref={dateRef}
+              customInput={<CalenderButton ref={iconRef} />}
             />
           </div>
         </div>
