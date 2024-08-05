@@ -29,10 +29,43 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
     sessionPosters,
   } = detailData;
   const isSessionStarted = detailData ? new Date(startAt) < new Date() : false;
+  const sessionTypeSubstitute = (type: string) => {
+    if (type === "OPEN") {
+      return "오픈런";
+    } else if (type === "STANDARD") {
+      return "정규런";
+    } else if (type === "THUNDER") {
+      return "번개런";
+    }
+  };
+  const formatKoreanDate = (dateString: string) => {
+    const date = new Date(dateString.replace(" ", "T")); // 문자열을 Date 객체로 변환
+    const months = [
+      "1월",
+      "2월",
+      "3월",
+      "4월",
+      "5월",
+      "6월",
+      "7월",
+      "8월",
+      "9월",
+      "10월",
+      "11월",
+      "12월",
+    ];
+    const month = months[date.getMonth()];
+    const day = date.getDate();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const period = hours < 12 ? "오전" : "오후";
+    const adjustedHours = hours % 12 || 12; // 12시간 형식으로 변환
+    return `${month} ${day}일 ${period} ${adjustedHours}시 ${minutes}분`;
+  };
 
-  const handleParticipate = () => {
-    
-  }
+  const handleParticipate = () => {};
+  console.log(startAt, endAt);
+
   return (
     <>
       <Carousel
@@ -52,14 +85,22 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
           title="개최자"
           content={hostNickname + `(${hostname})`}
         />
-        <DetailInfoMolecule title="세션 유형" content={sessionType} />
-        <DetailInfoMolecule title="일시" content={startAt + endAt} />
+        <DetailInfoMolecule
+          title="세션 유형"
+          content={sessionTypeSubstitute(sessionType)}
+        />
+        <DetailInfoMolecule
+          title="일시"
+          content={`${formatKoreanDate(startAt)}\n${formatKoreanDate(endAt)}`}
+        />
         <DetailInfoPaceMolecule title="페이스" content={pace} />
         <DetailInfoMolecule title="제한인원" content={`${maxPeople}명`} />
         <DetailInfoMolecule title="집결지" content={spot} />
         <DetailInfoMolecule title="코스" content={area} />
         <DetailInfoMolecule title="내용" content={content} />
-        {!isSessionStarted && <LargeAbleButton onClick={handleParticipate} text="참가 신청" />}
+        {!isSessionStarted && (
+          <LargeAbleButton onClick={handleParticipate} text="참가 신청" />
+        )}
       </main>
     </>
   );
