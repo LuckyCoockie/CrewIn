@@ -32,6 +32,7 @@ pipeline {
                     sh '''
                         cd frontend
                         rm package-lock.json
+                        npm install rollup @rollup/plugin-node-resolve @rollup/plugin-commonjs
                         npm install
                         npm run build
                         chmod -R 755 dist
