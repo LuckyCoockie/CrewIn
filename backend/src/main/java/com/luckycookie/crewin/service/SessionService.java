@@ -1,13 +1,16 @@
 package com.luckycookie.crewin.service;
 
 import com.luckycookie.crewin.domain.*;
+import com.luckycookie.crewin.domain.enums.Position;
 import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.*;
 import com.luckycookie.crewin.dto.SessionImageResponse.SessionGalleryItem;
 import com.luckycookie.crewin.dto.SessionImageResponse.SessionGalleryItemsResponse;
+import com.luckycookie.crewin.dto.SessionRequest.CreateSessionRequest;
 import com.luckycookie.crewin.dto.SessionRequest.UploadSessionImageRequest;
 import com.luckycookie.crewin.exception.course.NotFoundCourseException;
 import com.luckycookie.crewin.exception.crew.CrewMemberNotExistException;
+import com.luckycookie.crewin.exception.crew.CrewUnauthorizedException;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
@@ -51,30 +54,41 @@ public class SessionService {
     private final SessionImageRepository sessionImageRepository;
     private final MemberSessionRepository memberSessionRepository;
 
-    public void createSession(SessionRequest.CreateSessionRequest createSessionRequest, CustomUser customUser) {
+    public void createSession(CreateSessionRequest createSessionRequest, CustomUser customUser) {
 
-        if (createSessionRequest.getSessionType() == SessionType.THUNDER && createSessionRequest.getCrewId() != null) {
-            throw new InvalidSessionException();
+        // 현재 로그인한 사용자
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+
+        // 번개런 -> crewId 가 null 이어야 함
+        if (createSessionRequest.getSessionType() == SessionType.THUNDER) {
+            if (createSessionRequest.getCrewId() != null) {
+                throw new InvalidSessionException(); // null이 아니면 exception
+            }
+        } else { // 정규런, 오픈런 -> crewId가 null이면 안됨
+            if (createSessionRequest.getCrewId() == null) {
+                throw new InvalidSessionException(); // null이면 exception
+            }
         }
+
         if (createSessionRequest.getStartAt().isAfter(createSessionRequest.getEndAt()) ||
                 createSessionRequest.getStartAt().isBefore(LocalDateTime.now())) {
             throw new InvalidSessionException();
         }
 
-        Member member = memberRepository.findByEmail(customUser.getEmail())
-                .orElseThrow(NotFoundMemberException::new);
         Crew crew = null;
+        MemberCrew memberCrew = null;
         if (createSessionRequest.getCrewId() != null) {
             crew = crewRepository.findById(createSessionRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
+            memberCrew = memberCrewRepository.findByMemberAndCrew(member, crew).orElseThrow(NotFoundMemberCrewException::new);
         }
+
         Course course = courseRepository.findById(createSessionRequest.getCourseId())
                 .orElseThrow(NotFoundCourseException::new);
 
-        Session session = Session
-                .builder()
+        Session session = Session.builder()
                 .sessionType(createSessionRequest.getSessionType())
                 .host(member)
-                .crew(crew)
                 .area(course.getArea())
                 .course(course)
                 .name(createSessionRequest.getName())
@@ -86,7 +100,14 @@ public class SessionService {
                 .maxPeople(createSessionRequest.getMaxPeople())
                 .build();
 
-        sessionRepository.save(session);
+        if (createSessionRequest.getCrewId() != null) { // 정규런, 오픈런일 때
+            assert memberCrew != null;
+            if (memberCrew.getPosition() == Position.MEMBER) { // 만약 position이 member면 exception
+                throw new CrewUnauthorizedException(); // 권한 부족
+            } else { // 내가 CAPTAIN, PACER 일 때만 가능
+                sessionRepository.save(session);
+            }
+        }
 
         // 세션 포스터 이미지
         if (createSessionRequest.getImages() != null) {
@@ -99,10 +120,13 @@ public class SessionService {
             }
         }
 
-        memberSessionRepository.save(MemberSession.builder()
+        memberSessionRepository
+                .save(MemberSession.builder()
                 .member(member)
                 .session(session)
+                        .isAttend(false)
                 .build());
+
     }
 
     public SessionDetailResponse getSessionDetail(Long sessionId, CustomUser customUser) {

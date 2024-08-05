@@ -53,22 +53,26 @@ public class MyPageService {
 
         List<MyPageSessionItem> myPageSessionItems = new ArrayList<>();
 
+        if (sessionType == null) {
+            sessionType = "ALL";
+        }
+
         // sessionType 에 따라서 분리 (STANDARD, OPEN, THUNDER, ALL)
         if(type.equals("created")) { // 내가 만든 세션
             // session 에서 hostId가 member.getId 랑 같으면 내가 만든 세션
             sessionPage = switch (sessionType) {
-                case "ALL" -> sessionRepository.findAllByHost(pageable, member, SessionType.ALL);
-                case "STANDARD" -> sessionRepository.findAllByHost(pageable, member, SessionType.STANDARD);
-                case "THUNDER" -> sessionRepository.findAllByHost(pageable, member, SessionType.THUNDER);
-                default -> sessionRepository.findAllByHost(pageable, member, SessionType.OPEN);
+                case "OPEN" -> sessionRepository.findByHostAndSessionType(pageable, member, SessionType.OPEN);
+                case "STANDARD" -> sessionRepository.findByHostAndSessionType(pageable, member, SessionType.STANDARD);
+                case "THUNDER" -> sessionRepository.findByHostAndSessionType(pageable, member, SessionType.THUNDER);
+                default -> sessionRepository.findAllByHost(pageable, member);
             };
         } else if(type.equals("joined")) {
             // 내가 참가한 세션
             sessionPage = switch (sessionType) {
-                case "ALL" -> memberSessionRepository.findByMember(pageable, member, SessionType.ALL);
-                case "STANDARD" -> memberSessionRepository.findByMember(pageable, member, SessionType.STANDARD);
-                case "THUNDER" -> memberSessionRepository.findByMember(pageable, member, SessionType.THUNDER);
-                default -> memberSessionRepository.findByMember(pageable, member, SessionType.OPEN);
+                case "OPEN" -> memberSessionRepository.findByMemberAndIsAttendAndSessionType(pageable, member, SessionType.OPEN);
+                case "STANDARD" -> memberSessionRepository.findByMemberAndIsAttendAndSessionType(pageable, member, SessionType.STANDARD);
+                case "THUNDER" -> memberSessionRepository.findByMemberAndIsAttendAndSessionType(pageable, member, SessionType.THUNDER);
+                default -> memberSessionRepository.findByMember(pageable, member);
             };
         }
 
