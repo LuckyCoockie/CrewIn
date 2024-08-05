@@ -33,7 +33,7 @@ public class MyPageController {
 
     // 내가 만든 세션 조회
     @GetMapping("/session")
-    public ResponseEntity<BaseResponse<MyPageResponse.MyPageSessionResponse>> getCreatedMySession(@AuthenticationPrincipal CustomUser customUser, @RequestParam int pageNo, @RequestParam String type) {
+    public ResponseEntity<BaseResponse<MyPageResponse.MyPageSessionResponse>> getCreatedMySession(@AuthenticationPrincipal CustomUser customUser, @RequestParam("page-no") int pageNo, @RequestParam String type) {
         if(type.equals("created")) {
             return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "내가 만든 세션 조회를 성공했습니다.", myPageService.getCreatedMySession(customUser, pageNo, type)));
         }else {
@@ -58,7 +58,7 @@ public class MyPageController {
 
     // 내 사진첩(갤러리) 조회 - 페이징
     @GetMapping("/detail/gallery")
-    public ResponseEntity<BaseResponse<PostResponse.PostGalleryItemResponse>> getMyGalleryList(@AuthenticationPrincipal CustomUser customUser, @RequestParam int pageNo) {
+    public ResponseEntity<BaseResponse<PostResponse.PostGalleryItemResponse>> getMyGalleryList(@AuthenticationPrincipal CustomUser customUser, @RequestParam("page-no") int pageNo) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "멤버 사진첩 조회를 성공했습니다.", postService.getMyPostGallery(pageNo, customUser)));
     }
 

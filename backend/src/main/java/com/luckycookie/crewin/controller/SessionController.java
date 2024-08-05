@@ -36,8 +36,8 @@ public class SessionController {
     @GetMapping()
     public ResponseEntity<BaseResponse<List<SessionResponse>>> getSessionsByType(
             @RequestParam(value = "status", defaultValue = "") String status,
-            @RequestParam(value = "sessionType", defaultValue = "") String sessionType,
-            @RequestParam(value = "crewname", defaultValue = "") String crewName) {
+            @RequestParam(value = "type", defaultValue = "") String sessionType,
+            @RequestParam(value = "crew-name", defaultValue = "") String crewName) {
         SessionType enumSessionType = SessionType.stringToSessionType(sessionType);
         List<SessionResponse> sessions = sessionService.getSessionsByStatusAndTypeAndCrewName(status, enumSessionType, crewName);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 정보를 조회하는데 성공했습니다.", sessions));
@@ -66,14 +66,14 @@ public class SessionController {
     }
 
     // 세션 사진첩(갤러리) 조회 - 페이징
-    @GetMapping("/detail/gallery/{sessionId}")
-    public ResponseEntity<BaseResponse<SessionImageResponse.SessionGalleryItemsResponse>> getSessionGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable("sessionId") Long sessionId, @RequestParam int pageNo) {
+    @GetMapping("/detail/gallery/{session-id}")
+    public ResponseEntity<BaseResponse<SessionImageResponse.SessionGalleryItemsResponse>> getSessionGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable("session-id") Long sessionId, @RequestParam("page-no") int pageNo) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 사진첩 조회를 성공했습니다.", sessionService.getSessionGallery(pageNo, sessionId, customUser)));
     }
 
     // 세션 참가 신청
-    @PostMapping("/{sessionId}")
-    public ResponseEntity<BaseResponse<Void>> applySession(@PathVariable("sessionId") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
+    @PostMapping("/{session-id}")
+    public ResponseEntity<BaseResponse<Void>> applySession(@PathVariable("session-id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
         sessionService.applySession(sessionId, customUser.getEmail());
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 참가 신청이 완료되었습니다."));
     }

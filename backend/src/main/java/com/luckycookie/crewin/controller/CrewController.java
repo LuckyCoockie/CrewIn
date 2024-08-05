@@ -36,7 +36,7 @@ public class CrewController {
 
     // 전체 크루 조회 (크루 없는 사람)
     @GetMapping()
-    public ResponseEntity<BaseResponse<CrewItemResponse>> getAllCrewList(@RequestParam int pageNo) {
+    public ResponseEntity<BaseResponse<CrewItemResponse>> getAllCrewList(@RequestParam("page-no") int pageNo) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "전체 크루 목록 조회를 성공했습니다.", crewService.getAllCrewList(pageNo)));
     }
 
@@ -54,8 +54,8 @@ public class CrewController {
     }
 
     // 크루 정보 조회
-    @GetMapping("/detail/{crewId}")
-    public ResponseEntity<BaseResponse<CrewResponse.CrewInfoItem>> getCrewDetailInfo(@PathVariable Long crewId) {
+    @GetMapping("/detail/{crew-id}")
+    public ResponseEntity<BaseResponse<CrewResponse.CrewInfoItem>> getCrewDetailInfo(@PathVariable("crew-id") Long crewId) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 정보 조회를 성공했습니다.", crewService.getCrewInfo(crewId)));
     }
 
@@ -86,8 +86,8 @@ public class CrewController {
     }
 
     // 크루 공지 조회
-    @GetMapping("/notice/{crewId}")
-    public ResponseEntity<BaseResponse<CrewResponse.CrewNoticeItemResponse>> getCrewNoticeList(@AuthenticationPrincipal CustomUser customUser, @PathVariable Long crewId, @RequestParam int pageNo) {
+    @GetMapping("/notice/{crew-id}")
+    public ResponseEntity<BaseResponse<CrewResponse.CrewNoticeItemResponse>> getCrewNoticeList(@AuthenticationPrincipal CustomUser customUser, @PathVariable("crew-id") Long crewId, @RequestParam("page-no") int pageNo) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 공지 조회를 성공했습니다.", crewService.getCrewNoticeList(pageNo, crewId, customUser)));
     }
 
@@ -125,8 +125,8 @@ public class CrewController {
     }
 
     // 크루원 조회
-    @GetMapping("/member/{crewId}")
-    public ResponseEntity<BaseResponse<CrewResponse.CrewMemberItemResponse>> getCrewMemberList(@PathVariable Long crewId) {
+    @GetMapping("/member/{crew-id}")
+    public ResponseEntity<BaseResponse<CrewResponse.CrewMemberItemResponse>> getCrewMemberList(@PathVariable("crew-id") Long crewId) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루원 조회를 성공했습니다.", crewService.getCrewMemberList(crewId)));
     }
 
