@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // useNavigate 추가
 import BackHeaderMediumOrganism from "../components/organisms/BackHeaderMediumOrganism";
 import { ReactComponent as Searchicon } from "../assets/icons/searchicon.svg";
 import {
@@ -8,8 +7,7 @@ import {
   CrewMemberDto,
 } from "../apis/api/crewmemberlist";
 
-const CrewMemberSearchPage: React.FC = () => {
-  const navigate = useNavigate();
+const CaptainPovCrewMemberSearchPage: React.FC = () => {
   const [crewId] = useState<number>(1); // 나중에 동적으로 설정
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,9 +38,15 @@ const CrewMemberSearchPage: React.FC = () => {
       member.name.includes(searchQuery) || member.nickname.includes(searchQuery)
   );
 
-  const handleSearchIconClick = () => {
-    navigate("/crew/membersearch/captain"); // 클릭 시 지정된 경로로 이동
+  const handlePositionChange = (email: string, newPosition: string) => {
+    setJoinedMembers((prevMembers) =>
+      prevMembers.map((member) =>
+        member.email === email ? { ...member, position: newPosition } : member
+      )
+    );
   };
+
+  const positions = ["CAPTAIN", "PACER", "MEMBER"];
 
   return (
     <div className="relative flex flex-col max-w-[550px] mx-auto">
@@ -57,10 +61,7 @@ const CrewMemberSearchPage: React.FC = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-            <Searchicon
-              className="w-5 h-5 text-gray-400 cursor-pointer"
-              onClick={handleSearchIconClick}
-            />
+            <Searchicon className="w-5 h-5 text-gray-400" />
           </div>
         </div>
       </header>
@@ -80,11 +81,19 @@ const CrewMemberSearchPage: React.FC = () => {
                   <div className="font-bold">{member.name}</div>
                   <div className="text-gray-600">{member.nickname}</div>
                 </div>
-                <div className="flex gap-2">
-                  <button className="border border-gray-400 w-20 h-10 rounded-md text-sm">
-                    {member.position}
-                  </button>
-                </div>
+                <select
+                  value={member.position}
+                  className="border border-gray-400 w-30 h-10 rounded-md text-sm"
+                  onChange={(e) =>
+                    handlePositionChange(member.email, e.target.value)
+                  }
+                >
+                  {positions.map((position) => (
+                    <option key={position} value={position}>
+                      {position}
+                    </option>
+                  ))}
+                </select>
               </li>
             ))}
           </ul>
@@ -94,4 +103,4 @@ const CrewMemberSearchPage: React.FC = () => {
   );
 };
 
-export default CrewMemberSearchPage;
+export default CaptainPovCrewMemberSearchPage;

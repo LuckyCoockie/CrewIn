@@ -85,7 +85,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
     });
 
     setImagePaths((prevPaths) => [...prevPaths, ...tempImagePaths]);
-    setCroppedImages((prevImages) => [...prevImages, ...tempImagePaths]); // Save as cropped images initially
+    setCroppedImages((prevImages) => [...prevImages, ...tempImagePaths]);
     setOriginalCroppedImages((prevImages) => [
       ...prevImages,
       ...tempOriginalCroppedImages,
