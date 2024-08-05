@@ -142,7 +142,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
 
         // 입력받은 memberId 랑 같으면 현재 로그인한 사용자 (내 프로필 조회)
-        if(!Objects.equals(memberId, member.getId())) {
+        if(memberId != null) {
             // 입력받은 memberId 랑 다르면 다른 사용자 (다른 사용자 프로필 조회)
             member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         }

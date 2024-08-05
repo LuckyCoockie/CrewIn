@@ -1,8 +1,10 @@
 package com.luckycookie.crewin.service;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.domain.Session;
 import com.luckycookie.crewin.domain.SessionPoster;
+import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.MyPageRequest.UpdateProfileRequest;
 import com.luckycookie.crewin.dto.MyPageRequest.MyPageNicknameRequest;
 import com.luckycookie.crewin.dto.MyPageResponse.MyPageSessionItem;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,9 +38,9 @@ public class MyPageService {
     private final SessionRepository sessionRepository;
     private final MemberSessionRepository memberSessionRepository;
 
-    // 내가 만든, 참가한 세션 조회
+    // 내가 만든, 참가한 세션 조회 (전체)
     @Transactional(readOnly = true)
-    public MyPageSessionResponse getCreatedMySession(CustomUser customUser, int pageNo, String type) {
+    public MyPageSessionResponse getCreatedMySession(CustomUser customUser, int pageNo, String type, String sessionType) {
         // 현재 로그인한 사용자 조회
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
@@ -50,12 +53,23 @@ public class MyPageService {
 
         List<MyPageSessionItem> myPageSessionItems = new ArrayList<>();
 
+        // sessionType 에 따라서 분리 (STANDARD, OPEN, THUNDER, ALL)
         if(type.equals("created")) { // 내가 만든 세션
             // session 에서 hostId가 member.getId 랑 같으면 내가 만든 세션
-            sessionPage = sessionRepository.findAllByHost(pageable, member);
+            sessionPage = switch (sessionType) {
+                case "ALL" -> sessionRepository.findAllByHost(pageable, member, SessionType.ALL);
+                case "STANDARD" -> sessionRepository.findAllByHost(pageable, member, SessionType.STANDARD);
+                case "THUNDER" -> sessionRepository.findAllByHost(pageable, member, SessionType.THUNDER);
+                default -> sessionRepository.findAllByHost(pageable, member, SessionType.OPEN);
+            };
         } else if(type.equals("joined")) {
             // 내가 참가한 세션
-            sessionPage = memberSessionRepository.findByMember(pageable, member);
+            sessionPage = switch (sessionType) {
+                case "ALL" -> memberSessionRepository.findByMember(pageable, member, SessionType.ALL);
+                case "STANDARD" -> memberSessionRepository.findByMember(pageable, member, SessionType.STANDARD);
+                case "THUNDER" -> memberSessionRepository.findByMember(pageable, member, SessionType.THUNDER);
+                default -> memberSessionRepository.findByMember(pageable, member, SessionType.OPEN);
+            };
         }
 
         if(sessionPage != null) {
@@ -67,6 +81,9 @@ public class MyPageService {
                     .sessionId(session.getId())
                     .sessionName(session.getName())
                     .startAt(session.getStartAt())
+                    .endAt(session.getEndAt())
+                    .area(session.getArea())
+                    .crewName(session.getCrew().getCrewName())
                     .imageUrl(session.getPosterImages().stream().map(SessionPoster::getImageUrl).toList().get(0))
                     .build()).collect((Collectors.toList()));
         }

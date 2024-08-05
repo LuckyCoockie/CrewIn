@@ -29,10 +29,14 @@ public class MyPageResponse {
     public static class MyPageSessionItem{
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime startAt; // 시작 시간
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        private LocalDateTime endAt; // 종료 시간
 
         private String sessionName; // 세션명
         private String imageUrl; // 세션 포스터 이미지 (첫번째)
         private Long sessionId; // 세션 ID
+        private String crewName; // 크루 이름
+        private String area; // 코스 지역
     }
 
     @Getter

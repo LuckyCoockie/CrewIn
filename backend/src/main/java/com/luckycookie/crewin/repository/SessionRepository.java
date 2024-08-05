@@ -15,6 +15,7 @@ import java.util.List;
 public interface SessionRepository extends JpaRepository<Session, Long> {
 
     // 내가 만든 세션 조회
-    @Query("SELECT s FROM Session s WHERE s.host = :member")
-    Page<Session> findAllByHost(Pageable pageable, Member member);
+    @Query("SELECT s FROM Session s WHERE s.host = :member AND s.sessionType = :sessionType")
+    Page<Session> findAllByHost(Pageable pageable, Member member, SessionType sessionType);
+
 }
