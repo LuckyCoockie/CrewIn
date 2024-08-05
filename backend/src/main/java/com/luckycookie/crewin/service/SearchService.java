@@ -76,7 +76,11 @@ public class SearchService {
         List<Crew> crews;
         int lastPageNo;
 
-        crewsPage = crewRepository.findAllByCrewName(query, pageable);
+        if (query.isBlank()) {
+            crewsPage = crewRepository.findAllByCrew(pageable);
+        } else {
+            crewsPage = crewRepository.findAllByCrewName(query, pageable);
+        }
 
         crews = crewsPage.getContent();
         lastPageNo = Math.max(crewsPage.getTotalPages() - 1, 0);

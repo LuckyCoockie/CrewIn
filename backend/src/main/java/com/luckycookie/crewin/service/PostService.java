@@ -2,7 +2,6 @@ package com.luckycookie.crewin.service;
 
 import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.PostType;
-import com.luckycookie.crewin.dto.CrewResponse;
 import com.luckycookie.crewin.dto.PostRequest;
 import com.luckycookie.crewin.dto.PostResponse.PostGalleryItem;
 import com.luckycookie.crewin.dto.PostResponse.PostGalleryItemResponse;
@@ -13,7 +12,6 @@ import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.memberCrew.NotFoundMemberCrewException;
 import com.luckycookie.crewin.exception.post.NotFoundPostException;
-import com.luckycookie.crewin.exception.session.NotFoundSessionException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -37,9 +36,6 @@ public class PostService {
     private final HeartRepository heartRepository;
     private final PostImageRepository postImageRepository;
     private final MemberCrewRepository memberCrewRepository;
-    private final SessionRepository sessionRepository;
-    private final SessionImageRepository sessionImageRepository;
-    private final MemberSessionRepository memberSessionRepository;
 
     public void writePost(PostRequest.WritePostRequest writePostRequest, CustomUser customUser) {
 
@@ -191,7 +187,7 @@ public class PostService {
 
     // 사진첩 상세 조회
     // 크루
-    private PostItemsResponse getCrewPostGalleryDetailResponse(Long crewId, Long postId, String direction, CustomUser customUser) {
+    public PostItemsResponse getCrewPostGalleryDetailResponse(Long crewId, Long postId, String direction, CustomUser customUser) {
         // 현재 로그인한 사용자
         Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
         Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
@@ -209,6 +205,39 @@ public class PostService {
         } else if (direction.equals("decrease")) {
             // postId 보다 큰 포스트들을 가져옴
             postListPage = postRepository.findByCrewAndIdGreaterThanAndPostTypeOrderByIdAsc(crew, postId, PostType.STANDARD, pageRequest);
+        }
+
+        assert postListPage != null;
+        return convertToPostItemsResponse(postListPage, customUser);
+    }
+
+    // 멤버
+    public PostItemsResponse getMemberPostGalleryDetailResponse(Long memberId, Long postId, String direction, CustomUser customUser) {
+        // 현재 로그인한 사용자
+        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+
+        Page<Post> postListPage = null;
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        // 현재 로그인한 사용자와 memberId가 같은지 다른지 확인
+        // 같으면 내 게시물 다르면 다른 사람 게시물
+        if (Objects.equals(member.getId(), memberId)) { // 내 게시물
+            if (direction.equals("increase")) {
+                // Id 보다 큰 포스트들을 오름차순으로 가져옴
+                postListPage = postRepository.findByAuthorAndIdGreaterThanAndPostTypeOrderByIdAsc(member, postId, PostType.STANDARD, pageRequest);
+            } else if (direction.equals("decrease")) {
+                // Id 보다 작은 포스트들을 내림차순으로 가져옴
+                postListPage = postRepository.findByAuthorAndIdLessThanAndPostTypeOrderByIdAsc(member, postId, PostType.STANDARD, pageRequest);
+            }
+        } else { // 다른 사람 게시물
+            Member otherMember = memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
+            if (direction.equals("increase")) {
+                // 다른 사람의 Id 보다 큰 포스트들을 오름차순으로 가져옴
+                postListPage = postRepository.findByAuthorAndIdGreaterThanAndPostTypeOrderByIdAsc(otherMember, postId, PostType.STANDARD, pageRequest);
+            } else if (direction.equals("decrease")) {
+                // 다른 사람의 Id 보다 작은 포스트들을 내림차순으로 가져옴
+                postListPage = postRepository.findByAuthorAndIdLessThanAndPostTypeOrderByIdAsc(otherMember, postId, PostType.STANDARD, pageRequest);
+            }
         }
 
         assert postListPage != null;
@@ -239,6 +268,8 @@ public class PostService {
                         .title(post.getTitle())
                         .isHearted(post.getHearts().stream().anyMatch(heart -> heart.getMember().getId().equals(member.getId())))
                         .profileImage(post.getAuthor().getImageUrl())
+                        .createdAt(post.getCreatedAt())
+                        .updatedAt(post.getUpdatedAt())
                         .postImages(post.getPostImages().stream().map(PostImage::getImageUrl).toList())
                         .build())
                 .collect(Collectors.toList());

@@ -5,10 +5,12 @@ import com.luckycookie.crewin.domain.Token;
 import com.luckycookie.crewin.domain.redis.Auth;
 import com.luckycookie.crewin.dto.MemberRequest.SignInRequest;
 import com.luckycookie.crewin.dto.MemberRequest.SignUpRequest;
+import com.luckycookie.crewin.dto.MemberResponse.MemberProfileResponse;
 import com.luckycookie.crewin.exception.member.*;
 import com.luckycookie.crewin.exception.security.InvalidTokenException;
 import com.luckycookie.crewin.repository.MemberRepository;
 import com.luckycookie.crewin.repository.RefreshTokenRedisRepository;
+import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.security.util.TokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Random;
 
 @Service
@@ -131,4 +134,28 @@ public class MemberService {
 
         return sb.toString();
     }
+
+    // 멤버 프로필 조회
+    @Transactional(readOnly = true)
+    public MemberProfileResponse getMemberProfile(CustomUser customUser, Long memberId) {
+        // 현재 로그인한 사용자 조회
+        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+
+        // 입력받은 memberId 랑 같으면 현재 로그인한 사용자 (내 프로필 조회)
+        if(!Objects.equals(memberId, member.getId())) {
+            // 입력받은 memberId 랑 다르면 다른 사용자 (다른 사용자 프로필 조회)
+            member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        }
+
+        return MemberProfileResponse
+                .builder()
+                .totalAttendance(member.getTotalAttendance())
+                .totalDistance(member.getTotalDistance())
+                .totalTime(member.getTotalTime())
+                .imageUrl(member.getImageUrl())
+                .nickname(member.getNickname())
+                .name(member.getName())
+                .build();
+    }
+
 }

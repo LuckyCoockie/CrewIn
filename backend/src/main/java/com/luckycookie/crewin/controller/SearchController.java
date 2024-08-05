@@ -23,7 +23,7 @@ public class SearchController {
     @GetMapping("/crew")
     public ResponseEntity<BaseResponse<CrewItemResponse>> searchCrew(@AuthenticationPrincipal CustomUser customUser,
                                                                      @RequestParam String query,
-                                                                     @RequestParam(defaultValue = "0") int pageNo) {
+                                                                     @RequestParam(name = "page-no", defaultValue = "0") int pageNo) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당 크루 검색 결과 조회를 성공했습니다."
                 ,searchService.searchCrew(query, pageNo, customUser)));
     }
@@ -31,7 +31,7 @@ public class SearchController {
     @GetMapping("/member")
     public ResponseEntity<BaseResponse<MemberResponse.MemberSearchResponse>> searchMember(@AuthenticationPrincipal CustomUser customUser,
                                                                                         @RequestParam String query,
-                                                                                        @RequestParam(defaultValue = "0") int pageNo) {
+                                                                                        @RequestParam(name = "page-no", defaultValue = "0") int pageNo) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당 멤버 검색 결과 조회를 성공했습니다."
                 ,searchService.searchMember(query, pageNo, customUser)));
     }
