@@ -20,7 +20,7 @@ type OwnProps = {
 const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
   const query = qs.parse(location.search);
 
-  const [type, setType] = useState<SessionType>(query.sessionType);
+  const [type, setType] = useState<SessionType>(query.type);
   const [input, setInput] = useState<string | undefined>(query["crewname"]);
   const [date, setDate] = useState<Date | null>(query.date);
 

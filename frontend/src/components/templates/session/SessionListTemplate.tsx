@@ -1,16 +1,98 @@
-import { useCallback } from "react";
+import { ReactComponent as InfoIcon } from "../../../assets/icons/info_icon.svg";
 import {
-  getSessionList,
-  GetSessionListRequestDto,
+  GetMySessionRequestDto,
+  SessionDto,
+  SessionType,
+  sessionTypeToLabel,
 } from "../../../apis/api/session";
-import SessionListComponent from "../../organisms/SessionListOrganism";
+import { useCallback, useState } from "react";
 
-const SessionListTemplate: React.FC = () => {
-  const fetchData = useCallback(async (dto: GetSessionListRequestDto) => {
-    return getSessionList(dto);
-  }, []);
+import qs from "query-string";
+import DropdownTypeComponent from "../../atoms/Input/DropdownItemComponent";
+import InfiniteScrollComponent from "../../molecules/InfinityScrollMolecules";
+import SessionListItemMolecules from "../../molecules/SessionListItemMolecules";
+import LargeTitleMolecule from "../../molecules/Title/LargeTitleMolecule";
 
-  return <SessionListComponent fetchData={fetchData} />;
+type OwnProps = {
+  title: string;
+  onSearch: (dto: GetMySessionRequestDto) => Promise<void>;
+  fetchData: (dto: GetMySessionRequestDto) => Promise<SessionDto[]>;
+};
+
+const SessionListTemplate: React.FC<OwnProps> = ({
+  title,
+  onSearch,
+  fetchData,
+}) => {
+  const query = qs.parse(location.search);
+
+  const [type, setType] = useState<SessionType>(query["session-type"]);
+
+  const handelTypeChange = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const value = event.target.value as SessionType;
+      setType(value);
+      onSearch({ "session-type": value });
+    },
+    [onSearch]
+  );
+
+  const handleFetchData = useCallback(
+    async (page: number) => {
+      return fetchData({ "session-type": type, "page-no": page.toString() });
+    },
+    [fetchData, type]
+  );
+
+  return (
+    <main>
+      <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20 relative">
+        <div className="flex items-center bg-white w-full mb-5 xs:mb-10 h-10">
+          <div className="pr-1">
+            <LargeTitleMolecule text={title} />
+          </div>
+          <div className="flex items-center">
+            <InfoIcon />
+          </div>
+        </div>
+        <div className="mb-3 xs:mb-5 flex items-center bg-white w-full">
+          <DropdownTypeComponent
+            id="sessionpaceminutes"
+            options={[
+              { label: "전체", value: undefined },
+              ...Object.values(SessionType).map((type) => ({
+                label: sessionTypeToLabel(type),
+                value: type,
+              })),
+            ]}
+            value={type}
+            onChange={handelTypeChange}
+            className="border rounded-md text-white bg-primary"
+          />
+        </div>
+        <InfiniteScrollComponent
+          className="grid grid-cols-2 gap-2 xs:gap-4 mb-2 xs:mb-4 w-full"
+          fetchKey={[
+            "mypage/session",
+            query.type ?? "",
+            query["session-type"] ?? "",
+          ]}
+          fetchData={handleFetchData}
+          pageSize={10}
+          initPage={parseInt(query.pageNo ?? "1")}
+          ItemComponent={({ data }) => (
+            <SessionListItemMolecules
+              key={data.sessionId}
+              crewName={data.crewName}
+              area={data.area}
+              date={data.startAt}
+              imageUrl={data.sessionThumbnail}
+            />
+          )}
+        />
+      </div>
+    </main>
+  );
 };
 
 export default SessionListTemplate;

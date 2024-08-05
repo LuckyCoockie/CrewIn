@@ -29,6 +29,7 @@ import CaptainPovCrewMemberSearchPage from "./pages/CaptainPovCrewMemberSearchPa
 import PostEditPage from "./pages/PostEditPage.tsx";
 import CourseEditPage from "./pages/course/CourseEditPage.tsx";
 import CoursePage from "./pages/course/CoursePage.tsx";
+import MySessionPage from "./pages/session/MySessionPage.tsx";
 // import { getMyCrews } from "./apis/api/mycrew";
 
 const loader = async () => {
@@ -86,6 +87,7 @@ export const router = createBrowserRouter([
               },
             ],
           },
+          { path: "mypage/session/:type", element: <MySessionPage /> },
           { path: "profile", element: <ProfilePage /> },
           { path: "info", element: <ProfileInfoPage /> },
           {

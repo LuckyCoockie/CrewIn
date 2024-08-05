@@ -32,6 +32,20 @@ export const sessionStatusTypeToLabel = (type: SessionStatusType) => {
   }
 };
 
+export const MySessionType = {
+  CREATED: "created",
+  JOINED: "joined",
+} as const;
+export type MySessionType = (typeof MySessionType)[keyof typeof MySessionType];
+export const mySessionTypeToLabel = (type: MySessionType) => {
+  switch (type) {
+    case MySessionType.CREATED:
+      return "내가 만든 세션 조회";
+    case MySessionType.JOINED:
+      return "참가한 세션 조회";
+  }
+};
+
 export type SessionDto = {
   crewName: string;
   sessionName: string;
@@ -58,4 +72,25 @@ export const getSessionList = async (
   return response.data.filter((value) =>
     value.startAt.includes(dto.date ?? "")
   );
+};
+
+export type GetMySessionRequestDto = {
+  type?: MySessionType;
+  "session-type"?: SessionType;
+  "page-no"?: string;
+};
+
+export type GetMySessionResponseDto = {
+  pageNo: number;
+  lastPageNo: number;
+  sessions: SessionDto[];
+};
+
+export const getMySessionList = async (
+  dto: GetMySessionRequestDto
+): Promise<GetMySessionResponseDto> => {
+  const response = await api.get<GetMySessionResponseDto>("/mypage/session", {
+    params: dto,
+  });
+  return response.data;
 };
