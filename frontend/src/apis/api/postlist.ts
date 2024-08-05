@@ -1,3 +1,4 @@
+import { PageNationData } from "../../util/paging/type";
 import api from "../index";
 
 export type PostDto = {
@@ -15,17 +16,18 @@ export type PostDto = {
   postImages: string[];
 };
 
-export type GetPostListResponseDto = PostDto[];
+export type GetPostListRequestDto = { "page-no": number };
+
+export type GetPostListResponseDto = PageNationData<PostDto>;
 
 export const getPostList = async (
-  pageNo: number
+  dto: GetPostListRequestDto
 ): Promise<GetPostListResponseDto> => {
   try {
-    const response = await api.get("/post/home", {
-      params: { "page-no": pageNo },
-    });
+    const response = await api.get("/post/home", { params: dto });
+
     if (response.status === 200) {
-      return response.data.postItemList;
+      return response.data;
     } else {
       throw new Error(`Error fetching post list: ${response.statusText}`);
     }

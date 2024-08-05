@@ -1,21 +1,12 @@
 import React, { useCallback } from "react";
 import CrewListItem from "../molecules/CrewListItemMolecules";
-import InfiniteScrollComponent from "../molecules/InfinityScrollMolecules";
+import InfiniteScrollComponent from "../../util/paging/component/InfinityScrollComponent";
 import qs from "query-string";
-import { GetCrewListRequestDto } from "../../apis/api/crewlist";
-
-type CrewData = {
-  crewId: number;
-  crewName: string;
-  slogan: string;
-  area: string;
-  crewCount: number;
-  captainName: string;
-  imageUrl: string;
-};
+import { CrewDto, GetCrewListRequestDto } from "../../apis/api/crewlist";
+import { PageNationData } from "../../util/paging/type";
 
 type OwnProps = {
-  fetchData: (dto: GetCrewListRequestDto) => Promise<CrewData[]>;
+  fetchData: (dto: GetCrewListRequestDto) => Promise<PageNationData<CrewDto>>;
 };
 
 const CrewListComponent: React.FC<OwnProps> = ({ fetchData }) => {
@@ -33,7 +24,6 @@ const CrewListComponent: React.FC<OwnProps> = ({ fetchData }) => {
       className="grid grid-cols-2 gap-2 xs:gap-4 mb-2 xs:mb-4 w-full"
       fetchKey={["CrewList", query.query ?? ""]}
       fetchData={handleFetchData}
-      pageSize={10}
       initPage={parseInt(query.pageNo ?? "1")}
       ItemComponent={({ data }) => (
         <CrewListItem

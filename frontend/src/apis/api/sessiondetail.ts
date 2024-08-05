@@ -1,3 +1,4 @@
+import { PageNationData } from "../../util/paging/type";
 import api from "../utils/instance";
 
 export type SessionDetailDto = {
@@ -98,11 +99,7 @@ export type GetSessionAlbumRequestDto = {
   pageNo: number;
 };
 
-export type SessionAlbumResponseDto = {
-  pageNo: number;
-  lastPageNo: number;
-  sessionImages: string[];
-};
+export type SessionAlbumResponseDto = PageNationData<string>;
 
 export const getSessionAlbum = async (
   dto: GetSessionAlbumRequestDto
@@ -110,7 +107,7 @@ export const getSessionAlbum = async (
   return {
     pageNo: 0,
     lastPageNo: 0,
-    sessionImages: [
+    items: [
       "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
       "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
       "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",

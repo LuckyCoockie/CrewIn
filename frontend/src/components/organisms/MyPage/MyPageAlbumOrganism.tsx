@@ -1,6 +1,6 @@
 import React from "react";
 import { MyGalleryDto, getMyGallery } from "../../../apis/api/mypage";
-import InfiniteScrollComponent from "../../molecules/InfinityScrollMolecules";
+import InfiniteScrollComponent from "../../../util/paging/component/InfinityScrollComponent";
 
 const MyPageAlbumOrganism: React.FC = () => {
   const fetchGallery = async (page: number): Promise<MyGalleryDto[]> => {

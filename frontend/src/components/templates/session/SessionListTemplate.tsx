@@ -9,7 +9,7 @@ import { useCallback, useState } from "react";
 
 import qs from "query-string";
 import DropdownTypeComponent from "../../atoms/Input/DropdownItemComponent";
-import InfiniteScrollComponent from "../../molecules/InfinityScrollMolecules";
+import InfiniteScrollComponent from "../../../util/paging/component/InfinityScrollComponent";
 import SessionListItemMolecules from "../../molecules/SessionListItemMolecules";
 import LargeTitleMolecule from "../../molecules/Title/LargeTitleMolecule";
 

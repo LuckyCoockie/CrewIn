@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import InfiniteScrollComponent, {
   ItemComponentProps,
-} from "../molecules/InfinityScrollMolecules";
+} from "../../util/paging/component/InfinityScrollComponent";
 
 import FloatingActionButton from "../atoms/Button/FloatingActionButton";
 import { ReactComponent as PlusIcon } from "../../assets/icons/plus.svg";

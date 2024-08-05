@@ -1,24 +1,31 @@
 import { ReactComponent as CrewCreateIcon } from "../../../assets/icons/crewCreate.svg";
-import { GetCrewListRequestDto } from "../../../apis/api/crewlist";
+import {
+  GetCrewListRequestDto,
+  GetCrewListResponseDto,
+} from "../../../apis/api/crewlist";
 import LargeTitleMolecule from "../../molecules/Title/LargeTitleMolecule";
 import { useNavigate } from "react-router";
 import { useCallback } from "react";
 import SearchInputMolecule from "../../molecules/Input/SearchInputMolecule";
-import CrewListTemplate from "./CrewListTemplate";
+import CrewListComponent from "../../organisms/CrewListOrganisms";
 
 type OwnProps = {
-  fetchData: (dto: GetCrewListRequestDto) => Promise<void>;
+  onSearch: (dto: GetCrewListRequestDto) => Promise<void>;
+  fetchData: (dto: GetCrewListRequestDto) => Promise<GetCrewListResponseDto>;
 };
 
-const CrewSearchTemplate: React.FC<OwnProps> = ({ fetchData }: OwnProps) => {
+const CrewSearchTemplate: React.FC<OwnProps> = ({
+  onSearch,
+  fetchData,
+}: OwnProps) => {
   const navigate = useNavigate();
 
   const handleFetchData = useCallback(
     (input?: string) => {
       const dto = { pageNo: "0", query: input ?? "" };
-      fetchData(dto);
+      onSearch(dto);
     },
-    [fetchData]
+    [onSearch]
   );
 
   const handleCrewCreateRoute = () => {
@@ -34,10 +41,13 @@ const CrewSearchTemplate: React.FC<OwnProps> = ({ fetchData }: OwnProps) => {
         </div>
         <div className="flex items-center flex-grow justify-end ml-4">
           <SearchInputMolecule hint={"크루명"} onSubmit={handleFetchData} />
-          <CrewCreateIcon className="w-6 h-6 ml-2" onClick={handleCrewCreateRoute} />
+          <CrewCreateIcon
+            className="w-6 h-6 ml-2"
+            onClick={handleCrewCreateRoute}
+          />
         </div>
       </div>
-      <CrewListTemplate />
+      <CrewListComponent fetchData={fetchData} />;
     </div>
   );
 };

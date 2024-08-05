@@ -1,3 +1,4 @@
+import { PageNationData } from "../../util/paging/type";
 import api from "../utils/instance";
 
 export const SessionType = {
@@ -80,11 +81,7 @@ export type GetMySessionRequestDto = {
   "page-no"?: string;
 };
 
-export type GetMySessionResponseDto = {
-  pageNo: number;
-  lastPageNo: number;
-  sessions: SessionDto[];
-};
+export type GetMySessionResponseDto = PageNationData<SessionDto>;
 
 export const getMySessionList = async (
   dto: GetMySessionRequestDto

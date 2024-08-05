@@ -1,18 +1,18 @@
 import React, { useEffect } from "react";
 import { useInfiniteQuery } from "react-query";
+import { PageNationData } from "../type";
 
-export interface ItemComponentProps<T> {
+export type ItemComponentProps<T> = {
   data: T;
-}
+};
 
 type OwnProps<T> = {
   fetchKey: string | string[];
-  fetchData: (page: number) => Promise<T[]>;
+  fetchData: (page: number) => Promise<PageNationData<T>>;
   ItemComponent: (
     props: ItemComponentProps<T>
   ) => React.ReactElement<HTMLElement>;
   className?: string;
-  pageSize: number;
   initPage?: number;
 };
 
@@ -21,7 +21,6 @@ const InfiniteScrollComponent = <T,>({
   fetchData,
   ItemComponent,
   className,
-  pageSize,
   initPage,
 }: OwnProps<T>) => {
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
@@ -30,9 +29,9 @@ const InfiniteScrollComponent = <T,>({
       ({ pageParam = initPage ?? 1 }) => fetchData(pageParam),
       {
         refetchOnWindowFocus: false,
-        getNextPageParam: (lastPage, allPages) => {
-          if (lastPage.length < pageSize) return;
-          const nextPage = allPages.length + 1;
+        getNextPageParam: (lastPage) => {
+          if (lastPage.lastPageNo >= lastPage.pageNo) return;
+          const nextPage = lastPage.lastPageNo + 1;
           return nextPage;
         },
       }
@@ -59,7 +58,7 @@ const InfiniteScrollComponent = <T,>({
     <div className={className}>
       {data?.pages.map((data, index) => (
         <React.Fragment key={index}>
-          {data?.map((data) => ItemComponent({ data }))}
+          {data?.items.map((data) => ItemComponent({ data }))}
         </React.Fragment>
       ))}
     </div>
