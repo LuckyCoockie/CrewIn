@@ -7,6 +7,7 @@ type InputData = {
   hasError?: boolean;
   value: string;
   checked: boolean;
+  disabled?: boolean; // disabled 속성 추가
 };
 
 const InputRadioComponent = React.forwardRef<HTMLInputElement, InputData>(
@@ -21,6 +22,7 @@ const InputRadioComponent = React.forwardRef<HTMLInputElement, InputData>(
           className="hidden" // 라디오 버튼 숨기기
           ref={ref}
           value={props.value}
+          disabled={props.disabled}
         />
         <label
           htmlFor={props.id}
@@ -28,7 +30,9 @@ const InputRadioComponent = React.forwardRef<HTMLInputElement, InputData>(
             props.checked
               ? "button-color"
               : "bg-white text-gray-500 font-normal border-gray-300"
-          } transition duration-150 ease-in-out`}
+          } transition duration-150 ease-in-out ${
+            props.disabled ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
           {props.value}
         </label>

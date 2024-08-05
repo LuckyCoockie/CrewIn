@@ -1,18 +1,24 @@
 import api from "../index";
 
 export type CrewMemberDto = {
+  memberId: number;
   nickname: string;
   name: string;
   email: string;
+  imageUrl: string | null;
   position: string;
+  attendanceCount: number;
   joined: boolean;
   invited: boolean;
 };
 
+
 export type CrewMemberListResponseDto = {
-  crewIsJoinedMemberList: CrewMemberDto[];
-  crewIsInvitedMemberList: CrewMemberDto[];
+  pageNo: number;
+  lastPageNo: number;
+  crewMemberList: CrewMemberDto[];
 };
+
 
 export const getCrewMemberList = async (
   crewId: number

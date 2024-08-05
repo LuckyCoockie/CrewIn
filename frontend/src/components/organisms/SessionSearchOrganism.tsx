@@ -34,7 +34,7 @@ const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
   }
 
   const handleSearch = useCallback(() => {
-    onSearch({ sessionType: type, crewname: input, date: formatDate(date) });
+    onSearch({ type: type, crewname: input, date: formatDate(date) });
   }, [date, input, onSearch, type]);
 
   const handelTypeChange = useCallback(
@@ -42,7 +42,7 @@ const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
       const value = event.target.value as SessionType;
       setType(value);
       onSearch({
-        sessionType: value,
+        type: value,
         crewname: input,
         date: formatDate(date),
       });
@@ -59,7 +59,7 @@ const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
     (value: Date | null) => {
       setDate(value);
       onSearch({
-        sessionType: type,
+        type: type,
         crewname: input,
         date: formatDate(value),
       });

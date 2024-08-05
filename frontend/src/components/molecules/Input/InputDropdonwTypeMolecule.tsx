@@ -17,6 +17,7 @@ type InputData = {
   hasError?: boolean;
   disabled?: boolean;
   text: string;
+  defaultValue?: string;
 };
 
 const InputDropdonwTypeMolecule = forwardRef<HTMLSelectElement, InputData>(

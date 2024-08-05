@@ -45,7 +45,7 @@ export type SessionDto = {
 };
 
 export type GetSessionListRequestDto = {
-  sessionType?: SessionType;
+  type?: SessionType;
   crewname?: string;
   date?: string;
   status?: SessionStatusType;

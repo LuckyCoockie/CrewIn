@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import InputLabelComponent from "../../atoms/Input/InputLabelComponent";
 import InputRadioComponent from "../../atoms/Input/InputRadioComponent";
 
@@ -11,18 +11,27 @@ type InputData = {
   hasError?: boolean;
   value: string[];
   default: string;
+  selectedValue?: string; // 선택 속성 추가
+  disabledOptions?: string[]; // disabled 속성 추가
 };
 
 const InputRadioTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
   (props, ref) => {
-    const [selectedValue, setSelectedValue] = useState<string>(
-      `${props.default}`
+    const [internalSelectedValue, setInternalSelectedValue] = useState<string>(
+      props.default
     );
 
+    useEffect(() => {
+      if (props.selectedValue !== undefined) {
+        setInternalSelectedValue(props.selectedValue);
+      }
+    }, [props.selectedValue]);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSelectedValue(e.target.value);
+      setInternalSelectedValue(e.target.value);
       props.onChange(e);
     };
+
     return (
       <div className="mb-4">
         <InputLabelComponent id={props.id} title={props.title} />
@@ -36,7 +45,8 @@ const InputRadioTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
               hasError={props.hasError}
               ref={ref}
               value={value}
-              checked={selectedValue === value}
+              checked={internalSelectedValue === value}
+              disabled={props.disabledOptions?.includes(value)}
             />
           ))}
         </div>
@@ -44,4 +54,5 @@ const InputRadioTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
     );
   }
 );
+
 export default InputRadioTypeMolecule;
