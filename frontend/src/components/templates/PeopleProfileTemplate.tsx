@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import PeopleRecordInfoOrganism from "../organisms/people/PeopleRecordInfoOrganism";
 import PeopleAlbumOrganism from "../organisms/people/PeopleAlbumOrganism";
-import { getMyProfileInfo, ProfileDto } from "../../apis/api/mypage";
+import { getPeopleProfileInfo, ProfileDto } from "../../apis/api/mypage";
 import { useParams } from "react-router";
 
 const PeopleProfileTemplate: React.FC = () => {
@@ -11,14 +11,14 @@ const PeopleProfileTemplate: React.FC = () => {
   const { memberId } = useParams<{ memberId: string }>();
   console.log(memberId);
 
-  const numericMemberId = memberId ? Number(memberId) : null;
+  const numericMemberId = Number(memberId);
   // React Query를 사용하여 데이터를 가져옴
   const {
     data: profileData,
     isLoading: isProfileLoading,
     isError: isProfileError,
   } = useQuery<ProfileDto>(["myProfile", numericMemberId], () =>
-    getMyProfileInfo(numericMemberId)
+    getPeopleProfileInfo(numericMemberId)
   );
 
   // 로딩 상태 처리
