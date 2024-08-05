@@ -1,12 +1,37 @@
 import React from "react";
-import GaroScrollmolecule from "../../molecules/List/GaroScrollmolecule";
 import MediumTitleMolecule from "../../molecules/Title/MediumTitleMolecule";
+import { MyMapsDto } from "../../../apis/api/mypage";
+import GaroScrollMolecule from "../../molecules/List/GaroScrollMolecule";
+import ListButtonMolecule from "../../molecules/List/ListButtonMolecule";
+import crewlistplus from "../../../assets/images/crewlistplus.png";
 
-const MyPageMapOrganism: React.FC = () => {
+type FetchDataProps = {
+  mapsData: MyMapsDto[];
+};
+
+const MyPageMapOrganism: React.FC<FetchDataProps> = ({ mapsData }) => {
   return (
     <>
-      <MediumTitleMolecule text="지도 목록" />
-      <GaroScrollmolecule />
+      <div className="flex">
+        <MediumTitleMolecule text="지도 목록" />
+      </div>
+      <ListButtonMolecule
+        src={crewlistplus}
+        alt="plus"
+        text="추가"
+        router="/course"
+      />
+      <GaroScrollMolecule
+        propsData={mapsData}
+        renderItem={(data: MyMapsDto, index: number) => (
+          <ListButtonMolecule
+            key={index}
+            src={data.thumbnailImage}
+            alt={data.name}
+            text={data.name}
+          />
+        )}
+      />
     </>
   );
 };

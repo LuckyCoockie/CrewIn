@@ -22,7 +22,6 @@ export const ProfileInfoTemplate = ({
   fetchData,
   onProfileImageEdit,
   onNicknameEdit,
-  onPasswordEdit,
 }: OwnProps) => {
   const { data } = useQuery<ProfileInfoDto, AxiosError<ErrorResponseDto>>({
     queryKey: [`ProfileInfo`],
@@ -105,10 +104,7 @@ export const ProfileInfoTemplate = ({
           />
         )}
         {isEditPasswordModalOpen && (
-          <EditPasswordOrganism
-            onClose={handleCloseEditPasswordModal}
-            onEdit={onPasswordEdit}
-          />
+          <EditPasswordOrganism onClose={handleCloseEditPasswordModal} />
         )}
       </main>
     </>

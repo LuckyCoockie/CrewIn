@@ -3,7 +3,7 @@ import NoticeMolecule from "../molecules/Content/NoticeMolecule";
 import FloatingActionButton from "../atoms/Button/FloatingActionButton";
 import PaginationMolecule from "../molecules/Pagination/PaginationMolecule";
 import { ReactComponent as Plus } from "../../assets/icons/plus.svg";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
 
 type Notice = {
   noticeId: number;
@@ -20,13 +20,13 @@ type NoticesProps = {
 const CrewNoticeOrganism: React.FC<NoticesProps> = ({ notices }) => {
   const [page, setPage] = useState(1);
   const [currentNotices, setCurrentNotices] = useState<Notice[]>([]);
-
+  const { crewId } = useParams<{ crewId: string }>();
   const itemsPerPage = 5;
   const btnRange = 5;
   const totalItems = Math.ceil(notices.length / itemsPerPage);
   const navigate = useNavigate();
   const handleRouter = () => {
-    navigate("/crew/noticecreate");
+    navigate(`/crew/detail/${crewId}/noticecreate`);
   };
 
   useEffect(() => {

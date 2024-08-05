@@ -13,9 +13,13 @@ export type CrewCreateDto = {
 
 export type GetCrewCreateRequestDto = CrewCreateDto;
 
+export type GetCrewCreateResponseDto = {
+  crewId: number
+}
+
 export const postCreateCrew = async (
   dto: GetCrewCreateRequestDto
-): Promise<void> => {
+): Promise<GetCrewCreateResponseDto> => {
   const response = await api.post(`/crew`, dto);
   return response.data;
 };

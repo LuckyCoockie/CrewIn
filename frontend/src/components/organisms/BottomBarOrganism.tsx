@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import HomeTabMolecule from "../molecules/Tab/HomeTabMolecule";
 import SessionTabMolecule from "../molecules/Tab/SessionTabMolecule";
 import ProfileTabMolecule from "../molecules/Tab/ProfileTabMolecule";
 import CrewTabMolecule from "../molecules/Tab/CrewTabMolecule";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../../styles/buttonstyle.css";
 
 type Current = {
@@ -11,13 +11,21 @@ type Current = {
 };
 
 const BottomBarOrganism: React.FC<Current> = (props) => {
-  const navigator = useNavigate();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const currentTab = props.current.split(/[?/]/)[1];
 
   const selectedTab = (tab: string) => {
-    navigator(`/${tab}`);
+    navigate(`/${tab}`);
   };
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [location.pathname]);
 
   return (
     <>

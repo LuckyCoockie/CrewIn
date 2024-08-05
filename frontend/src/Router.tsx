@@ -31,7 +31,7 @@ const loader = async () => {
   // if (response.crews.length > 0) {
   //   return <Navigate to={`/crew/detail/${response.crews[0].crewId}`} />;
   // } else {
-    return <CrewSearchPage />;
+  return <CrewSearchPage />;
   // }
 };
 
@@ -64,8 +64,14 @@ export const router = createBrowserRouter([
                 path: "gallary/:crewId",
                 element: <CrewGallaryListDetailPage />,
               },
-              { path: "detail/:crewId", element: <CrewDetailPage /> },
-              { path: "noticecreate", element: <NoticeCreatePage /> },
+              {
+                path: "detail/:crewId",
+                element: <CrewDetailPage />,
+              },
+              {
+                path: "detail/:crewId/noticecreate",
+                element: <NoticeCreatePage />,
+              },
               { path: "member", element: <CrewMemberPage /> },
               { path: "membersearch", element: <CrewMemberSearchPage /> },
             ],

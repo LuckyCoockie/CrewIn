@@ -144,10 +144,10 @@ const SessionCreateOrganism: React.FC = () => {
         return "OPEN";
       }
     };
-    // crewId null처리 함수
+
     const submitData: SessionCreateDto = {
-      courseId: 1,
-      crewId: crewId,
+      courseId: 6,
+      crewId: crewId === 0 ? null : crewId,
       sessionType: formType(data.sessiontype)!,
       name: data.sessiontitle,
       images: urls!,
