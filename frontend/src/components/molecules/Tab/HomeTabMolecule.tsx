@@ -12,7 +12,7 @@ const HomeTabMolecule: React.FC<Name> = (props) => {
   return (
     <>
       <div
-        className="flex flex-col items-center py-2 hover:shadow-lg hover:scale-105 transform active:shadow-inner active:scale-95 transition duration-150 cursor-pointer"
+        className="flex flex-col items-center py-2 cursor-pointer"
         onClick={props.onClick}
       >
         {props.tab ? (
