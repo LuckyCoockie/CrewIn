@@ -1,12 +1,11 @@
 type OwnProps = {
-  img: string;
+  img: React.ReactElement;
   border?: boolean;
-  alt?: string;
   onClick?: () => void;
   className?: string;
 };
 
-export const Avatar = ({ border, img, alt, onClick, className }: OwnProps) => {
+export const Avatar = ({ border, img, onClick, className }: OwnProps) => {
   return (
     <div
       className={`w-8 h-8 flex items-center justify-center rounded-full ${
@@ -14,7 +13,7 @@ export const Avatar = ({ border, img, alt, onClick, className }: OwnProps) => {
       } ${className}`}
       onClick={onClick}
     >
-      <img src={img} alt={alt} className="w-6 h-6 object-contain" />
+      {img}
     </div>
   );
 };

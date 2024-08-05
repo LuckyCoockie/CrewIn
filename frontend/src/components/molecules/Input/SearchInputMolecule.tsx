@@ -7,7 +7,11 @@ type OwnProps = {
   onSubmit?: (value: string) => void;
 };
 
-const SearchInputMolecule: React.FC<OwnProps> = ({ hint, onChange, onSubmit }) => {
+const SearchInputMolecule: React.FC<OwnProps> = ({
+  hint,
+  onChange,
+  onSubmit,
+}) => {
   const [value, setValue] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -21,6 +25,10 @@ const SearchInputMolecule: React.FC<OwnProps> = ({ hint, onChange, onSubmit }) =
   );
 
   const handleSubmit = useCallback(() => {
+    if (onSubmit) onSubmit(value);
+  }, [onSubmit, value]);
+
+  const handleBlur = useCallback(() => {
     if (onSubmit) onSubmit(value);
   }, [onSubmit, value]);
 
@@ -40,6 +48,7 @@ const SearchInputMolecule: React.FC<OwnProps> = ({ hint, onChange, onSubmit }) =
         placeholder={hint}
         onChange={handleValueChange}
         onKeyDown={handleKeyDown}
+        onBlur={handleBlur}
         ref={inputRef}
       />
       <button

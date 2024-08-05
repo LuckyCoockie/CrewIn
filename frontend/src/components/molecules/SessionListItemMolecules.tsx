@@ -49,20 +49,22 @@ const SessionListItem = ({ crewName, area, date, imageUrl }: OwnProps) => {
 
   return (
     <div className="max-w-sm rounded-lg border-primary bg-primary tracking-tighter truncate">
-      <div className="flex justify-center items-center square p-[6px] xs:p-2">
-        {image ? (
-          <img
-            alt="crew image"
-            src={image}
-            className="b border xs:border-2 border-white w-full"
-          />
-        ) : (
-          <img
-            alt="crew image"
-            src={sessionLogoImage}
-            className="b border xs:border-2 border-white w-full"
-          />
-        )}
+      <div className="flex justify-center items-center p-[6px] xs:p-2">
+        <div className="square">
+          {image ? (
+            <img
+              alt="session image"
+              src={image}
+              className="b border xs:border-2 border-white w-full"
+            />
+          ) : (
+            <img
+              alt="session image"
+              src={sessionLogoImage}
+              className="b border xs:border-2 border-white w-full"
+            />
+          )}
+        </div>
       </div>
       <div className="mt-[3px] m-2 xs:mt-2">
         <div className="flex justify-between items-center flex mb-1 xs:mb-2">

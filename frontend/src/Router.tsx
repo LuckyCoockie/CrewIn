@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import CrewCreatePage from "./pages/CrewCreatePage";
 import PostCreatePage from "./pages/PostCreatePage";
-import CourseCreatePage from "./pages/CourseCreatePage";
+import CourseCreatePage from "./pages/course/CourseCreatePage.tsx";
 import LoginPage from "./pages/LoginPage";
 import SessionCreatePage from "./pages/SessionCreatePage";
 import SessionPage from "./pages/SessionPage";
@@ -24,6 +24,11 @@ import ProtectedRoute from "./util/router/ProtectedRoute.tsx";
 import UnprotectedRoute from "./util/router/UnprotectedRoute.tsx";
 import CrewMemberPage from "./pages/CrewMemberPage.tsx";
 import CrewMemberSearchPage from "./pages/CrewMemberSearchPage.tsx";
+import CaptainPovCrewMemberPage from "./pages/CaptainPovCrewMemberPage.tsx";
+import CaptainPovCrewMemberSearchPage from "./pages/CaptainPovCrewMemberSearchPage.tsx";
+import PostEditPage from "./pages/PostEditPage.tsx";
+import CourseEditPage from "./pages/course/CourseEditPage.tsx";
+import CoursePage from "./pages/course/CoursePage.tsx";
 import MyProfilePage from "./pages/MyProfilePage.tsx";
 import PeopleProfilePage from "./pages/PeopleProfilePage.tsx";
 // import { getMyCrews } from "./apis/api/mycrew";
@@ -75,7 +80,12 @@ export const router = createBrowserRouter([
                 element: <NoticeCreatePage />,
               },
               { path: "member", element: <CrewMemberPage /> },
+              { path: "member/captain", element: <CaptainPovCrewMemberPage /> },
               { path: "membersearch", element: <CrewMemberSearchPage /> },
+              {
+                path: "membersearch/captain",
+                element: <CaptainPovCrewMemberSearchPage />,
+              },
             ],
           },
           {
@@ -87,8 +97,22 @@ export const router = createBrowserRouter([
             ],
           },
           { path: "info", element: <ProfileInfoPage /> },
-          { path: "course", element: <CourseCreatePage /> },
+          {
+            path: "course",
+            element: <CoursePage />,
+            children: [
+              {
+                path: "create",
+                element: <CourseCreatePage />,
+              },
+              {
+                path: ":courseId/edit",
+                element: <CourseEditPage />,
+              },
+            ],
+          },
           { path: "post", element: <PostCreatePage /> },
+          { path: "post/:id/edit", element: <PostEditPage /> },
           { path: "searchuser", element: <SearchUserPage /> },
           { path: "alarm", element: <AlarmPage /> },
         ],

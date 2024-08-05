@@ -2,7 +2,7 @@ import React from "react";
 import MediumTitleMolecule from "../../molecules/Title/MediumTitleMolecule";
 import IntoArrowButton from "../../atoms/Button/IntoArrowButton";
 import InfinityGaroScrollMolecule from "../../molecules/InfinityGaroScrollMolecule";
-import ListButtonMolecule from "../../molecules/List/ListButtonMolecule";
+import ListButtonMolecule from "../../molecules/List/ListButtonmolecule";
 import { MyMadeSessionDto, getMyMadeSessions } from "../../../apis/api/mypage";
 
 const MyPageMadeSessionOrganism: React.FC = () => {

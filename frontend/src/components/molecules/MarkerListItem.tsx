@@ -4,7 +4,7 @@ import EditableText from "../atoms/EditableText";
 
 export type OwnProps = {
   title: string;
-  marker: string;
+  marker: React.ReactElement;
   first?: boolean;
   last?: boolean;
   onClick?: () => void;
@@ -31,7 +31,7 @@ export const MarkerListItem = ({
               !first && "border-gray-500"
             }`}
           />
-          <Avatar img={marker} onClick={onClick} alt={"Neil image"} />
+          <Avatar img={marker} onClick={onClick} />
           <div
             className={`h-3 border-l-2 border-dotted ${
               !last && "border-gray-500"

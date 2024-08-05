@@ -26,7 +26,7 @@ export const moveToCenter = (mapDim: number) => ({
 export const addMarker = (data: {
   latitude: number;
   longitude: number;
-  title: string;
+  title?: string;
   ondragend?: (marker: naver.maps.Marker) => void;
 }) => ({
   type: ADD_MARKER,
@@ -143,12 +143,12 @@ export default function NaverMapReducer(
           action.data.latitude,
           action.data.longitude
         ),
-        title: action.data.title,
+        title: action.data.title ?? `경유지 ${state.markers.length + 1}`,
         map: state.map,
         draggable: action.data.ondragend ? true : false,
         icon: {
-          url: "./src/assets/icons/marker-default.png",
-          scaledSize: new naver.maps.Size(22, 33),
+          url: "/src/assets/icons/custom_marker.svg",
+          scaledSize: new naver.maps.Size(44, 66),
         },
       });
 
@@ -179,19 +179,21 @@ export default function NaverMapReducer(
               width: 0;
             }
           </style>
-          <div class="balloon">${action.data.title}</div>
+          <div class="balloon">${marker.getTitle()}</div>
           `,
         borderWidth: 0,
         disableAnchor: true,
         backgroundColor: "transparent",
       });
 
-      naver.maps.Event.addListener(marker, "click", () => {
-        if (infowindow.getMap()) {
-          infowindow.close();
-        } else {
-          infowindow.open(state.map!, marker);
-        }
+      // TODO : 마커 이벤트 안되는거 해결하기
+
+      naver.maps.Event.addListener(marker, "mouseover", () => {
+        infowindow.open(state.map!, marker);
+      });
+
+      naver.maps.Event.addListener(marker, "mouseout", () => {
+        infowindow.close();
       });
 
       naver.maps.Event.addListener(marker, "dragend", () => {
@@ -243,10 +245,6 @@ export default function NaverMapReducer(
     }
     case FOCUS_MARKER: {
       state.map?.panTo(state.markers[action.index].getPosition());
-      state.infoWindows[action.index].open(
-        state.map!,
-        state.markers[action.index]
-      );
       return state;
     }
     case UPDATE_MARKER_LIST: {
@@ -262,6 +260,8 @@ export default function NaverMapReducer(
             new naver.maps.LatLng(latitude, longitude)
         ),
         map: state.map,
+        strokeColor: "#2B2F40",
+        strokeWeight: 2,
       });
       return {
         ...state,

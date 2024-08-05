@@ -51,6 +51,13 @@ const SearchUserPage: React.FC = () => {
     await fetchResults(query);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent form submission or other default behavior
+      handleSearch();
+    }
+  };
+
   return (
     <div className="relative flex flex-col max-w-[550px] mx-auto">
       <header className="mb-1">
@@ -59,12 +66,12 @@ const SearchUserPage: React.FC = () => {
           <input
             className="h-6 px-4 pr-12 text-md w-full focus:outline-none focus:ring-0 border-none"
             type="search"
-            name=""
             placeholder="이름, 닉네임"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
             onFocus={() => setShowDropdown(true)}
+            onKeyDown={handleKeyDown} // Add onKeyDown handler
           />
           <button
             type="button"

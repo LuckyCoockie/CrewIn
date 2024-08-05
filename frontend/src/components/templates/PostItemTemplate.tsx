@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { formatDistanceToNow, parseISO } from "date-fns";
+import { ko } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import UserProfileBar from "../../components/molecules/UserProfileBarMolecule";
 import { Carousel } from "react-responsive-carousel";
@@ -32,7 +34,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   const navigate = useNavigate();
 
   const handleEdit = () => {
-    console.log("Edit action");
+    navigate(`/post/${id}/edit`);
   };
 
   const handleDelete = async () => {
@@ -76,12 +78,17 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     setIsExpanded(!isExpanded);
   };
 
+  const timeAgo = formatDistanceToNow(parseISO(createdAt), {
+    addSuffix: true,
+    locale: ko,
+  });
+
   return (
     <div className="w-full mb-4">
       <UserProfileBar
         profileImage={crewinLogo}
         username={authorName}
-        timeAgo={createdAt}
+        timeAgo={timeAgo}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />

@@ -30,9 +30,9 @@ const DropdownTypeComponent = React.forwardRef<HTMLSelectElement, InputData>(
         }`}
         disabled={props.disabled}
       >
-        {props.options.map((option) => (
+        {props.options.map((option, index) => (
           <option
-            key={option.value}
+            key={index}
             value={option.value ?? ""}
             className="text-center text-black bg-white"
           >
