@@ -74,9 +74,13 @@ public class PostService {
         }
     }
 
-    public void updatePost(Long postId, PostRequest.UpdatePostRequest updatePostRequest) {
+    public void updatePost(Long postId, PostRequest.UpdatePostRequest updatePostRequest, String email) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(NotFoundPostException::new);
+        if (!post.getAuthor().getEmail().equals(email)) {
+            throw new UnauthorizedDeletionException();
+        }
+
         post.updatePost(updatePostRequest);
     }
 

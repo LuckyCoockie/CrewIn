@@ -40,9 +40,10 @@ public class PostController {
     @PutMapping("/{id}")
     public ResponseEntity<BaseResponse<Void>> updatePost(
             @PathVariable("id") Long postId,
-            @RequestBody PostRequest.UpdatePostRequest updatePostRequest) {
+            @RequestBody PostRequest.UpdatePostRequest updatePostRequest,
+            @AuthenticationPrincipal CustomUser customUser) {
         try {
-            postService.updatePost(postId, updatePostRequest);
+            postService.updatePost(postId, updatePostRequest, customUser.getEmail());
             return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "게시물을 수정하는데 성공했습니다."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
