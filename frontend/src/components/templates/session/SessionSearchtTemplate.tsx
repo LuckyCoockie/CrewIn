@@ -36,7 +36,7 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({ fetchData }) => {
     (event: React.ChangeEvent<HTMLSelectElement>) => {
       const value = event.target.value as SessionStatusType;
       setStatus(value);
-      fetchData({ status: value, sessionType: query.sessionType });
+      fetchData({ status: value, type: query.sessionType });
     },
     [fetchData, query.sessionType]
   );
