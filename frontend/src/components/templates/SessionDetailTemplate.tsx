@@ -5,9 +5,12 @@ import SessionDetailOrganism from "../organisms/SessionDetailOrganism";
 import {
   SessionDetailDto,
   GetSessionInfoRequestDto,
+  getSessionAlbum,
 } from "../../apis/api/sessiondetail";
 import AttendanceButton from "../atoms/Button/AttendanceButton";
 import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
+import NavTabMolecule from "../molecules/Tab/NavTabMolecule";
+import SessionAlbumOrganism from "../organisms/SessionAlbumOrganism";
 
 // 스피너 컴포넌트
 const Spinner = () => (
@@ -24,10 +27,11 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
   fetchDetailData,
 }) => {
   const [sessionId] = useState<number>(1);
+  const [currentTab, setCurrentTab] = useState<string>("세션정보"); // 현재 선택된 탭 상태 추가
 
   const {
     data: detailData,
-    isLoading: detailLoading, // isLoading 상태 사용
+    isLoading: detailLoading,
     error: detailError,
   } = useQuery(["detailData", { sessionId }], () =>
     fetchDetailData({ sessionId })
@@ -39,6 +43,18 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
 
   // 오류 로그 출력
   if (detailError) console.error("detailError", detailError);
+
+  const tabs = ["세션정보", "사진첩"];
+
+  // 현재 시각과 detailData.startAt 비교
+  const isSessionStarted = detailData
+    ? new Date(detailData.startAt) < new Date()
+    : false;
+
+  const fetchAlbumData = async (page: number): Promise<string[]> => {
+    const response = await getSessionAlbum({ sessionId, pageNo: page });
+    return response.sessionImages;
+  };
 
   return (
     <>
@@ -55,10 +71,29 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
         </div>
       </header>
       <div className="">
-        {detailLoading ? ( // detailLoading이 true일 때 스피너를 표시
+        {detailLoading ? (
           <Spinner />
         ) : (
-          detailData && <SessionDetailOrganism detailData={detailData} />
+          detailData && (
+            <>
+              {isSessionStarted && (
+                <NavTabMolecule
+                  texts={tabs}
+                  onTabClick={setCurrentTab}
+                  currentTab={currentTab} // 현재 선택된 탭 전달
+                />
+              )}
+              {currentTab === "세션정보" && (
+                <SessionDetailOrganism detailData={detailData} />
+              )}
+              {currentTab === "사진첩" && (
+                <SessionAlbumOrganism
+                  sessionId={detailData?.sessionId}
+                  fetchAlbumData={fetchAlbumData}
+                />
+              )}
+            </>
+          )
         )}
       </div>
     </>
