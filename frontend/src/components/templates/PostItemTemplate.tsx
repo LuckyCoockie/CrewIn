@@ -34,7 +34,8 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   const navigate = useNavigate();
 
   const handleEdit = () => {
-    navigate(`/post/${id}/edit`);
+    console.log("edit");
+    navigate(`/post/${id}/edit`, { state: { data } });
   };
 
   const handleDelete = async () => {

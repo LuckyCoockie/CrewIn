@@ -11,6 +11,7 @@ import ProfilePage from "./pages/ProfilePage";
 import JoinPage from "./pages/JoinPage";
 import SessionDetailPage from "./pages/SessionDetailPage";
 import PostMainPage from "./pages/PostMainPage";
+import PostEditPage from "./pages/PostEditPage.tsx";
 import SearchUserPage from "./pages/SearchUserPage";
 import CrewDetailPage from "./pages/CrewDetailPage";
 import AlarmPage from "./pages/AlarmPage.tsx";
@@ -26,7 +27,6 @@ import CrewMemberPage from "./pages/CrewMemberPage.tsx";
 import CrewMemberSearchPage from "./pages/CrewMemberSearchPage.tsx";
 import CaptainPovCrewMemberPage from "./pages/CaptainPovCrewMemberPage.tsx";
 import CaptainPovCrewMemberSearchPage from "./pages/CaptainPovCrewMemberSearchPage.tsx";
-import PostEditPage from "./pages/PostEditPage.tsx";
 import CourseEditPage from "./pages/course/CourseEditPage.tsx";
 import CoursePage from "./pages/course/CoursePage.tsx";
 // import { getMyCrews } from "./apis/api/mycrew";
@@ -103,7 +103,7 @@ export const router = createBrowserRouter([
             ],
           },
           { path: "post", element: <PostCreatePage /> },
-          { path: "post/:id/edit", element: <PostEditPage /> },
+          { path: "post/:postId/edit", element: <PostEditPage /> },
           { path: "searchuser", element: <SearchUserPage /> },
           { path: "alarm", element: <AlarmPage /> },
         ],
