@@ -26,18 +26,6 @@ public class MyPageResponse {
     @NoArgsConstructor
     @Builder
     @AllArgsConstructor
-    public static class MyProfileResponse {
-        private String imageUrl;
-        private String nickname;
-        private int totalDistance;
-        private int totalTime;
-        private int totalAttendance;
-    }
-
-    @Getter
-    @NoArgsConstructor
-    @Builder
-    @AllArgsConstructor
     public static class MyPageSessionItem{
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime startAt; // 시작 시간

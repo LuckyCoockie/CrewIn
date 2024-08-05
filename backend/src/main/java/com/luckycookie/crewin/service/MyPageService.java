@@ -7,7 +7,6 @@ import com.luckycookie.crewin.dto.MyPageRequest.UpdateProfileRequest;
 import com.luckycookie.crewin.dto.MyPageRequest.MyPageNicknameRequest;
 import com.luckycookie.crewin.dto.MyPageResponse.MyPageSessionItem;
 import com.luckycookie.crewin.dto.MyPageResponse.MyPageSessionResponse;
-import com.luckycookie.crewin.dto.MyPageResponse.MyProfileResponse;
 import com.luckycookie.crewin.exception.member.DuplicateNicknameException;
 import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
@@ -35,22 +34,6 @@ public class MyPageService {
     private final MemberRepository memberRepository;
     private final SessionRepository sessionRepository;
     private final MemberSessionRepository memberSessionRepository;
-
-    // 내 프로필 조회
-    @Transactional(readOnly = true)
-    public MyProfileResponse getMyProfile(CustomUser customUser) {
-        // 현재 로그인한 사용자 조회
-        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
-
-        return MyProfileResponse
-                .builder()
-                .totalAttendance(member.getTotalAttendance())
-                .totalDistance(member.getTotalDistance())
-                .totalTime(member.getTotalTime())
-                .imageUrl(member.getImageUrl())
-                .nickname(member.getNickname())
-                .build();
-    }
 
     // 내가 만든, 참가한 세션 조회
     @Transactional(readOnly = true)

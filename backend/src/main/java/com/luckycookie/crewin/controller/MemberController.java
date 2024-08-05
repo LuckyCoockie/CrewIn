@@ -4,6 +4,7 @@ import com.luckycookie.crewin.domain.Token;
 import com.luckycookie.crewin.dto.MemberRequest.*;
 import com.luckycookie.crewin.dto.MemberResponse.DuplicateResponse;
 import com.luckycookie.crewin.dto.MemberResponse.EmailResponse;
+import com.luckycookie.crewin.dto.MemberResponse.MemberProfileResponse;
 import com.luckycookie.crewin.dto.TokenResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.security.dto.CustomUser;
@@ -97,6 +98,12 @@ public class MemberController {
     public ResponseEntity<BaseResponse<Void>> changePassword(@AuthenticationPrincipal CustomUser customUser, @RequestBody ChangePasswordRequest changePasswordRequest) {
         memberService.changePassword(customUser.getEmail(), changePasswordRequest.getOldPassword(), changePasswordRequest.getNewPassword());
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "비밀번호가 변경되었습니다."));
+    }
+
+    // 사용자 프로필 조회
+    @GetMapping("/profile/{member-id}")
+    public ResponseEntity<BaseResponse<MemberProfileResponse>> getMemberProfile(@AuthenticationPrincipal CustomUser customUser, @PathVariable("member-id") Long memberId) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "사용자 프로필 조회를 성공했습니다.", memberService.getMemberProfile(customUser, memberId)));
     }
 
 }
