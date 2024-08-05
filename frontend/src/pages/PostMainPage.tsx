@@ -23,7 +23,7 @@ const PostMainPage: React.FC = () => {
   const fetchPostData = useCallback(
     async (page: number): Promise<GetPostListResponseDto> => {
       try {
-        return getPostList({ "page-no": page - 1 });
+        return getPostList({ pageNo: page - 1 });
       } catch (error) {
         console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
         return { pageNo: 0, lastPageNo: 0, items: [] };

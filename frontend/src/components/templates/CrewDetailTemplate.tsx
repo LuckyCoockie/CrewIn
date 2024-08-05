@@ -100,7 +100,7 @@ const CrewDetailTemplate: React.FC = () => {
     if (!isUserCrewMember) {
       return (
         <CrewInfoOrganism
-          crewname={infoData!.crewName}
+          crewName={infoData!.crewName}
           captain={infoData!.captainName}
           slogan={infoData!.slogan}
           area={infoData!.area}
@@ -121,7 +121,7 @@ const CrewDetailTemplate: React.FC = () => {
       case "정보":
         return infoData ? (
           <CrewInfoOrganism
-            crewname={infoData.crewName}
+            crewName={infoData.crewName}
             captain={infoData.captainName}
             slogan={infoData.slogan}
             area={infoData.area}
@@ -143,7 +143,7 @@ const CrewDetailTemplate: React.FC = () => {
       default:
         return infoData ? (
           <CrewInfoOrganism
-            crewname={infoData.crewName}
+            crewName={infoData.crewName}
             captain={infoData.captainName}
             slogan={infoData.slogan}
             area={infoData.area}

@@ -16,7 +16,7 @@ export type PostDto = {
   postImages: string[];
 };
 
-export type GetPostListRequestDto = { "page-no": number };
+export type GetPostListRequestDto = { pageNo: number };
 
 export type GetPostListResponseDto = PageNationData<PostDto>;
 

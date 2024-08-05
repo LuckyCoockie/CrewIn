@@ -29,20 +29,20 @@ const SessionListTemplate: React.FC<OwnProps> = ({
 }) => {
   const query = qs.parse(location.search);
 
-  const [type, setType] = useState<SessionType>(query["session-type"]);
+  const [type, setType] = useState<SessionType>(query.sessionType);
 
   const handelTypeChange = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
       const value = event.target.value as SessionType;
       setType(value);
-      onSearch({ "session-type": value });
+      onSearch({ sessionType: value });
     },
     [onSearch]
   );
 
   const handleFetchData = useCallback(
     async (page: number) => {
-      return fetchData({ "session-type": type, "page-no": page.toString() });
+      return fetchData({ sessionType: type, pageNo: page.toString() });
     },
     [fetchData, type]
   );
@@ -78,7 +78,7 @@ const SessionListTemplate: React.FC<OwnProps> = ({
           fetchKey={[
             "mypage/session",
             query.type ?? "",
-            query["session-type"] ?? "",
+            query.sessionType ?? "",
           ]}
           fetchData={handleFetchData}
           initPage={parseInt(query.pageNo ?? "1")}

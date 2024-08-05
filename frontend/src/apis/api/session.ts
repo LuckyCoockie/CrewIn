@@ -61,7 +61,7 @@ export type SessionDto = {
 
 export type GetSessionListRequestDto = {
   type?: SessionType;
-  crewname?: string;
+  crewName?: string;
   date?: string;
   status?: SessionStatusType;
 };
@@ -77,8 +77,8 @@ export const getSessionList = async (
 
 export type GetMySessionRequestDto = {
   type?: MySessionType;
-  "session-type"?: SessionType;
-  "page-no"?: string;
+  sessionType?: SessionType;
+  pageNo?: string;
 };
 
 export type GetMySessionResponseDto = PageNationData<SessionDto>;

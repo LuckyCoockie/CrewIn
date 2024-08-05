@@ -18,7 +18,7 @@ const PostEditPage: React.FC = () => {
     if (postId) {
       (async () => {
         try {
-          const result = await getPostList({ "page-no": 1 }); // 게시글 리스트 API 호출
+          const result = await getPostList({ pageNo: 1 }); // 게시글 리스트 API 호출
           const foundPost = result.items.find((p) => p.id === Number(postId));
           if (foundPost) {
             setPost(foundPost);
