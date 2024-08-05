@@ -24,6 +24,8 @@ import ProtectedRoute from "./util/router/ProtectedRoute.tsx";
 import UnprotectedRoute from "./util/router/UnprotectedRoute.tsx";
 import CrewMemberPage from "./pages/CrewMemberPage.tsx";
 import CrewMemberSearchPage from "./pages/CrewMemberSearchPage.tsx";
+import MyProfilePage from "./pages/MyProfilePage.tsx";
+import PeopleProfilePage from "./pages/PeopleProfilePage.tsx";
 // import { getMyCrews } from "./apis/api/mycrew";
 
 const loader = async () => {
@@ -76,7 +78,14 @@ export const router = createBrowserRouter([
               { path: "membersearch", element: <CrewMemberSearchPage /> },
             ],
           },
-          { path: "profile", element: <ProfilePage /> },
+          {
+            path: "profile",
+            element: <ProfilePage />,
+            children: [
+              { path: "", element: <MyProfilePage /> },
+              { path: ":memberId", element: <PeopleProfilePage /> },
+            ],
+          },
           { path: "info", element: <ProfileInfoPage /> },
           { path: "course", element: <CourseCreatePage /> },
           { path: "post", element: <PostCreatePage /> },

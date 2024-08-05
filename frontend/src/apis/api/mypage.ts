@@ -1,8 +1,8 @@
 import api from "../utils/instance";
 
-// 내 프로필 상단 정보
-export type MyProfileDto = {
-  // name: string
+// 프로필 상단 정보
+export type ProfileDto = {
+  name: string;
   nickname: string;
   totalDistance: number;
   totalTime: number;
@@ -10,8 +10,11 @@ export type MyProfileDto = {
   imageUrl: string;
 };
 
-export const getMyProfileInfo = async (): Promise<MyProfileDto> => {
-  const response = await api.get("/mypage");
+export const getMyProfileInfo = async (
+  memberId: number | null
+): Promise<ProfileDto> => {
+  console.log(memberId);
+  const response = await api.get(`/member/profile/${memberId}`);
   return response.data;
 };
 
@@ -33,7 +36,7 @@ export const getMyMadeSessions = async (
   pageNo: number
 ): Promise<MyMadeSessionsResponseDto> => {
   const response = await api.get(
-    `/mypage/session?type=created&pageNo=${pageNo}`
+    `/mypage/session?type=created&page-no=${pageNo}`
   );
   return response.data;
 };
@@ -56,7 +59,7 @@ export const getMyParticipatedSessions = async (
   pageNo: number
 ): Promise<MyParticipatedSessionsResponseDto> => {
   const response = await api.get(
-    `/mypage/session?type=joined&pageNo=${pageNo}`
+    `/mypage/session?type=joined&page-no=${pageNo}`
   );
   return response.data;
 };
@@ -88,6 +91,24 @@ export type MyGalleryResponseDto = {
 export const getMyGallery = async (
   pageNo: number
 ): Promise<MyGalleryResponseDto> => {
-  const response = await api.get(`/mypage/detail/gallery?pageNo=${pageNo}`);
+  const response = await api.get(`/mypage/detail/gallery?page-no=${pageNo}`);
+  return response.data;
+};
+
+// 남의 게시글 사진첩 조회
+export type PeopleGalleryDto = {
+  postId:number
+  thumbnailImage: string
+}
+
+export type PeopleGalleryResponseDto = {
+  pageNo: number;
+  lastPageNo: number;
+  postGalleryList: MyGalleryDto[];
+}
+export const getPeopleGallery = async (
+  pageNo: number, memberId: number
+): Promise<MyGalleryResponseDto> => {
+  const response = await api.get(`/post/member/gallery/${memberId}?page-no=${pageNo}`);
   return response.data;
 };

@@ -9,25 +9,32 @@ import MyPageMapOrganism from "../organisms/mypage/MyPageMapOrganism";
 import MyPageAlbumOrganism from "../organisms/mypage/MyPageAlbumOrganism";
 import {
   getMyProfileInfo,
-  MyProfileDto,
+  ProfileDto,
   getMyMaps,
   MyMapsDto,
 } from "../../apis/api/mypage";
 
+import { useParams } from "react-router";
+
 const MyProfileTemplate: React.FC = () => {
+  console.log("여기는 내페이지");
   const [currentTab, setCurrentTab] = useState<string>("러닝 정보");
   const handleTabClick = (tab: string) => {
     setCurrentTab(tab);
   };
 
   const texts = ["러닝 정보", "사진첩"];
+  const { memberId } = useParams<{ memberId: string }>();
+  const numericMemberId = memberId ? Number(memberId) : null;
 
   // React Query를 사용하여 데이터를 가져옴
   const {
     data: profileData,
     isLoading: isProfileLoading,
     isError: isProfileError,
-  } = useQuery<MyProfileDto>("myProfile", getMyProfileInfo);
+  } = useQuery<ProfileDto>(["myProfile", numericMemberId], () =>
+    getMyProfileInfo(numericMemberId)
+  );
 
   const {
     data: mapsData,

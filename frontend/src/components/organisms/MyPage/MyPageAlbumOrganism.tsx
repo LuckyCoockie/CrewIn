@@ -16,10 +16,10 @@ const MyPageAlbumOrganism: React.FC = () => {
         <img
           src={data.thumbnailImage}
           alt={`gallery-item-${data.postId}`}
-          className="w-1/3 h-1/3"
+          className="w-full h-full"
         />
       )}
-      className="grid grid-cols-3 gap-4"
+      className="grid grid-cols-3"
       pageSize={10}
     />
   );

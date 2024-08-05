@@ -1,9 +1,11 @@
 import React from 'react'
-import MyProfileTemplate from '../components/templates/MyProfileTemplate'
+import { Outlet } from "react-router";
 
 const ProfilePage:React.FC = () => {
   return (
-    <MyProfileTemplate/>
+    <>
+      <Outlet />
+    </>
   )
 }
 
