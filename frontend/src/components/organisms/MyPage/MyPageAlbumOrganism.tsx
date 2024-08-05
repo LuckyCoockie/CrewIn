@@ -3,8 +3,8 @@ import { MyGalleryDto, getMyGallery } from "../../../apis/api/mypage";
 import InfiniteScrollComponent from "../../molecules/InfinityScrollMolecules";
 
 const MyPageAlbumOrganism: React.FC = () => {
-  const fetchGallery = async (page: number): Promise<MyGalleryDto[]> => {
-    const response = await getMyGallery(page);
+  const fetchGallery = async (pageNo: number): Promise<MyGalleryDto[]> => {
+    const response = await getMyGallery(pageNo - 1);
     return response.postGalleryList;
   };
 
@@ -20,7 +20,7 @@ const MyPageAlbumOrganism: React.FC = () => {
         />
       )}
       className="grid grid-cols-3"
-      pageSize={10}
+      pageSize={18}
     />
   );
 };
