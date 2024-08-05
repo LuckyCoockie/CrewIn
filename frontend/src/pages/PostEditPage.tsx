@@ -36,7 +36,7 @@ const PostEditPage: React.FC = () => {
   const [title] = useState<string>("");
   const [isPublic, setIsPublic] = useState<boolean>(true);
   const [postImages, setPostImages] = useState<string[]>([]);
-  const [crews, setCrews] = useState<CrewDto[]>([]);
+  const [, setCrews] = useState<CrewDto[]>([]);
   const [crewId, setCrewId] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
