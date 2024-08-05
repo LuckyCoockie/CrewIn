@@ -46,6 +46,7 @@ public class CrewService {
     private final NotificationService notificationService;
     private final HeartRepository heartRepository;
 
+    private final S3Service s3Service;
 
     public Crew createCrew(CreateCrewRequest createCrewRequest, CustomUser customUser) {
 
@@ -300,7 +301,19 @@ public class CrewService {
     public void updateNotice(Long noticeId, CreateCrewNoticeRequest createCrewNoticeRequest) {
         Post post = postRepository.findById(noticeId)
                 .orElseThrow(NotFoundPostException::new);
+
+        // 현재 게시물에 연결된 기존 이미지 URL 들을 저장
+        List<String> existingImageUrls = post.getPostImages().stream()
+                .map(PostImage::getImageUrl)
+                .toList();
+
+        // 게시물 업데이트
         post.updateCrewNotice(createCrewNoticeRequest);
+
+        // 기존 이미지 삭제
+        for (String imageUrl : existingImageUrls) {
+            s3Service.deleteImage(imageUrl);
+        }
     }
 
     public void deleteNotice(Long noticeId) {

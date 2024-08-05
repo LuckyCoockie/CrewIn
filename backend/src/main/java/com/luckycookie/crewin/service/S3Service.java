@@ -47,18 +47,18 @@ public class S3Service {
 
     // 요청
     private GeneratePresignedUrlRequest generatePresignedUrlRequest(String bucket, String imageName) {
-        //만료 시간 설정
+        // 만료 시간 설정
         Date expiration = new Date();
         long expTimeMillis = expiration.getTime();
         expTimeMillis += 1000 * 60 * 5; // 5분
         expiration.setTime(expTimeMillis);
 
-        //Pre-Signed Url request 생성
+        // Pre-Signed Url request 생성
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, imageName)
                 .withMethod(HttpMethod.PUT)
                 .withExpiration(expiration);
 
-//        request 파라미터 추가
+        // request 파라미터 추가
         request.addRequestParameter(
                 Headers.S3_CANNED_ACL,
                 CannedAccessControlList.PublicRead.toString());
@@ -66,5 +66,11 @@ public class S3Service {
         return request;
     }
 
+    // 이미지 삭제 method
+    public void deleteImage(String imageUrl) {
+//        String imageName = imageUrl.replace(prefix, "");
+        System.out.println("imageUrl : " + imageUrl);
+        amazonS3.deleteObject(bucket, imageUrl);
+    }
 
 }
