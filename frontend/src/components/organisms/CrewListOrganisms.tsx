@@ -5,7 +5,7 @@ import qs from "query-string";
 import { GetCrewListRequestDto } from "../../apis/api/crewlist";
 
 type CrewData = {
-  id: number;
+  crewId: number;
   crewName: string;
   slogan: string;
   area: string;
@@ -37,7 +37,7 @@ const CrewListComponent: React.FC<OwnProps> = ({ fetchData }) => {
       initPage={parseInt(query.pageNo ?? "1")}
       ItemComponent={({ data }) => (
         <CrewListItem
-          key={data.id}
+          key={data.crewId}
           imageUrl={data.imageUrl}
           title={data.crewName}
           description={data.slogan}
