@@ -301,6 +301,17 @@ public class CrewService {
     public void updateNotice(Long noticeId, CreateCrewNoticeRequest createCrewNoticeRequest) {
         Post post = postRepository.findById(noticeId)
                 .orElseThrow(NotFoundPostException::new);
+
+        // 기존 이미지 URL 리스트 가져오기
+        List<String> postImageUrls = post.getPostImages().stream()
+                .map(PostImage::getImageUrl)
+                .toList();
+
+        // 기존 이미지 삭제
+        for (String imageUrl : postImageUrls) {
+            s3Service.deleteImage(imageUrl);
+        }
+
         // 게시물 업데이트
         post.updateCrewNotice(createCrewNoticeRequest);
     }
