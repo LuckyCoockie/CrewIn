@@ -24,6 +24,9 @@ import ProtectedRoute from "./util/router/ProtectedRoute.tsx";
 import UnprotectedRoute from "./util/router/UnprotectedRoute.tsx";
 import CrewMemberPage from "./pages/CrewMemberPage.tsx";
 import CrewMemberSearchPage from "./pages/CrewMemberSearchPage.tsx";
+import CaptainPovCrewMemberPage from "./pages/CaptainPovCrewMemberPage.tsx";
+import CaptainPovCrewMemberSearchPage from "./pages/CaptainPovCrewMemberSearchPage.tsx";
+import PostEditPage from "./pages/PostEditPage.tsx";
 // import { getMyCrews } from "./apis/api/mycrew";
 
 const loader = async () => {
@@ -31,7 +34,7 @@ const loader = async () => {
   // if (response.crews.length > 0) {
   //   return <Navigate to={`/crew/detail/${response.crews[0].crewId}`} />;
   // } else {
-    return <CrewSearchPage />;
+  return <CrewSearchPage />;
   // }
 };
 
@@ -67,13 +70,19 @@ export const router = createBrowserRouter([
               { path: "detail/:crewId", element: <CrewDetailPage /> },
               { path: "noticecreate", element: <NoticeCreatePage /> },
               { path: "member", element: <CrewMemberPage /> },
+              { path: "member/captain", element: <CaptainPovCrewMemberPage /> },
               { path: "membersearch", element: <CrewMemberSearchPage /> },
+              {
+                path: "membersearch/captain",
+                element: <CaptainPovCrewMemberSearchPage />,
+              },
             ],
           },
           { path: "profile", element: <ProfilePage /> },
           { path: "info", element: <ProfileInfoPage /> },
           { path: "course", element: <CourseCreatePage /> },
           { path: "post", element: <PostCreatePage /> },
+          { path: "post/:id/edit", element: <PostEditPage /> },
           { path: "searchuser", element: <SearchUserPage /> },
           { path: "alarm", element: <AlarmPage /> },
         ],
