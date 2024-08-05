@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BackHeaderMediumOrganism from "../components/organisms/BackHeaderMediumOrganism";
 import { ReactComponent as Searchicon } from "../assets/icons/searchicon.svg";
+import { ReactComponent as CrewinLogo } from "../assets/icons/crewinlogo.svg";
 import {
   getCrewMemberList,
   CrewMemberListResponseDto,
@@ -13,8 +14,7 @@ const CrewMemberPage: React.FC = () => {
   const [crewId] = useState<number>(1); // 나중에 동적으로 설정
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [joinedMembers, setJoinedMembers] = useState<CrewMemberDto[]>([]);
-  const [invitedMembers, setInvitedMembers] = useState<CrewMemberDto[]>([]);
+  const [members, setMembers] = useState<CrewMemberDto[]>([]);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -22,8 +22,7 @@ const CrewMemberPage: React.FC = () => {
       setError(null);
       try {
         const data: CrewMemberListResponseDto = await getCrewMemberList(crewId);
-        setJoinedMembers(data.crewIsJoinedMemberList);
-        setInvitedMembers(data.crewIsInvitedMemberList);
+        setMembers(data.crewMemberList);
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message);
@@ -39,6 +38,11 @@ const CrewMemberPage: React.FC = () => {
   const onSearchClick = () => {
     navigate("/crew/membersearch");
   };
+
+  const joinedMembers = members.filter((member) => member.joined);
+  const invitedMembers = members.filter(
+    (member) => !member.joined && member.invited
+  );
 
   return (
     <div className="relative flex flex-col max-w-[550px] mx-auto">
@@ -60,7 +64,18 @@ const CrewMemberPage: React.FC = () => {
           <ul>
             {joinedMembers.map((member) => (
               <li key={member.email} className="flex items-center p-2 border-b">
-                <div className="flex-1">
+                <div className="w-12 h-12 flex-shrink-0">
+                  {member.imageUrl ? (
+                    <img
+                      src={member.imageUrl}
+                      alt={member.nickname}
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  ) : (
+                    <CrewinLogo className="w-full h-full object-cover rounded-full" />
+                  )}
+                </div>
+                <div className="flex-1 ml-3">
                   <div className="font-bold">{member.name}</div>
                   <div className="text-gray-600">{member.nickname}</div>
                 </div>
@@ -79,7 +94,18 @@ const CrewMemberPage: React.FC = () => {
           <ul>
             {invitedMembers.map((member) => (
               <li key={member.email} className="flex items-center p-2 border-b">
-                <div className="flex-1">
+                <div className="w-12 h-12 flex-shrink-0">
+                  {member.imageUrl ? (
+                    <img
+                      src={member.imageUrl}
+                      alt={member.nickname}
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  ) : (
+                    <CrewinLogo className="w-full h-full object-cover rounded-full" />
+                  )}
+                </div>
+                <div className="flex-1 ml-3">
                   <div className="font-bold">{member.name}</div>
                   <div className="text-gray-600">{member.nickname}</div>
                 </div>

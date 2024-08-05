@@ -1,10 +1,9 @@
 import api from "../index";
 
 export type UpdatePostRequestDto = {
-  title: string;
+  title?: string;
   content: string;
   isPublic: boolean;
-  postType: string;
   postImages: string[];
 };
 
