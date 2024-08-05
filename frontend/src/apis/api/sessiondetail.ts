@@ -93,38 +93,34 @@ export const deleteSession = async (sessionId: number): Promise<void> => {
 
 // 세션 앨범 조회
 
-export type GetSessionAlbumRequestDto = {
-  sessionId: number;
-  pageNo: number;
+export type GetSessionAlbumDto = {
+  sessionImageId: number;
+  imageUrl: string;
 };
 
 export type SessionAlbumResponseDto = {
   pageNo: number;
   lastPageNo: number;
-  sessionImages: string[];
+  sessionImages: GetSessionAlbumDto[];
 };
 
-export const getSessionAlbum = async (
-  dto: GetSessionAlbumRequestDto
-): Promise<SessionAlbumResponseDto> => {
+export const getSessionAlbum = async (): Promise<SessionAlbumResponseDto> => {
   return {
     pageNo: 0,
     lastPageNo: 0,
     sessionImages: [
-      "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
-      "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
-      "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
-      "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
-      "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
-      "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
-      "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
+      {
+        sessionImageId: 1,
+        imageUrl:
+          "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/2a72ccf3-7b42-4be8-a1ca-9aa65bba1f7f.png",
+      },
     ],
   };
-  const { sessionId, pageNo } = dto;
-  const response = await api.get(`/session/detail/gallery/${sessionId}`, {
-    params: { pageNo },
-  });
-  return response.data;
+  // const { sessionId, pageNo } = dto;
+  // const response = await api.get(`/session/detail/gallery/${sessionId}`, {
+  //   params: { pageNo },
+  // });
+  // return response.data;
 };
 
 // 세션 앨범 업로드
