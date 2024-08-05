@@ -26,7 +26,7 @@ public class MyPageController {
 
     // 내가 만든 세션 조회
     @GetMapping("/session")
-    public ResponseEntity<BaseResponse<MyPageResponse.MyPageSessionResponse>> getCreatedMySession(@AuthenticationPrincipal CustomUser customUser, @RequestParam("page-no") int pageNo, @RequestParam String type, @RequestParam("session-type") String sessionType) {
+    public ResponseEntity<BaseResponse<MyPageResponse.MyPageSessionResponse>> getCreatedMySession(@AuthenticationPrincipal CustomUser customUser, @RequestParam("page-no") int pageNo, @RequestParam String type, @RequestParam(name = "session-type", defaultValue = "") String sessionType) {
         if(type.equals("created")) {
             return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "내가 만든 세션 조회를 성공했습니다.", myPageService.getCreatedMySession(customUser, pageNo, type, sessionType)));
         }else {
