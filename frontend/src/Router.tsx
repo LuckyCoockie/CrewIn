@@ -66,8 +66,14 @@ export const router = createBrowserRouter([
                 path: "gallary/:crewId",
                 element: <CrewGallaryListDetailPage />,
               },
-              { path: "detail/:crewId", element: <CrewDetailPage /> },
-              { path: "noticecreate", element: <NoticeCreatePage /> },
+              {
+                path: "detail/:crewId",
+                element: <CrewDetailPage />,
+              },
+              {
+                path: "detail/:crewId/noticecreate",
+                element: <NoticeCreatePage />,
+              },
               { path: "member", element: <CrewMemberPage /> },
               { path: "membersearch", element: <CrewMemberSearchPage /> },
             ],

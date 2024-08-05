@@ -7,8 +7,10 @@ import captainImage from "../../assets/icons/captain.png";
 import locationImage from "../../assets/icons/location.png";
 import peopleImage from "../../assets/icons/people.png";
 import crewInLogoImage from "../../assets/images/crewinlogo.png";
+import { useNavigate } from "react-router";
 
 interface OwnProps {
+  crewId: number;
   imageUrl: string;
   title: string;
   description: string;
@@ -24,10 +26,20 @@ const CrewListItem = ({
   captain,
   location,
   peopleCount,
+  crewId,
 }: OwnProps) => {
   const [image, setImage] = useState<string | null>(null);
 
+  const navigate = useNavigate();
+
+  const handleCrewDetail = (crewId: number) => {
+    console.log(crewId);
+
+    navigate(`/crew/detail/${crewId}`);
+  };
+
   useEffect(() => {
+    console.log(`Fetching image for crewId: ${crewId}`);
     fetch(imageUrl)
       .then((response) => response.blob())
       .then((blob) => {
@@ -47,7 +59,10 @@ const CrewListItem = ({
 
   return (
     <div className="max-w-sm rounded-lg border-[2px] xs:border-2 border-primary bg-white tracking-tighter truncate">
-      <div className="flex justify-center items-center bg-primary xs:p-4 p-3">
+      <div
+        className="flex justify-center items-center bg-primary xs:p-4 p-3"
+        onClick={() => handleCrewDetail(crewId)}
+      >
         <div className="square">
           {image ? (
             <img

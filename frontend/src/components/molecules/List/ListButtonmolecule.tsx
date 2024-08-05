@@ -10,7 +10,7 @@ type Infos = {
   routerId?: number;
 };
 
-const ListButtonmolecule: React.FC<Infos> = ({
+const ListButtonMolecule: React.FC<Infos> = ({
   src,
   alt,
   text,
@@ -27,4 +27,4 @@ const ListButtonmolecule: React.FC<Infos> = ({
   );
 };
 
-export default ListButtonmolecule;
+export default ListButtonMolecule;

@@ -38,6 +38,7 @@ const CrewListComponent: React.FC<OwnProps> = ({ fetchData }) => {
       ItemComponent={({ data }) => (
         <CrewListItem
           key={data.crewId}
+          crewId={data.crewId}
           imageUrl={data.imageUrl}
           title={data.crewName}
           description={data.slogan}

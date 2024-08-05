@@ -22,6 +22,29 @@ export const getEmailDuplicationCheck = async (
   return response.data;
 };
 
+// 닉네임 중복 확인
+
+export type NicknameCheckDto = {
+  nickname: string
+}
+
+export type CheckNicknameDuplicationDto = EmailCheckDto;
+
+export type DuplicatedNicknameResponseDto = {
+  duplicated: boolean;
+};
+
+export const getNicknameDuplicationCheck = async (
+  dto: NicknameCheckDto
+): Promise<DuplicatedNicknameResponseDto> => {
+  const response = await api.get(`/member/check-nickname`, {
+    params: {
+      nickname: dto.nickname,
+    },
+  });
+  return response.data;
+};
+
 // 이메일 확인 후 인증 메일
 
 export type EmailCheckRequestDto = EmailCheckDto;
