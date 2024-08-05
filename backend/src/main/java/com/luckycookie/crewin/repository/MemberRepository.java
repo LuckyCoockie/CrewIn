@@ -24,4 +24,26 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByNickname(String nickname);
 
+    // 크루 초대할 멤버 검색
+
+    @Query("SELECT m, mc FROM Member m " +
+            "LEFT JOIN MemberCrew mc ON m.id = mc.member.id AND (mc.crew.id = :crewId OR mc.crew.id IS NULL) " +
+            "WHERE mc.isJoined IS NULL OR mc.isJoined = false " +
+            "ORDER BY CASE " +
+            "    WHEN mc.isInvited IS NULL THEN 0 " +
+            "    WHEN mc.isInvited = false THEN 1 " +
+            "    WHEN mc.isInvited = true THEN 2 " +
+            "END, m.id")
+    Page<Object[]> findMembersForCrewInvitation(@Param("crewId") Long crewId, Pageable pageable);
+
+    @Query("SELECT m, mc FROM Member m " +
+            "LEFT JOIN MemberCrew mc ON m.id = mc.member.id AND (mc.crew.id = :crewId OR mc.crew.id IS NULL) " +
+            "WHERE (mc.isJoined IS NULL OR mc.isJoined = false) " +
+            "AND (LOWER(m.name) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(m.nickname) LIKE LOWER(CONCAT('%', :query, '%'))) " +
+            "ORDER BY CASE " +
+            "    WHEN mc.isInvited IS NULL THEN 0 " +
+            "    WHEN mc.isInvited = false THEN 1 " +
+            "    WHEN mc.isInvited = true THEN 2 " +
+            "END, m.id")
+    Page<Object[]> findMembersForCrewInvitationByQuery(@Param("crewId") Long crewId, @Param("query") String query, Pageable pageable);
 }
