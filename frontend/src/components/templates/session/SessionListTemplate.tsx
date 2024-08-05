@@ -12,11 +12,14 @@ import DropdownTypeComponent from "../../atoms/Input/DropdownItemComponent";
 import InfiniteScrollComponent from "../../../util/paging/component/InfinityScrollComponent";
 import SessionListItemMolecules from "../../molecules/SessionListItemMolecules";
 import LargeTitleMolecule from "../../molecules/Title/LargeTitleMolecule";
+import { PageNationData } from "../../../util/paging/type";
 
 type OwnProps = {
   title: string;
   onSearch: (dto: GetMySessionRequestDto) => Promise<void>;
-  fetchData: (dto: GetMySessionRequestDto) => Promise<SessionDto[]>;
+  fetchData: (
+    dto: GetMySessionRequestDto
+  ) => Promise<PageNationData<SessionDto>>;
 };
 
 const SessionListTemplate: React.FC<OwnProps> = ({
@@ -78,7 +81,6 @@ const SessionListTemplate: React.FC<OwnProps> = ({
             query["session-type"] ?? "",
           ]}
           fetchData={handleFetchData}
-          pageSize={10}
           initPage={parseInt(query.pageNo ?? "1")}
           ItemComponent={({ data }) => (
             <SessionListItemMolecules

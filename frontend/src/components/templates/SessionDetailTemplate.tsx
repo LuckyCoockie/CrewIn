@@ -53,7 +53,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
 
   const fetchAlbumData = async (page: number): Promise<string[]> => {
     const response = await getSessionAlbum({ sessionId, pageNo: page });
-    return response.sessionImages;
+    return response.items;
   };
 
   return (

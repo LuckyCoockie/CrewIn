@@ -61,7 +61,7 @@ const CrewDetailTemplate: React.FC = () => {
     ["crewNotice", { crewId, pageNo }],
     () =>
       getCrewNoticeList({ crewId: numericCrewId, pageNo }).then(
-        (data) => data.crewNoticeList
+        (data) => data.items
       ),
     {
       enabled: isUserCrewMember, // isUserCrewMember가 true일 때만 호출
@@ -76,7 +76,7 @@ const CrewDetailTemplate: React.FC = () => {
     ["crewGallery", { crewId, pageNo }],
     () =>
       getCrewGalleryList({ crewId: numericCrewId, pageNo }).then(
-        (data) => data.crewGalleryList
+        (data) => data.items
       ),
     {
       enabled: isUserCrewMember, // isUserCrewMember가 true일 때만 호출

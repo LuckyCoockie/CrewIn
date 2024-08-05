@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getPostList } from "../apis/api/postlist"; 
-import { updatePost, UpdatePostRequestDto } from "../apis/api/postupdate"; 
+import { getPostList } from "../apis/api/postlist";
+import { updatePost, UpdatePostRequestDto } from "../apis/api/postupdate";
 import InputTextAreaNoLimitTypeMolecule from "../components/molecules/Input/InputTextAreaNoLimitTypeMolecule";
 import InputRadioTypeMolecule from "../components/molecules/Input/InputRadioTypeMolecule";
 import { PostDto } from "../apis/api/postlist";
@@ -18,8 +18,8 @@ const PostEditPage: React.FC = () => {
     if (postId) {
       (async () => {
         try {
-          const posts = await getPostList(1); // 게시글 리스트 API 호출
-          const foundPost = posts.find((p) => p.id === Number(postId));
+          const result = await getPostList({ "page-no": 1 }); // 게시글 리스트 API 호출
+          const foundPost = result.items.find((p) => p.id === Number(postId));
           if (foundPost) {
             setPost(foundPost);
             setTitle(foundPost.title);

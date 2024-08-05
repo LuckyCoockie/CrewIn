@@ -22,12 +22,13 @@ const MySessionPage: React.FC = () => {
   const fetchData = useCallback(
     async (dto: GetMySessionRequestDto) => {
       dto.type = type as unknown as MySessionType;
-      return (await getMySessionList(dto)).sessions;
+      return getMySessionList(dto);
     },
     [type]
   );
 
-  if (type !== MySessionType.CREATED && type !== MySessionType.JOINED) return "type이 필요합니다.";
+  if (type !== MySessionType.CREATED && type !== MySessionType.JOINED)
+    return "type이 필요합니다.";
 
   return (
     <SessionListTemplate

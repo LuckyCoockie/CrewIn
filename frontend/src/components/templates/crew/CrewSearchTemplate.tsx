@@ -47,7 +47,7 @@ const CrewSearchTemplate: React.FC<OwnProps> = ({
           />
         </div>
       </div>
-      <CrewListComponent fetchData={fetchData} />;
+      <CrewListComponent fetchData={fetchData} />
     </div>
   );
 };
