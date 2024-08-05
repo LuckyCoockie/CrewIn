@@ -48,7 +48,7 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({ fetchData }) => {
   return (
     <main>
       <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20 relative">
-        <div className="flex items-center bg-white w-full mb-10">
+        <div className="flex items-center bg-white w-full mb-10 h-10">
           <p className="text-xl font-bold pr-1">
             <DropdownTypeComponent
               id={""}
