@@ -3,6 +3,7 @@ package com.luckycookie.crewin.controller;
 import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.*;
 import com.luckycookie.crewin.dto.SessionRequest.UploadSessionImageRequest;
+import com.luckycookie.crewin.dto.SessionResponse.SessionItem;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.dto.base.PagingItemsResponse;
 import com.luckycookie.crewin.security.dto.CustomUser;
@@ -35,13 +36,13 @@ public class SessionController {
 
     // 세션 조회
     @GetMapping()
-    public ResponseEntity<BaseResponse<List<SessionResponse>>> getSessionsByType(
+    public ResponseEntity<BaseResponse<PagingItemsResponse<SessionItem>>> getSessionsByType(
             @RequestParam(value = "status", defaultValue = "") String status,
-            @RequestParam(value = "type", defaultValue = "") String sessionType,
+            @RequestParam(value = "type", defaultValue = "") String type,
             @RequestParam(value = "crew-name", defaultValue = "") String crewName,
             @RequestParam("page-no") int pageNo) {
-        SessionType enumSessionType = SessionType.stringToSessionType(sessionType);
-        List<SessionResponse> sessions = sessionService.getSessionsByStatusAndTypeAndCrewName(status, enumSessionType, crewName, pageNo);
+        SessionType enumSessionType = SessionType.stringToSessionType(type);
+        PagingItemsResponse<SessionItem> sessions = sessionService.getSessionsByStatusAndTypeAndCrewName(status, enumSessionType, crewName, pageNo);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 정보를 조회하는데 성공했습니다.", sessions));
     }
 

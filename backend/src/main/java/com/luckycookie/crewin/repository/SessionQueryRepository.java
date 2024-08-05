@@ -33,7 +33,7 @@ public class SessionQueryRepository {
                 .where(statusEq(status), typeEq(sessionType), crewNameEq(crewName))
                 .orderBy(session.id.desc())
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageNumber())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         JPAQuery<Long> countQuery = jpaQueryFactory.select(session.count())

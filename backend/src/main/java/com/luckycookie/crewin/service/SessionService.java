@@ -1,5 +1,6 @@
 package com.luckycookie.crewin.service;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.Position;
 import com.luckycookie.crewin.domain.enums.SessionType;
@@ -7,6 +8,7 @@ import com.luckycookie.crewin.dto.*;
 import com.luckycookie.crewin.dto.SessionImageResponse.SessionGalleryItem;
 import com.luckycookie.crewin.dto.SessionRequest.CreateSessionRequest;
 import com.luckycookie.crewin.dto.SessionRequest.UploadSessionImageRequest;
+import com.luckycookie.crewin.dto.SessionResponse.SessionItem;
 import com.luckycookie.crewin.dto.base.PagingItemsResponse;
 import com.luckycookie.crewin.exception.course.NotFoundCourseException;
 import com.luckycookie.crewin.exception.crew.CrewMemberNotExistException;
@@ -122,10 +124,10 @@ public class SessionService {
 
         memberSessionRepository
                 .save(MemberSession.builder()
-                .member(member)
-                .session(session)
+                        .member(member)
+                        .session(session)
                         .isAttend(false)
-                .build());
+                        .build());
 
     }
 
@@ -212,31 +214,29 @@ public class SessionService {
         sessionRepository.delete(session);
     }
 
-    private SessionResponse convertToSessionResponse(Session session) {
-        List<SessionPoster> sessionPosters = sessionPosterRepository.findBySessionOrderByImageUrlAsc(session);
-        String sessionThumbnail = sessionPosters.isEmpty() ? null : sessionPosters.get(0).getImageUrl();
-        String crewName = "";
-        if (session.getCrew() != null)
-            crewName = session.getCrew().getCrewName();
-
-        return SessionResponse.builder()
-                .sessionId(session.getId())
-                .sessionThumbnail(sessionThumbnail)
-                .crewName(crewName)
-                .sessionName(session.getName())
-                .spot(session.getSpot())
-                .area(session.getArea())
-                .sessionType(session.getSessionType())
-                .maxPeople(session.getMaxPeople())
-                .startAt(session.getStartAt())
-                .build();
-    }
-
-    public List<SessionResponse> getSessionsByStatusAndTypeAndCrewName(String status, SessionType sessionType, String crewName, int pageNo) {
+    public PagingItemsResponse<SessionItem> getSessionsByStatusAndTypeAndCrewName(String status, SessionType sessionType, String crewName, int pageNo) {
         PageRequest pageRequest = PageRequest.of(pageNo, 10);
         Page<Session> sessionPage = sessionQueryRepository.findSessionsByStatusAndTypeAndCrewName(status, sessionType, crewName, pageRequest);
+        int lastPageNo = Math.max(sessionPage.getTotalPages() - 1, 0);
 
-        return se.stream().map(this::convertToSessionResponse).collect(Collectors.toList());
+        List<SessionItem> sessionItems = sessionPage.getContent().stream().map(
+                session -> SessionItem.builder().crewName(session.getCrew().getCrewName())
+                        .sessionName(session.getName())
+                        .spot(session.getSpot())
+                        .area(session.getArea())
+                        .sessionThumbnail(session.getPosterImages().get(0).getImageUrl())
+                        .sessionType(session.getSessionType())
+                        .maxPeople(session.getMaxPeople())
+                        .sessionId(session.getId())
+                        .startAt(session.getStartAt())
+                        .build()
+        ).toList();
+
+        return PagingItemsResponse.<SessionItem>builder()
+                .items(sessionItems)
+                .pageNo(pageNo)
+                .lastPageNo(lastPageNo)
+                .build();
     }
 
     public PagingItemsResponse<SessionGalleryItem> getSessionGallery(int pageNo, Long sessionId, CustomUser customUser) {
