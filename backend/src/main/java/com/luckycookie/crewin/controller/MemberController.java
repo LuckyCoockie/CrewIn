@@ -101,8 +101,9 @@ public class MemberController {
     }
 
     // 사용자 프로필 조회
-    @GetMapping("/profile/{member-id}")
-    public ResponseEntity<BaseResponse<MemberProfileResponse>> getMemberProfile(@AuthenticationPrincipal CustomUser customUser, @PathVariable("member-id") Long memberId) {
+    @GetMapping({"/profile", "/profile/{member-id}"})
+    public ResponseEntity<BaseResponse<MemberProfileResponse>> getMemberProfile(@AuthenticationPrincipal CustomUser customUser, @PathVariable(value = "member-id", required = false) Long memberId) {
+        log.info("memberid: {}", memberId);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "사용자 프로필 조회를 성공했습니다.", memberService.getMemberProfile(customUser, memberId)));
     }
 
