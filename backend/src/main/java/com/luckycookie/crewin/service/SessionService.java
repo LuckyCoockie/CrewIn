@@ -12,6 +12,7 @@ import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.memberSession.DuplicateApplyException;
+import com.luckycookie.crewin.exception.memberSession.InvalidSessionRequestException;
 import com.luckycookie.crewin.exception.memberSession.NotFoundMemberSessionException;
 import com.luckycookie.crewin.exception.session.InvalidSessionException;
 import com.luckycookie.crewin.exception.session.NotFoundSessionException;
@@ -282,6 +283,22 @@ public class SessionService {
                 .session(session)
                 .isAttend(false).build();
         memberSessionRepository.save(memberSession);
+    }
+
+    public void cancelSessionRequest(Long sessionId, String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(NotFoundMemberException::new);
+        Session session = sessionRepository.findById(sessionId)
+                .orElseThrow(NotFoundSessionException::new);
+        MemberSession memberSession = memberSessionRepository.findByMemberAndSession(member, session)
+                .orElseThrow(NotFoundMemberSessionException::new);
+
+        // 이미 진행된 세션은 참가 취소 불가능
+        if (session.getStartAt().isBefore(LocalDateTime.now())) {
+            throw new InvalidSessionRequestException();
+        }
+
+        memberSessionRepository.delete(memberSession);
     }
 
 }

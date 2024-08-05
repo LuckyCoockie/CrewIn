@@ -77,4 +77,10 @@ public class SessionController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 참가 신청이 완료되었습니다."));
     }
 
+    // 세션 참가 취소
+    @DeleteMapping("/{session-id}")
+    public ResponseEntity<BaseResponse<Void>> cancelSessionRequest(@PathVariable("session-id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
+        sessionService.cancelSessionRequest(sessionId, customUser.getEmail());
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 참가 취소가 완료되었습니다."));
+    }
 }
