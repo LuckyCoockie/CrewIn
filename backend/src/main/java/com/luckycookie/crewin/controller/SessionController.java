@@ -4,6 +4,7 @@ import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.*;
 import com.luckycookie.crewin.dto.SessionRequest.UploadSessionImageRequest;
 import com.luckycookie.crewin.dto.base.BaseResponse;
+import com.luckycookie.crewin.dto.base.PagingItemsResponse;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.SessionService;
 import lombok.RequiredArgsConstructor;
@@ -37,9 +38,10 @@ public class SessionController {
     public ResponseEntity<BaseResponse<List<SessionResponse>>> getSessionsByType(
             @RequestParam(value = "status", defaultValue = "") String status,
             @RequestParam(value = "type", defaultValue = "") String sessionType,
-            @RequestParam(value = "crew-name", defaultValue = "") String crewName) {
+            @RequestParam(value = "crew-name", defaultValue = "") String crewName,
+            @RequestParam("page-no") int pageNo) {
         SessionType enumSessionType = SessionType.stringToSessionType(sessionType);
-        List<SessionResponse> sessions = sessionService.getSessionsByStatusAndTypeAndCrewName(status, enumSessionType, crewName);
+        List<SessionResponse> sessions = sessionService.getSessionsByStatusAndTypeAndCrewName(status, enumSessionType, crewName, pageNo);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 정보를 조회하는데 성공했습니다.", sessions));
     }
 
@@ -67,7 +69,7 @@ public class SessionController {
 
     // 세션 사진첩(갤러리) 조회 - 페이징
     @GetMapping("/detail/gallery/{session-id}")
-    public ResponseEntity<BaseResponse<SessionImageResponse.SessionGalleryItemsResponse>> getSessionGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable("session-id") Long sessionId, @RequestParam("page-no") int pageNo) {
+    public ResponseEntity<BaseResponse<PagingItemsResponse<SessionImageResponse.SessionGalleryItem>>> getSessionGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable("session-id") Long sessionId, @RequestParam("page-no") int pageNo) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 사진첩 조회를 성공했습니다.", sessionService.getSessionGallery(pageNo, sessionId, customUser)));
     }
 
@@ -84,9 +86,10 @@ public class SessionController {
         sessionService.cancelSessionRequest(sessionId, customUser.getEmail());
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 참가 취소가 완료되었습니다."));
     }
+
     // 세션 사진첩 사진 업로드
     @PostMapping("/detail/gallery")
-    public ResponseEntity<BaseResponse<Void>> uploadSessionImage (@AuthenticationPrincipal CustomUser customUser, @RequestBody UploadSessionImageRequest uploadSessionImageRequest) {
+    public ResponseEntity<BaseResponse<Void>> uploadSessionImage(@AuthenticationPrincipal CustomUser customUser, @RequestBody UploadSessionImageRequest uploadSessionImageRequest) {
         sessionService.uploadSessionImage(uploadSessionImageRequest, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 사진 업로드를 성공했습니다."));
     }

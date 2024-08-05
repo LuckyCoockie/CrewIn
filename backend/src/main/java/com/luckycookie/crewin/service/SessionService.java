@@ -5,9 +5,9 @@ import com.luckycookie.crewin.domain.enums.Position;
 import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.*;
 import com.luckycookie.crewin.dto.SessionImageResponse.SessionGalleryItem;
-import com.luckycookie.crewin.dto.SessionImageResponse.SessionGalleryItemsResponse;
 import com.luckycookie.crewin.dto.SessionRequest.CreateSessionRequest;
 import com.luckycookie.crewin.dto.SessionRequest.UploadSessionImageRequest;
+import com.luckycookie.crewin.dto.base.PagingItemsResponse;
 import com.luckycookie.crewin.exception.course.NotFoundCourseException;
 import com.luckycookie.crewin.exception.crew.CrewMemberNotExistException;
 import com.luckycookie.crewin.exception.crew.CrewUnauthorizedException;
@@ -232,12 +232,14 @@ public class SessionService {
                 .build();
     }
 
-    public List<SessionResponse> getSessionsByStatusAndTypeAndCrewName(String status, SessionType sessionType, String crewName) {
-        List<Session> sessions = sessionQueryRepository.findSessionsByStatusAndTypeAndCrewName(status, sessionType, crewName);
-        return sessions.stream().map(this::convertToSessionResponse).collect(Collectors.toList());
+    public List<SessionResponse> getSessionsByStatusAndTypeAndCrewName(String status, SessionType sessionType, String crewName, int pageNo) {
+        PageRequest pageRequest = PageRequest.of(pageNo, 10);
+        Page<Session> sessionPage = sessionQueryRepository.findSessionsByStatusAndTypeAndCrewName(status, sessionType, crewName, pageRequest);
+
+        return se.stream().map(this::convertToSessionResponse).collect(Collectors.toList());
     }
 
-    public SessionGalleryItemsResponse getSessionGallery(int pageNo, Long sessionId, CustomUser customUser) {
+    public PagingItemsResponse<SessionGalleryItem> getSessionGallery(int pageNo, Long sessionId, CustomUser customUser) {
         PageRequest pageRequest = PageRequest.of(pageNo, 27);
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
@@ -253,7 +255,7 @@ public class SessionService {
     }
 
     // Page<SessionImage>를 받아서 갤러리 response로 변환
-    private SessionGalleryItemsResponse convertToGalleryItemResponse(int pageNo, Page<SessionImage> sessionImageListPage) {
+    private PagingItemsResponse<SessionGalleryItem> convertToGalleryItemResponse(int pageNo, Page<SessionImage> sessionImageListPage) {
         List<SessionImage> sessionImageList = sessionImageListPage.getContent();
         int lastPageNo = Math.max(sessionImageListPage.getTotalPages() - 1, 0);
         List<SessionGalleryItem> sessionGalleryItems = sessionImageList.stream()
@@ -263,10 +265,10 @@ public class SessionService {
                         .build()
                 )
                 .toList();
-        return SessionGalleryItemsResponse.builder()
+        return PagingItemsResponse.<SessionGalleryItem>builder()
                 .pageNo(pageNo)
                 .lastPageNo(lastPageNo)
-                .sessionImages(sessionGalleryItems)
+                .items(sessionGalleryItems)
                 .build();
     }
 

@@ -11,6 +11,7 @@ import com.luckycookie.crewin.dto.CrewRequest.CrewMemberRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewReplyMemberRequest;
 import com.luckycookie.crewin.dto.CrewResponse.*;
 import com.luckycookie.crewin.dto.PostResponse;
+import com.luckycookie.crewin.dto.base.PagingItemsResponse;
 import com.luckycookie.crewin.exception.crew.*;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.memberCrew.NotFoundMemberCrewException;
@@ -83,7 +84,7 @@ public class CrewService {
 
     // 전체 크루 조회
     @Transactional(readOnly = true)
-    public CrewItemResponse getAllCrewList(int pageNo) {
+    public PagingItemsResponse<CrewItem> getAllCrewList(int pageNo) {
         Pageable pageable = PageRequest.of(pageNo, 10); // pageNo 페이지 번호, 10 : 페이지 크기
 
         Page<Crew> crewsPage;
@@ -110,8 +111,8 @@ public class CrewService {
                     .build();
         }).collect(Collectors.toList());
 
-        return CrewItemResponse.builder()
-                .crews(crewItems)
+        return PagingItemsResponse.<CrewItem>builder()
+                .items(crewItems)
                 .pageNo(pageNo)
                 .lastPageNo(lastPageNo)
                 .build();
@@ -264,7 +265,7 @@ public class CrewService {
 
     // 공지사항 조회
     @Transactional(readOnly = true)
-    public CrewNoticeItemResponse getCrewNoticeList(int pageNo, Long crewId, CustomUser customUser) {
+    public PagingItemsResponse<CrewNoticeItem> getCrewNoticeList(int pageNo, Long crewId, CustomUser customUser) {
         Pageable pageable = PageRequest.of(pageNo, 5); // pageNo 페이지 번호, 5 : 페이지 크기
 
         // 현재 사용자 정보 가져오기
@@ -290,8 +291,8 @@ public class CrewService {
                 .noticeId(notice.getId())
                 .build()).collect(Collectors.toList());
 
-        return CrewNoticeItemResponse.builder()
-                .crewNoticeList(crewNoticeItems)
+        return PagingItemsResponse.<CrewNoticeItem>builder()
+                .items(crewNoticeItems)
                 .pageNo(pageNo)
                 .lastPageNo(lastPageNo)
                 .build();
@@ -338,7 +339,7 @@ public class CrewService {
     // 일반 : isJoined (true), isInvited (true)
     // 대기 중 : isJoined (false), isInvited (true)
     @Transactional(readOnly = true)
-    public CrewMemberItemResponse getCrewMemberList(Long crewId, int pageNo) {
+    public PagingItemsResponse<CrewMemberItem> getCrewMemberList(Long crewId, int pageNo) {
         Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
         Pageable pageable = PageRequest.of(pageNo, 10);
 
@@ -363,8 +364,8 @@ public class CrewService {
         }
 
         // CrewMemberItemResponse 객체 생성 및 반환
-        return CrewMemberItemResponse.builder()
-                .crewMemberList(crewMemberItemList)
+        return PagingItemsResponse.<CrewMemberItem>builder()
+                .items(crewMemberItemList)
                 .pageNo(memberCrewPage.getNumber())
                 .lastPageNo(memberCrewPage.getTotalPages() - 1)
                 .build();

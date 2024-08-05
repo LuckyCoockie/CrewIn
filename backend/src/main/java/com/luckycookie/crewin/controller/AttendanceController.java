@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/attendance")
 public class AttendanceController {
 
-    @PostMapping("/start/{session-id}")
-    public ResponseEntity<BaseResponse<Void>> startAttendanceCheck(@PathVariable("session-id") String sessionId, ) {
-
-    }
+//    @PostMapping("/start/{session-id}")
+//    public ResponseEntity<BaseResponse<Void>> startAttendanceCheck(@PathVariable("session-id") String sessionId, ) {
+//
+//    }
 }

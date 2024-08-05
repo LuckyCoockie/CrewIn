@@ -4,9 +4,13 @@ import com.luckycookie.crewin.domain.QSession;
 import com.luckycookie.crewin.domain.Session;
 import com.luckycookie.crewin.domain.enums.SessionType;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -22,13 +26,21 @@ public class SessionQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
     private final QSession session = QSession.session;
 
-    public List<Session> findSessionsByStatusAndTypeAndCrewName(String status, SessionType sessionType, String crewName) {
-        return jpaQueryFactory
+    public Page<Session> findSessionsByStatusAndTypeAndCrewName(String status, SessionType sessionType, String crewName, Pageable pageable) {
+        List<Session> content = jpaQueryFactory
                 .select(session)
                 .from(session)
                 .where(statusEq(status), typeEq(sessionType), crewNameEq(crewName))
                 .orderBy(session.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageNumber())
                 .fetch();
+
+        JPAQuery<Long> countQuery = jpaQueryFactory.select(session.count())
+                .from(session)
+                .where(statusEq(status), typeEq(sessionType), crewNameEq(crewName));
+
+        return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetch().size());
     }
 
     private BooleanExpression crewNameEq(String crewName) {

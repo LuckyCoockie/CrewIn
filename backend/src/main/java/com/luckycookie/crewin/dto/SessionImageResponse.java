@@ -18,24 +18,4 @@ public class SessionImageResponse {
         private Long sessionImageId;
         private String imageUrl;
     }
-
-    // pagenation
-    @Getter
-    @SuperBuilder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class SessionItemBaseResponse {
-        int pageNo;
-        int lastPageNo;
-    }
-
-    @Getter
-    @SuperBuilder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class SessionGalleryItemsResponse extends SessionItemBaseResponse {
-        List<SessionGalleryItem> sessionImages;
-    }
-
-
 }

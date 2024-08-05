@@ -1,17 +1,13 @@
 package com.luckycookie.crewin.service;
 
-
-
 import com.luckycookie.crewin.domain.Crew;
 import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.domain.MemberCrew;
 import com.luckycookie.crewin.dto.CrewResponse.CrewItem;
-import com.luckycookie.crewin.dto.CrewResponse.CrewItemResponse;
 import com.luckycookie.crewin.dto.MemberResponse.MemberItem;
-import com.luckycookie.crewin.dto.MemberResponse.MemberSearchResponse;
 import com.luckycookie.crewin.dto.SearchResponse;
-import com.luckycookie.crewin.dto.SearchResponse.MemberInvitationPageResponse;
 import com.luckycookie.crewin.dto.SearchResponse.MemberInvitationResponse;
+import com.luckycookie.crewin.dto.base.PagingItemsResponse;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.repository.CrewRepository;
@@ -37,7 +33,7 @@ public class SearchService {
     private final CrewRepository crewRepository;
 
     @Transactional(readOnly = true)
-    public MemberSearchResponse searchMember(String query, int pageNo, CustomUser customUser) {
+    public PagingItemsResponse<MemberItem> searchMember(String query, int pageNo, CustomUser customUser) {
         //CustomUser 검증
         memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
@@ -54,23 +50,23 @@ public class SearchService {
         lastPageNo = Math.max(membersPage.getTotalPages() - 1, 0);
 
         List<MemberItem> memberItems = members.stream().map(member ->
-            MemberItem.builder()
-                .memberId(member.getId())
-                .memberName(member.getName())
-                .memberNickName(member.getNickname())
-                .profileUrl(member.getImageUrl())
-                .build()
+                MemberItem.builder()
+                        .memberId(member.getId())
+                        .memberName(member.getName())
+                        .memberNickName(member.getNickname())
+                        .profileUrl(member.getImageUrl())
+                        .build()
         ).collect(Collectors.toList());
 
-        return MemberSearchResponse.builder()
+        return PagingItemsResponse.<MemberItem>builder()
                 .pageNo(pageNo)
                 .lastPageNo(lastPageNo)
-                .members(memberItems)
+                .items(memberItems)
                 .build();
     }
 
     @Transactional(readOnly = true)
-    public CrewItemResponse searchCrew(String query, int pageNo, CustomUser customUser) {
+    public PagingItemsResponse<CrewItem> searchCrew(String query, int pageNo, CustomUser customUser) {
         // CustomUser 검증
         memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
@@ -105,14 +101,14 @@ public class SearchService {
                     .build();
         }).collect(Collectors.toList());
 
-        return CrewItemResponse.builder()
-                .crews(crewItems)
+        return PagingItemsResponse.<CrewItem>builder()
+                .items(crewItems)
                 .pageNo(pageNo)
                 .lastPageNo(lastPageNo)
                 .build();
     }
 
-    public MemberInvitationPageResponse getMemberForCrewInvitation(Long crewId, String query, CustomUser customUser, int page) {
+    public PagingItemsResponse<MemberInvitationResponse> getMemberForCrewInvitation(Long crewId, String query, CustomUser customUser, int page) {
         memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new); //요청
         crewRepository.findById(crewId)
@@ -142,8 +138,8 @@ public class SearchService {
                             .build();
                 }).collect(Collectors.toList());
 
-        return MemberInvitationPageResponse.builder()
-                .members(memberResponses)
+        return PagingItemsResponse.<MemberInvitationResponse>builder()
+                .items(memberResponses)
                 .pageNo(resultPage.getNumber())
                 .lastPageNo(resultPage.getTotalPages() - 1)
                 .build();

@@ -37,23 +37,6 @@ public class MemberResponse {
     }
 
     @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @SuperBuilder
-    public static class MemberItemBaseResponse {
-        int pageNo;
-        int lastPageNo;
-    }
-
-    @Getter
-    @SuperBuilder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class MemberSearchResponse extends MemberItemBaseResponse{
-        List<MemberItem> members;
-    }
-
-    @Getter
     @NoArgsConstructor
     @Builder
     @AllArgsConstructor

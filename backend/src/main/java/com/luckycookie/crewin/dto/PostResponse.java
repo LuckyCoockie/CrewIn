@@ -23,14 +23,6 @@ public class PostResponse {
     }
 
     @Getter
-    @SuperBuilder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class PostGalleryItemResponse extends PostItemBaseResponse {
-        List<PostGalleryItem> postGalleryList;
-    }
-
-    @Getter
     @Builder
     public static class PostItem { // SNS 게시글 Item (사진첩 상세조회도 공통)
         private Long id; // id
@@ -51,24 +43,6 @@ public class PostResponse {
         private LocalDateTime updatedAt;
 
         private List<String> postImages;
-    }
-
-    // pagenation
-    @Getter
-    @SuperBuilder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class PostItemBaseResponse {
-        int pageNo;
-        int lastPageNo;
-    }
-
-    @Getter
-    @SuperBuilder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class PostItemsResponse extends PostItemBaseResponse {
-        List<PostItem> postItemList;
     }
 
 }
