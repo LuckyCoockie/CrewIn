@@ -18,11 +18,11 @@ export type PostDto = {
 export type GetPostListResponseDto = PostDto[];
 
 export const getPostList = async (
-  dto: PostDto
+  pageNo: number
 ): Promise<GetPostListResponseDto> => {
-  const response = await api.get("/post/home", { params: dto });
+  const response = await api.get("/post/home", { params: { pageNo } });
   if (response.status === 200) {
-    return response.data;
+    return response.data.postItemList;
   } else {
     throw new Error(`Error fetching post list: ${response.statusText}`);
   }
