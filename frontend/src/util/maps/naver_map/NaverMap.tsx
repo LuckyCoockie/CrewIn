@@ -10,20 +10,25 @@ import {
 } from "./context";
 
 type props = {
-  lng: number;
-  lat: number;
+  initPosition?: { lat: number; lng: number };
   zoom?: number;
-  onChange?: (polyline: { latitude: number; longitude: number }[]) => void;
+  onChange?: (
+    markers: { title: string; point: { latitude: number; longitude: number } }[]
+  ) => void;
 };
 
-const NaverMap: React.FC<props> = ({ lat, lng, zoom, onChange }: props) => {
+const NaverMap: React.FC<props> = ({
+  initPosition: initPoint,
+  zoom,
+  onChange,
+}: props) => {
   const { markers } = useNaverMapState();
   const dispatch = useNaverMapDispatch();
 
   // init map with lat, lng
   const initMap = useCallback(() => {
     const map = new naver.maps.Map("map", {
-      center: new naver.maps.LatLng(lat, lng),
+      center: initPoint,
       zoom: zoom ?? 14,
     });
 
@@ -35,12 +40,11 @@ const NaverMap: React.FC<props> = ({ lat, lng, zoom, onChange }: props) => {
         addMarker({
           longitude: x,
           latitude: y,
-          title: `새로운 경유지`,
           ondragend: () => dispatch(updateMarkerList()),
         })
       );
     });
-  }, [dispatch, lat, lng, zoom]);
+  }, [dispatch, initPoint, zoom]);
 
   // update polyline on markers update
   useEffect(() => {
@@ -52,7 +56,15 @@ const NaverMap: React.FC<props> = ({ lat, lng, zoom, onChange }: props) => {
       });
 
       dispatch(addPolyline(polyline));
-      if (onChange) onChange(polyline);
+
+      const markerList = markers.map((marker) => {
+        const coord = marker.getPosition();
+        return {
+          title: marker.getTitle(),
+          point: { longitude: coord.x, latitude: coord.y },
+        };
+      });
+      if (onChange) onChange(markerList);
     }
   }, [dispatch, markers]);
 

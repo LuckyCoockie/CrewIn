@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import NavTabMolecule from "../molecules/Tab/NavTabMolecule";
-import MyPageRecordInfoOrganism from "../organisms/mypage/MyPageRecordInfoOrganism";
-import MyPageHeaderOrganism from "../organisms/mypage/MyPageHeaderOrganism";
-import MyPageMadeSessionOrganism from "../organisms/mypage/MyPageMadeSessionOrganism";
-import MyPageParticipatedSessionOrganism from "../organisms/mypage/MyPageParticipatedSessionOrganism";
-import MyPageMapOrganism from "../organisms/mypage/MyPageMapOrganism";
-import MyPageAlbumOrganism from "../organisms/mypage/MyPageAlbumOrganism";
+import MyPageRecordInfoOrganism from "../organisms/MyPage/MyPageRecordInfoOrganism";
+import MyPageHeaderOrganism from "../organisms/MyPage/MyPageHeaderOrganism";
+import MyPageMadeSessionOrganism from "../organisms/MyPage/MyPageMadeSessionOrganism";
+import MyPageParticipatedSessionOrganism from "../organisms/MyPage/MyPageParticipatedSessionOrganism";
+import MyPageMapOrganism from "../organisms/MyPage/MyPageMapOrganism";
+import MyPageAlbumOrganism from "../organisms/MyPage/MyPageAlbumOrganism";
 import {
   getMyProfileInfo,
   MyProfileDto,

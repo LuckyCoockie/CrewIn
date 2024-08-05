@@ -1,8 +1,8 @@
 import React from "react";
 import MediumTitleMolecule from "../../molecules/Title/MediumTitleMolecule";
 import { MyMapsDto } from "../../../apis/api/mypage";
-import GaroScrollMolecule from "../../molecules/List/GaroScrollMolecule";
-import ListButtonMolecule from "../../molecules/List/ListButtonMolecule";
+import GaroScrollMolecule from "../../molecules/List/GaroScrollmolecule";
+import ListButtonMolecule from "../../molecules/List/ListButtonmolecule";
 import crewlistplus from "../../../assets/images/crewlistplus.png";
 
 type FetchDataProps = {

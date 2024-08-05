@@ -9,6 +9,7 @@ import {
   useNaverMapDispatch,
   useNaverMapState,
 } from "../../util/maps/naver_map/context";
+import { ReactComponent as MarkerIcon } from "../../assets/icons/custom_marker.svg";
 
 const MarkerList: React.FC = () => {
   const { markers } = useNaverMapState();
@@ -32,7 +33,7 @@ const MarkerList: React.FC = () => {
       {({ index, item }) => (
         <MarkerListItem
           title={item.getTitle()}
-          marker={"./src/assets/icons/marker-default.png"}
+          marker={<MarkerIcon className="object-contain" />}
           first={index === 0}
           last={index === markers.length - 1}
           onClick={() => onListItemClick(index)}

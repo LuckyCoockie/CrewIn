@@ -29,11 +29,12 @@ const CrewSearchTemplate: React.FC<OwnProps> = ({ fetchData }: OwnProps) => {
     <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20">
       <div className="flex items-center bg-white w-full mb-10">
         <div className="flex items-center">
+          {/*TODO : 작아지면 2줄되는 문제 해결 */}
           <LargeTitleMolecule text="전체 크루 목록" />
         </div>
-        <div className="flex items-center flex-grow justify-end mr-2">
+        <div className="flex items-center flex-grow justify-end ml-4">
           <SearchInputMolecule hint={"크루명"} onSubmit={handleFetchData} />
-          <CrewCreateIcon className="w-6 h-6" onClick={handleCrewCreateRoute} />
+          <CrewCreateIcon className="w-6 h-6 ml-2" onClick={handleCrewCreateRoute} />
         </div>
       </div>
       <CrewListTemplate />
