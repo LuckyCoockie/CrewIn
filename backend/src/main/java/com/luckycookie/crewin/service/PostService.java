@@ -12,6 +12,7 @@ import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.memberCrew.NotFoundMemberCrewException;
 import com.luckycookie.crewin.exception.post.NotFoundPostException;
+import com.luckycookie.crewin.exception.post.UnauthorizedDeletionException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
@@ -79,11 +80,13 @@ public class PostService {
         post.updatePost(updatePostRequest);
     }
 
-    public void deletePost(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(NotFoundPostException::new);
-        postRepository.delete(post);
+    public void deletePost(Long postId, String email) {
+        Post post = postRepository.findById(postId).orElseThrow(NotFoundPostException::new);
+        if (!post.getAuthor().getEmail().equals(email)) {
+            throw new UnauthorizedDeletionException();
+        }
 
+        postRepository.delete(post);
     }
 
 

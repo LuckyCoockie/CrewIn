@@ -51,9 +51,9 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse<Void>> deletePost(@PathVariable("id") Long postId) {
+    public ResponseEntity<BaseResponse<Void>> deletePost(@PathVariable("id") Long postId, @AuthenticationPrincipal CustomUser customUser) {
         try {
-            postService.deletePost(postId);
+            postService.deletePost(postId, customUser.getEmail());
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
