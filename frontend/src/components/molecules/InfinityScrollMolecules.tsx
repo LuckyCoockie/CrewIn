@@ -24,7 +24,6 @@ const InfiniteScrollComponent = <T,>({
   pageSize,
   initPage,
 }: OwnProps<T>) => {
-  console.log(fetchKey);
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
     useInfiniteQuery(
       fetchKey,
@@ -58,8 +57,10 @@ const InfiniteScrollComponent = <T,>({
 
   return (
     <div className={className}>
-      {data?.pages.map((data) => (
-        <>{data?.map((data) => ItemComponent({ data }))}</>
+      {data?.pages.map((data, index) => (
+        <React.Fragment key={index}>
+          {data?.map((data) => ItemComponent({ data }))}
+        </React.Fragment>
       ))}
     </div>
   );
