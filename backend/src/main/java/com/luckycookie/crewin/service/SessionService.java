@@ -11,6 +11,7 @@ import com.luckycookie.crewin.exception.crew.CrewMemberNotExistException;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
+import com.luckycookie.crewin.exception.memberCrew.NotFoundMemberCrewException;
 import com.luckycookie.crewin.exception.memberSession.DuplicateApplyException;
 import com.luckycookie.crewin.exception.memberSession.NotFoundMemberSessionException;
 import com.luckycookie.crewin.exception.session.InvalidSessionException;
@@ -277,39 +278,29 @@ public class SessionService {
         Member member = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
         Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundSessionException::new);
 
-            // 호스트가 신청하거나, 신청시간이 세션 시작 이후면 안 받음
-            if (session.getHost().getId().equals(member.getId()) ||
-                    LocalDateTime.now().isAfter(session.getStartAt())
-            ) {
-                throw new InvalidSessionException();
-            }
+        // 호스트가 신청하거나, 신청시간이 세션 시작 이후면 안 받음
+        if (session.getHost().getId().equals(member.getId()) ||
+                LocalDateTime.now().isAfter(session.getStartAt())
+        ) {
+            throw new InvalidSessionException();
+        }
 
-            if (memberSessionRepository.existsByMemberAndSession(member, session)) {
-                throw new DuplicateApplyException();
-            }
+        if (memberSessionRepository.existsByMemberAndSession(member, session)) {
+            throw new DuplicateApplyException();
+        }
 
-            boolean joinStatus = false;
-            if (session.getSessionType() != THUNDER) {
-                joinStatus = memberCrewRepository.existsByMemberAndCrew(member, session.getCrew());
-            }
-
-            // 크루원이 아닌 회원이 정규런 신청할 경우 예외처리
-            if (session.getSessionType() == STANDARD && !joinStatus) {
+        // 크루원이 아닌 회원이 정규런 신청할 경우 예외처리
+        if (session.getSessionType() == STANDARD) {
+            MemberCrew memberCrew = memberCrewRepository.findByMemberAndCrew(member, session.getCrew()).orElseThrow(NotFoundMemberCrewException::new);
+            if (!memberCrew.getIsJoined())
                 throw new SessionAuthorizationException();
-            } else if (session.getSessionType() == OPEN && !joinStatus) {
-                // 크루원 아닌 회원이 오픈런 신청할 경우 멤버-크루 테이블에 넣어줌
-                MemberCrew memberCrew = MemberCrew.builder()
-                        .member(member)
-                        .crew(session.getCrew())
-                        .build();
-                memberCrewRepository.save(memberCrew);
-            }
+        }
 
-            MemberSession memberSession = MemberSession.builder()
-                    .member(member)
-                    .session(session)
-                    .isAttend(false).build();
-            memberSessionRepository.save(memberSession);
+        MemberSession memberSession = MemberSession.builder()
+                .member(member)
+                .session(session)
+                .isAttend(false).build();
+        memberSessionRepository.save(memberSession);
     }
 
     public void cancelSessionRequest(Long sessionId, String email) {
