@@ -7,7 +7,7 @@ type Infos = {
   alt: string;
   text: string;
   router?: string;
-  routerId?: number;
+  routerId?: number | string;
 };
 
 const ListButtonMolecule: React.FC<Infos> = ({

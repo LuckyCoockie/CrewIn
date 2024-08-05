@@ -51,9 +51,9 @@ export type GetCrewNoticeListResponseDto = {
 export const getCrewNoticeList = async (
   dto: GetCrewNoticeListRequestDto
 ): Promise<GetCrewNoticeListResponseDto> => {
-  const response = await api.get(`/crew/notice/${dto.crewId}`, {
-    params: { pageNo: dto.pageNo },
-  });
+  const response = await api.get(
+    `/crew/notice/${dto.crewId}?page-no=${dto.pageNo}`
+  );
   return response.data;
 };
 
@@ -100,7 +100,7 @@ export const deleteNotice = async (noticeId: number): Promise<void> => {
 // 크루 사진첩 조회
 export type CrewGalleryDto = {
   postId: number;
-  imageUrls: string[];
+  thumbnailImage: string;
 };
 
 export type GetCrewGalleryListRequestDto = {
@@ -109,7 +109,7 @@ export type GetCrewGalleryListRequestDto = {
 };
 
 export type GetCrewGalleryListResponseDto = {
-  crewGalleryList: CrewGalleryDto[];
+  postGalleryList: CrewGalleryDto[];
   pageNo: number;
   lastPageNo: number;
 };
@@ -119,9 +119,9 @@ export const getCrewGalleryList = async (
 ): Promise<GetCrewGalleryListResponseDto> => {
   console.log(dto);
 
-  const response = await api.get(`/post/crew/gallery/${dto.crewId}`, {
-    params: { pageNo: dto.pageNo },
-  });
+  const response = await api.get(
+    `/post/crew/gallery/${dto.crewId}?page-no=${dto.pageNo}`
+  );
   return response.data;
 };
 

@@ -10,10 +10,11 @@ import { uploadImage } from "../../apis/api/presigned";
 import {
   uploadSessionImages,
   UploadSessionImageRequestDto,
+  GetSessionAlbumDto,
 } from "../../apis/api/sessiondetail";
 
 type SessionAlbumOrganismProps = {
-  fetchAlbumData: (page: number) => Promise<string[]>;
+  fetchAlbumData: (page: number) => Promise<GetSessionAlbumDto[]>;
   sessionId: number;
 };
 
@@ -52,7 +53,6 @@ const SessionAlbumOrganism: React.FC<SessionAlbumOrganismProps> = ({
     if (event.target.files) {
       const files = Array.from(event.target.files);
 
-      // presigned와 서버에 올리는 곳
       const uploadPromises = files.map(async (file) => {
         const imageUrl = await uploadImageMutation.mutateAsync(file);
         return imageUrl;
@@ -72,7 +72,7 @@ const SessionAlbumOrganism: React.FC<SessionAlbumOrganismProps> = ({
   const PhotoItem = ({
     data,
   }: ItemComponentProps<string>): React.ReactElement => (
-    <img src={data} alt="Session Album" className="w-1/3 h-1/3" />
+    <img src={data} alt="Session Album" className="photo-item" />
   );
 
   return (
@@ -86,20 +86,21 @@ const SessionAlbumOrganism: React.FC<SessionAlbumOrganismProps> = ({
         className="hidden"
       />
       <FloatingActionButton onClick={handleAlbumUpload}>
-        <PlusIcon/>
+        <PlusIcon />
       </FloatingActionButton>
       <InfiniteScrollComponent
         fetchKey="sessionAlbum"
         fetchData={async (page: number) => {
           const fetchedData = await fetchAlbumData(page);
-          return [...uploadedImages, ...fetchedData];
+          const imageUrls = fetchedData.map((item) => item.imageUrl);
+          return [...uploadedImages, ...imageUrls];
         }}
         ItemComponent={({ data }: ItemComponentProps<string>) => (
           <React.Fragment>
             <PhotoItem data={data} />
           </React.Fragment>
         )}
-        className="flex flex-wrap"
+        className="photo-grid"
         pageSize={12}
       />
     </>

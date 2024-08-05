@@ -1,36 +1,35 @@
 import React from "react";
 import MediumTitleMolecule from "../../molecules/Title/MediumTitleMolecule";
 import IntoArrowButton from "../../atoms/Button/IntoArrowButton";
-import InfinityGaroScrollMolecule from "../../molecules/InfinityGaroScrollMolecule";
-import ListButtonMolecule from "../../molecules/List/ListButtonmolecule";
-import { MyMadeSessionDto, getMyMadeSessions } from "../../../apis/api/mypage";
+import GaroScrollMolecule from "../../molecules/List/GaroScrollMolecule";
+import ListButtonMolecule from "../../molecules/List/ListButtonMolecule";
+import { MyMadeSessionDto } from "../../../apis/api/mypage";
 
-const MyPageMadeSessionOrganism: React.FC = () => {
-  const fetchMadeSessions = async (
-    page: number
-  ): Promise<MyMadeSessionDto[]> => {
-    const response = await getMyMadeSessions(page);
-    return response.sessions;
-  };
+interface MyPageMadeSessionOrganismProps {
+  sessions: MyMadeSessionDto[];
+}
 
+const MyPageMadeSessionOrganism: React.FC<MyPageMadeSessionOrganismProps> = ({
+  sessions,
+}) => {
   return (
     <>
-      <div className="flex justify-between items-center mb-4">
-        <MediumTitleMolecule text="만든 세션" />
+      <div className="flex items-center mb-4">
+        <MediumTitleMolecule text="최근 생성한 세션" />
+        {/* 전체 리스트로 이동 */}
         <IntoArrowButton router="" />
       </div>
-      <InfinityGaroScrollMolecule
-        fetchKey="myMadeSessions"
-        fetchData={fetchMadeSessions}
-        ItemComponent={({ data }) => (
+      <GaroScrollMolecule
+        propsData={sessions}
+        replaceText="최근 생성한 세션이 없습니다."
+        renderItem={(data, index) => (
           <ListButtonMolecule
+            key={index}
             src={data.imageUrl}
             alt={data.sessionName}
             text={data.sessionName}
           />
         )}
-        className="whitespace-nowrap overflow-x-auto flex items-center space-x-3"
-        pageSize={10}
       />
     </>
   );

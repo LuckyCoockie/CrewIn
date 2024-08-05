@@ -6,7 +6,7 @@ type Image = {
   alt: string;
   // string은 Tab 이동을 의미, number면 crew Id 혹은 session Id를 의미
   router?: string;
-  routerId?: number;
+  routerId?: number | string;
 };
 
 const ImageButton: React.FC<Image> = ({ src, alt, router, routerId }) => {
