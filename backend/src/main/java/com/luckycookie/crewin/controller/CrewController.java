@@ -126,8 +126,8 @@ public class CrewController {
 
     // 크루원 조회
     @GetMapping("/member/{crew-id}")
-    public ResponseEntity<BaseResponse<CrewResponse.CrewMemberItemResponse>> getCrewMemberList(@PathVariable("crew-id") Long crewId) {
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루원 조회를 성공했습니다.", crewService.getCrewMemberList(crewId)));
+    public ResponseEntity<BaseResponse<CrewResponse.CrewMemberItemResponse>> getCrewMemberList(@PathVariable("crew-id") Long crewId, @RequestParam(name = "page-no", defaultValue = "0") int pageNo) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루원 조회를 성공했습니다.", crewService.getCrewMemberList(crewId, pageNo)));
     }
 
     // 크루원 초대

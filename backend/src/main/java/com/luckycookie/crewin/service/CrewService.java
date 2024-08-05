@@ -338,39 +338,35 @@ public class CrewService {
     // 일반 : isJoined (true), isInvited (true)
     // 대기 중 : isJoined (false), isInvited (true)
     @Transactional(readOnly = true)
-    public CrewMemberItemResponse getCrewMemberList(Long crewId) {
+    public CrewMemberItemResponse getCrewMemberList(Long crewId, int pageNo) {
         Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
+        Pageable pageable = PageRequest.of(pageNo, 10);
 
         // 해당 크루에 있는 크루원 조회
-        List<MemberCrew> memberCrewList = memberCrewRepository.findByCrew(crew);
-
-        // 일반 회원 리스트
-        List<CrewMemberItem> crewIsJoinedMemberList = new ArrayList<>();
-        // 대기 중인 회원 리스트
-        List<CrewMemberItem> crewIsInvitedMemberList = new ArrayList<>();
-
+        Page<MemberCrew> memberCrewPage = memberCrewRepository.findByCrewOrderByJoinedAndInvitedStatus(crew, pageable);
+        List<CrewMemberItem> crewMemberItemList = new ArrayList<>();
         // MemberCrew 객체를 CrewMemberItem 객체로 변환하고 리스트에 추가
-        for (MemberCrew memberCrew : memberCrewList) {
-            CrewMemberItem item = CrewMemberItem.builder()
+        for (MemberCrew memberCrew : memberCrewPage.getContent()) {
+            crewMemberItemList.add(CrewMemberItem.builder()
+                    .memberId(memberCrew.getMember().getId())
                     .nickname(memberCrew.getMember().getNickname())
                     .name(memberCrew.getMember().getName())
                     .email(memberCrew.getMember().getEmail())
+                    .imageUrl(memberCrew.getMember().getImageUrl())
                     .isJoined(memberCrew.getIsJoined())
                     .isInvited(memberCrew.getIsInvited())
                     .position(memberCrew.getPosition())
-                    .build();
+                    .attendanceCount(memberCrew.getAttendanceCount())
+                    .build()
+            );
 
-            if (item.isJoined() && item.isInvited()) {
-                crewIsJoinedMemberList.add(item);
-            } else if (!item.isJoined() && item.isInvited()) {
-                crewIsInvitedMemberList.add(item);
-            }
         }
 
         // CrewMemberItemResponse 객체 생성 및 반환
         return CrewMemberItemResponse.builder()
-                .crewIsJoinedMemberList(crewIsJoinedMemberList)
-                .crewIsInvitedMemberList(crewIsInvitedMemberList)
+                .crewMemberList(crewMemberItemList)
+                .pageNo(memberCrewPage.getNumber())
+                .lastPageNo(memberCrewPage.getTotalPages() - 1)
                 .build();
 
     }

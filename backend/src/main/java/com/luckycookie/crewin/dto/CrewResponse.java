@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -130,21 +129,23 @@ public class CrewResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class CrewMemberItem {
+        private Long memberId;
         private String nickname; // 닉네임
         private String name; // 이름
         private String email; // 이메일
+        private String imageUrl; // 프로필사진 url
         private boolean isJoined; // 가입 여부
         private boolean isInvited; // 초대 여부
         private Position position; // 직급
+        private int attendanceCount; // 크루 세션 참여 횟수
     }
 
     @Getter
-    @Builder
+    @SuperBuilder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class CrewMemberItemResponse {
-        List<CrewMemberItem> crewIsJoinedMemberList; // 일반 회원
-        List<CrewMemberItem> crewIsInvitedMemberList; // 대기 중인 회원
+    public static class CrewMemberItemResponse extends CrewItemBaseResponse {
+        List<CrewMemberItem> crewMemberList; // 일반 회원
     }
 
 }

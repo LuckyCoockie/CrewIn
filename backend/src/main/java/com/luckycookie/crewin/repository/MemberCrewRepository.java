@@ -4,8 +4,11 @@ import com.luckycookie.crewin.domain.Crew;
 import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.domain.MemberCrew;
 import com.luckycookie.crewin.domain.enums.Position;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -38,4 +41,15 @@ public interface MemberCrewRepository extends JpaRepository<MemberCrew, Long> {
     @Query("SELECT mc FROM MemberCrew mc WHERE mc.member = :member and mc.isJoined = true")
     List<MemberCrew> findCrewByMemberAndIsJoined(Member member);
 
+    @Query("SELECT mc FROM MemberCrew mc " +
+            "WHERE mc.crew = :crew " +
+            "ORDER BY " +
+            "CASE WHEN mc.isJoined = false AND mc.isInvited = false THEN 0 " +
+            "     WHEN mc.isJoined = false AND mc.isInvited = true THEN 1 " +
+            "     ELSE 2 END, " +
+            "mc.id")
+    Page<MemberCrew> findByCrewOrderByJoinedAndInvitedStatus(
+            @Param("crew") Crew crew,
+            Pageable pageable
+    );
 }
