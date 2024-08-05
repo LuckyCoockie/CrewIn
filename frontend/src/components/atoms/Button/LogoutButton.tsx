@@ -6,7 +6,7 @@ type Props = {
 };
 
 const LogoutButton: React.FC<Props> = ({ logout }) => {
-  return <LogoutIcon onClick={logout} />;
+  return <LogoutIcon onClick={logout} className="cursor-pointer" />;
 };
 
 export default LogoutButton;

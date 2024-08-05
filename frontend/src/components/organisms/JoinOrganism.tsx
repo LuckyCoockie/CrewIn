@@ -11,6 +11,7 @@ import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 
 import {
   getEmailDuplicationCheck,
+  getNicknameDuplicationCheck,
   postMemberCheck,
   getCodeCheck,
   joinMember,
@@ -19,7 +20,7 @@ import {
 import { useNavigate } from "react-router";
 
 // 비밀번호 규칙 설정
-const passwordRules = /^(?=.*[a-z])(?=.*[A-Z]).{0,}$/;
+const passwordRules = /^(?=.*[a-zA-Z])(?=.*[0-9]).{0,}$/;
 
 // yup 스키마 정의
 const schema = yup.object({
@@ -46,7 +47,7 @@ const schema = yup.object({
     .string()
     .required("비밀번호를 입력해주세요.")
     .matches(passwordRules, {
-      message: "소문자와 대문자를 각각 하나 이상 포함해야 합니다.",
+      message: "영문과 숫자를 각각 하나 이상 포함해야 합니다.",
     })
     .min(4, "비밀번호는 최소 4자입니다.")
     .max(60, "비밀번호는 최대 60자입니다."),
@@ -57,7 +58,22 @@ const schema = yup.object({
   nickname: yup
     .string()
     .max(10, "최대 10자 입니다.")
-    .required("닉네임을 입력해주세요."),
+    .required("닉네임을 입력해주세요.")
+    .test(
+      "nicknameDuplicationCheck",
+      "이미 사용 중인 닉네임입니다.",
+      async (value) => {
+        if (!value) return true;
+        try {
+          const { duplicated } = await getNicknameDuplicationCheck({
+            nickname: value,
+          });
+          return !duplicated;
+        } catch (error) {
+          return false;
+        }
+      }
+    ),
   name: yup
     .string()
     .max(30, "이름은 최대 30자입니다.")
@@ -203,7 +219,7 @@ const LoginOrganism: React.FC = () => {
             <InputPasswordTypeMolecule
               id="password"
               title="비밀번호"
-              placeholder="소문자, 대문자 조합 4~60자"
+              placeholder="영문, 숫자 조합 4~60자"
               {...field}
               error={errors.password?.message}
               hasError={!!errors.password}

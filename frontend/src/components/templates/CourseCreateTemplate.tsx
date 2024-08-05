@@ -10,7 +10,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../atoms/Button/LargeAbleButton";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import html2canvas from "html2canvas";
 import canvg from "canvg";
 
@@ -19,26 +19,32 @@ import {
   directionApiWithWayPoints,
 } from "../../util/maps/tmap/apis/api/directionApi";
 import {
+  addMarker,
+  updateMarkerList,
   addPolyline,
   clearPolyline,
   moveToCenter,
   useNaverMapDispatch,
+  clearMarker,
+  focusMarker,
 } from "../../util/maps/naver_map/context";
 
 type OwnProps = {
-  initPosition: Point;
+  initPosition?: Point;
+  initValue?: FormValues;
   onSave: ({ polylines, markers, title, image }: FormValues) => Promise<void>;
 };
 
 type FormValues = {
   title: string;
-  markers: Point[];
+  markers: { title: string; point: Point }[];
   polylines?: Point[][];
   length?: number;
   image?: File;
 };
 
 const CourseCreateTemplate: React.FC<OwnProps> = ({
+  initValue,
   initPosition,
   onSave,
 }: OwnProps) => {
@@ -51,8 +57,11 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
       .array()
       .of(
         yup.object().shape({
-          latitude: yup.number().required(),
-          longitude: yup.number().required(),
+          title: yup.string().required(),
+          point: yup.object().shape({
+            latitude: yup.number().required(),
+            longitude: yup.number().required(),
+          }),
         })
       )
       .min(2, "2개 이상의 경유지를 선택해주세요")
@@ -82,7 +91,7 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
     dispatch(moveToCenter(mapDim));
     dispatch(clearPolyline());
     const directions = await directionApiWithWayPoints(
-      data.markers,
+      data.markers.map((marker) => marker.point),
       (direction) => {
         dispatch(addPolyline(direction.polyline));
       }
@@ -113,7 +122,7 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
   });
 
   const setMarkers = useCallback(
-    (markers: Point[]) => {
+    (markers: { title: string; point: Point }[]) => {
       setValue("markers", markers);
     },
     [setValue]
@@ -189,13 +198,35 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
     }
   };
 
+  useEffect(() => {
+    dispatch(clearMarker());
+    dispatch(clearPolyline());
+    if (!initValue) return;
+    setValue("title", initValue.title);
+    initValue.markers.forEach(({ title, point }) => {
+      dispatch(
+        addMarker({
+          longitude: point.longitude,
+          latitude: point.latitude,
+          title: title,
+          ondragend: () => dispatch(updateMarkerList()),
+        })
+      );
+    });
+    dispatch(focusMarker(0));
+  }, [dispatch, initValue, setValue]);
+
   return (
     <div className="mx-auto w-full max-w-[550px] pb-10">
-      <div className="flex justify-center relative">
+      <div className="flex justify-center relative overflow-hidden">
         <div ref={captureRef}>
           <NaverMap
-            lng={initPosition.longitude}
-            lat={initPosition.latitude}
+            initPosition={
+              initPosition && {
+                lat: initPosition?.latitude,
+                lng: initPosition?.longitude,
+              }
+            }
             onChange={setMarkers}
           />
         </div>

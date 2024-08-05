@@ -18,7 +18,6 @@ export type PostDto = {
 export type GetCrewGalleryListDetailReqeustParams = {
   postId: number;
   direction: "increase" | "decrease";
-  offset: number;
 };
 
 export type GetCrewGalleryListDetailReqeustDto = {
@@ -33,7 +32,7 @@ export type GetCrewGalleryListDetailResponseDto = {
 export const getCrewGallaryDetailList = async (
   dto: GetCrewGalleryListDetailReqeustDto
 ): Promise<GetCrewGalleryListDetailResponseDto> => {
-  const response = await api.get(`/crew/gallery/${dto.crewId}`, {
+  const response = await api.get(`/crew/gallery/detail/${dto.crewId}`, {
     params: dto.params,
   });
   return response.data;

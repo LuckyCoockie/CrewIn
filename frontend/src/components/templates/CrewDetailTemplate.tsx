@@ -11,33 +11,19 @@ import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism"
 
 import GroupsButton from "../atoms/Button/GroupsButton";
 import MemberPlusButton from "../atoms/Button/MemberPlusButton";
-
 import {
-  CrewInfoDto,
-  CrewNoticeDto,
-  CrewGalleryDto,
-  GetCrewInfoRequestDto,
-  GetCrewGalleryListRequestDto,
-  GetCrewNoticeListRequestDto,
+  getCrewInfo,
+  getCrewNoticeList,
+  getCrewGalleryList,
 } from "../../apis/api/crewdetail";
+import { getMyCrews } from "../../apis/api/mycrew";
+import { useParams } from "react-router";
 
-type OwnDetailProps = {
-  fetchInfoData: (dto: GetCrewInfoRequestDto) => Promise<CrewInfoDto>;
-  fetchNoticeData: (
-    dto: GetCrewNoticeListRequestDto
-  ) => Promise<CrewNoticeDto[]>;
-  fetchGalleryData: (
-    dto: GetCrewGalleryListRequestDto
-  ) => Promise<CrewGalleryDto[]>;
-};
-
-const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
-  fetchInfoData,
-  fetchNoticeData,
-  fetchGalleryData,
-}) => {
+const CrewDetailTemplate: React.FC = () => {
   const [currentTab, setCurrentTab] = useState<string>("정보");
-  const crewId = 1;
+  const { crewId } = useParams<{ crewId: string }>();
+  const numericCrewId = Number(crewId);
+
   const pageNo = 0;
 
   // 크루 정보를 가져오는 React Query 훅
@@ -45,47 +31,84 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
     data: infoData,
     isLoading: infoLoading,
     error: infoError,
-  } = useQuery(["crewInfo", { crewId }], () => fetchInfoData({ crewId }));
+  } = useQuery(["crewInfo", { crewId }], () =>
+    getCrewInfo({ crewId: numericCrewId })
+  );
 
-  // 크루 공지사항을 가져오는 React Query 훅
+  // 내 크루 목록을 가져오는 React Query 훅
+  const {
+    data: myCrewsData,
+    isLoading: myCrewsLoading,
+    error: myCrewsError,
+  } = useQuery("myCrews", getMyCrews);
+
+  const userCrew = myCrewsData?.crews.find(
+    (crew) => crew.crewId === numericCrewId
+  );
+
+  const isUserCrewMember = !!userCrew;
+  const userPosition = userCrew?.position;
+
+  console.log("isUserCrewMember:", isUserCrewMember);
+  console.log("userPosition:", userPosition);
+
+  // 공지사항과 사진첩을 가져오는 React Query 훅
   const {
     data: noticeData,
     isLoading: noticeLoading,
     error: noticeError,
-  } = useQuery(["crewNotice", { crewId, pageNo }], () =>
-    fetchNoticeData({ crewId, pageNo })
+  } = useQuery(
+    ["crewNotice", { crewId, pageNo }],
+    () =>
+      getCrewNoticeList({ crewId: numericCrewId, pageNo }).then(
+        (data) => data.crewNoticeList
+      ),
+    {
+      enabled: isUserCrewMember, // isUserCrewMember가 true일 때만 호출
+    }
   );
 
-  // 크루 사진첩을 가져오는 React Query 훅
   const {
     data: galleryData,
     isLoading: galleryLoading,
     error: galleryError,
-  } = useQuery(["crewGallery", { crewId, pageNo }], () =>
-    fetchGalleryData({ crewId, pageNo })
+  } = useQuery(
+    ["crewGallery", { crewId, pageNo }],
+    () =>
+      getCrewGalleryList({ crewId: numericCrewId, pageNo }).then(
+        (data) => data.crewGalleryList
+      ),
+    {
+      enabled: isUserCrewMember, // isUserCrewMember가 true일 때만 호출
+    }
   );
 
-  // 로그 출력
-  console.log("infoData", infoData);
-  console.log("noticeData", noticeData);
-  console.log("galleryData", galleryData);
-
-  // 오류 로그 출력
-  if (infoError) console.error("infoError", infoError);
-  if (noticeError) console.error("noticeError", noticeError);
-  if (galleryError) console.error("galleryError", galleryError);
-
   const handleTabClick = (tab: string) => {
+    console.log("Tab clicked:", tab);
     setCurrentTab(tab);
   };
 
   const renderTab = () => {
-    if (infoLoading || noticeLoading || galleryLoading) {
+    if (infoLoading || noticeLoading || galleryLoading || myCrewsLoading) {
       return <div>Loading...</div>;
     }
 
-    if (infoError || noticeError || galleryError) {
+    if (infoError || noticeError || galleryError || myCrewsError) {
       return <div>Error loading data</div>;
+    }
+
+    if (!isUserCrewMember) {
+      return (
+        <CrewInfoOrganism
+          crewname={infoData!.crewName}
+          captain={infoData!.captainName}
+          slogan={infoData!.slogan}
+          area={infoData!.area}
+          birth={infoData!.crewBirth}
+          people={infoData!.crewCount}
+          introduction={infoData!.introduction}
+        />
+      );
     }
 
     switch (currentTab) {
@@ -138,15 +161,24 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
 
   return (
     <>
-      <CrewHeaderBarOrganism />
+      {!myCrewsLoading && !myCrewsError && myCrewsData && (
+        <CrewHeaderBarOrganism crewList={myCrewsData.crews} />
+      )}
       <header>
         <BackHeaderMediumOrganism
           text={infoData ? infoData.crewName : "Loading..."}
         />
         <div className="flex ms-auto">
-          <GroupsButton />
-          <MemberPlusButton />
-          <EditDeleteDropdownOrganism />
+          {isUserCrewMember && <GroupsButton />}
+          {isUserCrewMember && userPosition === "CAPTAIN" && (
+            <>
+              <MemberPlusButton />
+              <EditDeleteDropdownOrganism
+                type="CREW"
+                idData={infoData?.crewId}
+              />
+            </>
+          )}
         </div>
       </header>
       <ThreeToTwoImageMolecule
@@ -154,11 +186,13 @@ const CrewDetailTemplate: React.FC<OwnDetailProps> = ({
         alt="crewbanner"
       />
       <div>
-        <NavTabMolecule
-          texts={texts}
-          onTabClick={handleTabClick}
-          currentTab={currentTab}
-        />
+        {isUserCrewMember && (
+          <NavTabMolecule
+            texts={texts}
+            onTabClick={handleTabClick}
+            currentTab={currentTab}
+          />
+        )}
         {renderTab()}
       </div>
     </>

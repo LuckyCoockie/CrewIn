@@ -16,6 +16,9 @@ import LargeAbleButton from "../../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../../atoms/Button/LargeDisableButton";
 
 import { uploadImage } from "../../../apis/api/presigned";
+import { createNotice } from "../../../apis/api/crewdetail";
+
+import { useParams } from "react-router-dom";
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({
@@ -29,6 +32,10 @@ type FormValues = {
 };
 
 const NoticeCreateTemplate: React.FC = () => {
+  // 크루 공지사항 생성 페이지로 이동할 경우
+  const { crewId } = useParams<{ crewId: string }>();
+  console.log(crewId);
+
   const {
     control,
     handleSubmit,
@@ -55,7 +62,7 @@ const NoticeCreateTemplate: React.FC = () => {
     const urls = await checkUndefined(croppedFiles);
 
     const submitData = {
-      crewId: 1,
+      crewId: Number(crewId),
       title: data.title,
       content: data.content,
       noticeImages: urls,
@@ -63,6 +70,7 @@ const NoticeCreateTemplate: React.FC = () => {
 
     console.log(submitData);
     // 여기에 API 호출 코드를 추가
+    createNotice(submitData);
   };
 
   const [imagePaths, setImagePaths] = useState<string[]>([]);

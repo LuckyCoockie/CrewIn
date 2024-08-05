@@ -13,12 +13,10 @@ import { regions } from "../../regions";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 
-import {
-  CrewCreateDto,
-  postCreateCrew,
-} from "../../apis/api/crewcreate";
+import { CrewCreateDto, postCreateCrew } from "../../apis/api/crewcreate";
 
 import { uploadImage } from "../../apis/api/presigned";
+import { useNavigate } from "react-router";
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({
@@ -53,7 +51,8 @@ type FormValues = {
   district: string;
 };
 
-const CrewCreatePage: React.FC = () => {
+const CrewCreateOrganism: React.FC = () => {
+  const navigate = useNavigate();
   const [selectedCity, setSelectedCity] = useState<string>("");
 
   const {
@@ -78,7 +77,6 @@ const CrewCreatePage: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    
     Promise.all([
       checkUndefined(data.main_logo),
       checkUndefined(data.sub_logo),
@@ -106,12 +104,15 @@ const CrewCreatePage: React.FC = () => {
         // 제출 API
         return postCreateCrew(submitData); // 제출 API 호출
       })
-      .then(() => {
+      .then((response) => {
         console.log("Crew created successfully");
-        // 성공 시 처리
+        console.log(response.crewId);
+
+        // 성공 시 크루 Detail페이지로 이동
+        navigate(`/crew/detail/${response.crewId}`);
       })
       .catch((error) => {
-        console.error("Image upload failed:", error);
+        console.error("Crew created fail:", error);
       });
   };
 
@@ -309,4 +310,4 @@ const CrewCreatePage: React.FC = () => {
   );
 };
 
-export default CrewCreatePage;
+export default CrewCreateOrganism;

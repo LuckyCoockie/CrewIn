@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import CrewCreatePage from "./pages/CrewCreatePage";
 import PostCreatePage from "./pages/PostCreatePage";
-import CourseCreatePage from "./pages/CourseCreatePage";
+import CourseCreatePage from "./pages/course/CourseCreatePage.tsx";
 import LoginPage from "./pages/LoginPage";
 import SessionCreatePage from "./pages/SessionCreatePage";
 import SessionPage from "./pages/SessionPage";
@@ -27,6 +27,8 @@ import CrewMemberSearchPage from "./pages/CrewMemberSearchPage.tsx";
 import CaptainPovCrewMemberPage from "./pages/CaptainPovCrewMemberPage.tsx";
 import CaptainPovCrewMemberSearchPage from "./pages/CaptainPovCrewMemberSearchPage.tsx";
 import PostEditPage from "./pages/PostEditPage.tsx";
+import CourseEditPage from "./pages/course/CourseEditPage.tsx";
+import CoursePage from "./pages/course/CoursePage.tsx";
 // import { getMyCrews } from "./apis/api/mycrew";
 
 const loader = async () => {
@@ -67,8 +69,14 @@ export const router = createBrowserRouter([
                 path: "gallary/:crewId",
                 element: <CrewGallaryListDetailPage />,
               },
-              { path: "detail/:crewId", element: <CrewDetailPage /> },
-              { path: "noticecreate", element: <NoticeCreatePage /> },
+              {
+                path: "detail/:crewId",
+                element: <CrewDetailPage />,
+              },
+              {
+                path: "detail/:crewId/noticecreate",
+                element: <NoticeCreatePage />,
+              },
               { path: "member", element: <CrewMemberPage /> },
               { path: "member/captain", element: <CaptainPovCrewMemberPage /> },
               { path: "membersearch", element: <CrewMemberSearchPage /> },
@@ -80,7 +88,20 @@ export const router = createBrowserRouter([
           },
           { path: "profile", element: <ProfilePage /> },
           { path: "info", element: <ProfileInfoPage /> },
-          { path: "course", element: <CourseCreatePage /> },
+          {
+            path: "course",
+            element: <CoursePage />,
+            children: [
+              {
+                path: "create",
+                element: <CourseCreatePage />,
+              },
+              {
+                path: ":courseId/edit",
+                element: <CourseEditPage />,
+              },
+            ],
+          },
           { path: "post", element: <PostCreatePage /> },
           { path: "post/:id/edit", element: <PostEditPage /> },
           { path: "searchuser", element: <SearchUserPage /> },

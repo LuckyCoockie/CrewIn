@@ -4,7 +4,6 @@ import { useInfiniteQuery } from "react-query";
 type FetchParams = {
   postId: number;
   direction: "increase" | "decrease";
-  offset: number;
 };
 
 export interface ItemComponentProps<T extends { id: number }> {
@@ -41,8 +40,7 @@ const TwoWayInfiniteScrollComponent = <T extends { id: number }>({
     ({
       pageParam = {
         postId: postId,
-        direction: "decrease",
-        offset: 5,
+        direction: "increase",
       },
     }) => fetchData(pageParam),
     {
@@ -51,14 +49,12 @@ const TwoWayInfiniteScrollComponent = <T extends { id: number }>({
         return {
           postId: lastPage[lastPage.length - 1].id,
           direction: "increase",
-          offset: 5,
         };
       },
       getPreviousPageParam: (firstPage) => {
         return {
           postId: firstPage[0].id,
           direction: "decrease",
-          offset: 5,
         };
       },
     }

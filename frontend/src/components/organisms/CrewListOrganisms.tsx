@@ -5,8 +5,8 @@ import qs from "query-string";
 import { GetCrewListRequestDto } from "../../apis/api/crewlist";
 
 type CrewData = {
-  id: number;
-  name: string;
+  crewId: number;
+  crewName: string;
   slogan: string;
   area: string;
   crewCount: number;
@@ -23,23 +23,24 @@ const CrewListComponent: React.FC<OwnProps> = ({ fetchData }) => {
 
   const handleFetchData = useCallback(
     (page: number) => {
-      return fetchData({ query: query.query, pageNo: page.toString() });
+      return fetchData({ query: query.query ?? "", pageNo: page.toString() });
     },
     [fetchData, query.query]
   );
 
   return (
     <InfiniteScrollComponent
-      className="grid grid-cols-2 gap-2 xs:gap-4 mb-2 xs:mb-4"
-      fetchKey={["CrewList"]}
+      className="grid grid-cols-2 gap-2 xs:gap-4 mb-2 xs:mb-4 w-full"
+      fetchKey={["CrewList", query.query ?? ""]}
       fetchData={handleFetchData}
-      pageSize={6}
+      pageSize={10}
       initPage={parseInt(query.pageNo ?? "1")}
       ItemComponent={({ data }) => (
         <CrewListItem
-          key={data.id}
+          key={data.crewId}
+          crewId={data.crewId}
           imageUrl={data.imageUrl}
-          title={data.name}
+          title={data.crewName}
           description={data.slogan}
           captain={data.captainName}
           location={data.area}
