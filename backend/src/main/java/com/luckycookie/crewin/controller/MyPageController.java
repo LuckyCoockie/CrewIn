@@ -3,7 +3,6 @@ package com.luckycookie.crewin.controller;
 import com.luckycookie.crewin.dto.MyPageRequest;
 import com.luckycookie.crewin.dto.MyPageRequest.MyPageNicknameRequest;
 import com.luckycookie.crewin.dto.MyPageResponse;
-import com.luckycookie.crewin.dto.MyPageResponse.MyProfileResponse;
 import com.luckycookie.crewin.dto.PostResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.security.dto.CustomUser;
@@ -24,12 +23,6 @@ public class MyPageController {
 
     private final MyPageService myPageService;
     private final PostService postService;
-
-    // 내 프로필 조회
-    @GetMapping()
-    public ResponseEntity<BaseResponse<MyProfileResponse>> getMyProfile(@AuthenticationPrincipal CustomUser customUser) {
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "내 프로필 조회를 성공했습니다.", myPageService.getMyProfile(customUser)));
-    }
 
     // 내가 만든 세션 조회
     @GetMapping("/session")

@@ -53,4 +53,17 @@ public class MemberResponse {
         List<MemberItem> members;
     }
 
+    @Getter
+    @NoArgsConstructor
+    @Builder
+    @AllArgsConstructor
+    public static class MemberProfileResponse {
+        private String imageUrl;
+        private String nickname;
+        private String name; // 사용자 이름
+        private int totalDistance;
+        private int totalTime;
+        private int totalAttendance;
+    }
+
 }
