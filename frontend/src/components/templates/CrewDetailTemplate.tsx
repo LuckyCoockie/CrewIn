@@ -76,7 +76,7 @@ const CrewDetailTemplate: React.FC = () => {
     ["crewGallery", { crewId, pageNo }],
     () =>
       getCrewGalleryList({ crewId: numericCrewId, pageNo }).then(
-        (data) => data.crewGalleryList
+        (data) => data.postGalleryList
       ),
     {
       enabled: isUserCrewMember, // isUserCrewMember가 true일 때만 호출
@@ -135,7 +135,7 @@ const CrewDetailTemplate: React.FC = () => {
       case "사진첩":
         return galleryData ? (
           <CrewAlbumOrganism
-            photos={galleryData.flatMap((gallery) => gallery.imageUrls)}
+            photos={galleryData.flatMap((gallery) => gallery.thumbnailImage)}
           />
         ) : (
           <div>No Gallery Data</div>

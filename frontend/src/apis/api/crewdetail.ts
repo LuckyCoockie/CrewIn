@@ -100,7 +100,7 @@ export const deleteNotice = async (noticeId: number): Promise<void> => {
 // 크루 사진첩 조회
 export type CrewGalleryDto = {
   postId: number;
-  imageUrls: string[];
+  thumbnailImage: string;
 };
 
 export type GetCrewGalleryListRequestDto = {
@@ -109,7 +109,7 @@ export type GetCrewGalleryListRequestDto = {
 };
 
 export type GetCrewGalleryListResponseDto = {
-  crewGalleryList: CrewGalleryDto[];
+  postGalleryList: CrewGalleryDto[];
   pageNo: number;
   lastPageNo: number;
 };
