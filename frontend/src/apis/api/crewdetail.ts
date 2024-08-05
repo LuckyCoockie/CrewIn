@@ -51,9 +51,9 @@ export type GetCrewNoticeListResponseDto = {
 export const getCrewNoticeList = async (
   dto: GetCrewNoticeListRequestDto
 ): Promise<GetCrewNoticeListResponseDto> => {
-  const response = await api.get(`/crew/notice/${dto.crewId}`, {
-    params: { pageNo: dto.pageNo },
-  });
+  const response = await api.get(
+    `/crew/notice/${dto.crewId}?page-no=${dto.pageNo}`
+  );
   return response.data;
 };
 
@@ -119,9 +119,9 @@ export const getCrewGalleryList = async (
 ): Promise<GetCrewGalleryListResponseDto> => {
   console.log(dto);
 
-  const response = await api.get(`/post/crew/gallery/${dto.crewId}`, {
-    params: { pageNo: dto.pageNo },
-  });
+  const response = await api.get(
+    `/post/crew/gallery/${dto.crewId}?page-no=${dto.pageNo}`
+  );
   return response.data;
 };
 
