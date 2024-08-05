@@ -22,6 +22,8 @@ public class QMemberCrew extends EntityPathBase<MemberCrew> {
 
     public static final QMemberCrew memberCrew = new QMemberCrew("memberCrew");
 
+    public final NumberPath<Integer> attendanceCount = createNumber("attendanceCount", Integer.class);
+
     public final QCrew crew;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);

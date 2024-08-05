@@ -14,7 +14,7 @@ import org.hibernate.annotations.DynamicInsert;
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert
-@Table(name="membercrew")
+@Table(name = "membercrew")
 public class MemberCrew {
 
     @Id
@@ -36,8 +36,10 @@ public class MemberCrew {
 
     private Boolean isInvited;
 
+    private int attendanceCount;
+
     public void updateMemberCrewInvitation(Boolean replyStatus) {
-        if(replyStatus) { // 이때는 수락
+        if (replyStatus) { // 이때는 수락
             this.isInvited = true;
             this.isJoined = true; // 멤버 가입 완료
         } else { // 거절
