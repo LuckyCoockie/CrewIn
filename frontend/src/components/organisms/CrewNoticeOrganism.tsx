@@ -26,8 +26,6 @@ const CrewNoticeOrganism: React.FC<NoticesProps> = ({ notices }) => {
   const totalItems = Math.ceil(notices.length / itemsPerPage);
   const navigate = useNavigate();
   const handleRouter = () => {
-    console.log(crewId);
-    
     navigate(`/crew/detail/${crewId}/noticecreate`);
   };
 
