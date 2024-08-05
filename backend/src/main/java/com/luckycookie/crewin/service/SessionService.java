@@ -1,7 +1,6 @@
 package com.luckycookie.crewin.service;
 
 import com.luckycookie.crewin.domain.*;
-import com.luckycookie.crewin.domain.enums.Position;
 import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.*;
 import com.luckycookie.crewin.dto.SessionImageResponse.SessionGalleryItem;
@@ -13,7 +12,6 @@ import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.memberSession.DuplicateApplyException;
-import com.luckycookie.crewin.exception.memberSession.InvalidSessionRequestException;
 import com.luckycookie.crewin.exception.memberSession.NotFoundMemberSessionException;
 import com.luckycookie.crewin.exception.session.InvalidSessionException;
 import com.luckycookie.crewin.exception.session.NotFoundSessionException;
@@ -22,7 +20,6 @@ import com.luckycookie.crewin.exception.session.SessionInProgressException;
 import com.luckycookie.crewin.exception.sessionImage.SessionImageUploadException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
-import jakarta.persistence.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -325,7 +322,7 @@ public class SessionService {
 
         // 이미 진행된 세션은 참가 취소 불가능
         if (session.getStartAt().isBefore(LocalDateTime.now())) {
-            throw new InvalidSessionRequestException();
+            throw new InvalidSessionException();
         }
 
         memberSessionRepository.delete(memberSession);
