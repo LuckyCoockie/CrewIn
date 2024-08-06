@@ -1,6 +1,6 @@
 import api from "../utils/instance";
 
-export type MemberDto = {
+export type CrewMemberDto = {
   memberId: number;
   name: string;
   nickname: string;
@@ -18,7 +18,7 @@ export type SearchInviteMemberRequestDto = {
 export type SearchInviteMemberResponseDto = {
   pageNo: number;
   lastPageNo: number;
-  items: MemberDto[];
+  items: CrewMemberDto[];
 };
 
 export const searchInviteMember = async (

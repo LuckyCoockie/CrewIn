@@ -60,7 +60,7 @@ const PostMainPage: React.FC = () => {
           fetchKey="postData"
           fetchData={fetchPostData}
           ItemComponent={(props: ItemComponentProps<PostDto>) => (
-            <PostItemComponent {...props} />
+            <PostItemComponent key={props.data.id} {...props} />
           )}
           className="post-list"
         />
