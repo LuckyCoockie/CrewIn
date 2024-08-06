@@ -8,6 +8,7 @@ type OwnProps = {
 export const usePWAPrompt = ({ onAccepted, onReject }: OwnProps) => {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const isInstalled = useMemo(() => deferredPrompt === null, [deferredPrompt]);
+  const isPWA = window.matchMedia("(display-mode: standalone)").matches;
 
   useEffect(() => {
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -42,9 +43,9 @@ export const usePWAPrompt = ({ onAccepted, onReject }: OwnProps) => {
 
   const handleOpenAppClick = () => {
     if (isInstalled) {
-      window.location.href = "CREW-IN://";
+      window.location.href = "webapp://open?name=CREW-IN";
     }
   };
 
-  return [isInstalled, handleInstallClick, handleOpenAppClick] as const;
+  return [isInstalled, isPWA, handleInstallClick, handleOpenAppClick] as const;
 };
