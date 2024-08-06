@@ -142,10 +142,12 @@ public class MemberService {
         Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
 
         // 입력받은 memberId 랑 같으면 현재 로그인한 사용자 (내 프로필 조회)
-        if(memberId != null) {
+        if (memberId != null) {
             // 입력받은 memberId 랑 다르면 다른 사용자 (다른 사용자 프로필 조회)
             member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         }
+
+        String email = (memberId == null) ? member.getEmail() : null;
 
         return MemberProfileResponse
                 .builder()
@@ -153,6 +155,7 @@ public class MemberService {
                 .totalDistance(member.getTotalDistance())
                 .totalTime(member.getTotalTime())
                 .imageUrl(member.getImageUrl())
+                .email(email)
                 .nickname(member.getNickname())
                 .name(member.getName())
                 .build();

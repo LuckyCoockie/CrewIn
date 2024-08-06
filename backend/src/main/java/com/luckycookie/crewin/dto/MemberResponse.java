@@ -49,7 +49,7 @@ public class MemberResponse {
     @SuperBuilder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class MemberSearchResponse extends MemberItemBaseResponse{
+    public static class MemberSearchResponse extends MemberItemBaseResponse {
         List<MemberItem> members;
     }
 
@@ -60,6 +60,7 @@ public class MemberResponse {
     public static class MemberProfileResponse {
         private String imageUrl;
         private String nickname;
+        private String email;
         private String name; // 사용자 이름
         private int totalDistance;
         private int totalTime;
