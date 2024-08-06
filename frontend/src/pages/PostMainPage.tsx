@@ -15,7 +15,8 @@ import {
   GetPostListResponseDto,
   PostDto,
 } from "../apis/api/postlist";
-import { PWAInstallPrompt } from "../components/templates/PWAInstallPrompt";
+import { PWAInstallPrompt } from "../components/templates/pwa/PWAInstallPrompt";
+import { PWAOpenAppPrompt } from "../components/templates/pwa/PWAOpenAppPrompt";
 
 const PostMainPage: React.FC = () => {
   const navigate = useNavigate();
@@ -69,6 +70,7 @@ const PostMainPage: React.FC = () => {
         <Postcreateicon />
       </FloatingActionButton>
       <PWAInstallPrompt />
+      <PWAOpenAppPrompt />
     </div>
   );
 };
