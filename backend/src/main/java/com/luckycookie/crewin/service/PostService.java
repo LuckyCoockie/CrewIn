@@ -140,6 +140,7 @@ public class PostService {
                 .isHearted(heartRepository.existsByPostAndMember(post, viewer))
                 .isPublic(post.getIsPublic())
                 .postType(post.getPostType())
+                .profileImage(post.getAuthor().getImageUrl())
                 .postImages(post.getPostImages().stream().map(PostImage::getImageUrl).toList())
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
