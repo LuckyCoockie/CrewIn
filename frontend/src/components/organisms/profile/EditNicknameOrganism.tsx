@@ -6,6 +6,7 @@ import LargeAbleButton from "../../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../../atoms/Button/LargeDisableButton";
 import ModalMolecules from "../../molecules/ModalMolecules";
 import InputTextTypeMolecule from "../../molecules/Input/InputTextTypeMolecule";
+import { getNicknameDuplicationCheck } from "../../../apis/api/signup";
 
 type FormValues = {
   nickname: string;
@@ -21,7 +22,22 @@ const schema = yup.object({
   nickname: yup
     .string()
     .max(10, "최대 10자 입니다.")
-    .required("닉네임을 입력해주세요."),
+    .required("닉네임을 입력해주세요.")
+    .test(
+      "nicknameDuplicationCheck",
+      "이미 사용 중인 닉네임입니다.",
+      async (value) => {
+        if (!value) return true;
+        try {
+          const { duplicated } = await getNicknameDuplicationCheck({
+            nickname: value,
+          });
+          return !duplicated;
+        } catch (error) {
+          return false;
+        }
+      }
+    ),
 });
 
 export const EditNicknameOrganism = ({ init, onClose, onEdit }: OwnProps) => {
