@@ -1,8 +1,6 @@
 package com.luckycookie.crewin.controller;
 
-import com.luckycookie.crewin.dto.CrewResponse;
 import com.luckycookie.crewin.dto.PostRequest;
-import com.luckycookie.crewin.dto.PostResponse;
 import com.luckycookie.crewin.dto.PostResponse.PostGalleryItem;
 import com.luckycookie.crewin.dto.PostResponse.PostItem;
 import com.luckycookie.crewin.dto.base.BaseResponse;
@@ -89,6 +87,13 @@ public class PostController {
     @GetMapping("/member/gallery/detail/{member-id}")
     public ResponseEntity<BaseResponse<PagingItemsResponse<PostItem>>> getMemberGalleryDetailList(@AuthenticationPrincipal CustomUser customUser, @PathVariable("member-id") Long memberId, @RequestParam("post-id") Long postId, @RequestParam String direction) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "멤버 사진첩 상세 조회를 성공했습니다.", postService.getMemberPostGalleryDetailResponse(memberId, postId, direction, customUser)));
+    }
+
+    //게시글 좋아요
+    @GetMapping("/heart/{post-id}")
+    public ResponseEntity<BaseResponse<Void>> registHeartAtPost(@AuthenticationPrincipal CustomUser customUser, @PathVariable("post-id") Long postId) {
+        postService.registHeart(postId, customUser);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "게시글에 좋아요를 등록했습니다."));
     }
 
 }

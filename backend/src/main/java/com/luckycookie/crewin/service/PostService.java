@@ -1,6 +1,7 @@
 package com.luckycookie.crewin.service;
 
 import com.luckycookie.crewin.domain.*;
+import com.luckycookie.crewin.domain.enums.NotificationType;
 import com.luckycookie.crewin.domain.enums.PostType;
 import com.luckycookie.crewin.dto.PostRequest.UpdatePostRequest;
 import com.luckycookie.crewin.dto.PostRequest.WritePostRequest;
@@ -37,6 +38,8 @@ public class PostService {
     private final HeartRepository heartRepository;
     private final PostImageRepository postImageRepository;
     private final MemberCrewRepository memberCrewRepository;
+
+    private final NotificationService notificationService;
 
     public void writePost(WritePostRequest writePostRequest, CustomUser customUser) {
 
@@ -280,5 +283,18 @@ public class PostService {
                 .build();
 
     }
+
+    public void registHeart(Long postId, CustomUser customUser) {
+
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+        Post post = postRepository.findById(postId)
+                        .orElseThrow(NotFoundPostException::new);
+        // 좋아요 등록
+        heartRepository.save(Heart.builder().post(post).member(member).build());
+        // 알림 생성
+        notificationService.createNotification(NotificationType.LIKE, member.getId(), post.getAuthor().getId(), post.getId());
+    }
+
 
 }
