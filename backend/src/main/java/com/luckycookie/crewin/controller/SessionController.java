@@ -3,6 +3,8 @@ package com.luckycookie.crewin.controller;
 import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.*;
 import com.luckycookie.crewin.dto.SessionRequest.UploadSessionImageRequest;
+import com.luckycookie.crewin.dto.SessionResponse.SessionDetailResponse;
+import com.luckycookie.crewin.dto.SessionResponse.SessionGalleryItem;
 import com.luckycookie.crewin.dto.SessionResponse.SessionItem;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.dto.base.PagingItemsResponse;
@@ -71,7 +73,7 @@ public class SessionController {
 
     // 세션 사진첩(갤러리) 조회 - 페이징
     @GetMapping("/detail/gallery/{session-id}")
-    public ResponseEntity<BaseResponse<PagingItemsResponse<SessionImageResponse.SessionGalleryItem>>> getSessionGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable("session-id") Long sessionId, @RequestParam("page-no") int pageNo) {
+    public ResponseEntity<BaseResponse<PagingItemsResponse<SessionGalleryItem>>> getSessionGalleryList(@AuthenticationPrincipal CustomUser customUser, @PathVariable("session-id") Long sessionId, @RequestParam("page-no") int pageNo) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 사진첩 조회를 성공했습니다.", sessionService.getSessionGallery(pageNo, sessionId, customUser)));
     }
 

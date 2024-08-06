@@ -4,7 +4,6 @@ import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.Position;
 import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.*;
-import com.luckycookie.crewin.dto.SessionImageResponse.SessionGalleryItem;
 import com.luckycookie.crewin.dto.SessionRequest.CreateSessionRequest;
 import com.luckycookie.crewin.dto.SessionRequest.UploadSessionImageRequest;
 import com.luckycookie.crewin.dto.SessionResponse.SessionItem;
@@ -38,6 +37,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.luckycookie.crewin.domain.enums.SessionType.*;
+import static com.luckycookie.crewin.dto.SessionResponse.*;
 
 
 @Service
