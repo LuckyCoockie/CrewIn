@@ -37,6 +37,8 @@ public class PostService {
     private final PostImageRepository postImageRepository;
     private final MemberCrewRepository memberCrewRepository;
 
+    private final S3Service s3Service;
+
     public void writePost(PostRequest.WritePostRequest writePostRequest, CustomUser customUser) {
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
@@ -76,12 +78,34 @@ public class PostService {
     public void updatePost(Long postId, PostRequest.UpdatePostRequest updatePostRequest) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(NotFoundPostException::new);
+
+        // 기존 이미지 URL 리스트 가져오기
+        List<String> postImageUrls = post.getPostImages().stream()
+                .map(PostImage::getImageUrl)
+                .toList();
+
+        // 기존 이미지 삭제
+        for (String imageUrl : postImageUrls) {
+            s3Service.deleteImage(imageUrl);
+        }
+
         post.updatePost(updatePostRequest);
     }
 
     public void deletePost(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(NotFoundPostException::new);
+
+        // 기존 이미지 URL 리스트 가져오기
+        List<String> postImageUrls = post.getPostImages().stream()
+                .map(PostImage::getImageUrl)
+                .toList();
+
+        // 기존 이미지 삭제
+        for (String imageUrl : postImageUrls) {
+            s3Service.deleteImage(imageUrl);
+        }
+
         postRepository.delete(post);
 
     }
