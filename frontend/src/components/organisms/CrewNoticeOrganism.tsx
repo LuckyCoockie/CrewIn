@@ -49,9 +49,8 @@ const CrewNoticeOrganism: React.FC<CrewNoticeOrganismProps> = ({
   return (
     <main>
       {noticeData?.items.map((notice, index) => (
-        <div className="flex justify-center items-center">
+        <div key={index} className="flex justify-center items-center">
           <NoticeMolecule
-            key={index}
             text={notice.position}
             title={notice.title}
             date={notice.createdAt}
