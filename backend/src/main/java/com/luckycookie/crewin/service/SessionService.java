@@ -247,7 +247,7 @@ public class SessionService {
                 .orElseThrow(NotFoundMemberSessionException::new);
 
 
-        Page<SessionImage> sessionImageListPage = sessionImageRepository.findBySession(session, pageRequest);
+        Page<SessionImage> sessionImageListPage = sessionImageRepository.findBySessionOrderByIdDesc(session, pageRequest);
 
         return convertToGalleryItemResponse(pageNo, sessionImageListPage);
     }

@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SessionImageRepository extends JpaRepository<SessionImage, Long> {
 
-    Page<SessionImage> findBySession(Session session, Pageable pageable);
+    Page<SessionImage> findBySessionOrderByIdDesc(Session session, Pageable pageable);
 
 }

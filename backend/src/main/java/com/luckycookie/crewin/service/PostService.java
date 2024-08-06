@@ -3,6 +3,8 @@ package com.luckycookie.crewin.service;
 import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.PostType;
 import com.luckycookie.crewin.dto.PostRequest;
+import com.luckycookie.crewin.dto.PostRequest.UpdatePostRequest;
+import com.luckycookie.crewin.dto.PostRequest.WritePostRequest;
 import com.luckycookie.crewin.dto.PostResponse.PostGalleryItem;
 import com.luckycookie.crewin.dto.PostResponse.PostGalleryItemResponse;
 import com.luckycookie.crewin.dto.PostResponse.PostItem;
@@ -38,7 +40,7 @@ public class PostService {
     private final PostImageRepository postImageRepository;
     private final MemberCrewRepository memberCrewRepository;
 
-    public void writePost(PostRequest.WritePostRequest writePostRequest, CustomUser customUser) {
+    public void writePost(WritePostRequest writePostRequest, CustomUser customUser) {
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
@@ -74,13 +76,15 @@ public class PostService {
         }
     }
 
-    public void updatePost(Long postId, PostRequest.UpdatePostRequest updatePostRequest, String email) {
+    public void updatePost(Long postId, UpdatePostRequest updatePostRequest, String email) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(NotFoundPostException::new);
         if (!post.getAuthor().getEmail().equals(email)) {
             throw new UnauthorizedDeletionException();
         }
-
+        if (!post.getIsPublic() && post.getCrew() == null) {
+            throw new NotFoundCrewException();
+        }
         post.updatePost(updatePostRequest);
     }
 
@@ -92,15 +96,6 @@ public class PostService {
 
         postRepository.delete(post);
     }
-
-
-    private List<String> getPostImages(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(NotFoundPostException::new);
-
-        List<PostImage> postImages = postImageRepository.findByPost(post);
-        return postImages.stream().map(PostImage::getImageUrl).toList();
-    }
-
 
     @Transactional(readOnly = true)
     public PostItemsResponse getAllPostsSortedByCreatedAt(String email, int pageNo) {
