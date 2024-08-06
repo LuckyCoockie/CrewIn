@@ -30,6 +30,9 @@ import CaptainPovCrewMemberSearchPage from "./pages/crew/CaptainPovCrewMemberSea
 import CourseEditPage from "./pages/course/CourseEditPage.tsx";
 import CoursePage from "./pages/course/CoursePage.tsx";
 import CrewInvitePage from "./pages/crew/CrewInvitePage.tsx";
+import MySessionPage from "./pages/session/MySessionPage.tsx";
+import MyProfilePage from "./pages/MyProfilePage.tsx";
+import PeopleProfilePage from "./pages/PeopleProfilePage.tsx";
 // import { getMyCrews } from "./apis/api/mycrew";
 
 const loader = async () => {
@@ -88,7 +91,15 @@ export const router = createBrowserRouter([
               { path: "invite", element: <CrewInvitePage /> },
             ],
           },
-          { path: "profile", element: <ProfilePage /> },
+          { path: "mypage/session/:type", element: <MySessionPage /> },
+          {
+            path: "profile",
+            element: <ProfilePage />,
+            children: [
+              { path: "", element: <MyProfilePage /> },
+              { path: ":memberId", element: <PeopleProfilePage /> },
+            ],
+          },
           { path: "info", element: <ProfileInfoPage /> },
           {
             path: "course",

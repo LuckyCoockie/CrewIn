@@ -13,9 +13,9 @@ const fetchAllPosts = async () => {
 
   while (hasMorePosts) {
     try {
-      const posts = await getPostList(pageNo);
-      if (posts.length > 0) {
-        allPosts = allPosts.concat(posts);
+      const {items} = await getPostList(pageNo);
+      if (items.length > 0) {
+        allPosts = allPosts.concat(items);
         pageNo += 1;
       } else {
         hasMorePosts = false;

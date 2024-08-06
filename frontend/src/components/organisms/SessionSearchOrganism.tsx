@@ -20,8 +20,8 @@ type OwnProps = {
 const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
   const query = qs.parse(location.search);
 
-  const [type, setType] = useState<SessionType>(query.sessionType);
-  const [input, setInput] = useState<string | undefined>(query["crewname"]);
+  const [type, setType] = useState<SessionType>(query.type);
+  const [input, setInput] = useState<string | undefined>(query["crewName"]);
   const [date, setDate] = useState<Date | null>(query.date);
 
   function formatDate(date: Date | null): string | undefined {
@@ -34,7 +34,7 @@ const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
   }
 
   const handleSearch = useCallback(() => {
-    onSearch({ type: type, crewname: input, date: formatDate(date) });
+    onSearch({ type: type, crewName: input, date: formatDate(date) });
   }, [date, input, onSearch, type]);
 
   const handelTypeChange = useCallback(
@@ -43,7 +43,7 @@ const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
       setType(value);
       onSearch({
         type: value,
-        crewname: input,
+        crewName: input,
         date: formatDate(date),
       });
     },
@@ -60,7 +60,7 @@ const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
       setDate(value);
       onSearch({
         type: type,
-        crewname: input,
+        crewName: input,
         date: formatDate(value),
       });
     },

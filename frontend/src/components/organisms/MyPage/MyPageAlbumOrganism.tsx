@@ -1,11 +1,13 @@
 import React from "react";
 import { MyGalleryDto, getMyGallery } from "../../../apis/api/mypage";
-import InfiniteScrollComponent from "../../molecules/InfinityScrollMolecules";
+import InfiniteScrollComponent from "../../../util/paging/component/InfinityScrollComponent";
+import { PageNationData } from "../../../util/paging/type";
 
 const MyPageAlbumOrganism: React.FC = () => {
-  const fetchGallery = async (page: number): Promise<MyGalleryDto[]> => {
-    const response = await getMyGallery(page);
-    return response.postGalleryList;
+  const fetchGallery = async (
+    pageNo: number
+  ): Promise<PageNationData<MyGalleryDto>> => {
+    return getMyGallery(pageNo - 1);
   };
 
   return (
@@ -16,11 +18,10 @@ const MyPageAlbumOrganism: React.FC = () => {
         <img
           src={data.thumbnailImage}
           alt={`gallery-item-${data.postId}`}
-          className="w-1/3 h-1/3"
+          className="w-full h-full"
         />
       )}
-      className="grid grid-cols-3 gap-4"
-      pageSize={10}
+      className="grid grid-cols-3"
     />
   );
 };

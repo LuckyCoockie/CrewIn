@@ -7,7 +7,9 @@ type ContentData = {
 const SmallContent: React.FC<ContentData> = (props) => {
   return (
     <>
-      <p className="font-medium">{props.data}</p>
+      <p className="font-medium" style={{ whiteSpace: "pre-line" }}>
+        {props.data}
+      </p>
     </>
   );
 };

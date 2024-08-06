@@ -11,20 +11,14 @@ import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism"
 
 import GroupsButton from "../atoms/Button/GroupsButton";
 import MemberPlusButton from "../atoms/Button/MemberPlusButton";
-import {
-  getCrewInfo,
-  getCrewNoticeList,
-  getCrewGalleryList,
-} from "../../apis/api/crewdetail";
+import { getCrewInfo, getCrewGalleryList } from "../../apis/api/crewdetail";
 import { getMyCrews } from "../../apis/api/mycrew";
 import { useParams } from "react-router";
 
 const CrewDetailTemplate: React.FC = () => {
-  const [currentTab, setCurrentTab] = useState<string>("정보");
+  const [currentTab, setCurrentTab] = useState<string>("공지사항");
   const { crewId } = useParams<{ crewId: string }>();
   const numericCrewId = Number(crewId);
-
-  const pageNo = 0;
 
   // 크루 정보를 가져오는 React Query 훅
   const {
@@ -52,31 +46,16 @@ const CrewDetailTemplate: React.FC = () => {
   console.log("isUserCrewMember:", isUserCrewMember);
   console.log("userPosition:", userPosition);
 
-  // 공지사항과 사진첩을 가져오는 React Query 훅
-  const {
-    data: noticeData,
-    isLoading: noticeLoading,
-    error: noticeError,
-  } = useQuery(
-    ["crewNotice", { crewId, pageNo }],
-    () =>
-      getCrewNoticeList({ crewId: numericCrewId, pageNo }).then(
-        (data) => data.crewNoticeList
-      ),
-    {
-      enabled: isUserCrewMember, // isUserCrewMember가 true일 때만 호출
-    }
-  );
-
+  // 사진첩을 가져오는 React Query 훅
   const {
     data: galleryData,
     isLoading: galleryLoading,
     error: galleryError,
   } = useQuery(
-    ["crewGallery", { crewId, pageNo }],
+    ["crewGallery", { crewId }],
     () =>
-      getCrewGalleryList({ crewId: numericCrewId, pageNo }).then(
-        (data) => data.crewGalleryList
+      getCrewGalleryList({ crewId: numericCrewId, pageNo: 0 }).then(
+        (data) => data.items
       ),
     {
       enabled: isUserCrewMember, // isUserCrewMember가 true일 때만 호출
@@ -89,18 +68,18 @@ const CrewDetailTemplate: React.FC = () => {
   };
 
   const renderTab = () => {
-    if (infoLoading || noticeLoading || galleryLoading || myCrewsLoading) {
+    if (infoLoading || galleryLoading || myCrewsLoading) {
       return <div>Loading...</div>;
     }
 
-    if (infoError || noticeError || galleryError || myCrewsError) {
+    if (infoError || galleryError || myCrewsError) {
       return <div>Error loading data</div>;
     }
 
     if (!isUserCrewMember) {
       return (
         <CrewInfoOrganism
-          crewname={infoData!.crewName}
+          crewName={infoData!.crewName}
           captain={infoData!.captainName}
           slogan={infoData!.slogan}
           area={infoData!.area}
@@ -113,15 +92,16 @@ const CrewDetailTemplate: React.FC = () => {
 
     switch (currentTab) {
       case "공지사항":
-        return noticeData ? (
-          <CrewNoticeOrganism notices={noticeData} />
-        ) : (
-          <div>No Notice Data</div>
+        return (
+          <CrewNoticeOrganism
+            crewId={numericCrewId}
+            isUserCrewMember={isUserCrewMember}
+          />
         );
       case "정보":
         return infoData ? (
           <CrewInfoOrganism
-            crewname={infoData.crewName}
+            crewName={infoData.crewName}
             captain={infoData.captainName}
             slogan={infoData.slogan}
             area={infoData.area}
@@ -135,7 +115,7 @@ const CrewDetailTemplate: React.FC = () => {
       case "사진첩":
         return galleryData ? (
           <CrewAlbumOrganism
-            photos={galleryData.flatMap((gallery) => gallery.imageUrls)}
+            photos={galleryData.flatMap((gallery) => gallery.thumbnailImage)}
           />
         ) : (
           <div>No Gallery Data</div>
@@ -143,7 +123,7 @@ const CrewDetailTemplate: React.FC = () => {
       default:
         return infoData ? (
           <CrewInfoOrganism
-            crewname={infoData.crewName}
+            crewName={infoData.crewName}
             captain={infoData.captainName}
             slogan={infoData.slogan}
             area={infoData.area}
@@ -157,7 +137,7 @@ const CrewDetailTemplate: React.FC = () => {
     }
   };
 
-  const texts = ["정보", "공지사항", "사진첩"];
+  const texts = ["공지사항", "정보", "사진첩"];
 
   return (
     <>

@@ -1,3 +1,4 @@
+import { PageNationData } from "../../util/paging/type";
 import api from "../index";
 
 export type MemberDto = {
@@ -7,11 +8,7 @@ export type MemberDto = {
   profileUrl: string | null;
 };
 
-export type UserSearchResponseDto = {
-  pageNo: number;
-  lastPageNo: number;
-  members: MemberDto[];
-};
+export type UserSearchResponseDto = PageNationData<MemberDto>;
 
 export type UserSearchRequestDto = {
   query: string;

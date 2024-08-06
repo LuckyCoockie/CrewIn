@@ -57,9 +57,11 @@ const InfiniteScrollComponent = <T,>({
 
   return (
     <div className={className}>
-      {data?.pages.map((data, index) => (
-        <React.Fragment key={index}>
-          {data?.map((data) => ItemComponent({ data }))}
+      {data?.pages.map((page, pageIndex) => (
+        <React.Fragment key={pageIndex}>
+          {page?.map((item, itemIndex) => (
+            <ItemComponent key={`${pageIndex}-${itemIndex}`} data={item} />
+          ))}
         </React.Fragment>
       ))}
     </div>
