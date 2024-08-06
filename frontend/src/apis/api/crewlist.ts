@@ -1,3 +1,4 @@
+import { PageNationData } from "../../util/paging/type";
 import api from "../utils/instance";
 
 export type CrewDto = {
@@ -15,11 +16,7 @@ export type GetCrewListRequestDto = {
   pageNo?: string;
 };
 
-export type GetCrewListResponseDto = {
-  crews: CrewDto[];
-  pageNo: number;
-  lastPageNo: number;
-};
+export type GetCrewListResponseDto = PageNationData<CrewDto>;
 
 export const getCrewList = async (
   dto: GetCrewListRequestDto

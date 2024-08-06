@@ -55,7 +55,7 @@ const CrewDetailTemplate: React.FC = () => {
     ["crewGallery", { crewId }],
     () =>
       getCrewGalleryList({ crewId: numericCrewId, pageNo: 1 }).then(
-        (data) => data.postGalleryList
+        (data) => data.items
       ),
     {
       enabled: isUserCrewMember, // isUserCrewMember가 true일 때만 호출
@@ -79,7 +79,7 @@ const CrewDetailTemplate: React.FC = () => {
     if (!isUserCrewMember) {
       return (
         <CrewInfoOrganism
-          crewname={infoData!.crewName}
+          crewName={infoData!.crewName}
           captain={infoData!.captainName}
           slogan={infoData!.slogan}
           area={infoData!.area}
@@ -101,7 +101,7 @@ const CrewDetailTemplate: React.FC = () => {
       case "정보":
         return infoData ? (
           <CrewInfoOrganism
-            crewname={infoData.crewName}
+            crewName={infoData.crewName}
             captain={infoData.captainName}
             slogan={infoData.slogan}
             area={infoData.area}
@@ -123,7 +123,7 @@ const CrewDetailTemplate: React.FC = () => {
       default:
         return infoData ? (
           <CrewInfoOrganism
-            crewname={infoData.crewName}
+            crewName={infoData.crewName}
             captain={infoData.captainName}
             slogan={infoData.slogan}
             area={infoData.area}

@@ -1,3 +1,4 @@
+import { PageNationData } from "../../util/paging/type";
 import api from "../utils/instance";
 
 export const SessionType = {
@@ -32,6 +33,20 @@ export const sessionStatusTypeToLabel = (type: SessionStatusType) => {
   }
 };
 
+export const MySessionType = {
+  CREATED: "created",
+  JOINED: "joined",
+} as const;
+export type MySessionType = (typeof MySessionType)[keyof typeof MySessionType];
+export const mySessionTypeToLabel = (type: MySessionType) => {
+  switch (type) {
+    case MySessionType.CREATED:
+      return "내가 만든 세션 조회";
+    case MySessionType.JOINED:
+      return "참가한 세션 조회";
+  }
+};
+
 export type SessionDto = {
   crewName: string;
   sessionName: string;
@@ -46,16 +61,33 @@ export type SessionDto = {
 
 export type GetSessionListRequestDto = {
   type?: SessionType;
-  crewname?: string;
+  crewName?: string;
   date?: string;
   status?: SessionStatusType;
 };
 
 export const getSessionList = async (
   dto: GetSessionListRequestDto
-): Promise<SessionDto[]> => {
-  const response = await api.get<SessionDto[]>("/session", { params: dto });
-  return response.data.filter((value) =>
-    value.startAt.includes(dto.date ?? "")
-  );
+): Promise<PageNationData<SessionDto>> => {
+  const response = await api.get<PageNationData<SessionDto>>("/session", {
+    params: dto,
+  });
+  return response.data;
+};
+
+export type GetMySessionRequestDto = {
+  type?: MySessionType;
+  sessionType?: SessionType;
+  pageNo?: string;
+};
+
+export type GetMySessionResponseDto = PageNationData<SessionDto>;
+
+export const getMySessionList = async (
+  dto: GetMySessionRequestDto
+): Promise<GetMySessionResponseDto> => {
+  const response = await api.get<GetMySessionResponseDto>("/mypage/session", {
+    params: dto,
+  });
+  return response.data;
 };

@@ -1,5 +1,8 @@
 import { useCallback } from "react";
-import { GetSessionListRequestDto } from "../../apis/api/session";
+import {
+  GetSessionListRequestDto,
+  getSessionList,
+} from "../../apis/api/session";
 import SessionSearchTemplate from "../../components/templates/session/SessionSearchtTemplate";
 import { createSearchParams, useNavigate } from "react-router-dom";
 import { removeUndefinedKey } from "../../util/removeUndefinedKey";
@@ -7,7 +10,7 @@ import { removeUndefinedKey } from "../../util/removeUndefinedKey";
 const SessionSearchPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const fetchData = useCallback(
+  const onSearch = useCallback(
     async (dto: GetSessionListRequestDto) => {
       removeUndefinedKey(dto);
       navigate(`/session?${createSearchParams(dto)}`);
@@ -15,7 +18,11 @@ const SessionSearchPage: React.FC = () => {
     [navigate]
   );
 
-  return <SessionSearchTemplate fetchData={fetchData} />;
+  const fetchData = useCallback(async (dto: GetSessionListRequestDto) => {
+    return getSessionList(dto);
+  }, []);
+
+  return <SessionSearchTemplate onSearch={onSearch} fetchData={fetchData} />;
 };
 
 export default SessionSearchPage;

@@ -48,7 +48,7 @@ const CrewNoticeOrganism: React.FC<CrewNoticeOrganismProps> = ({
 
   return (
     <main>
-      {noticeData?.crewNoticeList.map((notice, index) => (
+      {noticeData?.items.map((notice, index) => (
         <div className="flex justify-center items-center">
           <NoticeMolecule
             key={index}

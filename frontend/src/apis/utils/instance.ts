@@ -11,12 +11,20 @@ import {
   loading,
   setAccessToken,
 } from "../../modules/reducers/auth";
+import { convertKeysToKebabCase } from "./querystring.ts/camelToKebab";
 
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 const api = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,
+});
+
+api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  if (config.params) {
+    config.params = convertKeysToKebabCase(config.params);
+  }
+  return config;
 });
 
 api.interceptors.response.use((response: AxiosResponse) => {
@@ -73,6 +81,8 @@ export const clearAxiosInterceptors = () => {
   api.interceptors.request.clear();
 };
 
-setupAxiosInterceptors("eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MTIzNEB0ZXN0LmNvbSIsImlhdCI6MTcyMjUyMDAxNywiZW1haWwiOiJ0ZXN0MTIzNEB0ZXN0LmNvbSIsImV4cCI6MTcyNTExMjAxN30.l5khomKGNT7AyWyxpWTL2Mc_8_DVSW0eSS07ofFu46jZyoyohx3jDMzhAvS2Hr4MEiyqEcHFRye_Ar2_QrR7Og");
+setupAxiosInterceptors(
+  "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MTIzNEB0ZXN0LmNvbSIsImlhdCI6MTcyMjUyMDAxNywiZW1haWwiOiJ0ZXN0MTIzNEB0ZXN0LmNvbSIsImV4cCI6MTcyNTExMjAxN30.l5khomKGNT7AyWyxpWTL2Mc_8_DVSW0eSS07ofFu46jZyoyohx3jDMzhAvS2Hr4MEiyqEcHFRye_Ar2_QrR7Og"
+);
 
 export default api;
