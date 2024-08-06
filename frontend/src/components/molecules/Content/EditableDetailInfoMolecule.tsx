@@ -14,12 +14,12 @@ const EditableDetailInfoMolecule: React.FC<InfoData> = (props) => {
         <div className="flex ms-2 items-center w-3/12">
           <SmallTitle data={props.title} />
         </div>
-        <input
-          type="text"
-          value={props.content}
-          className="border rounded px-2 py-1 ms-4 w-8/12"
+        <p
+          className="data-input bg-white border focus:outline-none ms-6 w-8/12"
           onClick={props.onClick}
-        />
+        >
+          {props.content}
+        </p>
       </div>
     </>
   );

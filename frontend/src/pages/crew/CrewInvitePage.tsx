@@ -45,6 +45,7 @@ const CrewInvitePage: React.FC = () => {
             crewId,
             query,
           });
+        console.log(response.items);
         setMembers(response.items);
       } catch (error) {
         console.error("멤버 검색 오류:", error);

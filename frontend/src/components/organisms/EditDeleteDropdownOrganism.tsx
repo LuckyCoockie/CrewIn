@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // useNavigate를 import 합니다.
+import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "react-query";
 import MoreVerticalButton from "../atoms/Button/MoreVerticalButton";
 import EditDropdownMolecule from "../molecules/EditDropdownMolecule";
 import DeleteDropdownMolecule from "../molecules/DeleteDropdownMolecule";
@@ -8,16 +9,24 @@ import DeleteDropdownMolecule from "../molecules/DeleteDropdownMolecule";
 import { deleteCrew } from "../../apis/api/crewdetail";
 // session
 import { deleteSession } from "../../apis/api/sessiondetail";
+// notice
+import { deleteNotice } from "../../apis/api/crewdetail";
 
 type PropsData = {
   type: "CREW" | "SESSION" | "NOTICE";
   idData?: number;
+  idData2?: number;
 };
 
-const EditDeleteDropdownOrganism: React.FC<PropsData> = ({ type, idData }) => {
+const EditDeleteDropdownOrganism: React.FC<PropsData> = ({
+  type,
+  idData,
+  idData2,
+}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate(); // useNavigate 훅을 사용하여 navigate 객체를 가져옵니다.
+  const navigate = useNavigate();
+  const queryClient = useQueryClient(); // useQueryClient 훅을 사용하여 queryClient 객체를 가져옵니다.
 
   const toggleDropdownClick = () => {
     setIsDropdownOpen((prev) => !prev);
@@ -30,16 +39,26 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({ type, idData }) => {
       navigate(`/crew/edit/${idData}`); // 페이지 이동
     } else if (type === "SESSION") {
       navigate(`/session/edit/${idData}`); // 페이지 이동
+    } else if (type === "NOTICE") {
+      navigate(`/crew/detail/${idData2}/noticeedit/${idData}`);
     }
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     setIsDropdownOpen(false);
     // 삭제 로직 구현
-    if (type === "CREW") {
-      deleteCrew(idData!);
-    } else if (type === "SESSION") {
-      deleteSession(idData!);
+    try {
+      if (type === "CREW") {
+        await deleteCrew(idData!);
+      } else if (type === "SESSION") {
+        await deleteSession(idData!);
+      } else if (type === "NOTICE") {
+        await deleteNotice(idData!);
+        navigate(`/crew/detail/${idData2}`);
+      }
+      queryClient.invalidateQueries("crewNotice"); // 쿼리 무효화
+    } catch (error) {
+      console.error("삭제 실패:", error);
     }
   };
 

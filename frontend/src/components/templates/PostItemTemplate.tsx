@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import UserProfileBar from "../../components/molecules/UserProfileBarMolecule";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import crewinLogo from "../../assets/images/crewinlogo.png";
 import filledFire from "../../assets/images/filledfire.png";
 import emptyFire from "../../assets/images/emptyfire.png";
 import shareIcon from "../../assets/images/shareicon.png";
@@ -25,6 +24,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     heartCount,
     isHearted,
     createdAt,
+    profileImage,
   } = data;
 
   const [likes, setLikes] = useState<number>(heartCount);
@@ -87,7 +87,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   return (
     <div className="w-full mb-4">
       <UserProfileBar
-        profileImage={crewinLogo}
+        profileImage={profileImage}
         username={authorName}
         timeAgo={timeAgo}
         onEdit={handleEdit}

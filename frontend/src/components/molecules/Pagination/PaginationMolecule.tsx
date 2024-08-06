@@ -34,8 +34,8 @@ const PaginationMolecule: React.FC<List> = ({ total, page, btn, setPage }) => {
               onClick={() => setPage(pageIndex)}
               className={`text-sm leading-none cursor-pointer pt-3 mr-4 ${
                 page === pageIndex
-                  ? "text-indigo-700 border-indigo-400 font-bold underline"
-                  : "text-gray-600 hover:text-indigo-700 border-transparent hover:border-indigo-400"
+                  ? "text-color border-color font-bold underline"
+                  : "text-gray-400 hover:text-color border-transparent hover:border-indigo-400"
               }`}
             >
               {pageIndex}

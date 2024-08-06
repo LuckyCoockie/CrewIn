@@ -6,6 +6,7 @@ import PaginationMolecule from "../molecules/Pagination/PaginationMolecule";
 import { ReactComponent as Plus } from "../../assets/icons/plus.svg";
 import { useNavigate } from "react-router-dom";
 import { getCrewNoticeList } from "../../apis/api/crewdetail";
+import EditDeleteDropdownOrganism from "./EditDeleteDropdownOrganism";
 
 type CrewNoticeOrganismProps = {
   crewId: number;
@@ -49,14 +50,17 @@ const CrewNoticeOrganism: React.FC<CrewNoticeOrganismProps> = ({
   return (
     <main>
       {noticeData?.items.map((notice, index) => (
-        <div className="flex justify-center items-center">
+        <div key={index} className="flex justify-center items-center">
           <NoticeMolecule
-            key={index}
             text={notice.position}
             title={notice.title}
             date={notice.createdAt}
           />
-          <div>123</div>
+          <EditDeleteDropdownOrganism
+            type="NOTICE"
+            idData={notice.noticeId}
+            idData2={crewId}
+          />
         </div>
       ))}
       <PaginationMolecule

@@ -73,6 +73,15 @@ body {
   font-weight: bold;
 }
 
+/* 텍스트 메인 컬러 */
+.text-color {
+  color: hsla(229, 20%, 21%, 1);
+}
+/* Border 컬러 */
+.border-color {
+  color: hsla(229, 20%, 21%, 1);
+}
+
 /* 라벨 전역 설정 */
 label {
   font-weight: 900;
