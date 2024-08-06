@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import BackHeaderMediumOrganism from "../components/organisms/BackHeaderMediumOrganism";
-import { ReactComponent as Searchicon } from "../assets/icons/searchicon.svg";
-import { ReactComponent as CrewinLogo } from "../assets/icons/crewinlogo.svg";
+import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
+import { ReactComponent as Searchicon } from "../../../assets/icons/searchicon.svg";
+import { ReactComponent as CrewinLogo } from "../../../assets/icons/crewinlogo.svg";
 import {
   getCrewMemberList,
   CrewMemberListResponseDto,
   CrewMemberDto,
-} from "../apis/api/crewmemberlist";
+} from "../../../apis/api/crewmemberlist";
 
-const CrewMemberSearchPage: React.FC = () => {
+const CrewMemberSearchTemplate: React.FC = () => {
   const navigate = useNavigate();
   const [crewId] = useState<number>(1); // 나중에 동적으로 설정
   const [loading, setLoading] = useState<boolean>(false);
@@ -23,7 +23,7 @@ const CrewMemberSearchPage: React.FC = () => {
       setError(null);
       try {
         const data: CrewMemberListResponseDto = await getCrewMemberList(crewId);
-        setJoinedMembers(data.crewMemberList.filter(member => member.joined));
+        setJoinedMembers(data.crewMemberList.filter((member) => member.joined));
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message);
@@ -109,4 +109,4 @@ const CrewMemberSearchPage: React.FC = () => {
   );
 };
 
-export default CrewMemberSearchPage;
+export default CrewMemberSearchTemplate;

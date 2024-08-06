@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import BackHeaderMediumOrganism from "../components/organisms/BackHeaderMediumOrganism";
-import { ReactComponent as Searchicon } from "../assets/icons/searchicon.svg";
-import { ReactComponent as CrewinLogo } from "../assets/icons/crewinlogo.svg"; // Assuming you have this SVG as a default image
+import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
+import { ReactComponent as Searchicon } from "../../../assets/icons/searchicon.svg";
+import { ReactComponent as CrewinLogo } from "../../../assets/icons/crewinlogo.svg";
 import {
   getCrewMemberList,
   CrewMemberListResponseDto,
   CrewMemberDto,
-} from "../apis/api/crewmemberlist";
+} from "../../../apis/api/crewmemberlist";
 
-const CaptainPovCrewMemberSearchPage: React.FC = () => {
+const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
   const [crewId] = useState<number>(1); // 나중에 동적으로 설정
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,8 +21,7 @@ const CaptainPovCrewMemberSearchPage: React.FC = () => {
       setError(null);
       try {
         const data: CrewMemberListResponseDto = await getCrewMemberList(crewId);
-        // Separate joined members
-        setJoinedMembers(data.crewMemberList.filter(member => member.joined));
+        setJoinedMembers(data.crewMemberList.filter((member) => member.joined));
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message);
@@ -119,4 +118,4 @@ const CaptainPovCrewMemberSearchPage: React.FC = () => {
   );
 };
 
-export default CaptainPovCrewMemberSearchPage;
+export default CaptainPovCrewMemberSearchTemplate;
