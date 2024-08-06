@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { Navigate, createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import CrewCreatePage from "./pages/CrewCreatePage";
 import PostCreatePage from "./pages/PostCreatePage";
@@ -32,16 +32,7 @@ import CoursePage from "./pages/course/CoursePage.tsx";
 import MySessionPage from "./pages/session/MySessionPage.tsx";
 import MyProfilePage from "./pages/MyProfilePage.tsx";
 import PeopleProfilePage from "./pages/PeopleProfilePage.tsx";
-// import { getMyCrews } from "./apis/api/mycrew";
-
-const loader = async () => {
-  // const response = await getMyCrews();
-  // if (response.crews.length > 0) {
-  //   return <Navigate to={`/crew/detail/${response.crews[0].crewId}`} />;
-  // } else {
-  return <CrewSearchPage />;
-  // }
-};
+import CrewRedirectPage from "./pages/crew/CrewRedirectPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -52,6 +43,7 @@ export const router = createBrowserRouter([
         path: "",
         element: <ProtectedRoute />,
         children: [
+          { path: "", element: <Navigate to="/home" /> },
           { path: "home", element: <PostMainPage /> },
           {
             path: "session",
@@ -66,7 +58,8 @@ export const router = createBrowserRouter([
             path: "crew",
             element: <CrewPage />,
             children: [
-              { path: "", element: <CrewSearchPage />, loader }, // 조건부 로더 설정
+              { path: "", element: <CrewRedirectPage /> },
+              { path: "search", element: <CrewSearchPage /> },
               { path: "create", element: <CrewCreatePage /> },
               {
                 path: "gallary/:crewId",
