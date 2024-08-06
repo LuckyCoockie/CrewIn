@@ -1,5 +1,4 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-// import { useCallback } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import LargeAbleButton from "../../atoms/Button/LargeAbleButton";
@@ -7,8 +6,7 @@ import LargeDisableButton from "../../atoms/Button/LargeDisableButton";
 import ModalMolecules from "../../molecules/ModalMolecules";
 import InputPasswordTypeMolecule from "../../molecules/Input/InputPasswordTypeMolecule";
 
-import { NewPasswordRequestDto, editPassword } from "../../../apis/api/profile";
-import { useNavigate } from "react-router";
+import { NewPasswordRequestDto } from "../../../apis/api/profile";
 
 const passwordRules = /^(?=.*[a-zA-Z])(?=.*[0-9]).{0,}$/;
 
@@ -21,6 +19,10 @@ type FormValues = {
 type OwnProps = {
   init?: FormValues;
   onClose: () => void;
+  onEdit: (
+    password: NewPasswordRequestDto,
+    onClose: () => void
+  ) => Promise<void>;
 };
 
 const schema = yup.object({
@@ -43,17 +45,14 @@ const schema = yup.object({
     .required("비밀번호를 확인해주세요."),
 });
 
-export const EditPasswordOrganism = ({ onClose }: OwnProps) => {
-  const navigate = useNavigate();
+export const EditPasswordOrganism = ({ onClose, onEdit }: OwnProps) => {
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const submitData: NewPasswordRequestDto = {
       oldPassword: data.pastPassword,
       newPassword: data.newPassword,
     };
     try {
-      await editPassword(submitData);
-      console.log("수정 완료");
-      navigate("/profile");
+      await onEdit(submitData, onClose);
     } catch (error) {
       console.error("수정 실패");
       window.alert("이전 비밀번호를 확인하세요.");
@@ -69,9 +68,14 @@ export const EditPasswordOrganism = ({ onClose }: OwnProps) => {
     mode: "onChange",
   });
 
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    handleSubmit(onSubmit)();
+  };
+
   return (
     <ModalMolecules title="비밀번호 변경" onClose={onClose}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleFormSubmit}>
         <div className="w-full">
           <Controller
             name="pastPassword"
@@ -115,7 +119,6 @@ export const EditPasswordOrganism = ({ onClose }: OwnProps) => {
           />
         </div>
         <div>
-          {/* 유효성 검사 통과 여부에 따라 버튼 교체 */}
           {isValid ? (
             <LargeAbleButton text="수정" />
           ) : (

@@ -1,45 +1,67 @@
 import { getMyProfileInfo } from "../apis/api/mypage";
 import { uploadImage } from "../apis/api/presigned";
-import { editProfileImage, editNickname } from "../apis/api/profile";
-
+import {
+  editProfileImage,
+  editNickname,
+  editPassword,
+} from "../apis/api/profile";
 import { ProfileInfoTemplate } from "../components/templates/profile/ProfileInfoTemplate";
+import { useNavigate } from "react-router";
 
 export const ProfileInfoPage = () => {
-  const onProfileImageEdit = async ({ image }: { image?: File }) => {
+  const navigate = useNavigate();
+  const onProfileImageEdit = async (
+    { image }: { image?: File },
+    onClose: () => void
+  ) => {
     try {
       const imageUrl = image ? await uploadImage(image) : undefined;
       if (imageUrl) {
         const imageDto = { profileImageUrl: imageUrl };
-        console.log(imageDto);
         await editProfileImage(imageDto);
-        // 모달창 닫기
+        onClose(); // 성공적으로 변경 후 모달 닫기
+        navigate(`/profile`);
       }
     } catch (error) {
       console.error("프로필 이미지 업로드 에러:", error);
     }
   };
 
-  const onNicknameEdit = async ({ nickname }: { nickname: string }) => {
+  const onNicknameEdit = async (
+    { nickname }: { nickname: string },
+    onClose: () => void
+  ) => {
     try {
-      const nicknameDto = { nickname: nickname };
+      const nicknameDto = { nickname };
       await editNickname(nicknameDto);
+      onClose(); // 성공적으로 변경 후 모달 닫기
+      navigate(`/profile`);
     } catch (error) {
-      console.error("닉네임 변경 에러", error);
+      console.error(error);
     }
   };
 
-  const onPasswordEdit = async ({ password }: { password: string }) => {
-    console.log(password);
+  const onPasswordEdit = async (
+    { oldPassword, newPassword }: { oldPassword: string; newPassword: string },
+    onClose: () => void
+  ) => {
+    const submitData = { oldPassword, newPassword };
+    try {
+      await editPassword(submitData);
+      onClose(); // 성공적으로 변경 후 모달 닫기
+      navigate(`/profile`);
+    } catch (error) {
+      console.error("비밀번호 변경 에러", error);
+      window.alert("이전 비밀번호를 확인하세요.");
+    }
   };
 
   return (
-    <>
-      <ProfileInfoTemplate
-        fetchData={getMyProfileInfo}
-        onProfileImageEdit={onProfileImageEdit}
-        onNicknameEdit={onNicknameEdit}
-        onPasswordEdit={onPasswordEdit}
-      />
-    </>
+    <ProfileInfoTemplate
+      fetchData={getMyProfileInfo}
+      onProfileImageEdit={onProfileImageEdit}
+      onNicknameEdit={onNicknameEdit}
+      onPasswordEdit={onPasswordEdit}
+    />
   );
 };
