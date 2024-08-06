@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
-import { ReactComponent as Searchicon } from "../../../assets/icons/searchicon.svg"
+import { ReactComponent as Searchicon } from "../../../assets/icons/searchicon.svg";
 import { ReactComponent as CrewinLogo } from "../../../assets/icons/crewinlogo.svg";
 import {
   getCrewMemberList,
@@ -19,7 +19,7 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
   const [crewId] = useState<number>(1); // 나중에 동적으로 설정
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [members, setMembers] = useState<CrewMemberDto[]>([]);
+  const [items, setMembers] = useState<CrewMemberDto[]>([]);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -27,7 +27,10 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
       setError(null);
       try {
         const data: CrewMemberListResponseDto = await getCrewMemberList(crewId);
-        setMembers(data.crewMemberList);
+        console.log(data.items);
+        console.log(data);
+
+        setMembers(data.items);
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message);
@@ -79,8 +82,8 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
     }
   };
 
-  const joinedMembers = members.filter((member) => member.joined);
-  const invitedMembers = members.filter(
+  const joinedMembers = items.filter((member) => member.joined);
+  const invitedMembers = items.filter(
     (member) => !member.joined && member.invited
   );
 

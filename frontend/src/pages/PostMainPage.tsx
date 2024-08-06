@@ -15,7 +15,8 @@ import {
   GetPostListResponseDto,
   PostDto,
 } from "../apis/api/postlist";
-import { PWAInstallPrompt } from "../components/templates/PWAInstallPrompt";
+import { PWAInstallPrompt } from "../components/templates/pwa/PWAInstallPrompt";
+import { PWAOpenAppPrompt } from "../components/templates/pwa/PWAOpenAppPrompt";
 
 const PostMainPage: React.FC = () => {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ const PostMainPage: React.FC = () => {
           fetchKey="postData"
           fetchData={fetchPostData}
           ItemComponent={(props: ItemComponentProps<PostDto>) => (
-            <PostItemComponent {...props} />
+            <PostItemComponent key={props.data.id} {...props} />
           )}
           className="post-list"
         />
@@ -69,6 +70,7 @@ const PostMainPage: React.FC = () => {
         <Postcreateicon />
       </FloatingActionButton>
       <PWAInstallPrompt />
+      <PWAOpenAppPrompt />
     </div>
   );
 };

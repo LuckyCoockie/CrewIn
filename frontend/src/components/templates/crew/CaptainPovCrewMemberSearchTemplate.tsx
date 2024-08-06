@@ -21,7 +21,7 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
       setError(null);
       try {
         const data: CrewMemberListResponseDto = await getCrewMemberList(crewId);
-        setJoinedMembers(data.crewMemberList.filter((member) => member.joined));
+        setJoinedMembers(data.items.filter((member) => member.joined));
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message);
