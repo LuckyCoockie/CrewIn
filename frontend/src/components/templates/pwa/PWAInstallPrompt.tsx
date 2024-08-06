@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { usePWAInstallPrompt } from "../../util/pwa/usePWAInstallPrompt";
-import ModalMolecules from "../molecules/ModalMolecules";
-import LargeAbleButton from "../atoms/Button/LargeAbleButton";
+import { usePWAPrompt } from "../../../util/pwa/usePWAPrompt";
+import ModalMolecules from "../../molecules/ModalMolecules";
+import LargeAbleButton from "../../atoms/Button/LargeAbleButton";
 
 export const PWAInstallPrompt = () => {
-  const [isInstalled, handleInstallClick] = usePWAInstallPrompt({});
+  const [isInstalled, , handleInstallClick] = usePWAPrompt({});
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const handleClose = () => setIsOpen(false);
   return (

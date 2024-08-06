@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import svgr from "@svgr/rollup";
 import { VitePWA } from "vite-plugin-pwa";
-import mkcert from 'vite-plugin-mkcert'
+import mkcert from "vite-plugin-mkcert";
 
 export default defineConfig({
   plugins: [
@@ -15,23 +15,25 @@ export default defineConfig({
       manifest: {
         name: "CREW-IN",
         short_name: "CREW-IN",
-        theme_color: "#ffffff",
+        theme_color: "#2B2F40",
         icons: [
           {
             src: "pwa-64x64.png",
             sizes: "64x64",
             type: "image/png",
+            purpose: "maskable",
           },
           {
             src: "pwa-192x192.png",
             sizes: "192x192",
             type: "image/png",
+            purpose: "maskable",
           },
           {
             src: "pwa-512x512.png",
             sizes: "512x512",
             type: "image/png",
-            purpose: "any",
+            purpose: "maskable",
           },
           {
             src: "maskable-icon-512x512.png",

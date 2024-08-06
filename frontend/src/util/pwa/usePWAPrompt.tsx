@@ -5,9 +5,10 @@ type OwnProps = {
   onReject?: () => void;
 };
 
-export const usePWAInstallPrompt = ({ onAccepted, onReject }: OwnProps) => {
+export const usePWAPrompt = ({ onAccepted, onReject }: OwnProps) => {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const isInstalled = useMemo(() => deferredPrompt === null, [deferredPrompt]);
+  const isPWA = window.matchMedia("(display-mode: standalone)").matches;
 
   useEffect(() => {
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -26,7 +27,7 @@ export const usePWAInstallPrompt = ({ onAccepted, onReject }: OwnProps) => {
   };
 
   const handleInstallClick = () => {
-    if (deferredPrompt) {
+    if (!isInstalled) {
       deferredPrompt.prompt();
 
       deferredPrompt.userChoice.then((choiceResult: { outcome: string }) => {
@@ -40,5 +41,11 @@ export const usePWAInstallPrompt = ({ onAccepted, onReject }: OwnProps) => {
     }
   };
 
-  return [isInstalled, handleInstallClick] as const;
+  const handleOpenAppClick = () => {
+    if (isInstalled) {
+      window.location.href = "webapp://open?name=CREW-IN";
+    }
+  };
+
+  return [isInstalled, isPWA, handleInstallClick, handleOpenAppClick] as const;
 };
