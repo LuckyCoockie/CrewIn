@@ -3,6 +3,7 @@ import { formatDistanceToNow, parseISO } from "date-fns";
 import { ko } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import UserProfileBar from "../../components/molecules/UserProfileBarMolecule";
+import UserProfileBarNoMenu from "../../components/molecules/UserProfileBarNoMenuMolecule";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import filledFire from "../../assets/images/filledfire.png";
@@ -15,6 +16,7 @@ export interface ItemComponentProps<T> {
   data: T;
 }
 
+
 const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   const {
     id,
@@ -25,6 +27,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     isHearted,
     createdAt,
     profileImage,
+    postType
   } = data;
 
   const [likes, setLikes] = useState<number>(heartCount);
@@ -65,14 +68,8 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
 
   const handleShare = () => {
     const url = window.location.href;
-    navigator.clipboard
-      .writeText(url)
-      .then(() => {
-        alert("URL이 클립보드에 복사되었습니다.");
-      })
-      .catch((err) => {
-        console.error("URL 복사에 실패했습니다:", err);
-      });
+    const shareUrl = `https://instagram.com/sharer.php?u=${encodeURIComponent(url)}`;
+    window.open(shareUrl, '_blank');
   };
 
   const toggleContent = () => {
@@ -86,13 +83,21 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
 
   return (
     <div className="w-full mb-4">
-      <UserProfileBar
-        profileImage={profileImage}
-        username={authorName}
-        timeAgo={timeAgo}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      {postType === 'NOTICE' ? (
+        <UserProfileBarNoMenu
+          profileImage={profileImage}
+          username={authorName}
+          timeAgo={timeAgo}
+        />
+      ) : (
+        <UserProfileBar
+          profileImage={profileImage}
+          username={authorName}
+          timeAgo={timeAgo}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      )}
       {croppedImages && croppedImages.length > 0 && (
         <Carousel
           showThumbs={false}
