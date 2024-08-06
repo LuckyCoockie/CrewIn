@@ -13,6 +13,7 @@ export type PostDto = {
   title: string;
   createdAt: string;
   updatedAt: string;
+  profileImage: string;
   postImages: string[];
 };
 
@@ -25,6 +26,7 @@ export const getPostList = async (
     const response = await api.get("/post/home", {
       params: { pageNo: pageNo },
     });
+    console.log(response.data);
 
     if (response.status === 200) {
       return response.data;
