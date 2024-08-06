@@ -1,9 +1,7 @@
+import { getMyProfileInfo } from "../apis/api/mypage";
 import { uploadImage } from "../apis/api/presigned";
-import {
-  editProfileImage,
-  getProfileInfo,
-  editNickname,
-} from "../apis/api/profile";
+import { editProfileImage, editNickname } from "../apis/api/profile";
+
 import { ProfileInfoTemplate } from "../components/templates/profile/ProfileInfoTemplate";
 
 export const ProfileInfoPage = () => {
@@ -14,6 +12,7 @@ export const ProfileInfoPage = () => {
         const imageDto = { profileImageUrl: imageUrl };
         console.log(imageDto);
         await editProfileImage(imageDto);
+        // 모달창 닫기
       }
     } catch (error) {
       console.error("프로필 이미지 업로드 에러:", error);
@@ -36,7 +35,7 @@ export const ProfileInfoPage = () => {
   return (
     <>
       <ProfileInfoTemplate
-        fetchData={getProfileInfo}
+        fetchData={getMyProfileInfo}
         onProfileImageEdit={onProfileImageEdit}
         onNicknameEdit={onNicknameEdit}
         onPasswordEdit={onPasswordEdit}
