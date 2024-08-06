@@ -14,9 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,8 +32,13 @@ public class S3Service {
     @Value("${image.folder}")
     private String folder;
 
-    @Value("${image.excluded-urls}")
-    private List<String> excludedImageUrls;
+    private final List<String> excludedPaths = Arrays.asList(
+            "banner.png",
+            "crewinlogo.png",
+            "crewinsublogo.png",
+            "default-profile.png",
+            "SessionPoster.png"
+    );
 
     // 발급
     @Transactional(readOnly = true)
@@ -73,15 +76,14 @@ public class S3Service {
 
     // S3 이미지 제거
     public void deleteImage(String imageUrl) {
-
-        // 기본 이미지 URL 예외 처리
-        if (excludedImageUrls.contains(imageUrl)) {
-            // 기본 이미지는 삭제하지 않음
-            return;
-        }
-
         // 객체 키 추출
         String objectKey = extractObjectKeyFromUrl(imageUrl);
+
+        // 기본 이미지는 삭제 불가
+        String fileName = objectKey.substring(objectKey.lastIndexOf('/') + 1);
+        if (excludedPaths.contains(fileName)) {
+            return;
+        }
 
         // 객체 삭제
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, objectKey));
