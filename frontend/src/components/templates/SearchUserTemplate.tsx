@@ -93,11 +93,11 @@ const SearchUserTemplate: React.FC = () => {
             <div className="text-center p-2">Loading...</div>
           ) : error ? (
             <div className="text-red-500 text-center p-2">{error}</div>
-          ) : results.members.length === 0 ? (
+          ) : results.items.length === 0 ? (
             <div className="text-center p-2">검색 결과가 없습니다.</div>
           ) : (
             <ul>
-              {results.members.map((member) => (
+              {results.items.map((member) => (
                 <li
                   key={member.memberId}
                   className="flex items-center p-2 border-b hover:bg-gray-100 cursor-pointer"
@@ -128,11 +128,11 @@ const SearchUserTemplate: React.FC = () => {
             <div className="text-center">Loading...</div>
           ) : error ? (
             <div className="text-red-500 text-center mt-4">{error}</div>
-          ) : results.members.length === 0 ? (
+          ) : results.items.length === 0 ? (
             <div className="text-center">검색 결과가 없습니다.</div>
           ) : (
             <ul>
-              {results.members.map((member) => (
+              {results.items.map((member) => (
                 <li
                   key={member.memberId}
                   className="flex items-center p-2 border-b"
