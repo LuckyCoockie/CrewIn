@@ -18,6 +18,7 @@ const MyPageAlbumOrganism: React.FC = () => {
         <img
           src={data.thumbnailImage}
           alt={`gallery-item-${data.postId}`}
+          key={`gallery-${data.postId}`}
           className="w-full h-full"
         />
       )}

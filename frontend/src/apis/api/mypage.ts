@@ -9,6 +9,7 @@ export type ProfileDto = {
   totalTime: number;
   totalAttendance: number;
   imageUrl: string;
+  email?: string | null;
 };
 
 export const getMyProfileInfo = async (): Promise<ProfileDto> => {
@@ -29,12 +30,12 @@ export const getPeopleProfileInfo = async (
 // 내가 만든 세션
 export type MyMadeSessionDto = {
   startAt: string;
-  endAt: string
+  endAt: string;
   sessionName: string;
   imageUrl: string;
   sessionId: number;
-  crewName: string
-  area: string
+  crewName: string;
+  area: string;
 };
 
 export type MyMadeSessionsResponseDto = PageNationData<MyMadeSessionDto>;
@@ -43,7 +44,7 @@ export const getMyMadeSessions = async (
   pageNo: number
 ): Promise<MyMadeSessionsResponseDto> => {
   console.log(pageNo);
-  
+
   const response = await api.get(
     `/mypage/session?type=created&session-type=ALL&page-no=${pageNo}`
   );
@@ -53,12 +54,12 @@ export const getMyMadeSessions = async (
 // 내가 참가한 세션
 export type MyParticipatedSessionDto = {
   startAt: string;
-  endAt: string
+  endAt: string;
   sessionName: string;
   imageUrl: string;
   sessionId: number;
-  crewName: string
-  area: string
+  crewName: string;
+  area: string;
 };
 
 export type MyParticipatedSessionsResponseDto =

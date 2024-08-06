@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-
+import { useQueryClient } from "react-query";
 import { Carousel } from "react-responsive-carousel";
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
@@ -18,7 +18,7 @@ import LargeDisableButton from "../../atoms/Button/LargeDisableButton";
 import { uploadImage } from "../../../apis/api/presigned";
 import { createNotice } from "../../../apis/api/crewdetail";
 
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({
@@ -34,6 +34,8 @@ type FormValues = {
 const NoticeCreateTemplate: React.FC = () => {
   // 크루 공지사항 생성 페이지로 이동할 경우
   const { crewId } = useParams<{ crewId: string }>();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient(); // useQueryClient 추가
   console.log(crewId);
 
   const {
@@ -70,7 +72,12 @@ const NoticeCreateTemplate: React.FC = () => {
 
     console.log(submitData);
     // 여기에 API 호출 코드를 추가
-    createNotice(submitData);
+    await createNotice(submitData); // createNotice 비동기 호출
+
+    // 쿼리 무효화
+    queryClient.invalidateQueries(["crewNotice", { crewId }]);
+
+    navigate(`/crew/detail/${crewId}`);
   };
 
   const [imagePaths, setImagePaths] = useState<string[]>([]);

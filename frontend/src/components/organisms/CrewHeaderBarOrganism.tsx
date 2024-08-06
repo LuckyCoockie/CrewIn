@@ -31,7 +31,7 @@ const CrewHeaderBarOrganism: React.FC<CrewHeaderBarOrganismProps> = ({
           src={crewlistplus}
           alt="plus"
           text="더보기"
-          router="/crew"
+          router="/crew/search"
         />
         {crewList?.map((crew) => {
           return (

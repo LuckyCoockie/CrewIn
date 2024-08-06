@@ -48,9 +48,9 @@ export type GetCrewNoticeListResponseDto = PageNationData<CrewNoticeDto>;
 export const getCrewNoticeList = async (
   dto: GetCrewNoticeListRequestDto
 ): Promise<GetCrewNoticeListResponseDto> => {
-  const response = await api.get(
-    `/crew/notice/${dto.crewId}?page-no=${dto.pageNo}`
-  );
+  const response = await api.get(`/crew/notice/${dto.crewId}`, {
+    params: { pageNo: dto.pageNo },
+  });
   return response.data;
 };
 
