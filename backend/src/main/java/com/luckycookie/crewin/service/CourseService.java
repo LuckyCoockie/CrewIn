@@ -2,7 +2,6 @@ package com.luckycookie.crewin.service;
 
 import com.luckycookie.crewin.domain.Course;
 import com.luckycookie.crewin.domain.Member;
-import com.luckycookie.crewin.dto.CourseDetailResponse;
 import com.luckycookie.crewin.dto.CourseRequest;
 import com.luckycookie.crewin.dto.CourseRequest.UpdateCourseRequest;
 import com.luckycookie.crewin.dto.CourseResponse;
@@ -87,7 +86,7 @@ public class CourseService {
         courseRepository.delete(course);
     }
 
-    public CourseDetailResponse getCourseDetail(Long courseId, CustomUser customUser) {
+    public CourseRequest.CourseDetailResponse getCourseDetail(Long courseId, CustomUser customUser) {
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
@@ -99,7 +98,7 @@ public class CourseService {
             throw new NotMatchMemberCourseException();
         }
 
-        return CourseDetailResponse.builder()
+        return CourseRequest.CourseDetailResponse.builder()
                 .id(courseId)
                 .creatorId(course.getCreator().getId())
                 .length(course.getLength())

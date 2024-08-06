@@ -1,9 +1,7 @@
 package com.luckycookie.crewin.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.luckycookie.crewin.domain.PostImage;
 import com.luckycookie.crewin.domain.enums.Position;
-import com.luckycookie.crewin.domain.enums.PostType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -31,4 +31,17 @@ public class CourseRequest {
         private Double length;
         private String thumbnailImage ;
     }
+
+    @Getter
+    @Builder
+    public static class CourseDetailResponse {
+        private Long id;
+        private Long creatorId;
+        private Double length;
+
+        private String info;
+        private String name;
+        private String thumbnailImage;
+
+    }
 }
