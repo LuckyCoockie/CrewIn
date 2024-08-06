@@ -83,7 +83,7 @@ public class CourseService {
         }
 
         s3Service.deleteImage(course.getThumbnailImage());
-        
+
         courseRepository.delete(course);
     }
 

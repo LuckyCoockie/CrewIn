@@ -53,6 +53,7 @@ public class SessionService {
     private final SessionQueryRepository sessionQueryRepository;
     private final SessionImageRepository sessionImageRepository;
     private final MemberSessionRepository memberSessionRepository;
+    private final S3Service s3Service;
 
     public void createSession(CreateSessionRequest createSessionRequest, CustomUser customUser) {
 
@@ -296,6 +297,16 @@ public class SessionService {
         } else { // 참석 안함
             throw new NotFoundMemberSessionException();
         }
+    }
+
+    // 세션 사진 삭제
+    public void deleteSessionImage(Long sessionImageId, CustomUser customUser) {
+
+        SessionImage sessionImage = sessionImageRepository.findById(sessionImageId).orElseThrow(SessionImageUploadException::new);
+
+        s3Service.deleteImage(sessionImage.getImageUrl());
+
+        sessionImageRepository.delete(sessionImage);
     }
 
     public void applySession(Long sessionId, String email) {

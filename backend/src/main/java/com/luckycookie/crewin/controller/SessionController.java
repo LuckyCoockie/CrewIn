@@ -84,11 +84,19 @@ public class SessionController {
         sessionService.cancelSessionRequest(sessionId, customUser.getEmail());
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 참가 취소가 완료되었습니다."));
     }
+
     // 세션 사진첩 사진 업로드
     @PostMapping("/detail/gallery")
     public ResponseEntity<BaseResponse<Void>> uploadSessionImage (@AuthenticationPrincipal CustomUser customUser, @RequestBody UploadSessionImageRequest uploadSessionImageRequest) {
         sessionService.uploadSessionImage(uploadSessionImageRequest, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 사진 업로드를 성공했습니다."));
+    }
+
+    // 세션 사진 삭제
+    @DeleteMapping("detail/gallery/{id}")
+    public ResponseEntity<BaseResponse<Void>> deleteSessionImage(@PathVariable("id") Long sessionImageId, @AuthenticationPrincipal CustomUser customUser) {
+        sessionService.deleteSessionImage(sessionImageId, customUser);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 사진 삭제가 완료되었습니다."));
     }
 
 }
