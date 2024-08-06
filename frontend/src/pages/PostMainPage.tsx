@@ -23,7 +23,7 @@ const PostMainPage: React.FC = () => {
   const fetchPostData = useCallback(
     async (page: number): Promise<GetPostListResponseDto> => {
       try {
-        return getPostList({ pageNo: page - 1 });
+        return getPostList(page - 1);
       } catch (error) {
         console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
         return { pageNo: 0, lastPageNo: 0, items: [] };
@@ -55,7 +55,7 @@ const PostMainPage: React.FC = () => {
           <Alarmicon className="w-6 h-6" onClick={handleAlarm} />
         </div>
       </div>
-      <div>
+      <div className="w-full">
         <InfiniteScrollComponent
           fetchKey="postData"
           fetchData={fetchPostData}

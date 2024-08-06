@@ -6,11 +6,13 @@ import {
   SessionDetailDto,
   GetSessionInfoRequestDto,
   getSessionAlbum,
+  GetSessionAlbumDto,
 } from "../../apis/api/sessiondetail";
 import AttendanceButton from "../atoms/Button/AttendanceButton";
 import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
 import NavTabMolecule from "../molecules/Tab/NavTabMolecule";
 import SessionAlbumOrganism from "../organisms/SessionAlbumOrganism";
+import { PageNationData } from "../../util/paging/type";
 
 // 스피너 컴포넌트
 const Spinner = () => (
@@ -27,7 +29,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
   fetchDetailData,
 }) => {
   const [sessionId] = useState<number>(1);
-  const [currentTab, setCurrentTab] = useState<string>("세션정보"); // 현재 선택된 탭 상태 추가
+  const [currentTab, setCurrentTab] = useState<string>("세션정보");
 
   const {
     data: detailData,
@@ -37,24 +39,18 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
     fetchDetailData({ sessionId })
   );
 
-  // 로그 출력
-  console.log("detailData", detailData);
-  console.log(detailData?.isSessionHost);
+  const fetchAlbumData = async (
+    page: number
+  ): Promise<PageNationData<GetSessionAlbumDto>> => {
+    return getSessionAlbum(sessionId, page - 1);
+  };
 
-  // 오류 로그 출력
   if (detailError) console.error("detailError", detailError);
 
   const tabs = ["세션정보", "사진첩"];
-
-  // 현재 시각과 detailData.startAt 비교
   const isSessionStarted = detailData
     ? new Date(detailData.startAt) < new Date()
     : false;
-
-  const fetchAlbumData = async (page: number): Promise<string[]> => {
-    const response = await getSessionAlbum({ sessionId, pageNo: page });
-    return response.items;
-  };
 
   return (
     <>
@@ -80,7 +76,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
                 <NavTabMolecule
                   texts={tabs}
                   onTabClick={setCurrentTab}
-                  currentTab={currentTab} // 현재 선택된 탭 전달
+                  currentTab={currentTab}
                 />
               )}
               {currentTab === "세션정보" && (
@@ -88,7 +84,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
               )}
               {currentTab === "사진첩" && (
                 <SessionAlbumOrganism
-                  sessionId={detailData?.sessionId}
+                  sessionId={detailData.sessionId}
                   fetchAlbumData={fetchAlbumData}
                 />
               )}

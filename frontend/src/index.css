@@ -169,3 +169,20 @@ header {
 .font-weight-sm {
   font-weight: 400;
 }
+
+.photo-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.photo-item {
+  width: calc(33.333%);
+  height: 120px;
+  object-fit: cover; /* 이미지의 잘림을 방지하고 전체 영역에 맞춤 */
+}
+
+@media (min-width: 550px) {
+  .photo-item {
+    height: 180px; /* 화면 너비가 550px 이상일 때 높이 설정 */
+  }
+}

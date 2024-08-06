@@ -16,15 +16,15 @@ export type PostDto = {
   postImages: string[];
 };
 
-export type GetPostListRequestDto = { pageNo: number };
-
 export type GetPostListResponseDto = PageNationData<PostDto>;
 
 export const getPostList = async (
-  dto: GetPostListRequestDto
+  pageNo: number
 ): Promise<GetPostListResponseDto> => {
   try {
-    const response = await api.get("/post/home", { params: dto });
+    const response = await api.get("/post/home", {
+      params: { pageNo: pageNo },
+    });
 
     if (response.status === 200) {
       return response.data;

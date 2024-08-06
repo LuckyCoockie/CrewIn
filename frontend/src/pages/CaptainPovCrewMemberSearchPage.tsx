@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import BackHeaderMediumOrganism from "../components/organisms/BackHeaderMediumOrganism";
 import { ReactComponent as Searchicon } from "../assets/icons/searchicon.svg";
+import { ReactComponent as CrewinLogo } from "../assets/icons/crewinlogo.svg"; // Assuming you have this SVG as a default image
 import {
   getCrewMemberList,
   CrewMemberListResponseDto,
@@ -20,10 +21,13 @@ const CaptainPovCrewMemberSearchPage: React.FC = () => {
       setError(null);
       try {
         const data: CrewMemberListResponseDto = await getCrewMemberList(crewId);
-        setJoinedMembers(data.crewIsJoinedMemberList);
+        // Separate joined members
+        setJoinedMembers(data.crewMemberList.filter(member => member.joined));
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message);
+        } else {
+          setError("An unknown error occurred.");
         }
       } finally {
         setLoading(false);
@@ -35,7 +39,8 @@ const CaptainPovCrewMemberSearchPage: React.FC = () => {
 
   const filteredMembers = joinedMembers.filter(
     (member) =>
-      member.name.includes(searchQuery) || member.nickname.includes(searchQuery)
+      member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.nickname.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handlePositionChange = (email: string, newPosition: string) => {
@@ -77,13 +82,24 @@ const CaptainPovCrewMemberSearchPage: React.FC = () => {
           <ul>
             {filteredMembers.map((member) => (
               <li key={member.email} className="flex items-center p-2 border-b">
-                <div className="flex-1">
+                <div className="w-12 h-12 flex-shrink-0">
+                  {member.imageUrl ? (
+                    <img
+                      src={member.imageUrl}
+                      alt={member.name}
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  ) : (
+                    <CrewinLogo className="w-full h-full object-cover rounded-full" />
+                  )}
+                </div>
+                <div className="flex-1 ml-3">
                   <div className="font-bold">{member.name}</div>
                   <div className="text-gray-600">{member.nickname}</div>
                 </div>
                 <select
                   value={member.position}
-                  className="border border-gray-400 w-30 h-10 rounded-md text-sm"
+                  className="border border-gray-400 w-30 h-10 rounded-md text-sm bg-white"
                   onChange={(e) =>
                     handlePositionChange(member.email, e.target.value)
                   }

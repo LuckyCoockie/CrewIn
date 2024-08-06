@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // useNavigate 추가
+import { useNavigate } from "react-router-dom";
 import BackHeaderMediumOrganism from "../components/organisms/BackHeaderMediumOrganism";
 import { ReactComponent as Searchicon } from "../assets/icons/searchicon.svg";
+import { ReactComponent as CrewinLogo } from "../assets/icons/crewinlogo.svg";
 import {
   getCrewMemberList,
   CrewMemberListResponseDto,
@@ -22,10 +23,12 @@ const CrewMemberSearchPage: React.FC = () => {
       setError(null);
       try {
         const data: CrewMemberListResponseDto = await getCrewMemberList(crewId);
-        setJoinedMembers(data.crewIsJoinedMemberList);
+        setJoinedMembers(data.crewMemberList.filter(member => member.joined));
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message);
+        } else {
+          setError("An unknown error occurred.");
         }
       } finally {
         setLoading(false);
@@ -37,11 +40,12 @@ const CrewMemberSearchPage: React.FC = () => {
 
   const filteredMembers = joinedMembers.filter(
     (member) =>
-      member.name.includes(searchQuery) || member.nickname.includes(searchQuery)
+      member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.nickname.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleSearchIconClick = () => {
-    navigate("/crew/membersearch/captain"); // 클릭 시 지정된 경로로 이동
+    navigate("/crew/membersearch/captain");
   };
 
   return (
@@ -76,7 +80,18 @@ const CrewMemberSearchPage: React.FC = () => {
           <ul>
             {filteredMembers.map((member) => (
               <li key={member.email} className="flex items-center p-2 border-b">
-                <div className="flex-1">
+                <div className="w-12 h-12 flex-shrink-0">
+                  {member.imageUrl ? (
+                    <img
+                      src={member.imageUrl}
+                      alt={member.name}
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  ) : (
+                    <CrewinLogo className="w-full h-full object-cover rounded-full" />
+                  )}
+                </div>
+                <div className="flex-1 ml-3">
                   <div className="font-bold">{member.name}</div>
                   <div className="text-gray-600">{member.nickname}</div>
                 </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { useInfiniteQuery } from "react-query";
 
 export interface ItemComponentProps<T> {
@@ -16,7 +16,7 @@ type OwnProps<T> = {
   initPage?: number;
 };
 
-const InfinityGaroScrollMolecule = <T,>({
+const InfiniteScrollComponent = <T,>({
   fetchKey,
   fetchData,
   ItemComponent,
@@ -24,8 +24,6 @@ const InfinityGaroScrollMolecule = <T,>({
   pageSize,
   initPage,
 }: OwnProps<T>) => {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
     useInfiniteQuery(
       fetchKey,
@@ -33,42 +31,36 @@ const InfinityGaroScrollMolecule = <T,>({
       {
         refetchOnWindowFocus: false,
         getNextPageParam: (lastPage, allPages) => {
-          if (lastPage.length < pageSize) return undefined;
-          return allPages.length + 1;
+          if (lastPage.length < pageSize) return;
+          const nextPage = allPages.length + 1;
+          return nextPage;
         },
       }
     );
 
   useEffect(() => {
     const handleScroll = async () => {
-      if (!scrollContainerRef.current) return;
-      const { scrollWidth, scrollLeft, clientWidth } = scrollContainerRef.current;
+      const { scrollHeight, scrollTop, clientHeight } =
+        document.documentElement;
       if (
         !isFetchingNextPage &&
-        scrollWidth - scrollLeft <= clientWidth * 1.2
+        scrollHeight - scrollTop <= clientHeight * 1.2
       ) {
         if (hasNextPage) await fetchNextPage();
       }
     };
-
-    const container = scrollContainerRef.current;
-    if (container) {
-      container.addEventListener("scroll", handleScroll);
-    }
-
+    document.addEventListener("scroll", handleScroll);
     return () => {
-      if (container) {
-        container.removeEventListener("scroll", handleScroll);
-      }
+      document.removeEventListener("scroll", handleScroll);
     };
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   return (
-    <div ref={scrollContainerRef} className={className}>
+    <div className={className}>
       {data?.pages.map((page, pageIndex) => (
         <React.Fragment key={pageIndex}>
-          {page.map((item, itemIndex) => (
-            <ItemComponent key={itemIndex} data={item} />
+          {page?.map((item, itemIndex) => (
+            <ItemComponent key={`${pageIndex}-${itemIndex}`} data={item} />
           ))}
         </React.Fragment>
       ))}
@@ -76,4 +68,4 @@ const InfinityGaroScrollMolecule = <T,>({
   );
 };
 
-export default InfinityGaroScrollMolecule;
+export default InfiniteScrollComponent;
