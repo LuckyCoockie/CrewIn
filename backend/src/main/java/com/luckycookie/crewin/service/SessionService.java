@@ -31,6 +31,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -232,8 +233,8 @@ public class SessionService {
                 .build();
     }
 
-    public List<SessionResponse> getSessionsByStatusAndTypeAndCrewName(String status, SessionType sessionType, String crewName) {
-        List<Session> sessions = sessionQueryRepository.findSessionsByStatusAndTypeAndCrewName(status, sessionType, crewName);
+    public List<SessionResponse> getSessionsByStatusAndTypeAndCrewNameAndDate(String status, SessionType sessionType, String crewName, LocalDate date) {
+        List<Session> sessions = sessionQueryRepository.findSessionsByStatusAndTypeAndCrewNameAndDate(status, sessionType, crewName, date);
         return sessions.stream().map(this::convertToSessionResponse).collect(Collectors.toList());
     }
 

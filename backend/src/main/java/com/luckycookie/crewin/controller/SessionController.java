@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -37,9 +38,11 @@ public class SessionController {
     public ResponseEntity<BaseResponse<List<SessionResponse>>> getSessionsByType(
             @RequestParam(value = "status", defaultValue = "") String status,
             @RequestParam(value = "type", defaultValue = "") String sessionType,
-            @RequestParam(value = "crew-name", defaultValue = "") String crewName) {
+            @RequestParam(value = "crew-name", defaultValue = "") String crewName,
+            @RequestParam(value = "date", required = false) LocalDate date
+    ) {
         SessionType enumSessionType = SessionType.stringToSessionType(sessionType);
-        List<SessionResponse> sessions = sessionService.getSessionsByStatusAndTypeAndCrewName(status, enumSessionType, crewName);
+        List<SessionResponse> sessions = sessionService.getSessionsByStatusAndTypeAndCrewNameAndDate(status, enumSessionType, crewName, date);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 정보를 조회하는데 성공했습니다.", sessions));
     }
 
@@ -84,9 +87,10 @@ public class SessionController {
         sessionService.cancelSessionRequest(sessionId, customUser.getEmail());
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 참가 취소가 완료되었습니다."));
     }
+
     // 세션 사진첩 사진 업로드
     @PostMapping("/detail/gallery")
-    public ResponseEntity<BaseResponse<Void>> uploadSessionImage (@AuthenticationPrincipal CustomUser customUser, @RequestBody UploadSessionImageRequest uploadSessionImageRequest) {
+    public ResponseEntity<BaseResponse<Void>> uploadSessionImage(@AuthenticationPrincipal CustomUser customUser, @RequestBody UploadSessionImageRequest uploadSessionImageRequest) {
         sessionService.uploadSessionImage(uploadSessionImageRequest, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 사진 업로드를 성공했습니다."));
     }

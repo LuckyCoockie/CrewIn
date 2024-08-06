@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,13 +23,21 @@ public class SessionQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
     private final QSession session = QSession.session;
 
-    public List<Session> findSessionsByStatusAndTypeAndCrewName(String status, SessionType sessionType, String crewName) {
+    public List<Session> findSessionsByStatusAndTypeAndCrewNameAndDate(String status, SessionType sessionType, String crewName, LocalDate date) {
         return jpaQueryFactory
                 .select(session)
                 .from(session)
-                .where(statusEq(status), typeEq(sessionType), crewNameEq(crewName))
+                .where(statusEq(status), typeEq(sessionType), crewNameEq(crewName), dateEq(date))
                 .orderBy(session.id.desc())
                 .fetch();
+    }
+
+    private BooleanExpression dateEq(LocalDate date) {
+        if (date == null) return null;
+        else
+            return session.startAt.year().eq(date.getYear())
+                    .and(session.startAt.month().eq(date.getMonthValue()))
+                    .and(session.startAt.dayOfMonth().eq(date.getDayOfMonth()));
     }
 
     private BooleanExpression crewNameEq(String crewName) {
