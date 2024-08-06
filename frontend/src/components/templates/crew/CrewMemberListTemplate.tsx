@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import BackHeaderMediumOrganism from "../components/organisms/BackHeaderMediumOrganism";
-import { ReactComponent as Searchicon } from "../assets/icons/searchicon.svg";
-import { ReactComponent as CrewinLogo } from "../assets/icons/crewinlogo.svg";
+import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
+import { ReactComponent as Searchicon } from "../../../assets/icons/searchicon.svg";
+import { ReactComponent as CrewinLogo } from "../../../assets/icons/crewinlogo.svg";
 import {
   getCrewMemberList,
   CrewMemberListResponseDto,
   CrewMemberDto,
-} from "../apis/api/crewmemberlist";
+} from "../../../apis/api/crewmemberlist";
 
-const CaptainPovCrewMemberPage: React.FC = () => {
+const CrewMemberListTemplate: React.FC = () => {
   const navigate = useNavigate();
   const [crewId] = useState<number>(1); // 나중에 동적으로 설정
   const [loading, setLoading] = useState<boolean>(false);
@@ -26,8 +26,6 @@ const CaptainPovCrewMemberPage: React.FC = () => {
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message);
-        } else {
-          setError("An unknown error occurred.");
         }
       } finally {
         setLoading(false);
@@ -41,7 +39,6 @@ const CaptainPovCrewMemberPage: React.FC = () => {
     navigate("/crew/membersearch");
   };
 
-  // Separate joined and invited members
   const joinedMembers = members.filter((member) => member.joined);
   const invitedMembers = members.filter(
     (member) => !member.joined && member.invited
@@ -61,7 +58,6 @@ const CaptainPovCrewMemberPage: React.FC = () => {
       {error && <div className="text-red-500 text-center">{error}</div>}
 
       <div>
-        {/* Display joined members */}
         {joinedMembers.length === 0 ? (
           <div className="text-center">가입된 크루원이 없습니다.</div>
         ) : (
@@ -92,8 +88,6 @@ const CaptainPovCrewMemberPage: React.FC = () => {
             ))}
           </ul>
         )}
-
-        {/* Display invited members */}
         {invitedMembers.length === 0 ? (
           <div className="text-center">초대된 크루원이 없습니다.</div>
         ) : (
@@ -129,4 +123,4 @@ const CaptainPovCrewMemberPage: React.FC = () => {
   );
 };
 
-export default CaptainPovCrewMemberPage;
+export default CrewMemberListTemplate;

@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import BackHeaderMediumOrganism from "../components/organisms/BackHeaderMediumOrganism";
-import { ReactComponent as Searchicon } from "../assets/icons/searchicon.svg";
-import { ReactComponent as CrewinLogo } from "../assets/icons/crewinlogo.svg";
+import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
+import { ReactComponent as Searchicon } from "../../../assets/icons/searchicon.svg"
+import { ReactComponent as CrewinLogo } from "../../../assets/icons/crewinlogo.svg";
 import {
   getCrewMemberList,
   CrewMemberListResponseDto,
   CrewMemberDto,
-} from "../apis/api/crewmemberlist";
+} from "../../../apis/api/crewmemberlist";
+import {
+  changeAuthority,
+  ChangeAuthorityRequestDto,
+  ChangeAuthorityResponseDto,
+} from "../../../apis/api/changeauthority";
 
-const CrewMemberPage: React.FC = () => {
+const CaptainPovCrewMemberListTemplate: React.FC = () => {
   const navigate = useNavigate();
   const [crewId] = useState<number>(1); // 나중에 동적으로 설정
   const [loading, setLoading] = useState<boolean>(false);
@@ -26,6 +31,8 @@ const CrewMemberPage: React.FC = () => {
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message);
+        } else {
+          setError("An unknown error occurred.");
         }
       } finally {
         setLoading(false);
@@ -36,13 +43,48 @@ const CrewMemberPage: React.FC = () => {
   }, [crewId]);
 
   const onSearchClick = () => {
-    navigate("/crew/membersearch");
+    navigate("/crew/membersearch/captain");
+  };
+
+  const handlePositionChange = async (
+    memberId: number,
+    email: string,
+    newPosition: string
+  ) => {
+    try {
+      const dto: ChangeAuthorityRequestDto = {
+        crewId,
+        memberId,
+        position: newPosition,
+      };
+
+      const response: ChangeAuthorityResponseDto = await changeAuthority(dto);
+      if (response.statusCode === 200) {
+        setMembers((prevMembers) =>
+          prevMembers.map((member) =>
+            member.email === email
+              ? { ...member, position: newPosition }
+              : member
+          )
+        );
+      } else {
+        setError(response.message);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unknown error occurred.");
+      }
+    }
   };
 
   const joinedMembers = members.filter((member) => member.joined);
   const invitedMembers = members.filter(
     (member) => !member.joined && member.invited
   );
+
+  const positions = ["CAPTAIN", "PACER", "MEMBER"];
 
   return (
     <div className="relative flex flex-col max-w-[550px] mx-auto">
@@ -80,14 +122,29 @@ const CrewMemberPage: React.FC = () => {
                   <div className="text-gray-600">{member.nickname}</div>
                 </div>
                 <div>
-                  <button className="border border-gray-400 w-20 h-10 rounded-md text-sm">
-                    {member.position}
-                  </button>
+                  <select
+                    className="border border-gray-400 w-30 h-10 rounded-md text-sm bg-white"
+                    value={member.position}
+                    onChange={(e) =>
+                      handlePositionChange(
+                        member.memberId,
+                        member.email,
+                        e.target.value
+                      )
+                    }
+                  >
+                    {positions.map((position) => (
+                      <option key={position} value={position}>
+                        {position}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </li>
             ))}
           </ul>
         )}
+
         {invitedMembers.length === 0 ? (
           <div className="text-center">초대된 크루원이 없습니다.</div>
         ) : (
@@ -110,9 +167,24 @@ const CrewMemberPage: React.FC = () => {
                   <div className="text-gray-600">{member.nickname}</div>
                 </div>
                 <div>
-                  <button className="border border-gray-400 w-20 h-10 rounded-md text-sm">
-                    WAITING
-                  </button>
+                  <select
+                    className="border border-gray-400 w-30 h-10 rounded-md text-sm bg-white"
+                    value="WAITING"
+                    onChange={(e) =>
+                      handlePositionChange(
+                        member.memberId,
+                        member.email,
+                        e.target.value
+                      )
+                    }
+                  >
+                    <option value="WAITING">WAITING</option>
+                    {positions.map((position) => (
+                      <option key={position} value={position}>
+                        {position}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </li>
             ))}
@@ -123,4 +195,4 @@ const CrewMemberPage: React.FC = () => {
   );
 };
 
-export default CrewMemberPage;
+export default CaptainPovCrewMemberListTemplate;
