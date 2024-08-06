@@ -108,5 +108,11 @@ public class NotificationService {
         }
     }
 
+    public void deleteNotificationByPostId(Long senderId, Long receiverId, Long postId) {
+        int result = notificationRepository.deleteBySenderIdAndReceiverIdAndPostId(senderId, receiverId, postId);
+        if (result == 0) {
+            throw new NotFoundNotificationException();
+        }
+    }
 
 }

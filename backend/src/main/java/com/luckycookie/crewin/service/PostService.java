@@ -9,6 +9,8 @@ import com.luckycookie.crewin.dto.PostResponse.PostGalleryItem;
 import com.luckycookie.crewin.dto.PostResponse.PostItem;
 import com.luckycookie.crewin.dto.base.PagingItemsResponse;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
+import com.luckycookie.crewin.exception.heart.AlreadyExsistHeartException;
+import com.luckycookie.crewin.exception.heart.NotFoundHeartException;
 import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.memberCrew.NotFoundMemberCrewException;
@@ -285,16 +287,35 @@ public class PostService {
     }
 
     public void registHeart(Long postId, CustomUser customUser) {
-
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
         Post post = postRepository.findById(postId)
                         .orElseThrow(NotFoundPostException::new);
-        // 좋아요 등록
-        heartRepository.save(Heart.builder().post(post).member(member).build());
-        // 알림 생성
-        notificationService.createNotification(NotificationType.LIKE, member.getId(), post.getAuthor().getId(), post.getId());
+        if (heartRepository.existsByPostAndMember(post, member)) {
+            // 이미 좋아요 눌려있는 게시글일때 요청 시 예외 처리
+            throw new AlreadyExsistHeartException();
+        } else {
+            // 좋아요 등록
+            heartRepository.save(Heart.builder().post(post).member(member).build());
+            // 알림 생성
+            notificationService.createNotification(NotificationType.LIKE, member.getId(), post.getAuthor().getId(), post.getId());
+        }
     }
+
+    public void deleteHeart(Long postId, CustomUser customUser) {
+
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(NotFoundPostException::new);
+        Heart heart = heartRepository.findByMemberAndPost(member, post)
+                .orElseThrow(NotFoundHeartException::new);
+        // 좋아요 삭제
+        heartRepository.delete(heart);
+        // 알림 제거
+        notificationService.deleteNotificationByPostId(member.getId(), post.getAuthor().getId(), postId);
+    }
+
 
 
 }

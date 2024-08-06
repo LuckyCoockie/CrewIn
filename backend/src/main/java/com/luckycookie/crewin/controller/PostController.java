@@ -89,11 +89,17 @@ public class PostController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "멤버 사진첩 상세 조회를 성공했습니다.", postService.getMemberPostGalleryDetailResponse(memberId, postId, direction, customUser)));
     }
 
-    //게시글 좋아요
+    //게시글 좋아요 등록
     @GetMapping("/heart/{post-id}")
     public ResponseEntity<BaseResponse<Void>> registHeartAtPost(@AuthenticationPrincipal CustomUser customUser, @PathVariable("post-id") Long postId) {
         postService.registHeart(postId, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "게시글에 좋아요를 등록했습니다."));
+    }
+    //게시글 좋아요 취소
+    @DeleteMapping("/heart/{post-id}")
+    public ResponseEntity<BaseResponse<Void>> deleteHeartAtPost(@AuthenticationPrincipal CustomUser customUser, @PathVariable("post-id") Long postId) {
+        postService.deleteHeart(postId, customUser);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "게시글에 좋아요를 취소했습니다."));
     }
 
 }

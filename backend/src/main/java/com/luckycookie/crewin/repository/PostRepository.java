@@ -34,7 +34,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByMemberAndTargetMember(Member member, Member targetMember, Pageable pageable);
 
     // 타입이 스탠다드고 작성자가 본인인 글
-    @Query("SELECT p FROM Post p where p.postType = 'STANDARD' AND p.author = :member")
+    @Query("SELECT p FROM Post p WHERE p.postType = 'STANDARD' AND p.author = :member ORDER BY p.createdAt DESC")
     Page<Post> findByMember(Member member, Pageable pageable);
 
     // 크루
