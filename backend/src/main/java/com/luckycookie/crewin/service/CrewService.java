@@ -267,7 +267,7 @@ public class CrewService {
     // 공지사항 조회
     @Transactional(readOnly = true)
     public PagingItemsResponse<CrewNoticeItem> getCrewNoticeList(int pageNo, Long crewId, CustomUser customUser) {
-        Pageable pageable = PageRequest.of(pageNo, 5); // pageNo 페이지 번호, 5 : 페이지 크기
+        Pageable pageable = PageRequest.of(pageNo, 10); // pageNo 페이지 번호, 10 : 페이지 크기
 
         // 현재 사용자 정보 가져오기
         Member member = memberRepository.findByEmail(customUser.getEmail())
