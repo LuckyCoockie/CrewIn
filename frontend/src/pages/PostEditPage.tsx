@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import InputTextAreaNoLimitTypeMolecule from "../components/molecules/Input/InputTextAreaNoLimitTypeMolecule";
-import InputRadioTypeMolecule from "../components/molecules/Input/InputRadioTypeMolecule";
+import PostEditTemplate from "../components/templates/PostEditTemplate";
 import { updatePost, UpdatePostRequestDto } from "../apis/api/postupdate";
 import { getPostList, PostDto } from "../apis/api/postlist";
 import { getMyCrews, CrewDto } from "../apis/api/mycrew";
+import BackHeaderMediumOrganism from "../components/organisms/BackHeaderMediumOrganism";
 
 const fetchAllPosts = async () => {
   let allPosts: PostDto[] = [];
@@ -36,7 +36,7 @@ const PostEditPage: React.FC = () => {
   const [title] = useState<string>("");
   const [isPublic, setIsPublic] = useState<boolean>(true);
   const [postImages, setPostImages] = useState<string[]>([]);
-  const [crews, setCrews] = useState<CrewDto[]>([]);
+  const [, setCrews] = useState<CrewDto[]>([]);
   const [crewId, setCrewId] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -106,44 +106,22 @@ const PostEditPage: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <main>
-        <div className="w-full flex">
-          <div className="w-full">
-            <InputRadioTypeMolecule
-              id="visibility"
-              title="공개 범위"
-              name="visibility"
-              onChange={handleVisibilityChange}
-              value={["전체", "크루"]}
-              selectedValue={isPublic ? "전체" : "크루"}
-              default={isPublic ? "전체" : "크루"}
-              hasError={false}
-              disabledOptions={isPublic ? ["크루"] : []}
-            />
-          </div>
-        </div>
-
-        <div className="w-full mb-6">
-          <InputTextAreaNoLimitTypeMolecule
-            id="content"
-            title="내용"
-            name="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="내용을 입력하세요"
-            hasError={false}
-          />
-        </div>
-
-        <button
-          onClick={handleUpdatePost}
-          className="w-full bg-[#2b2f40e6] py-4 px-8 text-center rounded-lg text-white font-bold"
-        >
-          수정
-        </button>
-      </main>
-    </div>
+    <>
+      <header className="mb-10">
+        <BackHeaderMediumOrganism text="게시글 수정" />
+      </header>
+      <div className="mx-auto w-full max-w-[550px] pb-10">
+      <PostEditTemplate
+        content={content}
+        isPublic={isPublic}
+        postImages={postImages}
+        crewId={crewId}
+        onContentChange={(e) => setContent(e.target.value)}
+        onVisibilityChange={handleVisibilityChange}
+        onUpdatePost={handleUpdatePost}
+      />
+      </div>
+    </>
   );
 };
 

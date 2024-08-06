@@ -23,12 +23,13 @@ import NoticeCreatePage from "./pages/NoticeCreatePage.tsx";
 import { ProfileInfoPage } from "./pages/ProfileInfoPage.tsx";
 import ProtectedRoute from "./util/router/ProtectedRoute.tsx";
 import UnprotectedRoute from "./util/router/UnprotectedRoute.tsx";
-import CrewMemberPage from "./pages/CrewMemberPage.tsx";
-import CrewMemberSearchPage from "./pages/CrewMemberSearchPage.tsx";
-import CaptainPovCrewMemberPage from "./pages/CaptainPovCrewMemberPage.tsx";
-import CaptainPovCrewMemberSearchPage from "./pages/CaptainPovCrewMemberSearchPage.tsx";
+import CrewMemberPage from "./pages/crew/CrewMemberPage.tsx";
+import CrewMemberSearchPage from "./pages/crew/CrewMemberSearchPage.tsx";
+import CaptainPovCrewMemberPage from "./pages/crew/CaptainPovCrewMemberPage.tsx";
+import CaptainPovCrewMemberSearchPage from "./pages/crew/CaptainPovCrewMemberSearchPage.tsx";
 import CourseEditPage from "./pages/course/CourseEditPage.tsx";
 import CoursePage from "./pages/course/CoursePage.tsx";
+import CrewInvitePage from "./pages/crew/CrewInvitePage.tsx";
 // import { getMyCrews } from "./apis/api/mycrew";
 
 const loader = async () => {
@@ -84,6 +85,7 @@ export const router = createBrowserRouter([
                 path: "membersearch/captain",
                 element: <CaptainPovCrewMemberSearchPage />,
               },
+              { path: "invite", element: <CrewInvitePage /> },
             ],
           },
           { path: "profile", element: <ProfilePage /> },
