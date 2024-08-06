@@ -68,11 +68,11 @@ export type GetSessionListRequestDto = {
 
 export const getSessionList = async (
   dto: GetSessionListRequestDto
-): Promise<SessionDto[]> => {
-  const response = await api.get<SessionDto[]>("/session", { params: dto });
-  return response.data.filter((value) =>
-    value.startAt.includes(dto.date ?? "")
-  );
+): Promise<PageNationData<SessionDto>> => {
+  const response = await api.get<PageNationData<SessionDto>>("/session", {
+    params: dto,
+  });
+  return response.data;
 };
 
 export type GetMySessionRequestDto = {

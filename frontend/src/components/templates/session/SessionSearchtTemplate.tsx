@@ -13,11 +13,15 @@ import { useCallback, useState } from "react";
 import qs from "query-string";
 import DropdownTypeComponent from "../../atoms/Input/DropdownItemComponent";
 import { useNavigate } from "react-router";
-import SessionListComponent from "../../organisms/SessionListOrganism";
+import InfiniteScrollComponent from "../../../util/paging/component/InfinityScrollComponent";
+import { PageNationData } from "../../../util/paging/type";
+import SessionListItemMolecules from "../../molecules/SessionListItemMolecules";
 
 type OwnProps = {
   onSearch: (dto: GetSessionListRequestDto) => Promise<void>;
-  fetchData: (dto: GetSessionListRequestDto) => Promise<SessionDto[]>;
+  fetchData: (
+    dto: GetSessionListRequestDto
+  ) => Promise<PageNationData<SessionDto>>;
 };
 
 const SessionSearchTemplate: React.FC<OwnProps> = ({ onSearch, fetchData }) => {
@@ -47,6 +51,13 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({ onSearch, fetchData }) => {
     navigate(`/session/create`);
   };
 
+  const handleFetchData = useCallback(
+    (pageNo: number) => {
+      return fetchData({ ...query, pageNo: pageNo });
+    },
+    [fetchData, query]
+  );
+
   return (
     <main>
       <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20 relative">
@@ -68,7 +79,21 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({ onSearch, fetchData }) => {
           </div>
         </div>
         <SessionSearchOrganism onSearch={handleSearch} />
-        <SessionListComponent fetchData={fetchData} />
+        <InfiniteScrollComponent
+          className="grid grid-cols-2 gap-2 xs:gap-4 mb-2 xs:mb-4 w-full"
+          fetchKey={["session", query.type ?? "", query.sessionType ?? ""]}
+          fetchData={handleFetchData}
+          initPage={parseInt(query.pageNo ?? "1")}
+          ItemComponent={({ data }) => (
+            <SessionListItemMolecules
+              key={data.sessionId}
+              crewName={data.crewName}
+              area={data.area}
+              date={data.startAt}
+              imageUrl={data.sessionThumbnail}
+            />
+          )}
+        />
         <FloatingActionButton onClick={handleSessionCreateRoute}>
           <RunningIcon className="w-6 h-6" />
         </FloatingActionButton>
