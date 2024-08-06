@@ -25,6 +25,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -141,7 +142,10 @@ public class PostService {
                 .isPublic(post.getIsPublic())
                 .postType(post.getPostType())
                 .profileImage(post.getAuthor().getImageUrl())
-                .postImages(post.getPostImages().stream().map(PostImage::getImageUrl).toList())
+                .postImages(post.getPostImages().stream()
+                        .sorted(Comparator.comparing(PostImage::getId))
+                        .map(PostImage::getImageUrl)
+                        .toList())
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
                 .title(post.getTitle())
