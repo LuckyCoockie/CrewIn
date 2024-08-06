@@ -22,7 +22,7 @@ const CrewMemberListTemplate: React.FC = () => {
       setError(null);
       try {
         const data: CrewMemberListResponseDto = await getCrewMemberList(crewId);
-        setMembers(data.crewMemberList);
+        setMembers(data.items);
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message);

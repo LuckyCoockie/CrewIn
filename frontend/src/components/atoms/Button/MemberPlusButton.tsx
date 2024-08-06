@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 const MemberPlusButton: React.FC = () => {
   const navigate = useNavigate();
   const handleNav = () => {
-    navigate(``);
+    navigate(`/crew/invite`);
   };
   return (
     <button onClick={handleNav}>

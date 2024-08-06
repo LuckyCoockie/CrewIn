@@ -102,7 +102,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           autoPlay={false}
         >
           {croppedImages.map((image, index) => (
-            <div key={index}>
+            <div key={image}>
               <img
                 src={image}
                 alt={`Cropped ${index}`}
