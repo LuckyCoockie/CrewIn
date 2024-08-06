@@ -15,6 +15,7 @@ const MyPageHeaderOrganism: React.FC = () => {
       await logout();
       store.dispatch(clearAccessToken());
       console.log("로그아웃 성공");
+      navigate(`/login`);
     } catch (error) {
       console.error("로그아웃 실패:", error);
     }
