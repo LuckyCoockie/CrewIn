@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -32,6 +33,9 @@ public class S3Service {
 
     @Value("${image.folder}")
     private String folder;
+
+    @Value("${image.excluded-urls}")
+    private List<String> excludedImageUrls;
 
     // 발급
     @Transactional(readOnly = true)
@@ -69,6 +73,13 @@ public class S3Service {
 
     // S3 이미지 제거
     public void deleteImage(String imageUrl) {
+
+        // 기본 이미지 URL 예외 처리
+        if (excludedImageUrls.contains(imageUrl)) {
+            // 기본 이미지는 삭제하지 않음
+            return;
+        }
+
         // 객체 키 추출
         String objectKey = extractObjectKeyFromUrl(imageUrl);
 
