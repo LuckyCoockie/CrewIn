@@ -15,7 +15,7 @@ export default defineConfig({
       manifest: {
         name: "CREW-IN",
         short_name: "CREW-IN",
-        theme_color: "#ffffff",
+        theme_color: "#2B2F40",
         icons: [
           {
             src: "pwa-64x64.png",
