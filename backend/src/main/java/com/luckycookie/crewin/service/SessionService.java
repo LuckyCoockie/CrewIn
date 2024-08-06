@@ -5,9 +5,10 @@ import com.luckycookie.crewin.domain.enums.Position;
 import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.*;
 import com.luckycookie.crewin.dto.SessionImageResponse.SessionGalleryItem;
-import com.luckycookie.crewin.dto.SessionImageResponse.SessionGalleryItemsResponse;
 import com.luckycookie.crewin.dto.SessionRequest.CreateSessionRequest;
 import com.luckycookie.crewin.dto.SessionRequest.UploadSessionImageRequest;
+import com.luckycookie.crewin.dto.SessionResponse.SessionItem;
+import com.luckycookie.crewin.dto.base.PagingItemsResponse;
 import com.luckycookie.crewin.exception.course.NotFoundCourseException;
 import com.luckycookie.crewin.exception.crew.CrewMemberNotExistException;
 import com.luckycookie.crewin.exception.crew.CrewUnauthorizedException;
@@ -123,10 +124,10 @@ public class SessionService {
 
         memberSessionRepository
                 .save(MemberSession.builder()
-                .member(member)
-                .session(session)
+                        .member(member)
+                        .session(session)
                         .isAttend(false)
-                .build());
+                        .build());
 
     }
 
@@ -213,32 +214,32 @@ public class SessionService {
         sessionRepository.delete(session);
     }
 
-    private SessionResponse convertToSessionResponse(Session session) {
-        List<SessionPoster> sessionPosters = sessionPosterRepository.findBySessionOrderByImageUrlAsc(session);
-        String sessionThumbnail = sessionPosters.isEmpty() ? null : sessionPosters.get(0).getImageUrl();
-        String crewName = "";
-        if (session.getCrew() != null)
-            crewName = session.getCrew().getCrewName();
+    public PagingItemsResponse<SessionItem> getSessionsByStatusAndTypeAndCrewNameAndDate(String status, SessionType sessionType, String crewName, LocalDate date, int pageNo) {
+        PageRequest pageRequest = PageRequest.of(pageNo, 10);
+        Page<Session> sessionPage = sessionQueryRepository.findSessionsByStatusAndTypeAndCrewNameAndDate(status, sessionType, crewName, date, pageRequest);
+        int lastPageNo = Math.max(sessionPage.getTotalPages() - 1, 0);
 
-        return SessionResponse.builder()
-                .sessionId(session.getId())
-                .sessionThumbnail(sessionThumbnail)
-                .crewName(crewName)
-                .sessionName(session.getName())
-                .spot(session.getSpot())
-                .area(session.getArea())
-                .sessionType(session.getSessionType())
-                .maxPeople(session.getMaxPeople())
-                .startAt(session.getStartAt())
+        List<SessionItem> sessionItems = sessionPage.getContent().stream().map(
+                session -> SessionItem.builder().crewName(session.getCrew().getCrewName())
+                        .sessionName(session.getName())
+                        .spot(session.getSpot())
+                        .area(session.getArea())
+                        .sessionThumbnail(session.getPosterImages().get(0).getImageUrl())
+                        .sessionType(session.getSessionType())
+                        .maxPeople(session.getMaxPeople())
+                        .sessionId(session.getId())
+                        .startAt(session.getStartAt())
+                        .build()
+        ).toList();
+
+        return PagingItemsResponse.<SessionItem>builder()
+                .items(sessionItems)
+                .pageNo(pageNo)
+                .lastPageNo(lastPageNo)
                 .build();
     }
 
-    public List<SessionResponse> getSessionsByStatusAndTypeAndCrewNameAndDate(String status, SessionType sessionType, String crewName, LocalDate date) {
-        List<Session> sessions = sessionQueryRepository.findSessionsByStatusAndTypeAndCrewNameAndDate(status, sessionType, crewName, date);
-        return sessions.stream().map(this::convertToSessionResponse).collect(Collectors.toList());
-    }
-
-    public SessionGalleryItemsResponse getSessionGallery(int pageNo, Long sessionId, CustomUser customUser) {
+    public PagingItemsResponse<SessionGalleryItem> getSessionGallery(int pageNo, Long sessionId, CustomUser customUser) {
         PageRequest pageRequest = PageRequest.of(pageNo, 27);
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
@@ -254,7 +255,7 @@ public class SessionService {
     }
 
     // Page<SessionImage>를 받아서 갤러리 response로 변환
-    private SessionGalleryItemsResponse convertToGalleryItemResponse(int pageNo, Page<SessionImage> sessionImageListPage) {
+    private PagingItemsResponse<SessionGalleryItem> convertToGalleryItemResponse(int pageNo, Page<SessionImage> sessionImageListPage) {
         List<SessionImage> sessionImageList = sessionImageListPage.getContent();
         int lastPageNo = Math.max(sessionImageListPage.getTotalPages() - 1, 0);
         List<SessionGalleryItem> sessionGalleryItems = sessionImageList.stream()
@@ -264,10 +265,10 @@ public class SessionService {
                         .build()
                 )
                 .toList();
-        return SessionGalleryItemsResponse.builder()
+        return PagingItemsResponse.<SessionGalleryItem>builder()
                 .pageNo(pageNo)
                 .lastPageNo(lastPageNo)
-                .sessionImages(sessionGalleryItems)
+                .items(sessionGalleryItems)
                 .build();
     }
 
@@ -303,39 +304,29 @@ public class SessionService {
         Member member = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
         Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundSessionException::new);
 
-            // 호스트가 신청하거나, 신청시간이 세션 시작 이후면 안 받음
-            if (session.getHost().getId().equals(member.getId()) ||
-                    LocalDateTime.now().isAfter(session.getStartAt())
-            ) {
-                throw new InvalidSessionException();
-            }
+        // 호스트가 신청하거나, 신청시간이 세션 시작 이후면 안 받음
+        if (session.getHost().getId().equals(member.getId()) ||
+                LocalDateTime.now().isAfter(session.getStartAt())
+        ) {
+            throw new InvalidSessionException();
+        }
 
-            if (memberSessionRepository.existsByMemberAndSession(member, session)) {
-                throw new DuplicateApplyException();
-            }
+        if (memberSessionRepository.existsByMemberAndSession(member, session)) {
+            throw new DuplicateApplyException();
+        }
 
-            boolean joinStatus = false;
-            if (session.getSessionType() != THUNDER) {
-                joinStatus = memberCrewRepository.existsByMemberAndCrew(member, session.getCrew());
-            }
-
-            // 크루원이 아닌 회원이 정규런 신청할 경우 예외처리
-            if (session.getSessionType() == STANDARD && !joinStatus) {
+        // 크루원이 아닌 회원이 정규런 신청할 경우 예외처리
+        if (session.getSessionType() == STANDARD) {
+            MemberCrew memberCrew = memberCrewRepository.findByMemberAndCrew(member, session.getCrew()).orElseThrow(NotFoundMemberCrewException::new);
+            if (!memberCrew.getIsJoined())
                 throw new SessionAuthorizationException();
-            } else if (session.getSessionType() == OPEN && !joinStatus) {
-                // 크루원 아닌 회원이 오픈런 신청할 경우 멤버-크루 테이블에 넣어줌
-                MemberCrew memberCrew = MemberCrew.builder()
-                        .member(member)
-                        .crew(session.getCrew())
-                        .build();
-                memberCrewRepository.save(memberCrew);
-            }
+        }
 
-            MemberSession memberSession = MemberSession.builder()
-                    .member(member)
-                    .session(session)
-                    .isAttend(false).build();
-            memberSessionRepository.save(memberSession);
+        MemberSession memberSession = MemberSession.builder()
+                .member(member)
+                .session(session)
+                .isAttend(false).build();
+        memberSessionRepository.save(memberSession);
     }
 
     public void cancelSessionRequest(Long sessionId, String email) {

@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
-
 public class MemberResponse {
     @Getter
     @NoArgsConstructor
@@ -34,23 +32,6 @@ public class MemberResponse {
         private String memberNickName;
         private String memberName;
         private String profileUrl;
-    }
-
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @SuperBuilder
-    public static class MemberItemBaseResponse {
-        int pageNo;
-        int lastPageNo;
-    }
-
-    @Getter
-    @SuperBuilder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class MemberSearchResponse extends MemberItemBaseResponse {
-        List<MemberItem> members;
     }
 
     @Getter

@@ -23,21 +23,4 @@ public class SearchResponse {
         private Boolean isJoined;
         private Boolean isInvited;
     }
-
-    @Getter
-    @SuperBuilder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class BasePageResponse {
-        int pageNo;
-        int lastPageNo;
-    }
-
-    @Getter
-    @SuperBuilder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class MemberInvitationPageResponse extends BasePageResponse {
-        List<MemberInvitationResponse> members;
-    }
 }

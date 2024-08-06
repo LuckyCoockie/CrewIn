@@ -15,15 +15,6 @@ public class MyPageResponse {
 
     @Getter
     @NoArgsConstructor
-    @SuperBuilder
-    @AllArgsConstructor
-    public static class MyPageItemBaseResponse {
-        int pageNo;
-        int lastPageNo;
-    }
-
-    @Getter
-    @NoArgsConstructor
     @Builder
     @AllArgsConstructor
     public static class MyPageSessionItem{
@@ -37,14 +28,6 @@ public class MyPageResponse {
         private Long sessionId; // 세션 ID
         private String crewName; // 크루 이름
         private String area; // 코스 지역
-    }
-
-    @Getter
-    @NoArgsConstructor
-    @SuperBuilder
-    @AllArgsConstructor
-    public static class MyPageSessionResponse extends MyPageItemBaseResponse{
-        List<MyPageSessionItem> sessions;
     }
 
 }

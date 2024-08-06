@@ -23,16 +23,6 @@ public class CrewResponse {
         long crewId;
     }
 
-    // pagenation
-    @Getter
-    @SuperBuilder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class CrewItemBaseResponse {
-        int pageNo;
-        int lastPageNo;
-    }
-
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
@@ -53,14 +43,6 @@ public class CrewResponse {
     @SuperBuilder
     public static class MyCrewItem extends CrewItem {
         private Position position;
-    }
-
-    @Getter
-    @SuperBuilder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class CrewItemResponse extends CrewItemBaseResponse {
-        List<CrewItem> crews;
     }
 
     @Getter
@@ -100,31 +82,6 @@ public class CrewResponse {
     }
 
     @Getter
-    @SuperBuilder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class CrewNoticeItemResponse extends CrewItemBaseResponse {
-        List<CrewNoticeItem> crewNoticeList;
-    }
-
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class CrewGalleryItem {
-        private Long postId; // 게시글 ID
-        private List<String> imageUrls; // 이미지 List
-    }
-
-    @Getter
-    @SuperBuilder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class CrewGalleryItemResponse extends CrewItemBaseResponse {
-        List<CrewGalleryItem> crewGalleryList;
-    }
-
-    @Getter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
@@ -139,13 +96,4 @@ public class CrewResponse {
         private Position position; // 직급
         private int attendanceCount; // 크루 세션 참여 횟수
     }
-
-    @Getter
-    @SuperBuilder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class CrewMemberItemResponse extends CrewItemBaseResponse {
-        List<CrewMemberItem> crewMemberList; // 일반 회원
-    }
-
 }

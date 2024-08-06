@@ -2,13 +2,11 @@ package com.luckycookie.crewin.service;
 
 import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.PostType;
-import com.luckycookie.crewin.dto.PostRequest;
 import com.luckycookie.crewin.dto.PostRequest.UpdatePostRequest;
 import com.luckycookie.crewin.dto.PostRequest.WritePostRequest;
 import com.luckycookie.crewin.dto.PostResponse.PostGalleryItem;
-import com.luckycookie.crewin.dto.PostResponse.PostGalleryItemResponse;
 import com.luckycookie.crewin.dto.PostResponse.PostItem;
-import com.luckycookie.crewin.dto.PostResponse.PostItemsResponse;
+import com.luckycookie.crewin.dto.base.PagingItemsResponse;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
@@ -98,7 +96,7 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public PostItemsResponse getAllPostsSortedByCreatedAt(String email, int pageNo) {
+    public PagingItemsResponse<PostItem> getAllPostsSortedByCreatedAt(String email, int pageNo) {
         PageRequest pageRequest = PageRequest.of(pageNo, 10);
         Member viewer = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
         List<MemberCrew> crews = memberCrewRepository.findJoinedMemberCrewsByMember(viewer);
@@ -126,15 +124,15 @@ public class PostService {
                 .title(post.getTitle())
                 .build()).toList();
 
-        return PostItemsResponse.builder()
-                .postItemList(postItems)
+        return PagingItemsResponse.<PostItem>builder()
+                .items(postItems)
                 .pageNo(pageNo)
                 .lastPageNo(lastPageNo)
                 .build();
     }
 
     // 사진첩 조회
-    public PostGalleryItemResponse getCrewPostGallery(int pageNo, long crewId, CustomUser customUser) {
+    public PagingItemsResponse<PostGalleryItem> getCrewPostGallery(int pageNo, long crewId, CustomUser customUser) {
         PageRequest pageRequest = PageRequest.of(pageNo, 27);
         Member viewer = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
@@ -147,7 +145,7 @@ public class PostService {
         return convertToGalleryItemResponse(pageNo, postListPage);
     }
 
-    public PostGalleryItemResponse getUserPostGallery(int pageNo, long targetMemgerId, CustomUser customUser) {
+    public PagingItemsResponse<PostGalleryItem> getUserPostGallery(int pageNo, long targetMemgerId, CustomUser customUser) {
         PageRequest pageRequest = PageRequest.of(pageNo, 27);
         Member targetMember = memberRepository.findById(targetMemgerId)
                 .orElseThrow(NotFoundMemberException::new);
@@ -161,7 +159,7 @@ public class PostService {
         return convertToGalleryItemResponse(pageNo, postListPage);
     }
 
-    public PostGalleryItemResponse getMyPostGallery(int pageNo, CustomUser customUser) {
+    public PagingItemsResponse<PostGalleryItem> getMyPostGallery(int pageNo, CustomUser customUser) {
         PageRequest pageRequest = PageRequest.of(pageNo, 27);
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
@@ -171,7 +169,7 @@ public class PostService {
     }
 
     // Page<Post>를 받아서 갤러리 response로 변환
-    private PostGalleryItemResponse convertToGalleryItemResponse(int pageNo, Page<Post> postListPage) {
+    private PagingItemsResponse<PostGalleryItem> convertToGalleryItemResponse(int pageNo, Page<Post> postListPage) {
         List<Post> postList = postListPage.getContent();
         int lastPageNo = Math.max(postListPage.getTotalPages() - 1, 0);
         List<PostGalleryItem> postGalleryItems = postList.stream()
@@ -180,16 +178,16 @@ public class PostService {
                         post.getPostImages().isEmpty() ? null : post.getPostImages().get(0).getImageUrl()
                 ))
                 .toList();
-        return PostGalleryItemResponse.builder()
+        return PagingItemsResponse.<PostGalleryItem>builder()
                 .pageNo(pageNo)
                 .lastPageNo(lastPageNo)
-                .postGalleryList(postGalleryItems)
+                .items(postGalleryItems)
                 .build();
     }
 
     // 사진첩 상세 조회
     // 크루
-    public PostItemsResponse getCrewPostGalleryDetailResponse(Long crewId, Long postId, String direction, CustomUser customUser) {
+    public PagingItemsResponse<PostItem> getCrewPostGalleryDetailResponse(Long crewId, Long postId, String direction, CustomUser customUser) {
         // 현재 로그인한 사용자
         Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
         Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
@@ -214,7 +212,7 @@ public class PostService {
     }
 
     // 멤버
-    public PostItemsResponse getMemberPostGalleryDetailResponse(Long memberId, Long postId, String direction, CustomUser customUser) {
+    public PagingItemsResponse<PostItem> getMemberPostGalleryDetailResponse(Long memberId, Long postId, String direction, CustomUser customUser) {
         // 현재 로그인한 사용자
         Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
 
@@ -247,7 +245,7 @@ public class PostService {
     }
 
     // Page<Post> 받아서 상세조회 response 반환
-    private PostItemsResponse convertToPostItemsResponse(Page<Post> postListPage, CustomUser customUser) {
+    private PagingItemsResponse<PostItem> convertToPostItemsResponse(Page<Post> postListPage, CustomUser customUser) {
         /*
          * 1. 하트 테이블에서 게시글 번호로 하트 개수
          * 2. 하트 테이블에서 isHearted
@@ -276,9 +274,9 @@ public class PostService {
                         .build())
                 .collect(Collectors.toList());
 
-        return PostItemsResponse
-                .builder()
-                .postItemList(postList)
+        return PagingItemsResponse
+                .<PostItem>builder()
+                .items(postList)
                 .build();
 
     }
