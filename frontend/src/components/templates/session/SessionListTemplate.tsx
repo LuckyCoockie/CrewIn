@@ -81,7 +81,7 @@ const SessionListTemplate: React.FC<OwnProps> = ({
             query.sessionType ?? "",
           ]}
           fetchData={handleFetchData}
-          initPage={parseInt(query.pageNo ?? "1")}
+          initPage={parseInt(query.pageNo ?? "0")}
           ItemComponent={({ data }) => (
             <SessionListItemMolecules
               key={data.sessionId}

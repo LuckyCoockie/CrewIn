@@ -24,7 +24,7 @@ const CrewListComponent: React.FC<OwnProps> = ({ fetchData }) => {
       className="grid grid-cols-2 gap-2 xs:gap-4 mb-2 xs:mb-4 w-full"
       fetchKey={["CrewList", query.query ?? ""]}
       fetchData={handleFetchData}
-      initPage={parseInt(query.pageNo ?? "1")}
+      initPage={parseInt(query.pageNo ?? "0")}
       ItemComponent={({ data }) => (
         <CrewListItem
           key={data.crewId}
