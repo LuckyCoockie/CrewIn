@@ -14,6 +14,7 @@ import com.luckycookie.crewin.exception.heart.NotFoundHeartException;
 import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.memberCrew.NotFoundMemberCrewException;
+import com.luckycookie.crewin.exception.post.InvalidPostException;
 import com.luckycookie.crewin.exception.post.NotFoundPostException;
 import com.luckycookie.crewin.exception.post.UnauthorizedDeletionException;
 import com.luckycookie.crewin.repository.*;
@@ -92,6 +93,11 @@ public class PostService {
         if (!post.getIsPublic() && post.getCrew() == null) {
             throw new NotFoundCrewException();
         }
+
+        if (post.getPostType() == PostType.NOTICE && updatePostRequest.getIsPublic()) {
+            throw new InvalidPostException();
+        }
+
         post.updatePost(updatePostRequest);
     }
 
@@ -312,7 +318,7 @@ public class PostService {
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
         Post post = postRepository.findById(postId)
-                        .orElseThrow(NotFoundPostException::new);
+                .orElseThrow(NotFoundPostException::new);
         if (heartRepository.existsByPostAndMember(post, member)) {
             // 이미 좋아요 눌려있는 게시글일때 요청 시 예외 처리
             throw new AlreadyExsistHeartException();
@@ -337,7 +343,6 @@ public class PostService {
         // 알림 제거
         notificationService.deleteNotificationByPostId(member.getId(), post.getAuthor().getId(), postId);
     }
-
 
 
 }
