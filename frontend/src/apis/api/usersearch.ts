@@ -44,3 +44,18 @@ export const searchMembers = async (
     }
   }
 };
+
+export const fetchAllMembers = async (): Promise<MemberDto[]> => {
+  let pageNo = 0;
+  let lastPageNo = 0;
+  let allItems: MemberDto[] = [];
+
+  do {
+    const response = await searchMembers({ query: "", pageNo });
+    allItems = [...allItems, ...response.items];
+    lastPageNo = response.lastPageNo;
+    pageNo++;
+  } while (pageNo <= lastPageNo);
+
+  return allItems;
+};
