@@ -43,7 +43,7 @@ export const usePWAPrompt = ({ onAccepted, onReject }: OwnProps) => {
 
   const handleOpenAppClick = () => {
     if (isInstalled) {
-      window.location.href = "webapp://crew-in.site/";
+      window.open("https://crew-in.site", "_blank");
     }
   };
 
