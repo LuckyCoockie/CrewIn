@@ -25,7 +25,7 @@ public class PostResponse {
     @Builder
     public static class PostItem { // SNS 게시글 Item (사진첩 상세조회도 공통)
         private Long id; // id
-        private String authorName; // postType에 따라 작성자 닉네임 or 크루명 반환 (nickname)
+        private String authorName; // postType에 따라 작성자 닉네임 or 크루명 반환
         private Long authorId; // postType에 따라서 작성자 id or 크루id 반환
         private String content;
         private Integer heartCount;

@@ -133,7 +133,7 @@ public class PostService {
         log.info("images : {}", postList.get(0).getPostImages().isEmpty());
         List<PostItem> postItems = postList.stream().map(post -> PostItem.builder()
                 .id(post.getId())
-                .authorName(post.getAuthor().getName())
+                .authorName(post.getAuthor().getNickname())
                 .authorId(post.getAuthor().getId())
                 .content(post.getContent())
                 .heartCount(post.getHearts().size())
