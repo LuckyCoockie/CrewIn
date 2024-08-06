@@ -149,7 +149,7 @@ const CrewDetailTemplate: React.FC = () => {
           text={infoData ? infoData.crewName : "Loading..."}
         />
         <div className="flex ms-auto">
-          {isUserCrewMember && <GroupsButton />}
+          {isUserCrewMember && <GroupsButton userPosition={userPosition!}/>}
           {isUserCrewMember && userPosition === "CAPTAIN" && (
             <>
               <MemberPlusButton />
