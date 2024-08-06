@@ -3,6 +3,7 @@ package com.luckycookie.crewin.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.luckycookie.crewin.domain.enums.PostType;
 import com.luckycookie.crewin.dto.CrewRequest;
+import com.luckycookie.crewin.dto.CrewRequest.CreateCrewNoticeRequest;
 import com.luckycookie.crewin.dto.PostRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -85,7 +86,7 @@ public class Post {
         }
     }
 
-    public void updateCrewNotice(CrewRequest.CreateCrewNoticeRequest createCrewNoticeRequest) {
+    public void updateCrewNotice(CreateCrewNoticeRequest createCrewNoticeRequest) {
         this.title = createCrewNoticeRequest.getTitle();
         this.content = createCrewNoticeRequest.getContent();
 

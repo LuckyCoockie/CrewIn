@@ -4,6 +4,7 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.luckycookie.crewin.dto.ImageRequest.PresignedUrlReq;
 import com.luckycookie.crewin.dto.ImageResponse.PresignedUrlRes;
@@ -13,8 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +31,14 @@ public class S3Service {
 
     @Value("${image.folder}")
     private String folder;
+
+    private final List<String> excludedPaths = Arrays.asList(
+            "banner.png",
+            "crewinlogo.png",
+            "crewinsublogo.png",
+            "default-profile.png",
+            "SessionPoster.png"
+    );
 
     // 발급
     @Transactional(readOnly = true)
@@ -66,11 +74,27 @@ public class S3Service {
         return request;
     }
 
-    // 이미지 삭제 method
+    // S3 이미지 제거
     public void deleteImage(String imageUrl) {
-//        String imageName = imageUrl.replace(prefix, "");
-        System.out.println("imageUrl : " + imageUrl);
-        amazonS3.deleteObject(bucket, imageUrl);
+        // 객체 키 추출
+        String objectKey = extractObjectKeyFromUrl(imageUrl);
+
+        // 기본 이미지는 삭제 불가
+        String fileName = objectKey.substring(objectKey.lastIndexOf('/') + 1);
+        if (excludedPaths.contains(fileName)) {
+            return;
+        }
+
+        // 객체 삭제
+        amazonS3.deleteObject(new DeleteObjectRequest(bucket, objectKey));
+    }
+
+    private String extractObjectKeyFromUrl(String imageUrl) {
+        // URL 에서 버킷 프리픽스 제거
+        if (imageUrl.startsWith(prefix)) {
+            return imageUrl.substring(prefix.length());
+        }
+        return imageUrl;
     }
 
 }

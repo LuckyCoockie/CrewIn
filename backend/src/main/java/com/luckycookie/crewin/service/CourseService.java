@@ -4,6 +4,7 @@ import com.luckycookie.crewin.domain.Course;
 import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.dto.CourseDetailResponse;
 import com.luckycookie.crewin.dto.CourseRequest;
+import com.luckycookie.crewin.dto.CourseRequest.UpdateCourseRequest;
 import com.luckycookie.crewin.dto.CourseResponse;
 import com.luckycookie.crewin.exception.course.NotFoundCourseException;
 import com.luckycookie.crewin.exception.course.NotMatchMemberCourseException;
@@ -25,6 +26,7 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
     private final MemberRepository memberRepository;
+    private final S3Service s3Service;
 
     public void createCourse(CourseRequest.CreateCourseRequest createCourseRequest, CustomUser customUser) {
 
@@ -53,7 +55,7 @@ public class CourseService {
         return courseList.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    public void updateCourse(CourseRequest.UpdateCourseRequest updateCourseRequest, Long courseId, CustomUser customUser) {
+    public void updateCourse(UpdateCourseRequest updateCourseRequest, Long courseId, CustomUser customUser) {
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
@@ -62,6 +64,11 @@ public class CourseService {
         if (!course.getCreator().equals(member)) {
             throw new NotMatchMemberCourseException();
         }
+
+        if(!course.getThumbnailImage().equals(updateCourseRequest.getThumbnailImage())) {
+            s3Service.deleteImage(course.getThumbnailImage());
+        }
+
         course.updateCourse(updateCourseRequest);
         courseRepository.save(course);
     }
@@ -74,6 +81,9 @@ public class CourseService {
         if (!course.getCreator().equals(member)) {
             throw new NotMatchMemberCourseException();
         }
+
+        s3Service.deleteImage(course.getThumbnailImage());
+
         courseRepository.delete(course);
     }
 

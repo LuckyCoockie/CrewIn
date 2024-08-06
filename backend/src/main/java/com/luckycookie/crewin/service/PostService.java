@@ -42,8 +42,10 @@ public class PostService {
     private final MemberCrewRepository memberCrewRepository;
 
     private final NotificationService notificationService;
+    private final S3Service s3Service;
 
     public void writePost(WritePostRequest writePostRequest, CustomUser customUser) {
+
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
@@ -82,6 +84,7 @@ public class PostService {
     public void updatePost(Long postId, UpdatePostRequest updatePostRequest, String email) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(NotFoundPostException::new);
+
         if (!post.getAuthor().getEmail().equals(email)) {
             throw new UnauthorizedDeletionException();
         }
@@ -92,12 +95,26 @@ public class PostService {
     }
 
     public void deletePost(Long postId, String email) {
-        Post post = postRepository.findById(postId).orElseThrow(NotFoundPostException::new);
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(NotFoundPostException::new);
+
+        // 기존 이미지 URL 리스트 가져오기
+        List<String> postImageUrls = post.getPostImages().stream()
+                .map(PostImage::getImageUrl)
+                .toList();
+
+        // 기존 이미지 삭제
+        for (String imageUrl : postImageUrls) {
+            s3Service.deleteImage(imageUrl);
+        }
+
         if (!post.getAuthor().getEmail().equals(email)) {
             throw new UnauthorizedDeletionException();
         }
 
         postRepository.delete(post);
+
     }
 
     @Transactional(readOnly = true)

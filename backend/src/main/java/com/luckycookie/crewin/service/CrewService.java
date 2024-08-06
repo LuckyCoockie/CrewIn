@@ -26,10 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -237,6 +234,19 @@ public class CrewService {
 
         // CAPTAIN 만 수정 가능
         if (position == Position.CAPTAIN) {
+
+            // 기존 크루 메인 로고, 서브 로고, 배너 삭제 (S3)
+            // 기존 이미지와 update 할 이미지 url 이 다르면 기존꺼 지우고, 같으면 지우지 말고
+            if(!crew.getMainLogo().equals(createCrewRequest.getMainLogo())) {
+                s3Service.deleteImage(crew.getMainLogo()); // 기존 이미지 삭제
+            }
+            if(!crew.getSubLogo().equals(createCrewRequest.getSubLogo())) {
+                s3Service.deleteImage(crew.getSubLogo()); // 기존 이미지 삭제
+            }
+            if(!crew.getBanner().equals(createCrewRequest.getBanner())) {
+                s3Service.deleteImage(crew.getBanner()); // 기존 이미지 삭제
+            }
+
             crew.updateCrewInfo(createCrewRequest);
         } else {
             throw new CrewUnauthorizedException();
@@ -256,6 +266,11 @@ public class CrewService {
         if (position == Position.CAPTAIN) {
             // MemberCrew 먼저 삭제
             memberCrewRepository.deleteByCrew(crew);
+
+            // 크루 메인 로고, 서브 로고, 배너 삭제 (S3)
+            s3Service.deleteImage(crew.getMainLogo());
+            s3Service.deleteImage(crew.getSubLogo());
+            s3Service.deleteImage(crew.getBanner());
 
             // Crew 삭제
             crewRepository.delete(crew);
@@ -299,9 +314,40 @@ public class CrewService {
                 .build();
     }
 
+    // 크루 공지 수정
     public void updateNotice(Long noticeId, CreateCrewNoticeRequest createCrewNoticeRequest) {
         Post post = postRepository.findById(noticeId)
                 .orElseThrow(NotFoundPostException::new);
+
+        // 기존 이미지 URL 리스트 가져오기
+        List<String> postImageUrls = post.getPostImages().stream()
+                .map(PostImage::getImageUrl)
+                .toList();
+
+        // update 할 이미지 URL 리스트 가져오기
+        List<String> updatePostImageUrls = createCrewNoticeRequest.getNoticeImages();
+
+        // 더 큰 리스트 크기를 기준으로 비교
+        int maxSize = Math.max(postImageUrls.size(), updatePostImageUrls.size());
+
+        // 기존 이미지 삭제 여부를 체크하기 위한 리스트
+        List<Boolean> toBeDeleted = new ArrayList<>(Collections.nCopies(postImageUrls.size(), false));
+
+        for (int i = 0; i < maxSize; i++) {
+            if (i < postImageUrls.size() && (i >= updatePostImageUrls.size() || !postImageUrls.get(i).equals(updatePostImageUrls.get(i)))) {
+                // 기존 이미지 URL 리스트와 update 할 이미지 URL 리스트 비교해서
+                // 기존 이미지와 update 할 이미지 URL 이 다르면 기존 이미지 삭제
+                toBeDeleted.set(i, true);
+            }
+        }
+
+        // 기존 이미지 삭제
+        for (int i = 0; i < postImageUrls.size(); i++) {
+            if (toBeDeleted.get(i)) {
+                s3Service.deleteImage(postImageUrls.get(i));
+            }
+        }
+
         // 게시물 업데이트
         post.updateCrewNotice(createCrewNoticeRequest);
     }
@@ -309,6 +355,18 @@ public class CrewService {
     public void deleteNotice(Long noticeId) {
         Post post = postRepository.findById(noticeId)
                 .orElseThrow(NotFoundPostException::new);
+
+        // 기존 이미지 URL 리스트 가져오기
+        List<String> postImageUrls = post.getPostImages().stream()
+                .map(PostImage::getImageUrl)
+                .toList();
+
+        // 기존 이미지 삭제
+        for (String imageUrl : postImageUrls) {
+            s3Service.deleteImage(imageUrl);
+        }
+
+        // 게시물 삭제
         postRepository.delete(post);
     }
 

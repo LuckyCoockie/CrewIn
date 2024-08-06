@@ -6,6 +6,7 @@ import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.*;
 import com.luckycookie.crewin.dto.SessionImageResponse.SessionGalleryItem;
 import com.luckycookie.crewin.dto.SessionRequest.CreateSessionRequest;
+import com.luckycookie.crewin.dto.SessionRequest.UpdateSessionRequest;
 import com.luckycookie.crewin.dto.SessionRequest.UploadSessionImageRequest;
 import com.luckycookie.crewin.dto.SessionResponse.SessionItem;
 import com.luckycookie.crewin.dto.base.PagingItemsResponse;
@@ -34,6 +35,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,6 +58,7 @@ public class SessionService {
     private final SessionQueryRepository sessionQueryRepository;
     private final SessionImageRepository sessionImageRepository;
     private final MemberSessionRepository memberSessionRepository;
+    private final S3Service s3Service;
 
     public void createSession(CreateSessionRequest createSessionRequest, CustomUser customUser) {
 
@@ -182,7 +186,7 @@ public class SessionService {
     }
 
 
-    public void updateSession(Long sessionId, SessionRequest.UpdateSessionRequest updateSessionRequest, CustomUser customUser) {
+    public void updateSession(Long sessionId, UpdateSessionRequest updateSessionRequest, CustomUser customUser) {
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
@@ -193,6 +197,35 @@ public class SessionService {
         }
         Course course = courseRepository.findById(updateSessionRequest.getCourseId())
                 .orElseThrow(NotFoundCourseException::new);
+
+        // 기존 세션 포스터 이미지 List
+        List<String> sessionPosterUrls = sessionPosterRepository.findBySession(session).stream()
+                .map(SessionPoster::getImageUrl)
+                .toList();
+
+        // update 할 세션 포스터 이미지 List
+        List<String> updateSessionPosterUrls = updateSessionRequest.getImages();
+
+        // 더 큰 리스트 크기를 기준으로 비교
+        int maxSize = Math.max(sessionPosterUrls.size(), updateSessionPosterUrls.size());
+
+        // 기존 이미지 삭제 여부를 체크하기 위한 리스트
+        List<Boolean> toBeDeleted = new ArrayList<>(Collections.nCopies(sessionPosterUrls.size(), false));
+
+        for (int i = 0; i < maxSize; i++) {
+            if (i < sessionPosterUrls.size() && (i >= updateSessionPosterUrls.size() || !sessionPosterUrls.get(i).equals(updateSessionPosterUrls.get(i)))) {
+                // 기존 이미지 URL 리스트와 update 할 이미지 URL 리스트 비교해서
+                // 기존 이미지와 update 할 이미지가 다르면 기존 이미지 삭제
+                toBeDeleted.set(i, true);
+            }
+        }
+
+        // 기존 이미지 삭제
+        for (int i = 0; i < sessionPosterUrls.size(); i++) {
+            if (toBeDeleted.get(i)) {
+                s3Service.deleteImage(sessionPosterUrls.get(i));
+            }
+        }
 
         session.updateSession(updateSessionRequest, course);
         sessionRepository.save(session);
@@ -211,6 +244,15 @@ public class SessionService {
         if (!session.getHost().getEmail().equals(member.getEmail())) {
             throw new SessionAuthorizationException();
         }
+
+        List<String> sessionPosterUrls = sessionPosterRepository.findBySession(session).stream()
+                .map(SessionPoster::getImageUrl)
+                .toList();
+
+        for (String sessionPosterUrl : sessionPosterUrls) {
+            s3Service.deleteImage(sessionPosterUrl);
+        }
+
         sessionRepository.delete(session);
     }
 
@@ -298,6 +340,16 @@ public class SessionService {
         } else { // 참석 안함
             throw new NotFoundMemberSessionException();
         }
+    }
+
+    // 세션 사진 삭제
+    public void deleteSessionImage(Long sessionImageId, CustomUser customUser) {
+
+        SessionImage sessionImage = sessionImageRepository.findById(sessionImageId).orElseThrow(SessionImageUploadException::new);
+
+        s3Service.deleteImage(sessionImage.getImageUrl());
+
+        sessionImageRepository.delete(sessionImage);
     }
 
     public void applySession(Long sessionId, String email) {

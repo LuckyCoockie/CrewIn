@@ -36,6 +36,8 @@ public class MyPageService {
     private final SessionRepository sessionRepository;
     private final MemberSessionRepository memberSessionRepository;
 
+    private final S3Service s3Service;
+
     // 내가 만든, 참가한 세션 조회 (전체)
     @Transactional(readOnly = true)
     public PagingItemsResponse<MyPageSessionItem> getCreatedMySession(CustomUser customUser, int pageNo, String type, String sessionType) {
@@ -105,6 +107,11 @@ public class MyPageService {
     public void updateProfileImage(CustomUser customUser, UpdateProfileRequest updateProfileRequest) {
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
+
+        if(!member.getImageUrl().equals(updateProfileRequest.getProfileImageUrl())) {
+            s3Service.deleteImage(member.getImageUrl()); // 기존 이미지 삭제
+        }
+
         member.updateProfileImage(updateProfileRequest.getProfileImageUrl());
     }
 

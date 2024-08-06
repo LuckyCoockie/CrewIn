@@ -96,4 +96,11 @@ public class SessionController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 사진 업로드를 성공했습니다."));
     }
 
+    // 세션 사진 삭제
+    @DeleteMapping("detail/gallery/{id}")
+    public ResponseEntity<BaseResponse<Void>> deleteSessionImage(@PathVariable("id") Long sessionImageId, @AuthenticationPrincipal CustomUser customUser) {
+        sessionService.deleteSessionImage(sessionImageId, customUser);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 사진 삭제가 완료되었습니다."));
+    }
+
 }
