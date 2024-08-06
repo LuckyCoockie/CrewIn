@@ -12,6 +12,7 @@ const App: React.FC = () => {
     /^\/join$/,
     /^\/find-password$/,
     /^\/info$/,
+    /^\/course\/create$/,
     /^\/profile\/[^/]+$/, // /profile/:userId 만 포함하도록 설정
   ];
   const shouldHideBottomBar = hideBottomBarRoutes.some((pattern) =>
