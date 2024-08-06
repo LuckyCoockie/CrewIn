@@ -10,7 +10,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../atoms/Button/LargeAbleButton";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import html2canvas from "html2canvas";
 import canvg from "canvg";
 
@@ -216,19 +216,20 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
     dispatch(focusMarker(0));
   }, [dispatch, initValue, setValue]);
 
+  const position = useMemo(
+    () =>
+      initPosition && {
+        lat: initPosition!.latitude,
+        lng: initPosition!.longitude,
+      },
+    [initPosition]
+  );
+
   return (
     <div className="mx-auto w-full max-w-[550px] pb-10">
       <div className="flex justify-center relative overflow-hidden">
         <div ref={captureRef}>
-          <NaverMap
-            initPosition={
-              initPosition && {
-                lat: initPosition?.latitude,
-                lng: initPosition?.longitude,
-              }
-            }
-            onChange={setMarkers}
-          />
+          <NaverMap initPosition={position} onChange={setMarkers} />
         </div>
         <div className="absolute bottom-0 right-4 p-4">
           <MapToggleButton />

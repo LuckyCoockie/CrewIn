@@ -12,6 +12,7 @@ import AttendanceButton from "../atoms/Button/AttendanceButton";
 import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
 import NavTabMolecule from "../molecules/Tab/NavTabMolecule";
 import SessionAlbumOrganism from "../organisms/SessionAlbumOrganism";
+import { PageNationData } from "../../util/paging/type";
 
 // 스피너 컴포넌트
 const Spinner = () => (
@@ -40,9 +41,8 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
 
   const fetchAlbumData = async (
     page: number
-  ): Promise<GetSessionAlbumDto[]> => {
-    const response = await getSessionAlbum(sessionId, page - 1);
-    return response.sessionImages;
+  ): Promise<PageNationData<GetSessionAlbumDto>> => {
+    return getSessionAlbum(sessionId, page - 1);
   };
 
   if (detailError) console.error("detailError", detailError);

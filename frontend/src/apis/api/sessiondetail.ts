@@ -1,3 +1,4 @@
+import { PageNationData } from "../../util/paging/type";
 import api from "../utils/instance";
 
 export type SessionDetailDto = {
@@ -73,20 +74,16 @@ export type GetSessionAlbumDto = {
   imageUrl: string;
 };
 
-export type SessionAlbumResponseDto = {
-  pageNo: number;
-  lastPageNo: number;
-  sessionImages: GetSessionAlbumDto[];
-};
+export type SessionAlbumResponseDto = PageNationData<GetSessionAlbumDto>;
 
 export const getSessionAlbum = async (
   sessionId: number,
   pageNo: number
 ): Promise<SessionAlbumResponseDto> => {
-  const response = await api.get(
-    `/session/detail/gallery/${sessionId}?page-no=${pageNo}`
-  );
-  console.log(response.data);
+
+  const response = await api.get(`/session/detail/gallery/${sessionId}`, {
+    params: { pageNo },
+  });
 
   return response.data;
 };

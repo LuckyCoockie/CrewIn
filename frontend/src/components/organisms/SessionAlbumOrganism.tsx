@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import InfiniteScrollComponent, {
   ItemComponentProps,
-} from "../molecules/InfinityScrollMolecules";
+} from "../organisms/InfiniteScrollOrganism";
 
 import FloatingActionButton from "../atoms/Button/FloatingActionButton";
 import { ReactComponent as PlusIcon } from "../../assets/icons/plus.svg";
@@ -12,9 +12,10 @@ import {
   UploadSessionImageRequestDto,
   GetSessionAlbumDto,
 } from "../../apis/api/sessiondetail";
+import { PageNationData } from "../../util/paging/type";
 
 type SessionAlbumOrganismProps = {
-  fetchAlbumData: (page: number) => Promise<GetSessionAlbumDto[]>;
+  fetchAlbumData: (page: number) => Promise<PageNationData<GetSessionAlbumDto>>;
   sessionId: number;
 };
 
@@ -91,7 +92,7 @@ const SessionAlbumOrganism: React.FC<SessionAlbumOrganismProps> = ({
       <InfiniteScrollComponent
         fetchKey="sessionAlbum"
         fetchData={async (page: number) => {
-          const fetchedData = await fetchAlbumData(page);
+          const fetchedData = (await fetchAlbumData(page)).items;
           const imageUrls = fetchedData.map((item) => item.imageUrl);
           return [...uploadedImages, ...imageUrls];
         }}

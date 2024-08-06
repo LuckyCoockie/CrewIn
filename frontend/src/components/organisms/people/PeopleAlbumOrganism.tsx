@@ -1,19 +1,17 @@
 import React from "react";
 import { MyGalleryDto, getPeopleGallery } from "../../../apis/api/mypage";
-import InfiniteScrollComponent from "../../molecules/InfinityScrollMolecules";
 
 import { useParams } from "react-router";
+import InfiniteScrollComponent from "../../../util/paging/component/InfinityScrollComponent";
+import { PageNationData } from "../../../util/paging/type";
 
 const PeopleAlbumOrganism: React.FC = () => {
   const { memberId } = useParams<{ memberId: string }>();
 
-  const fetchGallery = async (pageNo: number): Promise<MyGalleryDto[]> => {
-    console.log(memberId);
-
-    const response = await getPeopleGallery(pageNo - 1, Number(memberId));
-    console.log(response.postGalleryList);
-
-    return response.postGalleryList;
+  const fetchGallery = async (
+    pageNo: number
+  ): Promise<PageNationData<MyGalleryDto>> => {
+    return getPeopleGallery(pageNo - 1, Number(memberId));
   };
 
   return (
@@ -29,7 +27,6 @@ const PeopleAlbumOrganism: React.FC = () => {
           />
         )}
         className="grid grid-cols-3"
-        pageSize={18}
       />
     </div>
   );

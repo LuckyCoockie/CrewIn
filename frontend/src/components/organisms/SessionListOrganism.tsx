@@ -1,18 +1,17 @@
-import React from "react";
 import GridListComponent from "../molecules/GridListMolecule";
 import SessionListItemMolecules from "../molecules/SessionListItemMolecules";
-import { GetSessionListRequestDto, SessionDto } from "../../apis/api/session";
+import { SessionDto } from "../../apis/api/session";
 import { useQuery } from "react-query";
 import { AxiosError } from "axios";
 import ErrorResponseDto from "../../apis/utils/errorCode/ErrorResponseDto";
 import qs from "query-string";
 
-type OwnProps = {
-  fetchData: (props: GetSessionListRequestDto) => Promise<SessionDto[]>;
+type OwnProps<T> = {
+  fetchData: (props: T) => Promise<SessionDto[]>;
 };
 
-const SessionListComponent: React.FC<OwnProps> = ({ fetchData }) => {
-  const query = qs.parse(location.search) as GetSessionListRequestDto;
+const SessionListComponent = <T,>({ fetchData }: OwnProps<T>) => {
+  const query = qs.parse(location.search) as T;
 
   const { data, isError } = useQuery<
     SessionDto[],

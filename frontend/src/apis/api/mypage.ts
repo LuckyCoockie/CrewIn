@@ -1,3 +1,4 @@
+import { PageNationData } from "../../util/paging/type";
 import api from "../utils/instance";
 
 // 프로필 상단 정보
@@ -37,11 +38,7 @@ export type MyMadeSessionDto = {
   area: string;
 };
 
-export type MyMadeSessionsResponseDto = {
-  pageNo: number;
-  lastPageNo: number;
-  items: MyMadeSessionDto[];
-};
+export type MyMadeSessionsResponseDto = PageNationData<MyMadeSessionDto>;
 
 export const getMyMadeSessions = async (
   pageNo: number
@@ -65,16 +62,12 @@ export type MyParticipatedSessionDto = {
   area: string;
 };
 
-export type MyParticipatedSessionsResponseDto = {
-  pageNo: number;
-  lastPageNo: number;
-  items: MyParticipatedSessionDto[];
-};
+export type MyParticipatedSessionsResponseDto =
+  PageNationData<MyParticipatedSessionDto>;
 
 export const getMyParticipatedSessions = async (
   pageNo: number
 ): Promise<MyParticipatedSessionsResponseDto> => {
-  console.log(pageNo);
   const response = await api.get(
     `/mypage/session?type=joined&session-type=ALL&page-no=${pageNo}`
   );
@@ -99,11 +92,7 @@ export type MyGalleryDto = {
   thumbnailImage: string;
 };
 
-export type MyGalleryResponseDto = {
-  pageNo: number;
-  lastPageNo: number;
-  postGalleryList: MyGalleryDto[];
-};
+export type MyGalleryResponseDto = PageNationData<MyGalleryDto>;
 
 export const getMyGallery = async (
   pageNo: number

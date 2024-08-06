@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useReducer, useState } from "react";
 import { Dispatch } from "react";
 import { calculateZoomLevel } from "./zoom";
+import markerImage from "./assetes/custom_marker.svg";
 
 /* ----------------- 액션 타입 ------------------ */
 const INIT = "naver/maps/INIT" as const;
@@ -147,7 +148,7 @@ export default function NaverMapReducer(
         map: state.map,
         draggable: action.data.ondragend ? true : false,
         icon: {
-          url: "/src/assets/icons/custom_marker.svg",
+          url: markerImage,
           scaledSize: new naver.maps.Size(44, 66),
         },
       });

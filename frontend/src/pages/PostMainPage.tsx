@@ -6,25 +6,27 @@ import { ReactComponent as Alarmicon } from "../assets/icons/alarm_deactivated.s
 import { ReactComponent as Searchicon } from "../assets/icons/searchicon.svg";
 import { ReactComponent as Postcreateicon } from "../assets/icons/postcreateicon.svg";
 import FloatingActionButton from "../components/atoms/Button/FloatingActionButton";
-import InfiniteScrollComponent from "../components/molecules/InfinityScrollMolecules";
+import InfiniteScrollComponent from "../util/paging/component/InfinityScrollComponent";
 import PostItemComponent, {
   ItemComponentProps,
 } from "../components/templates/PostItemTemplate";
-import { getPostList, PostDto } from "../apis/api/postlist";
+import {
+  getPostList,
+  GetPostListResponseDto,
+  PostDto,
+} from "../apis/api/postlist";
 import { PWAInstallPrompt } from "../components/templates/PWAInstallPrompt";
 
 const PostMainPage: React.FC = () => {
   const navigate = useNavigate();
 
   const fetchPostData = useCallback(
-    async (page: number): Promise<PostDto[]> => {
+    async (page: number): Promise<GetPostListResponseDto> => {
       try {
-        const result = await getPostList(page - 1);
-        console.log("Fetched post data:", result);
-        return result;
+        return getPostList(page - 1);
       } catch (error) {
         console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
-        return [];
+        return { pageNo: 0, lastPageNo: 0, items: [] };
       }
     },
     []
@@ -44,7 +46,7 @@ const PostMainPage: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20 relative">
-      <div className="flex items-center w-full mb-10">
+      <div className="flex items-center w-full mb-5 xs:mb-10">
         <div className="flex items-center">
           <CrewinLogo />
         </div>
@@ -56,7 +58,6 @@ const PostMainPage: React.FC = () => {
       <div className="w-full">
         <InfiniteScrollComponent
           fetchKey="postData"
-          pageSize={10}
           fetchData={fetchPostData}
           ItemComponent={(props: ItemComponentProps<PostDto>) => (
             <PostItemComponent {...props} />

@@ -1,3 +1,4 @@
+import { PageNationData } from "../../util/paging/type";
 import api from "../utils/instance";
 
 // 크루 정보
@@ -42,11 +43,7 @@ export type GetCrewNoticeListRequestDto = {
   pageNo: number;
 };
 
-export type GetCrewNoticeListResponseDto = {
-  crewNoticeList: CrewNoticeDto[];
-  pageNo: number;
-  lastPageNo: number;
-};
+export type GetCrewNoticeListResponseDto = PageNationData<CrewNoticeDto>;
 
 export const getCrewNoticeList = async (
   dto: GetCrewNoticeListRequestDto
@@ -108,11 +105,7 @@ export type GetCrewGalleryListRequestDto = {
   pageNo: number;
 };
 
-export type GetCrewGalleryListResponseDto = {
-  postGalleryList: CrewGalleryDto[];
-  pageNo: number;
-  lastPageNo: number;
-};
+export type GetCrewGalleryListResponseDto = PageNationData<CrewGalleryDto>;
 
 export const getCrewGalleryList = async (
   dto: GetCrewGalleryListRequestDto
