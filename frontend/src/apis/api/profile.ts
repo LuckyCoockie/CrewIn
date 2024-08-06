@@ -1,17 +1,5 @@
 import api from "../utils/instance";
 
-export type ProfileInfoDto = {
-  email: string;
-  name: string;
-  nickname: string;
-  imageUrl: string;
-};
-
-export const getProfileInfo = async (): Promise<ProfileInfoDto> => {
-  const response = await api.get("/mypage/profile");
-  return response.data;
-};
-
 // 개인 프로필 이미지 변경 api
 export type ImageDto = {
   profileImageUrl: string;

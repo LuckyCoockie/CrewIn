@@ -3,7 +3,7 @@ import { EditProfileImageOrganism } from "../../organisms/profile/EditProfileIma
 import { EditNicknameOrganism } from "../../organisms/profile/EditNicknameOrganism";
 import { EditPasswordOrganism } from "../../organisms/profile/EditPasswordOrganism";
 import { useQuery } from "react-query";
-import { ProfileInfoDto } from "../../../apis/api/profile";
+import { ProfileDto } from "../../../apis/api/mypage";
 import { AxiosError } from "axios";
 import ErrorResponseDto from "../../../apis/utils/errorCode/ErrorResponseDto";
 import DetailInfoMolecule from "../../molecules/Content/DetailInfoMolecule";
@@ -12,24 +12,24 @@ import EditableDetailInfoMolecule from "../../molecules/Content/EditableDetailIn
 import cameraButton from "../../../assets/images/camerabutton.png";
 
 type OwnProps = {
-  fetchData: () => Promise<ProfileInfoDto>;
-  onProfileImageEdit: ({ image }: { image?: File }) => Promise<void>;
-  onNicknameEdit: ({ nickname }: { nickname: string }) => Promise<void>;
-  onPasswordEdit: ({ password }: { password: string }) => Promise<void>;
+  fetchData: () => Promise<ProfileDto>;
+  onProfileImageEdit: ({ image }: { image?: File }, onClose: () => void) => Promise<void>;
+  onNicknameEdit: ({ nickname }: { nickname: string }, onClose: () => void) => Promise<void>;
+  onPasswordEdit: ({ oldPassword, newPassword }: { oldPassword: string, newPassword: string }, onClose: () => void) => Promise<void>;
 };
 
 export const ProfileInfoTemplate = ({
   fetchData,
   onProfileImageEdit,
   onNicknameEdit,
+  onPasswordEdit,
 }: OwnProps) => {
-  const { data } = useQuery<ProfileInfoDto, AxiosError<ErrorResponseDto>>({
+  const { data } = useQuery<ProfileDto, AxiosError<ErrorResponseDto>>({
     queryKey: [`ProfileInfo`],
     queryFn: () => fetchData(),
   });
 
-  const [isEditProfileImageModalOpen, setIsEditProfileImageModalOpen] =
-    useState(false);
+  const [isEditProfileImageModalOpen, setIsEditProfileImageModalOpen] = useState(false);
   const [isEditNicknameModalOpen, setIsEditNicknameModalOpen] = useState(false);
   const [isEditPasswordModalOpen, setIsEditPasswordModalOpen] = useState(false);
 
@@ -93,18 +93,21 @@ export const ProfileInfoTemplate = ({
         {isEditProfileImageModalOpen && (
           <EditProfileImageOrganism
             onClose={handleCloseEditProfileImageModal}
-            onEdit={onProfileImageEdit}
+            onEdit={(image) => onProfileImageEdit(image, handleCloseEditProfileImageModal)}
           />
         )}
         {isEditNicknameModalOpen && (
           <EditNicknameOrganism
             init={data}
             onClose={handleCloseEditNicknameModal}
-            onEdit={onNicknameEdit}
+            onEdit={(nickname) => onNicknameEdit(nickname, handleCloseEditNicknameModal)}
           />
         )}
         {isEditPasswordModalOpen && (
-          <EditPasswordOrganism onClose={handleCloseEditPasswordModal} />
+          <EditPasswordOrganism
+            onClose={handleCloseEditPasswordModal}
+            onEdit={(password) => onPasswordEdit(password, handleCloseEditPasswordModal)}
+          />
         )}
       </main>
     </>

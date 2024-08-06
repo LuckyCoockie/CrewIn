@@ -13,6 +13,7 @@ import LargeDisableButton from "../atoms/Button/LargeAbleButton";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import html2canvas from "html2canvas";
 import canvg from "canvg";
+import BackHeaderMediumOrganism from "../../components/organisms/BackHeaderMediumOrganism.tsx";
 
 import {
   Point,
@@ -226,60 +227,65 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
   );
 
   return (
-    <div className="mx-auto w-full max-w-[550px] pb-10">
-      <div className="flex justify-center relative overflow-hidden">
-        <div ref={captureRef}>
-          <NaverMap initPosition={position} onChange={setMarkers} />
+    <>
+      <header>
+        <BackHeaderMediumOrganism text="지도 생성하기" />
+      </header>
+      <div className="mx-auto w-full max-w-[550px] pb-10">
+        <div className="flex justify-center relative overflow-hidden">
+          <div ref={captureRef}>
+            <NaverMap initPosition={position} onChange={setMarkers} />
+          </div>
+          <div className="absolute bottom-0 right-4 p-4">
+            <MapToggleButton />
+          </div>
         </div>
-        <div className="absolute bottom-0 right-4 p-4">
-          <MapToggleButton />
-        </div>
-      </div>
-      <div className="p-4">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Controller
-            name="markers"
-            control={control}
-            render={() => (
-              <>
-                <div className="flex justify-between">
-                  <div className="flex">
-                    <InputLabelComponent id={""} title={"경로 정보"} />
-                    <p className="ps-4 pt-1 text-sm font-light text-red-500">
-                      {errors.markers?.message}
-                    </p>
-                  </div>
-                </div>
-                <MarkerList />
-              </>
-            )}
-          />
-          <div className="mt-8 mb-4">
+        <div className="p-4">
+          <form onSubmit={handleSubmit(onSubmit)}>
             <Controller
-              name="title"
+              name="markers"
               control={control}
-              render={({ field }) => (
-                <InputTextTypeMolecule
-                  id="title"
-                  title="제목*"
-                  placeholder="ex) 한강 러닝"
-                  {...field}
-                  error={errors.title?.message}
-                  hasError={!!errors.title}
-                />
+              render={() => (
+                <>
+                  <div className="flex justify-between">
+                    <div className="flex">
+                      <InputLabelComponent id={""} title={"경로 정보"} />
+                      <p className="ps-4 pt-1 text-sm font-light text-red-500">
+                        {errors.markers?.message}
+                      </p>
+                    </div>
+                  </div>
+                  <MarkerList />
+                </>
               )}
             />
-          </div>
-          <div>
-            {isValid ? (
-              <LargeAbleButton text="저장하기" />
-            ) : (
-              <LargeDisableButton text="저장하기" />
-            )}
-          </div>
-        </form>
+            <div className="mt-8 mb-4">
+              <Controller
+                name="title"
+                control={control}
+                render={({ field }) => (
+                  <InputTextTypeMolecule
+                    id="title"
+                    title="제목*"
+                    placeholder="ex) 한강 러닝"
+                    {...field}
+                    error={errors.title?.message}
+                    hasError={!!errors.title}
+                  />
+                )}
+              />
+            </div>
+            <div>
+              {isValid ? (
+                <LargeAbleButton text="저장하기" />
+              ) : (
+                <LargeDisableButton text="저장하기" />
+              )}
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
