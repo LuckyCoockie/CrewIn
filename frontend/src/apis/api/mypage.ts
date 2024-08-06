@@ -67,7 +67,6 @@ export type MyParticipatedSessionsResponseDto =
 export const getMyParticipatedSessions = async (
   pageNo: number
 ): Promise<MyParticipatedSessionsResponseDto> => {
-  console.log(pageNo);
   const response = await api.get(
     `/mypage/session?type=joined&session-type=ALL&page-no=${pageNo}`
   );

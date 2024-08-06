@@ -83,7 +83,7 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({ onSearch, fetchData }) => {
           className="grid grid-cols-2 gap-2 xs:gap-4 mb-2 xs:mb-4 w-full"
           fetchKey={["session", query.type ?? "", query.sessionType ?? ""]}
           fetchData={handleFetchData}
-          initPage={parseInt(query.pageNo ?? "1")}
+          initPage={parseInt(query.pageNo ?? "0")}
           ItemComponent={({ data }) => (
             <SessionListItemMolecules
               key={data.sessionId}

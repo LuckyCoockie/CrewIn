@@ -54,7 +54,7 @@ const CrewDetailTemplate: React.FC = () => {
   } = useQuery(
     ["crewGallery", { crewId }],
     () =>
-      getCrewGalleryList({ crewId: numericCrewId, pageNo: 1 }).then(
+      getCrewGalleryList({ crewId: numericCrewId, pageNo: 0 }).then(
         (data) => data.items
       ),
     {
