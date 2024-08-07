@@ -4,7 +4,6 @@ import lombok.*;
 
 import java.util.List;
 
-@NoArgsConstructor
 public class PostRequest {
 
     @Getter

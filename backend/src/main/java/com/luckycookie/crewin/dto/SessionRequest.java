@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@NoArgsConstructor
 public class SessionRequest {
 
     @Getter

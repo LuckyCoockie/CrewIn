@@ -27,7 +27,6 @@ public class MailService {
     private final JavaMailSender javaMailSender;
     private final EmailRedisRepository emailRedisRepository;
     private final MessageSource messageSource;
-    private final MemberRepository memberRepository;
 
     @Value("${spring.mail.username}")
     private String email;
