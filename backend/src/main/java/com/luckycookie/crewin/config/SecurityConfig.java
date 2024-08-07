@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -19,8 +18,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsUtils;
 
-import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity // 서블릿 필터에 스프링 시큐리티 필터 체인을 추가
@@ -57,6 +54,7 @@ public class SecurityConfig {
                             .requestMatchers("/member/reissue").permitAll()
                             .requestMatchers("/member/email").permitAll() // 이메일(id) 찾기
                             .requestMatchers(HttpMethod.POST, "/member/password").permitAll() // 임시 비밀번호 발급만 접근 허용
+                            .requestMatchers("/health").permitAll() // /health 엔드포인트 접근 허용
                             .anyRequest().authenticated();
                 });
 
