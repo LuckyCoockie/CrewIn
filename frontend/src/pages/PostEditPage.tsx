@@ -9,21 +9,20 @@ import BackHeaderMediumOrganism from "../components/organisms/BackHeaderMediumOr
 const fetchAllPosts = async () => {
   let allPosts: PostDto[] = [];
   let pageNo = 0;
-  let hasMorePosts = true;
+  let lastPageNo = 0;
 
-  while (hasMorePosts) {
-    try {
-      const {items} = await getPostList(pageNo);
-      if (items.length > 0) {
-        allPosts = allPosts.concat(items);
-        pageNo += 1;
-      } else {
-        hasMorePosts = false;
-      }
-    } catch (error) {
-      console.error(`Error fetching page ${pageNo}:`, error);
-      hasMorePosts = false;
+  try {
+    const firstPageData = await getPostList(pageNo);
+    allPosts = firstPageData.items;
+    lastPageNo = firstPageData.lastPageNo;
+
+    while (pageNo < lastPageNo) {
+      pageNo += 1;
+      const nextPageData = await getPostList(pageNo);
+      allPosts = allPosts.concat(nextPageData.items);
     }
+  } catch (error) {
+    console.error(`Error fetching posts:`, error);
   }
 
   return allPosts;
@@ -111,15 +110,15 @@ const PostEditPage: React.FC = () => {
         <BackHeaderMediumOrganism text="게시글 수정" />
       </header>
       <div className="mx-auto w-full max-w-[550px] pb-10">
-      <PostEditTemplate
-        content={content}
-        isPublic={isPublic}
-        postImages={postImages}
-        crewId={crewId}
-        onContentChange={(e) => setContent(e.target.value)}
-        onVisibilityChange={handleVisibilityChange}
-        onUpdatePost={handleUpdatePost}
-      />
+        <PostEditTemplate
+          content={content}
+          isPublic={isPublic}
+          postImages={postImages}
+          crewId={crewId}
+          onContentChange={(e) => setContent(e.target.value)}
+          onVisibilityChange={handleVisibilityChange}
+          onUpdatePost={handleUpdatePost}
+        />
       </div>
     </>
   );

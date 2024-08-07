@@ -4,12 +4,13 @@ import ModalMolecules from "../../molecules/ModalMolecules";
 import LargeAbleButton from "../../atoms/Button/LargeAbleButton";
 
 export const PWAOpenAppPrompt = () => {
-  const [isInstalled, isPWA, , handleOpenAppClick] = usePWAPrompt({});
+  const [isInstalled, isPWA, isMobile, , handleOpenAppClick] = usePWAPrompt({});
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const handleClose = () => setIsOpen(false);
   return (
     isInstalled &&
     !isPWA &&
+    isMobile &&
     isOpen && (
       <ModalMolecules title="CREW-IN" onClose={handleClose}>
         <p className="pb-3">앱으로 사용하면 더 편하게 사용할 수 있습니다!</p>

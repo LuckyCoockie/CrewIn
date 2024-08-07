@@ -9,6 +9,12 @@ export const usePWAPrompt = ({ onAccepted, onReject }: OwnProps) => {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const isInstalled = useMemo(() => deferredPrompt === null, [deferredPrompt]);
   const isPWA = window.matchMedia("(display-mode: standalone)").matches;
+  const isMobile = useMemo(() => {
+    const userAgent = navigator.userAgent || navigator.vendor;
+    return /android|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile/i.test(
+      userAgent
+    );
+  }, []);
 
   useEffect(() => {
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -42,10 +48,16 @@ export const usePWAPrompt = ({ onAccepted, onReject }: OwnProps) => {
   };
 
   const handleOpenAppClick = () => {
-    if (isInstalled) {
-      window.location.href = "webapp://crew-in.site/";
+    if (isInstalled && !isPWA && isMobile) {
+      window.open("https://crew-in.site", "_blank");
     }
   };
 
-  return [isInstalled, isPWA, handleInstallClick, handleOpenAppClick] as const;
+  return [
+    isInstalled,
+    isPWA,
+    isMobile,
+    handleInstallClick,
+    handleOpenAppClick,
+  ] as const;
 };

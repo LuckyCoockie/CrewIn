@@ -26,12 +26,12 @@ const InfiniteScrollComponent = <T,>({
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
     useInfiniteQuery(
       fetchKey,
-      ({ pageParam = initPage ?? 1 }) => fetchData(pageParam),
+      ({ pageParam = initPage ?? 0 }) => fetchData(pageParam),
       {
         refetchOnWindowFocus: false,
         getNextPageParam: (lastPage) => {
-          if (lastPage.lastPageNo >= lastPage.pageNo) return;
-          const nextPage = lastPage.lastPageNo + 1;
+          if (lastPage.lastPageNo <= lastPage.pageNo) return;
+          const nextPage = lastPage.pageNo + 1;
           return nextPage;
         },
       }
