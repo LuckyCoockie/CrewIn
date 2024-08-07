@@ -126,7 +126,7 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
                 </div>
                 <div>
                   <select
-                    className="border border-gray-400 w-30 h-10 rounded-md text-sm bg-white"
+                    className="border border-gray-400 w-30 h-10 rounded-md text-sm"
                     value={member.position}
                     onChange={(e) =>
                       handlePositionChange(
@@ -170,24 +170,9 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
                   <div className="text-gray-600">{member.nickname}</div>
                 </div>
                 <div>
-                  <select
-                    className="border border-gray-400 w-30 h-10 rounded-md text-sm bg-white"
-                    value="WAITING"
-                    onChange={(e) =>
-                      handlePositionChange(
-                        member.memberId,
-                        member.email,
-                        e.target.value
-                      )
-                    }
-                  >
-                    <option value="WAITING">WAITING</option>
-                    {positions.map((position) => (
-                      <option key={position} value={position}>
-                        {position}
-                      </option>
-                    ))}
-                  </select>
+                  <button className="border border-gray-400 w-20 h-10 rounded-md text-sm">
+                    WAITING
+                  </button>
                 </div>
               </li>
             ))}

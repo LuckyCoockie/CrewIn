@@ -16,7 +16,6 @@ export interface ItemComponentProps<T> {
   data: T;
 }
 
-
 const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   const {
     id,
@@ -27,7 +26,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     isHearted,
     createdAt,
     profileImage,
-    postType
+    postType,
   } = data;
 
   const [likes, setLikes] = useState<number>(heartCount);
@@ -68,8 +67,10 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
 
   const handleShare = () => {
     const url = window.location.href;
-    const shareUrl = `https://instagram.com/sharer.php?u=${encodeURIComponent(url)}`;
-    window.open(shareUrl, '_blank');
+    const shareUrl = `https://instagram.com/sharer.php?u=${encodeURIComponent(
+      url
+    )}`;
+    window.open(shareUrl, "_blank");
   };
 
   const toggleContent = () => {
@@ -82,8 +83,8 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   });
 
   return (
-    <div className="w-full mb-4">
-      {postType === 'NOTICE' ? (
+    <div className="w-full mb-4 pb-3">
+      {postType === "NOTICE" ? (
         <UserProfileBarNoMenu
           profileImage={profileImage}
           username={authorName}

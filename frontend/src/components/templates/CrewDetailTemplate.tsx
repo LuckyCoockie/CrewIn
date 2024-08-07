@@ -149,10 +149,10 @@ const CrewDetailTemplate: React.FC = () => {
           text={infoData ? infoData.crewName : "Loading..."}
         />
         <div className="flex ms-auto">
-          {isUserCrewMember && <GroupsButton userPosition={userPosition!}/>}
+          {isUserCrewMember && <GroupsButton userPosition={userPosition!} />}
           {isUserCrewMember && userPosition === "CAPTAIN" && (
             <>
-              <MemberPlusButton />
+              {infoData?.crewId !== undefined && <MemberPlusButton idData={infoData.crewId} />}
               <EditDeleteDropdownOrganism
                 type="CREW"
                 idData={infoData?.crewId}
