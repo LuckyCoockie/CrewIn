@@ -2,7 +2,10 @@ package com.luckycookie.crewin.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.luckycookie.crewin.domain.enums.SessionType;
+import com.luckycookie.crewin.dto.AttendanceRequest;
+import com.luckycookie.crewin.dto.AttendanceRequest.StartAttendanceRequest;
 import com.luckycookie.crewin.dto.SessionRequest;
+import com.luckycookie.crewin.dto.SessionRequest.UpdateSessionRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -73,7 +76,7 @@ public class Session {
 
     private LocalDateTime attendanceStart;
 
-    public void updateSession(SessionRequest.UpdateSessionRequest updateSessionRequest, Course course) {
+    public void updateSession(UpdateSessionRequest updateSessionRequest, Course course) {
         this.course = course;
         this.sessionType = updateSessionRequest.getSessionType();
         this.name = updateSessionRequest.getName();
@@ -91,7 +94,12 @@ public class Session {
                         .build());
             }
         }
+    }
 
+    public void startSession(StartAttendanceRequest startAttendanceRequest) {
+        lat = startAttendanceRequest.getLat();
+        lng = startAttendanceRequest.getLng();
+        startAt = LocalDateTime.now();
     }
 
 }

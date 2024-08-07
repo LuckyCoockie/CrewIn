@@ -10,6 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -18,10 +22,10 @@ import org.springframework.web.bind.annotation.*;
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
-
-    @PostMapping("/start/{session-id}")
-    public ResponseEntity<BaseResponse<Void>> startAttendance(@PathVariable("session-id") String sessionId, @RequestBody StartAttendanceRequest startAttendanceRequest, @AuthenticationPrincipal CustomUser customUser) {
-        attendanceService.startAttendance();
-
-    }
+//
+//    @PostMapping("/start/{session-id}")
+//    public ResponseEntity<BaseResponse<Void>> startAttendance(@PathVariable("session-id") String sessionId, @RequestBody StartAttendanceRequest startAttendanceRequest, @AuthenticationPrincipal CustomUser customUser) {
+//        attendanceService.startAttendance();
+//
+//    }
 }

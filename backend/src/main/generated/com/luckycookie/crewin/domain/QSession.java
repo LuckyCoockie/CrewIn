@@ -24,7 +24,7 @@ public class QSession extends EntityPathBase<Session> {
 
     public final StringPath area = createString("area");
 
-    public final DateTimePath<java.time.LocalDateTime> attendance_start = createDateTime("attendance_start", java.time.LocalDateTime.class);
+    public final DateTimePath<java.time.LocalDateTime> attendanceStart = createDateTime("attendanceStart", java.time.LocalDateTime.class);
 
     public final StringPath content = createString("content");
 

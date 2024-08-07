@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="membersession")
+@Table(name = "membersession")
 public class MemberSession {
 
     @Id
@@ -27,4 +27,8 @@ public class MemberSession {
     private Session session;
 
     private Boolean isAttend;
+
+    public void changeAttend(Boolean isAttend) {
+        this.isAttend = isAttend;
+    }
 }
