@@ -61,9 +61,9 @@ const MyProfileTemplate: React.FC = () => {
 
   // 로딩 상태 처리
   if (
-    isProfileLoading ||
-    isMapsLoading ||
-    isMadeSessionsLoading ||
+    isProfileLoading &&
+    isMapsLoading &&
+    isMadeSessionsLoading &&
     isParticipatedSessionsLoading
   ) {
     return <div>Loading...</div>;
@@ -71,9 +71,9 @@ const MyProfileTemplate: React.FC = () => {
 
   // 에러 상태 처리
   if (
-    isProfileError ||
-    isMapsError ||
-    isMadeSessionsError ||
+    isProfileError &&
+    isMapsError &&
+    isMadeSessionsError &&
     isParticipatedSessionsError
   ) {
     return <div>Error loading data</div>;
@@ -93,15 +93,23 @@ const MyProfileTemplate: React.FC = () => {
       {currentTab === "러닝 정보" ? (
         <>
           <div className="my-4">
-            <MyPageMadeSessionOrganism sessions={madeSessions!} />
+            <MyPageMadeSessionOrganism
+              sessions={madeSessions!}
+              isMadeSessionsLoading={isMadeSessionsLoading}
+              isMadeSessionsError={isMadeSessionsError}
+            />
           </div>
           <div className="my-4">
             <MyPageParticipatedSessionOrganism
               sessions={participatedSessions!}
+              isParticipatedSessionsLoading={isParticipatedSessionsLoading}
+              isParticipatedSessionsError={isParticipatedSessionsError}
             />
           </div>
           <div className="my-4">
-            <MyPageMapOrganism mapsData={mapsData!} />
+            <MyPageMapOrganism mapsData={mapsData!} 
+            isMapsLoading={isMapsLoading}
+            isMapsError={isMapsError}/>
           </div>
         </>
       ) : (
