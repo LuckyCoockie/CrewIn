@@ -151,8 +151,8 @@ public class MemberService {
         return MemberProfileResponse
                 .builder()
                 .totalAttendance(member.getTotalAttendance())
-                .totalDistance(member.getTotalDistance())
-                .totalTime(member.getTotalTime())
+                .totalDistance(Math.round(member.getTotalDistance() / 1000f)) // meter -> km
+                .totalTime(Math.round(member.getTotalTime() / 3600f)) // second -> hour
                 .imageUrl(member.getImageUrl())
                 .email(email)
                 .nickname(member.getNickname())
