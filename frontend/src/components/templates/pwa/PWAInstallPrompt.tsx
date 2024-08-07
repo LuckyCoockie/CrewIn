@@ -4,7 +4,7 @@ import ModalMolecules from "../../molecules/ModalMolecules";
 import LargeAbleButton from "../../atoms/Button/LargeAbleButton";
 
 export const PWAInstallPrompt = () => {
-  const [isInstalled, , handleInstallClick] = usePWAPrompt({});
+  const [isInstalled, , , handleInstallClick] = usePWAPrompt({});
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const handleClose = () => setIsOpen(false);
   return (
