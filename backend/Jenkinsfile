@@ -97,48 +97,49 @@ pipeline {
         stage('Deploy and Update Nginx') {
             steps {
                 script {
+                    def deployScript = """
+                        docker pull ${env.DOCKER_IMAGE}
+                        CURRENT_CONTAINER=\$(docker ps -q --filter name=${env.CONTAINER_NAME_BLUE})
+                        if [ -n "$CURRENT_CONTAINER" ]; then
+                            NEW_PORT=${env.GREEN_PORT}
+                            NEW_NAME=${env.CONTAINER_NAME_GREEN}
+                            OLD_NAME=${env.CONTAINER_NAME_BLUE}
+                            CURRENT_PORT=${env.BLUE_PORT}
+                        else
+                            NEW_PORT=${env.BLUE_PORT}
+                            NEW_NAME=${env.CONTAINER_NAME_BLUE}
+                            OLD_NAME=${env.CONTAINER_NAME_GREEN}
+                            CURRENT_PORT=${env.GREEN_PORT}
+                        fi
+                        docker run -d --name $NEW_NAME --network ${env.DOCKER_NETWORK} -p $NEW_PORT:8080 ${env.DOCKER_IMAGE}
+                        sleep 10
+                        if curl -sf -m 5 http://localhost:$NEW_PORT/health > /dev/null; then
+                            # Update Nginx config
+                            sed -i "s/server ${env.CONTAINER_URL}:$NEW_PORT down;/server ${env.CONTAINER_URL}:$NEW_PORT;/" ${env.NGINX_CONFIG_PATH}
+                            sed -i "s/server ${env.CONTAINER_URL}:$CURRENT_PORT;/server ${env.CONTAINER_URL}:$CURRENT_PORT down;/" ${env.NGINX_CONFIG_PATH}
+                            # Restart Nginx container
+                            docker restart ${env.NGINX_CONTAINER_NAME}
+                            # Stop and remove old container
+                            docker stop $OLD_NAME
+                            docker rm $OLD_NAME
+                            echo "Switched to new version on port $NEW_PORT and updated Nginx"
+                            # success
+                            exit 0
+                        else
+                            docker stop $NEW_NAME
+                            docker rm $NEW_NAME
+                            echo "Deployment failed, keeping old version"
+                            # failure return
+                            exit 1
+                        fi
+                    """
                     sshPublisher(
                         publishers: [
                             sshPublisherDesc(
                                 configName: 'Gumi-Server',
                                 transfers: [
                                     sshTransfer(
-                                        execCommand: """
-                                            docker pull ${env.DOCKER_IMAGE}
-                                            CURRENT_CONTAINER=\$(docker ps -q --filter name=${env.CONTAINER_NAME_BLUE})
-                                            if [ -n "$CURRENT_CONTAINER" ]; then
-                                                NEW_PORT=${env.GREEN_PORT}
-                                                NEW_NAME=${env.CONTAINER_NAME_GREEN}
-                                                OLD_NAME=${env.CONTAINER_NAME_BLUE}
-                                                CURRENT_PORT=${env.BLUE_PORT}
-                                            else
-                                                NEW_PORT=${env.BLUE_PORT}
-                                                NEW_NAME=${env.CONTAINER_NAME_BLUE}
-                                                OLD_NAME=${env.CONTAINER_NAME_GREEN}
-                                                CURRENT_PORT=${env.GREEN_PORT}
-                                            fi
-                                            docker run -d --name $NEW_NAME --network ${env.DOCKER_NETWORK} -p $NEW_PORT:8080 ${env.DOCKER_IMAGE}
-                                            sleep 10
-                                            if curl -sf -m 5 http://localhost:$NEW_PORT/health > /dev/null; then
-                                                # Update Nginx config
-                                                sed -i "s/server ${env.CONTAINER_URL}:$NEW_PORT down;/server ${env.CONTAINER_URL}:$NEW_PORT;/" ${env.NGINX_CONFIG_PATH}
-                                                sed -i "s/server ${env.CONTAINER_URL}:$CURRENT_PORT;/server ${env.CONTAINER_URL}:$CURRENT_PORT down;/" ${env.NGINX_CONFIG_PATH}
-                                                # Restart Nginx container
-                                                docker restart ${env.NGINX_CONTAINER_NAME}
-                                                # Stop and remove old container
-                                                docker stop $OLD_NAME
-                                                docker rm $OLD_NAME
-                                                echo "Switched to new version on port $NEW_PORT and updated Nginx"
-                                                # success
-                                                exit 0
-                                            else
-                                                docker stop $NEW_NAME
-                                                docker rm $NEW_NAME
-                                                echo "Deployment failed, keeping old version"
-                                                # failure return
-                                                exit 1
-                                            fi
-                                        """
+                                        execCommand: deployScript
                                     )
                                 ]
                             )
@@ -147,6 +148,7 @@ pipeline {
                 }
             }
         }
+
     }
     post {
         always {
