@@ -1,10 +1,14 @@
 package com.luckycookie.crewin.service;
 
 import com.luckycookie.crewin.domain.Member;
+import com.luckycookie.crewin.domain.MemberCrew;
 import com.luckycookie.crewin.domain.MemberSession;
 import com.luckycookie.crewin.domain.Session;
 import com.luckycookie.crewin.dto.AttendanceRequest;
 import com.luckycookie.crewin.dto.AttendanceRequest.StartAttendanceRequest;
+import com.luckycookie.crewin.dto.AttendanceResponse;
+import com.luckycookie.crewin.dto.AttendanceResponse.AttendanceMemberItem;
+import com.luckycookie.crewin.dto.AttendanceResponse.AttendanceMemberResponse;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.memberSession.NotFoundMemberSessionException;
 import com.luckycookie.crewin.exception.session.InvalidSessionException;
@@ -13,6 +17,7 @@ import com.luckycookie.crewin.exception.session.SessionAuthorizationException;
 import com.luckycookie.crewin.repository.MemberRepository;
 import com.luckycookie.crewin.repository.MemberSessionRepository;
 import com.luckycookie.crewin.repository.SessionRepository;
+import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +25,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -54,5 +62,37 @@ public class AttendanceService {
 
         // 스케줄러 등록
         
+    }
+
+    // 출석부 목록 조회
+    public AttendanceMemberResponse getAttendanceMemberList(Long sessionId, CustomUser customUser){
+
+        Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundSessionException::new);
+
+        List<MemberSession> memberSessionList = memberSessionRepository.findBySession(session);
+
+        // 현재 로그인한 사용자
+        Member currentMember = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+
+        // 현재 로그인한 사용자가 memberSession 에 있어야 함
+        memberSessionRepository.findByMemberAndSession(currentMember, session).orElseThrow(NotFoundMemberSessionException::new);
+
+        List<AttendanceMemberItem> attendanceMemberItems = memberSessionList.stream().map(memberSession -> {
+            Member member = memberSession.getMember();
+
+            return AttendanceMemberItem
+                    .builder()
+                    .memberSessionId(memberSession.getId())
+                    .name(member.getName())
+                    .profileUrl(member.getImageUrl())
+                    .nickname(member.getNickname())
+                    .build();
+        }).toList();
+
+        return AttendanceMemberResponse
+                .builder()
+                .items(attendanceMemberItems)
+                .build();
+
     }
 }
