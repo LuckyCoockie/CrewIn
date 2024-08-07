@@ -12,7 +12,7 @@ type NoticeInfo = {
 const NoticeMolecule: React.FC<NoticeInfo> = ({ text, title, date }) => {
   return (
     <>
-      <div className="flex border-b w-full items-center py-2">
+      <div className="flex w-full items-center py-2">
         <div className="flex w-3/12 justify-center">
           <RoleChip text={text} />
         </div>
