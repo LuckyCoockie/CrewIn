@@ -67,9 +67,9 @@ public class Session {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    private double lat;
+    private Double lat;
 
-    private double lng;
+    private Double lng;
 
     private LocalDateTime attendance_start;
 

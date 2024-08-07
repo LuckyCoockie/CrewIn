@@ -24,6 +24,8 @@ public class QSession extends EntityPathBase<Session> {
 
     public final StringPath area = createString("area");
 
+    public final DateTimePath<java.time.LocalDateTime> attendance_start = createDateTime("attendance_start", java.time.LocalDateTime.class);
+
     public final StringPath content = createString("content");
 
     public final QCourse course;
@@ -35,6 +37,10 @@ public class QSession extends EntityPathBase<Session> {
     public final QMember host;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    public final NumberPath<Double> lat = createNumber("lat", Double.class);
+
+    public final NumberPath<Double> lng = createNumber("lng", Double.class);
 
     public final NumberPath<Integer> maxPeople = createNumber("maxPeople", Integer.class);
 
