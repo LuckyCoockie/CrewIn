@@ -134,14 +134,12 @@ const CrewInvitePage: React.FC = () => {
       const response: CrewInviteResponseDto = await inviteCrewMember(inviteDto);
       console.log("Invite Crew Member response:", response);
 
-      if (response.statusCode === 200) {
+      if (response) {
         setMembers((prevMembers) =>
           prevMembers.map((m) =>
             m.memberId === member.memberId ? { ...m, isInvited: true } : m
           )
         );
-      } else {
-        console.error("Invitation failed:", response.message);
       }
     } catch (error) {
       console.error("초대 오류:", error);

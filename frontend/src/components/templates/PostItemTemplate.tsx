@@ -11,6 +11,7 @@ import emptyFire from "../../assets/images/emptyfire.png";
 import shareIcon from "../../assets/images/shareicon.png";
 import { PostDto } from "../../apis/api/postlist";
 import { deletePost } from "../../apis/api/postdelete";
+import { registerPostHeart } from "../../apis/api/heart";
 
 export interface ItemComponentProps<T> {
   data: T;
@@ -54,14 +55,13 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     }
   };
 
-  const handleLike = () => {
-    setLikes((prevLikes) => (isHeartedState ? prevLikes - 1 : prevLikes + 1));
-    setIsHeartedState(!isHeartedState);
-
-    if (!isHeartedState) {
-      const alarmMessages = JSON.parse(localStorage.getItem("alarms") || "[]");
-      alarmMessages.push("@@님이 회원님의 게시글에 좋아요를 눌렀습니다.");
-      localStorage.setItem("alarms", JSON.stringify(alarmMessages));
+  const handleLike = async () => {
+    try {
+      await registerPostHeart(id);
+      setLikes((prevLikes) => (isHeartedState ? prevLikes - 1 : prevLikes + 1));
+      setIsHeartedState(!isHeartedState);
+    } catch (error) {
+      console.error("좋아요 등록 중 오류가 발생했습니다:", error);
     }
   };
 

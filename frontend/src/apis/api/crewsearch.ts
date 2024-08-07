@@ -28,5 +28,7 @@ export const searchInviteMember = async (
   const response = await api.get(`/search/invite-member/${crewId}`, {
     params: { query },
   });
+  console.log(response);
+  console.log(response.data);
   return response.data;
 };

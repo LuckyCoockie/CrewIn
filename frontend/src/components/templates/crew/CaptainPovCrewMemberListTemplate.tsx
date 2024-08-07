@@ -27,9 +27,6 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
       setError(null);
       try {
         const data: CrewMemberListResponseDto = await getCrewMemberList(crewId);
-        console.log(data.items);
-        console.log(data);
-
         setMembers(data.items);
       } catch (error) {
         if (error instanceof Error) {
