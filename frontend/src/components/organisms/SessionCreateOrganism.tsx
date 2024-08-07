@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useQuery } from "react-query";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -14,6 +15,7 @@ import { pace } from "../../pace";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import InputRadioTypeMolecule from "../molecules/Input/InputRadioTypeMolecule";
+import { useNavigate } from "react-router-dom";
 
 import {
   SessionCreateDto,
@@ -21,7 +23,11 @@ import {
 } from "../../apis/api/sessioncreate";
 
 import { uploadImage } from "../../apis/api/presigned";
+// 내 크루 조회
 import { getMyCrews, CrewDto } from "../../apis/api/mycrew";
+
+// 내 코스 조회
+import { getMapList } from "../../apis/api/mycourse";
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({
@@ -69,11 +75,12 @@ type FormValues = {
 };
 
 const SessionCreateOrganism: React.FC = () => {
+  const navigate = useNavigate();
   const [selectedMinutes, setSelectedMinutes] = useState<number>();
-  const [crews, setCrews] = useState<CrewDto[]>([]);
-  const [userRole, setUserRole] = useState<string>(""); // User's role (Captain, Pacer, etc.)
+  const [userRole, setUserRole] = useState<string>("");
   const [hasCrew, setHasCrew] = useState<boolean>(false);
   const [crewId, setCrewId] = useState<number>(0);
+  const [FilteredCrews, setFilteredCrews] = useState<CrewDto[]>([]);
 
   const {
     control,
@@ -91,26 +98,26 @@ const SessionCreateOrganism: React.FC = () => {
       sessionend: new Date(),
     },
   });
+  const { data: crewData } = useQuery("myCrews", getMyCrews);
+  const { data: mapData } = useQuery("myMaps", getMapList);
+  console.log(mapData);
 
   useEffect(() => {
-    const fetchCrews = async () => {
-      try {
-        const response = await getMyCrews();
-        console.log(response);
+    if (mapData && mapData.length === 0) {
+      window.alert("지도를 생성해주세요");
+      return navigate(`/course/create`);
+    }
 
-        setCrews(response.crews);
-        setHasCrew(response.crews.length > 0);
-        if (response.crews.length > 0) {
-          // Assuming user role information is provided in the response
-          const userCrew = response.crews[0]; // Adjust this based on your actual data structure
-          setUserRole(userCrew.position);
-        }
-      } catch (error) {
-        console.error("내가 속한 크루 조회 오류:", error);
-      }
-    };
-    fetchCrews();
-  }, []);
+    if (crewData && crewData.crews.length > 0) {
+      setHasCrew(true);
+      setUserRole("CAPTAIN");
+      const filteredCrews = crewData.crews.filter(
+        (crew) => crew.position === "PACER" || crew.position === "CAPTAIN"
+      );
+      setFilteredCrews(filteredCrews);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [crewData]);
 
   const checkUndefined = async (files: FileList) => {
     if (files) {
@@ -220,7 +227,7 @@ const SessionCreateOrganism: React.FC = () => {
                 id="crewId"
                 title="크루 선택"
                 text=""
-                options={crews.map((crew) => ({
+                options={FilteredCrews.map((crew) => ({
                   label: crew.crewName,
                   value: crew.crewId,
                 }))}
@@ -231,6 +238,20 @@ const SessionCreateOrganism: React.FC = () => {
                 hasError={false}
               />
             )}
+            <InputDropdonwTypeMolecule
+              id="mapId"
+              title="지도 선택"
+              text=""
+              options={mapData!.map((map) => ({
+                label: map.name,
+                value: map.id,
+              }))}
+              value={crewId}
+              onChange={(e) => {
+                setCrewId(Number(e.target.value));
+              }}
+              hasError={false}
+            />
           </div>
           <div className="w-7/12">
             <Controller

@@ -48,7 +48,7 @@ const PostMainPage: React.FC = () => {
   return (
     <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20 relative">
       <div className="flex items-center w-full mb-5 xs:mb-10">
-        <div className="flex items-center">
+        <div className="flex items-center ms-3">
           <CrewinLogo />
         </div>
         <div className="flex items-center flex-grow justify-end mr-2">

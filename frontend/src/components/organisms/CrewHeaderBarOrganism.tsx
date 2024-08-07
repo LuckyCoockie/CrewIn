@@ -1,6 +1,6 @@
 import React from "react";
 import crewlistplus from "../../assets/images/crewlistplus.png";
-import ListButtonMolecule from "../molecules/List/ListButtonMolecule";
+import RoundButtonMolecule from "../molecules/List/RoundButtonMolecule";
 import { CrewDto } from "../../apis/api/mycrew";
 
 type CrewHeaderBarOrganismProps = {
@@ -27,7 +27,7 @@ const CrewHeaderBarOrganism: React.FC<CrewHeaderBarOrganismProps> = ({
             }
           `}
         </style>
-        <ListButtonMolecule
+        <RoundButtonMolecule
           src={crewlistplus}
           alt="plus"
           text="더보기"
@@ -35,8 +35,8 @@ const CrewHeaderBarOrganism: React.FC<CrewHeaderBarOrganismProps> = ({
         />
         {crewList?.map((crew) => {
           return (
-            <ListButtonMolecule
-              router="/crew/detail"
+            <RoundButtonMolecule
+              router="crew/detail"
               routerId={crew.crewId}
               key={crew.crewId}
               src={crew.imageUrl}
