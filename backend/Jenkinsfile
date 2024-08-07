@@ -104,6 +104,7 @@ pipeline {
                                 transfers: [
                                     sshTransfer(
                                         execCommand: """
+                                            set -x  # 디버깅 모드 활성화
                                             docker pull ${env.DOCKER_IMAGE}
                                             if [[ \$(docker ps -q --filter name=${env.CONTAINER_NAME_BLUE}) ]]; then
                                                 NEW_PORT=${env.GREEN_PORT}
@@ -128,13 +129,11 @@ pipeline {
                                                 docker stop \$OLD_NAME
                                                 docker rm \$OLD_NAME
                                                 echo "Switched to new version on port \$NEW_PORT and updated Nginx"
-                                                # success
                                                 exit 0
                                             else
                                                 docker stop \$NEW_NAME
                                                 docker rm \$NEW_NAME
                                                 echo "Deployment failed, keeping old version"
-                                                # failure return
                                                 exit 1
                                             fi
                                         """
@@ -146,6 +145,7 @@ pipeline {
                 }
             }
         }
+
     }
     post {
         always {
