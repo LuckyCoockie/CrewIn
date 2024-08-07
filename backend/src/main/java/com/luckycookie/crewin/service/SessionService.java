@@ -106,13 +106,15 @@ public class SessionService {
                 .maxPeople(createSessionRequest.getMaxPeople())
                 .build();
 
-        if (createSessionRequest.getCrewId() != null) { // 정규런, 오픈런일 때
+        if (createSessionRequest.getSessionType() != THUNDER) { // 정규런, 오픈런일 때
             assert memberCrew != null;
             if (memberCrew.getPosition() == Position.MEMBER) { // 만약 position이 member면 exception
                 throw new CrewUnauthorizedException(); // 권한 부족
             } else { // 내가 CAPTAIN, PACER 일 때만 가능
                 sessionRepository.save(session);
             }
+        } else {
+            sessionRepository.save(session);
         }
 
         // 세션 포스터 이미지
