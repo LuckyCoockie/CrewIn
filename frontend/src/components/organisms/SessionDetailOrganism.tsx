@@ -33,6 +33,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
     content,
     sessionPosters,
     isSessionHost,
+    courseThumbnail,
   } = detailData;
   const isSessionStarted = detailData ? new Date(startAt) < new Date() : false;
   const sessionTypeSubstitute = (type: string) => {
@@ -105,6 +106,9 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
         <DetailInfoMolecule title="집결지" content={spot} />
         <DetailInfoMolecule title="코스" content={area} />
         <DetailInfoMolecule title="내용" content={content} />
+        <div className="flex justify-center items-center">
+          <img src={courseThumbnail} alt="courseThumbnail" />
+        </div>
         {!isSessionHost && !isSessionStarted && (
           <LargeAbleButton onClick={handleParticipate} text="참가 신청" />
         )}
