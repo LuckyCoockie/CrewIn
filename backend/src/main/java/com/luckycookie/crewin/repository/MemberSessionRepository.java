@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MemberSessionRepository extends JpaRepository<MemberSession, Long> {
@@ -23,6 +24,16 @@ public interface MemberSessionRepository extends JpaRepository<MemberSession, Lo
     // 특정 member와 session에 해당하는 MemberSession 조회
     @Query("SELECT ms FROM MemberSession ms WHERE ms.member = :member AND ms.session = :session")
     Optional<MemberSession> findByMemberAndSession(Member member, Session session);
+
+    @Query("SELECT ms FROM MemberSession ms JOIN ms.member m JOIN MemberCrew mc ON mc.member = m AND mc.crew = ms.session.crew " +
+            "WHERE ms.session = :session " +
+            "ORDER BY CASE mc.position " +
+            "  WHEN com.luckycookie.crewin.domain.enums.Position.CAPTAIN THEN 1 " +
+            "  WHEN com.luckycookie.crewin.domain.enums.Position.PACER THEN 2 " +
+            "  WHEN com.luckycookie.crewin.domain.enums.Position.MEMBER THEN 3 " +
+            "  ELSE 4 " +
+            "END")
+    List<MemberSession> findBySession(Session session);
 
     boolean existsByMemberAndSession(Member member, Session session);
 }
