@@ -33,11 +33,11 @@ public class S3Service {
     private String folder;
 
     private final List<String> excludedPaths = Arrays.asList(
-            "banner.png",
-            "crewinlogo.png",
-            "crewinsublogo.png",
-            "default-profile.png",
-            "SessionPoster.png"
+            "banner.webp",
+            "crewinlogo.webp",
+            "crewinsublogo.webp",
+            "default-profile.webp",
+            "SessionPoster.webp"
     );
 
     // 발급
