@@ -170,7 +170,13 @@ const SessionCreateOrganism: React.FC = () => {
     };
     console.log(submitData);
 
-    return postCreateSession(submitData); // 제출 API 호출
+    return postCreateSession(submitData) // 제출 API 호출
+      .then(() => {
+        navigate(`/session?status=active`);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleMinutesChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
