@@ -21,7 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert
-@Table(name="session")
+@Table(name = "session")
 public class Session {
 
     @Id
@@ -67,7 +67,13 @@ public class Session {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    public void updateSession(SessionRequest.UpdateSessionRequest updateSessionRequest, Course course){
+    private double lat;
+
+    private double lng;
+
+    private LocalDateTime attendance_start;
+
+    public void updateSession(SessionRequest.UpdateSessionRequest updateSessionRequest, Course course) {
         this.course = course;
         this.sessionType = updateSessionRequest.getSessionType();
         this.name = updateSessionRequest.getName();
