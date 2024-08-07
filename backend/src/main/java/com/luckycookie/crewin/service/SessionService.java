@@ -95,6 +95,7 @@ public class SessionService {
         Session session = Session.builder()
                 .sessionType(createSessionRequest.getSessionType())
                 .host(member)
+                .crew(crew)
                 .area(course.getArea())
                 .course(course)
                 .name(createSessionRequest.getName())
