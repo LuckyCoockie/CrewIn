@@ -30,7 +30,7 @@ public class QCourse extends EntityPathBase<Course> {
 
     public final StringPath info = createString("info");
 
-    public final NumberPath<Double> length = createNumber("length", Double.class);
+    public final NumberPath<Integer> length = createNumber("length", Integer.class);
 
     public final StringPath name = createString("name");
 

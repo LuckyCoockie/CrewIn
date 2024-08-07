@@ -15,7 +15,7 @@ public class CourseRequest {
         private String info;
         private String name;
         private String area;
-        private Double length;
+        private Integer length;
         private String thumbnailImage ;
     }
 
@@ -36,7 +36,7 @@ public class CourseRequest {
     public static class CourseDetailResponse {
         private Long id;
         private Long creatorId;
-        private Double length;
+        private Integer length;
 
         private String info;
         private String name;
