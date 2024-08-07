@@ -1,8 +1,9 @@
 import axios from "axios";
 import api from "../utils/instance";
+import { convertImageToWebP } from "../../util/webp/convertImageToWebP.ts";
 
 export type PresignedUrlnRequestDto = {
-  imageExtension: "jpg" | "jpeg" | "png";
+  imageExtension: "webp";
 };
 export type PresignedUrlnResponseDto = {
   presignedUrl: string;
@@ -17,14 +18,16 @@ export const requestPresignedUrl = async (
 };
 
 export const uploadImageToS3 = async (file: File, presignedUrl: string) => {
-  await axios.put(presignedUrl, file, {
-    headers: { "Content-Type": "image/png" },
+  const blob = new Blob([file], { type: file.type });
+  const webp = await convertImageToWebP(blob);
+  await axios.put(presignedUrl, webp, {
+    headers: { "Content-Type": "image/webp" },
   });
 };
 
 export const uploadImage = async (file: File) => {
   const { presignedUrl, imageUrl } = await requestPresignedUrl({
-    imageExtension: "png",
+    imageExtension: "webp",
   });
   console.log(presignedUrl, imageUrl);
   await uploadImageToS3(file, presignedUrl);

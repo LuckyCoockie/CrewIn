@@ -29,7 +29,7 @@ export type AuthActionTypes =
   | PresignedFailureAction;
 
 /* ----------------- 액션 함수 ------------------ */
-export const login = (type: "jpg" | "jpeg" | "png") => {
+export const login = (type: "webp") => {
   return async (dispatch: Dispatch<AuthActionTypes>) => {
     dispatch({ type: PRESIGNED_REQUEST });
 
