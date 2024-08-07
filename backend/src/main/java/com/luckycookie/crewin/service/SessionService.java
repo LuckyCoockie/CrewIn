@@ -142,30 +142,19 @@ public class SessionService {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(NotFoundSessionException::new);
 
-        if (session.getSessionType().equals(STANDARD)) {
-            Member member = memberRepository.findByEmail(customUser.getEmail())
-                    .orElseThrow(NotFoundMemberException::new);
-            if (!memberCrewRepository.findIsJoinedByMemberAndCrew(member, session.getCrew())
-                    .orElse(false)) {
-                throw new CrewMemberNotExistException();
-            }
-        }
-
         Member host = memberRepository.findById(session.getHost().getId())
                 .orElseThrow(NotFoundMemberException::new);
 
         boolean userSessionCompare;
         userSessionCompare = customUser.getEmail().equals(host.getEmail());
 
-        List<SessionPoster> sessionPosters = sessionPosterRepository.findBySession(session);
-
-
-        List<String> imageUrls = sessionPosters.stream()
-                .map(SessionPoster::getImageUrl)
-                .collect(Collectors.toList());
-
         Course course = courseRepository.findById(session.getCourse().getId())
                 .orElseThrow(NotFoundCourseException::new);
+
+        String crewName = null;
+        if (session.getSessionType() != THUNDER) {
+            crewName = session.getCrew().getCrewName();
+        }
 
         return SessionDetailResponse.builder()
                 .sessionId(session.getId())
@@ -174,7 +163,7 @@ public class SessionService {
                 .hostname(host.getName())
                 .area(session.getArea())
                 .hostNickname(host.getNickname())
-                .crewName(session.getCrew().getCrewName())
+                .crewName(crewName)
                 .sessionName(session.getName())
                 .spot(session.getSpot())
                 .content(session.getContent())
@@ -184,7 +173,7 @@ public class SessionService {
                 .startAt(session.getStartAt())
                 .endAt(session.getEndAt())
                 .sessionType(session.getSessionType())
-                .sessionPosters(imageUrls)
+                .sessionPosters(session.getPosterImages().stream().map(SessionPoster::getImageUrl).toList())
                 .build();
     }
 
@@ -268,7 +257,7 @@ public class SessionService {
                 session ->
                 {
                     String sessionCrewName = null;
-                    if(session.getSessionType() != THUNDER){
+                    if (session.getSessionType() != THUNDER) {
                         sessionCrewName = session.getCrew().getCrewName();
                     }
 

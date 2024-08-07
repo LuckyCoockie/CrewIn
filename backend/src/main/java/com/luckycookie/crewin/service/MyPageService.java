@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.luckycookie.crewin.domain.enums.SessionType.THUNDER;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -63,7 +65,7 @@ public class MyPageService {
             sessionPage = switch (sessionType) {
                 case "OPEN" -> sessionRepository.findByHostAndSessionType(pageable, member, SessionType.OPEN);
                 case "STANDARD" -> sessionRepository.findByHostAndSessionType(pageable, member, SessionType.STANDARD);
-                case "THUNDER" -> sessionRepository.findByHostAndSessionType(pageable, member, SessionType.THUNDER);
+                case "THUNDER" -> sessionRepository.findByHostAndSessionType(pageable, member, THUNDER);
                 default -> sessionRepository.findAllByHost(pageable, member);
             };
         } else if (type.equals("joined")) {
@@ -74,7 +76,7 @@ public class MyPageService {
                 case "STANDARD" ->
                         memberSessionRepository.findByMemberAndIsAttendAndSessionType(pageable, member, SessionType.STANDARD);
                 case "THUNDER" ->
-                        memberSessionRepository.findByMemberAndIsAttendAndSessionType(pageable, member, SessionType.THUNDER);
+                        memberSessionRepository.findByMemberAndIsAttendAndSessionType(pageable, member, THUNDER);
                 default -> memberSessionRepository.findByMember(pageable, member);
             };
         }
@@ -83,16 +85,20 @@ public class MyPageService {
             sessions = sessionPage.getContent();
             lastPageNo = Math.max(sessionPage.getTotalPages() - 1, 0);
 
-            myPageSessionItems = sessions.stream().map(session -> MyPageSessionItem
-                    .builder()
-                    .sessionId(session.getId())
-                    .sessionName(session.getName())
-                    .startAt(session.getStartAt())
-                    .endAt(session.getEndAt())
-                    .area(session.getArea())
-                    .crewName(session.getCrew().getCrewName())
-                    .imageUrl(session.getPosterImages().stream().map(SessionPoster::getImageUrl).toList().get(0))
-                    .build()).collect((Collectors.toList()));
+            myPageSessionItems = sessions.stream().map(session -> {
+                String crewName = session.getSessionType() != THUNDER ? session.getCrew().getCrewName() : null;
+                        return MyPageSessionItem
+                                .builder()
+                                .sessionId(session.getId())
+                                .sessionName(session.getName())
+                                .startAt(session.getStartAt())
+                                .endAt(session.getEndAt())
+                                .area(session.getArea())
+                                .crewName(crewName)
+                                .imageUrl(session.getPosterImages().stream().map(SessionPoster::getImageUrl).toList().get(0))
+                                .build();
+                    }
+            ).collect((Collectors.toList()));
         }
 
         return PagingItemsResponse
@@ -108,7 +114,7 @@ public class MyPageService {
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
-        if(!member.getImageUrl().equals(updateProfileRequest.getProfileImageUrl())) {
+        if (!member.getImageUrl().equals(updateProfileRequest.getProfileImageUrl())) {
             s3Service.deleteImage(member.getImageUrl()); // 기존 이미지 삭제
         }
 
