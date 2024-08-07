@@ -49,7 +49,7 @@ export const getCrewNoticeList = async (
   dto: GetCrewNoticeListRequestDto
 ): Promise<GetCrewNoticeListResponseDto> => {
   const response = await api.get(`/crew/notice/${dto.crewId}`, {
-    params: { pageNo: dto.pageNo },
+    params: { "page-no": dto.pageNo },
   });
   return response.data;
 };
