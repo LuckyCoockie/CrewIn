@@ -19,9 +19,9 @@ public class AttendanceController {
 
     private final AttendanceService attendanceService;
 
-    @PostMapping("/start/{session-id}")
-    public ResponseEntity<BaseResponse<Void>> startAttendance(@PathVariable("session-id") String sessionId, @RequestBody StartAttendanceRequest startAttendanceRequest, @AuthenticationPrincipal CustomUser customUser) {
-        attendanceService.startAttendance();
-
-    }
+//    @PostMapping("/start/{session-id}")
+//    public ResponseEntity<BaseResponse<Void>> startAttendance(@PathVariable("session-id") String sessionId, @RequestBody StartAttendanceRequest startAttendanceRequest, @AuthenticationPrincipal CustomUser customUser) {
+//        attendanceService.startAttendance();
+//
+//    }
 }

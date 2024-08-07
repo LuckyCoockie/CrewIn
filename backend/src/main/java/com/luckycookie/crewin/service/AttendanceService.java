@@ -35,7 +35,7 @@ public class AttendanceService {
         }
 
         // 이미 시작한 세션은 또 시작 불가능
-        session.getAttendance_start()
+//        session.getAttendance_start()
 
 
         //시작 시간이 세션 시작시간 이후인지 체크
