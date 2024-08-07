@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_CREDENTIALS = credentials('docker_hub_token')
-        CREWIN_ENV = credentials('jenkins_crewin_backend.env') //secretfile 가져오기
+        CREWIN_ENV = credentials('jenkins_crewin_backend.env') // secretfile 가져오기
     }
     stages {
         stage('Load Environment Variables') {
@@ -23,6 +23,7 @@ pipeline {
                     env.MATTERMOST_CHANNEL_NAME = props.MATTERMOST_CHANNEL_NAME
                     env.MATTERMOST_WEBHOOK_URL = props.MATTERMOST_WEBHOOK_URL
                     env.DOCKER_NETWORK = props.DOCKER_NETWORK
+                    env.DEPLOY_LOG_PATH = props.DEPLOY_LOG_PATH
                 }
             }
         }
@@ -105,26 +106,30 @@ pipeline {
                                     sshTransfer(
                                         execCommand: """
                                             set -x  # 디버깅 모드 활성화
-                                            docker pull ${env.DOCKER_IMAGE}
-                                            if [[ \$(docker ps -q --filter name=${env.CONTAINER_NAME_BLUE}) ]]; then
-                                                NEW_PORT=${env.GREEN_PORT}
-                                                NEW_NAME=${env.CONTAINER_NAME_GREEN}
-                                                OLD_NAME=${env.CONTAINER_NAME_BLUE}
-                                                CURRENT_PORT=${env.BLUE_PORT}
+                                            exec > >(tee $DEPLOY_LOG_PATH) 2>&1
+                                            docker pull $DOCKER_IMAGE
+                                            container_id=\$(docker ps -q --filter name=$CONTAINER_NAME_BLUE)
+                                            echo "컨테이너 ID: \$container_id"
+                                            if [[ \$(docker ps -q --filter name=$CONTAINER_NAME_BLUE) ]]; then
+                                                NEW_PORT=$GREEN_PORT
+                                                NEW_NAME=$CONTAINER_NAME_GREEN
+                                                OLD_NAME=$CONTAINER_NAME_BLUE
+                                                CURRENT_PORT=$BLUE_PORT
                                             else
-                                                NEW_PORT=${env.BLUE_PORT}
-                                                NEW_NAME=${env.CONTAINER_NAME_BLUE}
-                                                OLD_NAME=${env.CONTAINER_NAME_GREEN}
-                                                CURRENT_PORT=${env.GREEN_PORT}
+                                                NEW_PORT=$BLUE_PORT
+                                                NEW_NAME=$CONTAINER_NAME_BLUE
+                                                OLD_NAME=$CONTAINER_NAME_GREEN
+                                                CURRENT_PORT=$GREEN_PORT
                                             fi
-                                            docker run -d --name \$NEW_NAME --network ${env.DOCKER_NETWORK} -p \$NEW_PORT:8080 ${env.DOCKER_IMAGE}
+                                            docker run -d --name \$NEW_NAME --network $DOCKER_NETWORK -p \$NEW_PORT:8080 $DOCKER_IMAGE
+
                                             sleep 10
                                             if curl -sf -m 5 http://localhost:\$NEW_PORT/health > /dev/null; then
                                                 # Update Nginx config
-                                                sed -i "s/server ${env.CONTAINER_URL}:\$NEW_PORT down;/server ${env.CONTAINER_URL}:\$NEW_PORT;/" ${env.NGINX_CONFIG_PATH}
-                                                sed -i "s/server ${env.CONTAINER_URL}:\$CURRENT_PORT;/server ${env.CONTAINER_URL}:\$CURRENT_PORT down;/" ${env.NGINX_CONFIG_PATH}
+                                                sed -i "s/server $CONTAINER_URL:\$NEW_PORT down;/server $CONTAINER_URL:\$NEW_PORT;/" $NGINX_CONFIG_PATH
+                                                sed -i "s/server $CONTAINER_URL:\$CURRENT_PORT;/server $CONTAINER_URL:\$CURRENT_PORT down;/" $NGINX_CONFIG_PATH
                                                 # Restart Nginx container
-                                                docker restart ${env.NGINX_CONTAINER_NAME}
+                                                docker restart $NGINX_CONTAINER_NAME
                                                 # Stop and remove old container
                                                 docker stop \$OLD_NAME
                                                 docker rm \$OLD_NAME
