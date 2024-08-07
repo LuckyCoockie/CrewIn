@@ -84,7 +84,7 @@ const MyProfileTemplate: React.FC = () => {
       <header>
         <MyPageHeaderOrganism />
       </header>
-      <MyPageRecordInfoOrganism profileData={profileData!} />
+      {profileData && <MyPageRecordInfoOrganism profileData={profileData!} />}
       <NavTabMolecule
         texts={texts}
         onTabClick={handleTabClick}
@@ -107,9 +107,11 @@ const MyProfileTemplate: React.FC = () => {
             />
           </div>
           <div className="my-4">
-            <MyPageMapOrganism mapsData={mapsData!} 
-            isMapsLoading={isMapsLoading}
-            isMapsError={isMapsError}/>
+            <MyPageMapOrganism
+              mapsData={mapsData!}
+              isMapsLoading={isMapsLoading}
+              isMapsError={isMapsError}
+            />
           </div>
         </>
       ) : (
