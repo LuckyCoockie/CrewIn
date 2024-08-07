@@ -265,16 +265,24 @@ public class SessionService {
         int lastPageNo = Math.max(sessionPage.getTotalPages() - 1, 0);
 
         List<SessionItem> sessionItems = sessionPage.getContent().stream().map(
-                session -> SessionItem.builder().crewName(session.getCrew().getCrewName())
-                        .sessionName(session.getName())
-                        .spot(session.getSpot())
-                        .area(session.getArea())
-                        .sessionThumbnail(session.getPosterImages().get(0).getImageUrl())
-                        .sessionType(session.getSessionType())
-                        .maxPeople(session.getMaxPeople())
-                        .sessionId(session.getId())
-                        .startAt(session.getStartAt())
-                        .build()
+                session ->
+                {
+                    String sessionCrewName = null;
+                    if(session.getSessionType() != THUNDER){
+                        sessionCrewName = session.getCrew().getCrewName();
+                    }
+
+                    return SessionItem.builder().crewName(sessionCrewName)
+                            .sessionName(session.getName())
+                            .spot(session.getSpot())
+                            .area(session.getArea())
+                            .sessionThumbnail(session.getPosterImages().get(0).getImageUrl())
+                            .sessionType(session.getSessionType())
+                            .maxPeople(session.getMaxPeople())
+                            .sessionId(session.getId())
+                            .startAt(session.getStartAt())
+                            .build();
+                }
         ).toList();
 
         return PagingItemsResponse.<SessionItem>builder()
