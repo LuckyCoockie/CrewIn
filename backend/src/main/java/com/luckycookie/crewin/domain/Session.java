@@ -71,7 +71,7 @@ public class Session {
 
     private Double lng;
 
-    private LocalDateTime attendance_start;
+    private LocalDateTime attendanceStart;
 
     public void updateSession(SessionRequest.UpdateSessionRequest updateSessionRequest, Course course) {
         this.course = course;
