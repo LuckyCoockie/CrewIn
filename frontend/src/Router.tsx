@@ -34,6 +34,7 @@ import MySessionPage from "./pages/session/MySessionPage.tsx";
 import MyProfilePage from "./pages/MyProfilePage.tsx";
 import PeopleProfilePage from "./pages/PeopleProfilePage.tsx";
 import CrewRedirectPage from "./pages/crew/CrewRedirectPage.tsx";
+import CrewNoticeDetailPage from "./pages/CrewNoticeDetailPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -82,6 +83,10 @@ export const router = createBrowserRouter([
                 element: <CaptainPovCrewMemberSearchPage />,
               },
               { path: "invite", element: <CrewInvitePage /> },
+              {
+                path: "detail/:crewId/notice/:noticeId",
+                element: <CrewNoticeDetailPage />,
+              },
             ],
           },
           { path: "mypage/session/:type", element: <MySessionPage /> },
