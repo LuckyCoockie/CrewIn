@@ -8,8 +8,8 @@ import {
 } from "../../apis/api/crewinvite";
 import { getMyCrews } from "../../apis/api/mycrew";
 import BackHeaderMediumOrganism from "../../components/organisms/BackHeaderMediumOrganism";
-import debounce from "lodash.debounce";
 import { fetchAllMembers, MemberDto } from "../../apis/api/usersearch";
+import { debounce } from "lodash";
 
 const CrewInvitePage: React.FC = () => {
   const [members, setMembers] = useState<CrewMemberDto[]>([]);
