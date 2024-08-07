@@ -14,9 +14,7 @@ public class ImageRequest {
     @AllArgsConstructor // 모든 필드 값을 파라미터로 받는 생성자 생성
     @Getter
     public enum ImageExtension {
-        JPEG("jpeg"),
-        JPG("jpg"),
-        PNG("png");
+        WEBP("webp");
 
         @JsonValue // JSON 직렬화
         private final String uploadExtension;
