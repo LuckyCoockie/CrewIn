@@ -49,28 +49,40 @@ const CrewNoticeOrganism: React.FC<CrewNoticeOrganismProps> = ({
   const dataConvert = (date: string) => {
     return date.slice(0, 10);
   };
+
   return (
     <main>
-      {noticeData?.items.map((notice, index) => (
-        <div key={index} className="flex justify-center items-center border-b">
-          <NoticeMolecule
-            text={notice.position}
-            title={notice.title}
-            date={dataConvert(notice.createdAt)}
-          />
-          <EditDeleteDropdownOrganism
-            type="NOTICE"
-            idData={notice.noticeId}
-            idData2={crewId}
-          />
+      {noticeData?.items.length === 0 ? (
+        <div className="text-gray-300 w-full text-center mt-4">
+          등록된 공지사항이 없습니다.
         </div>
-      ))}
-      <PaginationMolecule
-        total={totalPages}
-        page={page}
-        btn={5}
-        setPage={setPage}
-      />
+      ) : (
+        <>
+          {noticeData?.items.map((notice, index) => (
+            <div
+              key={index}
+              className="flex justify-center items-center border-b"
+            >
+              <NoticeMolecule
+                text={notice.position}
+                title={notice.title}
+                date={dataConvert(notice.createdAt)}
+              />
+              <EditDeleteDropdownOrganism
+                type="NOTICE"
+                idData={notice.noticeId}
+                idData2={crewId}
+              />
+            </div>
+          ))}
+          <PaginationMolecule
+            total={totalPages}
+            page={page}
+            btn={5}
+            setPage={setPage}
+          />
+        </>
+      )}
       {isUserCrewMember && (
         <FloatingActionButton onClick={handleRouter}>
           <Plus />

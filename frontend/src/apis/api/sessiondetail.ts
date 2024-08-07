@@ -80,9 +80,8 @@ export const getSessionAlbum = async (
   sessionId: number,
   pageNo: number
 ): Promise<SessionAlbumResponseDto> => {
-
   const response = await api.get(`/session/detail/gallery/${sessionId}`, {
-    params: { pageNo },
+    params: { "page-no": pageNo },
   });
 
   return response.data;

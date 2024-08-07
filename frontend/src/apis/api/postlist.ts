@@ -24,7 +24,7 @@ export const getPostList = async (
 ): Promise<GetPostListResponseDto> => {
   try {
     const response = await api.get("/post/home", {
-      params: { pageNo: pageNo },
+      params: { "page-no": pageNo },
     });
 
     if (response.status === 200) {

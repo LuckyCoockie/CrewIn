@@ -79,7 +79,8 @@ const SessionCreateOrganism: React.FC = () => {
   const [selectedMinutes, setSelectedMinutes] = useState<number>();
   const [userRole, setUserRole] = useState<string>("");
   const [hasCrew, setHasCrew] = useState<boolean>(false);
-  const [crewId, setCrewId] = useState<number>(0);
+  const [crewId, setCrewId] = useState<number | undefined>(undefined);
+  const [mapId, setMapId] = useState<number>(0);
   const [FilteredCrews, setFilteredCrews] = useState<CrewDto[]>([]);
 
   const {
@@ -100,12 +101,15 @@ const SessionCreateOrganism: React.FC = () => {
   });
   const { data: crewData } = useQuery("myCrews", getMyCrews);
   const { data: mapData } = useQuery("myMaps", getMapList);
-  console.log(mapData);
 
   useEffect(() => {
+    // 시작 시간을 현재 시간보다 30분 이후로 설정
+    const currentDate = new Date();
+    currentDate.setMinutes(currentDate.getMinutes() + 30);
+    setValue("sessionstart", currentDate);
     if (mapData && mapData.length === 0) {
       window.alert("지도를 생성해주세요");
-      return navigate(`/course/create`);
+      return navigate(`/profile`);
     }
 
     if (crewData && crewData.crews.length > 0) {
@@ -151,10 +155,9 @@ const SessionCreateOrganism: React.FC = () => {
         return "OPEN";
       }
     };
-
     const submitData: SessionCreateDto = {
-      courseId: 6,
-      crewId: crewId === 0 ? null : crewId,
+      crewId: crewId,
+      courseId: mapId,
       sessionType: formType(data.sessiontype)!,
       name: data.sessiontitle,
       images: urls!,
@@ -167,7 +170,13 @@ const SessionCreateOrganism: React.FC = () => {
     };
     console.log(submitData);
 
-    return postCreateSession(submitData); // 제출 API 호출
+    return postCreateSession(submitData) // 제출 API 호출
+      .then(() => {
+        navigate(`/session?status=active`);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleMinutesChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -180,6 +189,13 @@ const SessionCreateOrganism: React.FC = () => {
   const watchedMinutes = watch("sessionpaceminutes", selectedMinutes);
   const watchedSessionStart = watch("sessionstart");
   const watchedSessionEnd = watch("sessionend");
+  const watchedSessionType = watch("sessiontype");
+
+  useEffect(() => {
+    if (watchedSessionType === "번개런") {
+      setCrewId(undefined);
+    }
+  }, [watchedSessionType]);
 
   useEffect(() => {
     if (watchedSessionStart) {
@@ -222,7 +238,9 @@ const SessionCreateOrganism: React.FC = () => {
                 />
               )}
             />
-            {hasCrew && (userRole === "CAPTAIN" || userRole === "PACER") && (
+          </div>
+          {watchedSessionType !== "번개런" && (
+            <div className="w-2/5 me-auto">
               <InputDropdonwTypeMolecule
                 id="crewId"
                 title="크루 선택"
@@ -237,23 +255,27 @@ const SessionCreateOrganism: React.FC = () => {
                 }}
                 hasError={false}
               />
-            )}
-            <InputDropdonwTypeMolecule
-              id="mapId"
-              title="지도 선택"
-              text=""
-              options={mapData!.map((map) => ({
-                label: map.name,
-                value: map.id,
-              }))}
-              value={crewId}
-              onChange={(e) => {
-                setCrewId(Number(e.target.value));
-              }}
-              hasError={false}
-            />
-          </div>
-          <div className="w-7/12">
+            </div>
+          )}
+          {mapData && (
+            <div className="w-2/5">
+              <InputDropdonwTypeMolecule
+                id="mapId"
+                title="지도 선택"
+                text=""
+                options={mapData.map((map) => ({
+                  label: map.name,
+                  value: map.id,
+                }))}
+                value={mapId}
+                onChange={(e) => {
+                  setMapId(Number(e.target.value));
+                }}
+                hasError={false}
+              />
+            </div>
+          )}
+          <div className="w-full">
             <Controller
               name="sessiontitle"
               control={control}
@@ -269,23 +291,7 @@ const SessionCreateOrganism: React.FC = () => {
               )}
             />
           </div>
-          <div className="ms-auto w-3/12 me-auto">
-            <Controller
-              name="sessionmembers"
-              control={control}
-              render={({ field }) => (
-                <InputNumberTypeMolecule
-                  id="sessionmembers"
-                  title="참가 인원"
-                  placeholder="인원 수"
-                  {...field}
-                  error={errors.sessionmembers?.message}
-                  hasError={!!errors.sessionmembers}
-                />
-              )}
-            />
-          </div>
-          <div className="w-1/3 me-4">
+          <div className="w-1/4 me-4">
             <Controller
               name="sessionpaceminutes"
               control={control}
@@ -309,7 +315,7 @@ const SessionCreateOrganism: React.FC = () => {
               )}
             />
           </div>
-          <div className="w-1/3">
+          <div className="w-1/4 me-4">
             <Controller
               name="sessionpaceseconds"
               control={control}
@@ -329,6 +335,22 @@ const SessionCreateOrganism: React.FC = () => {
                   {...field}
                   hasError={!!errors.sessionpaceseconds}
                   disabled={!watchedMinutes}
+                />
+              )}
+            />
+          </div>
+          <div className="w-1/4">
+            <Controller
+              name="sessionmembers"
+              control={control}
+              render={({ field }) => (
+                <InputNumberTypeMolecule
+                  id="sessionmembers"
+                  title="참가 인원"
+                  placeholder="인원 수"
+                  {...field}
+                  error={errors.sessionmembers?.message}
+                  hasError={!!errors.sessionmembers}
                 />
               )}
             />
@@ -376,7 +398,7 @@ const SessionCreateOrganism: React.FC = () => {
               />
             )}
           />
-          <div className="w-5/12">
+          <div className="w-5/12 me-auto">
             <Controller
               name="sessionstart"
               control={control}
@@ -390,7 +412,7 @@ const SessionCreateOrganism: React.FC = () => {
               )}
             />
           </div>
-          <div className="ms-auto me-auto w-5/12">
+          <div className="w-5/12">
             <Controller
               name="sessionend"
               control={control}
