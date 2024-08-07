@@ -10,7 +10,7 @@ export const usePWAPrompt = ({ onAccepted, onReject }: OwnProps) => {
   const isInstalled = useMemo(() => deferredPrompt === null, [deferredPrompt]);
   const isPWA = window.matchMedia("(display-mode: standalone)").matches;
   const isMobile = useMemo(() => {
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    const userAgent = navigator.userAgent || navigator.vendor;
     return /android|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile/i.test(
       userAgent
     );
