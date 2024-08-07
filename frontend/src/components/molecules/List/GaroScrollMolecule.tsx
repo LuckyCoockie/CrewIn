@@ -42,7 +42,7 @@ const GaroScrollMolecule = <T,>({
           <ListButtonMolecule
             src={crewlistplus}
             alt="plus"
-            text="더보기"
+            text=""
             router={router}
             routerId={routerId}
           />
