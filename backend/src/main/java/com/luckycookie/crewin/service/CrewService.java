@@ -5,10 +5,7 @@ import com.luckycookie.crewin.domain.enums.NotificationType;
 import com.luckycookie.crewin.domain.enums.Position;
 import com.luckycookie.crewin.domain.enums.PostType;
 import com.luckycookie.crewin.dto.CrewRequest;
-import com.luckycookie.crewin.dto.CrewRequest.CreateCrewNoticeRequest;
-import com.luckycookie.crewin.dto.CrewRequest.CreateCrewRequest;
-import com.luckycookie.crewin.dto.CrewRequest.CrewMemberRequest;
-import com.luckycookie.crewin.dto.CrewRequest.CrewReplyMemberRequest;
+import com.luckycookie.crewin.dto.CrewRequest.*;
 import com.luckycookie.crewin.dto.CrewResponse.*;
 import com.luckycookie.crewin.dto.PostResponse;
 import com.luckycookie.crewin.dto.base.PagingItemsResponse;
@@ -371,7 +368,7 @@ public class CrewService {
     }
 
     // 크루 권한 수정 (권한 부여)
-    public void updateMemberCrewPosition(CrewRequest.UpdateCrewPositionRequest updateCrewPositionRequest, CustomUser customUser) {
+    public void updateMemberCrewPosition(UpdateCrewPositionRequest updateCrewPositionRequest, CustomUser customUser) {
         // 현재 사용자가 CAPTAIN 일때만 가능함 (Exception 처리 해주기)
 
         // 현재 사용자 정보 가져오기
@@ -384,7 +381,7 @@ public class CrewService {
         Position position = memberCrewRepository.findPositionByMemberAndCrew(member, crew).orElseThrow(CrewUnauthorizedException::new);
 
         // 권한을 부여해야 할 사용자
-        MemberCrew memberCrew = memberCrewRepository.findByMemberAndCrew(member, crew).orElseThrow(NotFoundMemberCrewException::new);
+        MemberCrew memberCrew = memberCrewRepository.findByMemberAndCrew(memberRepository.findById(updateCrewPositionRequest.getMemberId()).orElseThrow(NotFoundMemberCrewException::new), crew).orElseThrow(NotFoundMemberCrewException::new);
 
         // CAPTAIN 일때만
         if (position == Position.CAPTAIN) {
@@ -493,6 +490,33 @@ public class CrewService {
         }
 
     }
+
+    // CAPTAIN 승계
+    public void updateCrewCaptain(UpdateCrewPositionRequest updateCrewPositionRequest, CustomUser customUser) {
+
+        // 내가 CAPTAIN 이어야 승계 가능
+        Member admin = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+        Crew crew = crewRepository.findById(updateCrewPositionRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
+        MemberCrew adminMemberCrew = memberCrewRepository.findByMemberAndCrew(admin, crew).orElseThrow(NotFoundMemberCrewException::new);
+
+        // 요청한 사람의 position
+        Position adminPosition = memberCrewRepository.findByMemberAndCrew(admin, crew).orElseThrow(NotFoundMemberCrewException::new).getPosition();
+
+        // 권한이 CAPTAIN 으로 바뀔 사용자
+        Member member = memberRepository.findById(updateCrewPositionRequest.getMemberId()).orElseThrow(NotFoundMemberException::new);
+        MemberCrew memberCrew = memberCrewRepository.findByMemberAndCrew(member, crew).orElseThrow(NotFoundMemberCrewException::new);
+
+        // CAPTAIN 일때만
+        if (adminPosition == Position.CAPTAIN) {
+            // 권한 교환
+            memberCrew.updatePosition(Position.CAPTAIN); // PACER 나 MEMBER 가 CAPTAIN 으로
+            adminMemberCrew.updatePosition(updateCrewPositionRequest.getPosition()); // CAPTAIN 은 PACER 나 MEMBER 로
+        } else {
+            throw new CrewUnauthorizedException();
+        }
+
+    }
+
 
     // 크루 강퇴
     public void deleteCrewMember(CustomUser customUser, CrewMemberRequest crewMemberRequest) {

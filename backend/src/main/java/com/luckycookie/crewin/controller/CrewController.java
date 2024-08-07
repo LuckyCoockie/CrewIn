@@ -154,6 +154,13 @@ public class CrewController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루원을 강퇴하는데 성공했습니다."));
     }
 
+    // 캡틴 승계
+    @PostMapping("/member/captain")
+    public ResponseEntity<BaseResponse<Void>> updateCrewCaptain(@AuthenticationPrincipal CustomUser customUser, @RequestBody UpdateCrewPositionRequest updateCrewPositionRequest) {
+        crewService.updateCrewCaptain(updateCrewPositionRequest, customUser);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "권한을 변경하는데 성공했습니다."));
+    }
+
     // 크루 공지 상세 조회
     @GetMapping("/notice")
     public ResponseEntity<BaseResponse<PostResponse.PostItem>> getNoticeDetail(
