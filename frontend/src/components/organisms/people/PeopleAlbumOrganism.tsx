@@ -11,7 +11,7 @@ const PeopleAlbumOrganism: React.FC = () => {
   const fetchGallery = async (
     pageNo: number
   ): Promise<PageNationData<MyGalleryDto>> => {
-    return getPeopleGallery(pageNo - 1, Number(memberId));
+    return getPeopleGallery(pageNo, Number(memberId));
   };
 
   return (
@@ -24,6 +24,7 @@ const PeopleAlbumOrganism: React.FC = () => {
             src={data.thumbnailImage}
             alt={`gallery-item-${data.postId}`}
             className="w-full h-full"
+            style={{ border: "1px solid rgba(255, 0, 0, 0)" }}
           />
         )}
         className="grid grid-cols-3"

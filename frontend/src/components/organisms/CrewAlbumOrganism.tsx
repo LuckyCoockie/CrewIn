@@ -14,7 +14,8 @@ const CrewAlbumOrganism: React.FC<PhotosProps> = ({ fetchgalleryData }) => {
             src={photo.thumbnailImage}
             alt="photo"
             key={index}
-            className="w-1/3 h-1/3 p-0.5"
+            className="w-1/3 h-1/3"
+            style={{ border: "1px solid rgba(255, 0, 0, 0)" }}
           />
         ))
       ) : (

@@ -105,9 +105,7 @@ const MyProfileTemplate: React.FC = () => {
           </div>
         </>
       ) : (
-        <div>
-          <MyPageAlbumOrganism />
-        </div>
+        <MyPageAlbumOrganism />
       )}
     </>
   );
