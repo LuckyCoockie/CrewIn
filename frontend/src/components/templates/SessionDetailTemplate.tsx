@@ -14,12 +14,7 @@ import NavTabMolecule from "../molecules/Tab/NavTabMolecule";
 import SessionAlbumOrganism from "../organisms/SessionAlbumOrganism";
 import { PageNationData } from "../../util/paging/type";
 
-// 스피너 컴포넌트
-const Spinner = () => (
-  <div className="flex justify-center items-center h-full">
-    <div className="loader">Loading...</div>
-  </div>
-);
+import { useParams } from "react-router";
 
 type OwnDetailProps = {
   fetchDetailData: (dto: GetSessionInfoRequestDto) => Promise<SessionDetailDto>;
@@ -28,21 +23,18 @@ type OwnDetailProps = {
 const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
   fetchDetailData,
 }) => {
-  const [sessionId] = useState<number>(1);
+  const { sessionId } = useParams<{ sessionId: string }>();
   const [currentTab, setCurrentTab] = useState<string>("세션정보");
 
-  const {
-    data: detailData,
-    isLoading: detailLoading,
-    error: detailError,
-  } = useQuery(["detailData", { sessionId }], () =>
-    fetchDetailData({ sessionId })
+  const { data: detailData, error: detailError } = useQuery(
+    ["detailData", { sessionId }],
+    () => fetchDetailData({ sessionId: Number(sessionId) })
   );
 
   const fetchAlbumData = async (
     page: number
   ): Promise<PageNationData<GetSessionAlbumDto>> => {
-    return getSessionAlbum(sessionId, page - 1);
+    return getSessionAlbum(Number(sessionId), page - 1);
   };
 
   if (detailError) console.error("detailError", detailError);
@@ -66,32 +58,24 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
           />
         </div>
       </header>
-      <div className="">
-        {detailLoading ? (
-          <Spinner />
-        ) : (
-          detailData && (
-            <>
-              {isSessionStarted && (
-                <NavTabMolecule
-                  texts={tabs}
-                  onTabClick={setCurrentTab}
-                  currentTab={currentTab}
-                />
-              )}
-              {currentTab === "세션정보" && (
-                <SessionDetailOrganism detailData={detailData} />
-              )}
-              {currentTab === "사진첩" && (
-                <SessionAlbumOrganism
-                  sessionId={detailData.sessionId}
-                  fetchAlbumData={fetchAlbumData}
-                />
-              )}
-            </>
-          )
+      <>
+        {isSessionStarted && (
+          <NavTabMolecule
+            texts={tabs}
+            onTabClick={setCurrentTab}
+            currentTab={currentTab}
+          />
         )}
-      </div>
+        {currentTab === "세션정보" && detailData && (
+          <SessionDetailOrganism detailData={detailData} />
+        )}
+        {currentTab === "사진첩" && detailData && (
+          <SessionAlbumOrganism
+            sessionId={detailData.sessionId}
+            fetchAlbumData={fetchAlbumData}
+          />
+        )}
+      </>
     </>
   );
 };
