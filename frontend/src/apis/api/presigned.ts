@@ -29,7 +29,6 @@ export const uploadImage = async (file: File) => {
   const { presignedUrl, imageUrl } = await requestPresignedUrl({
     imageExtension: "webp",
   });
-  console.log(presignedUrl, imageUrl);
   await uploadImageToS3(file, presignedUrl);
   return imageUrl;
 };
