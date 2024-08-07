@@ -46,15 +46,17 @@ const CrewNoticeOrganism: React.FC<CrewNoticeOrganismProps> = ({
   }
 
   const totalPages = (noticeData?.lastPageNo ?? 0) + 1;
-
+  const dataConvert = (date: string) => {
+    return date.slice(0, 10);
+  };
   return (
     <main>
       {noticeData?.items.map((notice, index) => (
-        <div key={index} className="flex justify-center items-center">
+        <div key={index} className="flex justify-center items-center border-b">
           <NoticeMolecule
             text={notice.position}
             title={notice.title}
-            date={notice.createdAt}
+            date={dataConvert(notice.createdAt)}
           />
           <EditDeleteDropdownOrganism
             type="NOTICE"

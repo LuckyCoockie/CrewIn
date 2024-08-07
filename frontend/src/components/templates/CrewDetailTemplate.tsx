@@ -10,7 +10,6 @@ import CrewHeaderBarOrganism from "../organisms/CrewHeaderBarOrganism";
 import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
 
 import GroupsButton from "../atoms/Button/GroupsButton";
-import MemberPlusButton from "../atoms/Button/MemberPlusButton";
 import { getCrewInfo, getCrewGalleryList } from "../../apis/api/crewdetail";
 import { getMyCrews } from "../../apis/api/mycrew";
 import { useParams } from "react-router";
@@ -149,14 +148,16 @@ const CrewDetailTemplate: React.FC = () => {
           text={infoData ? infoData.crewName : "Loading..."}
         />
         <div className="flex ms-auto">
-          {isUserCrewMember && <GroupsButton userPosition={userPosition!}/>}
+          {isUserCrewMember && <GroupsButton userPosition={userPosition!} />}
           {isUserCrewMember && userPosition === "CAPTAIN" && (
             <>
-              <MemberPlusButton />
-              <EditDeleteDropdownOrganism
-                type="CREW"
-                idData={infoData?.crewId}
-              />
+              <div className="ms-2">
+                <EditDeleteDropdownOrganism
+                  type="CREW"
+                  idData={infoData?.crewId}
+                  isCrew={true}
+                />
+              </div>
             </>
           )}
         </div>
