@@ -52,10 +52,12 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
         />
         <div className="flex ms-auto">
           <AttendanceButton />
-          <EditDeleteDropdownOrganism
-            type="SESSION"
-            idData={detailData?.sessionId}
-          />
+          {detailData?.isSessionHost && (
+            <EditDeleteDropdownOrganism
+              type="SESSION"
+              idData={detailData?.sessionId}
+            />
+          )}
         </div>
       </header>
       <>
@@ -67,7 +69,10 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
           />
         )}
         {currentTab === "세션정보" && detailData && (
-          <SessionDetailOrganism detailData={detailData} />
+          <SessionDetailOrganism
+            detailData={detailData}
+            sessionId={detailData?.sessionId}
+          />
         )}
         {currentTab === "사진첩" && detailData && (
           <SessionAlbumOrganism
