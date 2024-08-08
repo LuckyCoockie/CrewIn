@@ -44,6 +44,8 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
     ? new Date(detailData.startAt) < new Date()
     : false;
 
+  if (!sessionId) return;
+
   return (
     <>
       <header>

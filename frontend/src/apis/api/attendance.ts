@@ -59,12 +59,12 @@ export const getAttendanceMemberList = async (
 
 export type StartAttendanceRequestDto = {
   sessionId: number;
+  lat: number;
+  lng: number;
 };
 
-export const startAttendance = async (
-  dto: GetAttendanceMemberListRequestDto
-) => {
-  await api.post(`/attendance/start/${dto.sessionId}`);
+export const startAttendance = async (dto: StartAttendanceRequestDto) => {
+  await api.post(`/attendance/start/${dto.sessionId}`, dto);
 };
 
 export type ChangeAttendRequestDto = {

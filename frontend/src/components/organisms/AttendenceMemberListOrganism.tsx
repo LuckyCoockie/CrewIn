@@ -2,17 +2,27 @@ import { useQuery } from "react-query";
 import { AxiosError } from "axios";
 import ErrorResponseDto from "../../apis/utils/errorCode/ErrorResponseDto";
 import qs from "query-string";
-import { AttendanceMemberDto } from "../../apis/api/attendance";
+import {
+  AttendanceMemberDto,
+  ChangeAttendRequestDto,
+} from "../../apis/api/attendance";
 import MemberListItem from "../molecules/List/MemberListMolecule";
+import AttendenceButton from "../molecules/AttendenceButton";
 
 type OwnProps<T> = {
   fetchData: (props: T) => Promise<AttendanceMemberDto[]>;
+  onAttendanceChange: (dto: ChangeAttendRequestDto) => Promise<void>;
+  isSessionHost: boolean;
 };
 
-const AttendenceMemberListOrganism = <T,>({ fetchData }: OwnProps<T>) => {
+const AttendenceMemberListOrganism = <T,>({
+  fetchData,
+  onAttendanceChange,
+  isSessionHost,
+}: OwnProps<T>) => {
   const query = qs.parse(location.search) as T;
 
-  const { data, isError } = useQuery<
+  const { data: memberList, isError } = useQuery<
     AttendanceMemberDto[],
     AxiosError<ErrorResponseDto>
   >([`session`, query], () => fetchData(query), {
@@ -20,20 +30,29 @@ const AttendenceMemberListOrganism = <T,>({ fetchData }: OwnProps<T>) => {
     refetchOnMount: true,
   });
 
-  if (isError || !data) return "데이터를 불러오지 못했습니다.";
+  if (isError || !memberList) return "데이터를 불러오지 못했습니다.";
 
   return (
-    <div className="w-full">
-      {data.map((item, index) => (
-        <MemberListItem key={index} {...item}>
-          <div className="flex gap-2">
-            <button className="border border-gray-400 w-20 h-10 rounded-md text-sm">
-              초대하기
-            </button>
-          </div>
+    <>
+      {memberList.map((member, index) => (
+        <MemberListItem key={index} {...member}>
+          {isSessionHost ? (
+            <AttendenceButton
+              initPresent={false}
+              isAuto={true}
+              onClick={(state) => {
+                onAttendanceChange({
+                  attend: state,
+                  memberSessionId: member.memberSessionId,
+                });
+              }}
+            />
+          ) : (
+            <></>
+          )}
         </MemberListItem>
       ))}
-    </div>
+    </>
   );
 };
 
