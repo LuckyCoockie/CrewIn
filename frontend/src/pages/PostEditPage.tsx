@@ -75,8 +75,11 @@ const PostEditPage: React.FC = () => {
         postImages,
       };
 
+      console.log(postId);
+      console.log(updateData);
       const response = await updatePost(Number(postId), updateData);
-      if (response.statusCode === 200) {
+
+      if (response.status === 200) {
         navigate("/home");
       } else {
         alert(response.message);

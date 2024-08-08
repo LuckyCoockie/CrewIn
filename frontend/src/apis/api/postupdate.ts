@@ -8,7 +8,7 @@ export type UpdatePostRequestDto = {
 };
 
 export type UpdatePostResponseDto = {
-  statusCode: number;
+  status: number;
   message: string;
 };
 
@@ -18,6 +18,7 @@ export const updatePost = async (
 ): Promise<UpdatePostResponseDto> => {
   try {
     const response = await api.put(`/post/${id}`, updateData);
+    console.log(response);
     return response.data;
   } catch (error) {
     console.error("게시글 수정 오류:", error);

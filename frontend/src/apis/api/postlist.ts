@@ -3,7 +3,7 @@ import api from "../index";
 
 export type PostDto = {
   id: number;
-  authorName: string;
+  authorName: string; //닉네임
   authorId: number;
   content: string;
   heartCount: number;
