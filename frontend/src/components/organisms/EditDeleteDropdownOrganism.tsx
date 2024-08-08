@@ -50,18 +50,17 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({
   };
 
   const handleDelete = async () => {
+    setIsLoader(true);
     setIsDropdownOpen(false);
     // 삭제 로직 구현
     try {
       if (type === "CREW") {
-        setIsLoader(true);
         await deleteCrew(idData!);
+        navigate(`/crew`);
       } else if (type === "SESSION") {
-        setIsLoader(true);
         await deleteSession(idData!);
-        navigate(-1);
+        navigate(`/session?status=active`);
       } else if (type === "NOTICE") {
-        setIsLoader(true);
         await deleteNotice(idData!);
         navigate(`/crew/detail/${idData2}`);
       }

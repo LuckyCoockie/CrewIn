@@ -104,8 +104,21 @@ export type ParticipateSessionRequestDto = {
 export const participateSession = async (
   dto: ParticipateSessionRequestDto
 ): Promise<void> => {
-  console.log("참가신청 완료");
-
   const response = await api.post(`/session/${dto}`);
+  console.log("참가 신청 완료");
+  return response.data;
+};
+
+// 세션 취소
+export type CancelSEssionRequestDto = {
+  sessionId: number;
+};
+
+export const cancelSession = async (
+  sessionId: CancelSEssionRequestDto
+): Promise<void> => {
+  const response = await api.delete(`session/${sessionId}`);
+  console.log("참가 취소 완료");
+
   return response.data;
 };

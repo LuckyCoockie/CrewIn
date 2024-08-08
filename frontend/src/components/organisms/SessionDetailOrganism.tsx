@@ -8,6 +8,7 @@ import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import {
   SessionDetailDto,
   participateSession,
+  cancelSession,
 } from "../../apis/api/sessiondetail";
 
 type SessionDetailOrganismProps = {
@@ -73,6 +74,9 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
   const handleParticipate = () => {
     participateSession({ sessionId });
   };
+  const handleCancle = () => {
+    cancelSession({ sessionId });
+  };
 
   return (
     <>
@@ -107,10 +111,17 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
         <DetailInfoMolecule title="코스" content={area} />
         <DetailInfoMolecule title="내용" content={content} />
         <div className="flex justify-center items-center">
-          <img src={courseThumbnail} alt="courseThumbnail" />
+          <img
+            src={courseThumbnail}
+            alt="courseThumbnail"
+            className="m-4 w-2/3"
+          />
         </div>
         {!isSessionHost && !isSessionStarted && (
           <LargeAbleButton onClick={handleParticipate} text="참가 신청" />
+        )}
+        {!isSessionHost && isSessionStarted && (
+          <LargeAbleButton onClick={handleCancle} text="참가 취소" />
         )}
       </main>
     </>
