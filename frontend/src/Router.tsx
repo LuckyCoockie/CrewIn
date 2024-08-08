@@ -36,6 +36,7 @@ import PeopleProfilePage from "./pages/PeopleProfilePage.tsx";
 import CrewRedirectPage from "./pages/crew/CrewRedirectPage.tsx";
 import AttendancePage from "./pages/Attendance/AttendancePage.tsx";
 import CrewNoticeDetailPage from "./pages/CrewNoticeDetailPage.tsx";
+import CourseDetailPage from "./pages/course/CourseDetailPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -114,6 +115,7 @@ export const router = createBrowserRouter([
                 path: "create",
                 element: <CourseCreatePage />,
               },
+              { path: ":courseId", element: <CourseDetailPage /> },
               {
                 path: ":courseId/edit",
                 element: <CourseEditPage />,
