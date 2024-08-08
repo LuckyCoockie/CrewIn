@@ -52,7 +52,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
         />
         <div className="flex ms-auto">
           <AttendanceButton />
-          {detailData?.isSessionHost && (
+          {detailData?.isSessionHost && !isSessionStarted && (
             <EditDeleteDropdownOrganism
               type="SESSION"
               idData={detailData?.sessionId}

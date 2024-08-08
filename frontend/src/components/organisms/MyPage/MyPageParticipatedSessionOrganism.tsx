@@ -20,12 +20,25 @@ const MyPageParticipatedSessionOrganism: React.FC<
   isParticipatedSessionsLoading,
   isParticipatedSessionsError,
 }) => {
+  const convertText = (startAt: string, endAt: string) => {
+    const now = new Date();
+    const startAtDate = new Date(startAt);
+    const endAtDate = new Date(endAt);
+
+    if (now < startAtDate) {
+      return "진행 예정";
+    } else if (now >= startAtDate && now <= endAtDate) {
+      return "진행중";
+    } else {
+      return "종료";
+    }
+  };
   return (
     <>
       <div className="flex items-center mb-4">
         <MediumTitleMolecule text="최근 참가한 세션" />
         {/* 전체 리스트로 이동 */}
-        <IntoArrowButton router="" />
+        <IntoArrowButton router="/mypage/session/joined" />
       </div>
       {!isParticipatedSessionsError ? (
         !isParticipatedSessionsLoading && (
@@ -37,7 +50,7 @@ const MyPageParticipatedSessionOrganism: React.FC<
                 key={index}
                 src={data.imageUrl}
                 alt={data.sessionName}
-                text={data.sessionName}
+                text={convertText(data.startAt, data.endAt)}
                 router="session"
                 routerId={data.sessionId}
               />

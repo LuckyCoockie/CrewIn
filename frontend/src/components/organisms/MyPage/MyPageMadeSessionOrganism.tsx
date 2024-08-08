@@ -37,7 +37,7 @@ const MyPageMadeSessionOrganism: React.FC<MyPageMadeSessionOrganismProps> = ({
       <div className="flex items-center mb-4">
         <MediumTitleMolecule text="최근 생성한 세션" />
         {/* 전체 리스트로 이동 */}
-        <IntoArrowButton router="" />
+        <IntoArrowButton router="/mypage/session/created" />
       </div>
       {!isMadeSessionsError ? (
         !isMadeSessionsLoading && (
