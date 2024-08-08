@@ -173,7 +173,7 @@ pipeline {
                 def formattedCommits = allCommits.split('\n').collect { "• ${it}" }.join('\n')
 
                 def message = """
-                    #### BE 빌드 시작 : ${Commit_Message}
+                    #### BE ${Status_Text} : ${Commit_Message}
                     **빌드 번호** ${env.JOB_NAME} #${env.BUILD_NUMBER}
                     **브랜치:** ${env.GIT_BRANCH}
                     **작성자:** ${Author_ID} (${Author_Name})
