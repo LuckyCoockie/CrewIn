@@ -1,31 +1,42 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useParams, useLocation } from "react-router-dom";
 import { ReactComponent as Searchbox } from "../../assets/icons/searchbox.svg";
 import { ReactComponent as CrewinLogo } from "../../assets/icons/crewinlogo.svg";
 import {
   searchInviteMember,
   SearchInviteMemberResponseDto,
   CrewMemberDto,
-} from "../../apis/api/crewinvite";
+} from "../../apis/api/crewsearch";
 import { getMyCrews } from "../../apis/api/mycrew";
 import BackHeaderMediumOrganism from "../../components/organisms/BackHeaderMediumOrganism";
-import { fetchAllMembers, MemberDto } from "../../apis/api/usersearch";
-import { debounce } from "lodash";
+import debounce from "lodash.debounce";
+import {
+  inviteCrewMember,
+  CrewInviteRequestDto,
+  CrewInviteResponseDto,
+} from "../../apis/api/crewinvite";
 
 const CrewInvitePage: React.FC = () => {
+  const { crewId } = useParams<{ crewId: string }>();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const initialQuery = queryParams.get("query") || "";
+
   const [members, setMembers] = useState<CrewMemberDto[]>([]);
-  const [allUsers, setAllUsers] = useState<MemberDto[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [query, setQuery] = useState<string>("");
-  const [crewId, setCrewId] = useState<number | null>(null);
+  const [, setCrewId] = useState<number | null>(null);
+  const [query, setQuery] = useState<string>(initialQuery);
   const [searching, setSearching] = useState<boolean>(false);
   const [, setShowDropdown] = useState<boolean>(false);
 
   useEffect(() => {
+    if (!crewId) return;
+
     const fetchMyCrews = async () => {
       try {
         const response = await getMyCrews();
-        console.log("My Crews Response:", response); // 응답 로그 추가
-        if (response.crews.length > 0) {
+        console.log("My Crews response data:", response);
+        if (response.crews.length > 0 && !crewId) {
           setCrewId(response.crews[0].crewId);
         }
       } catch (error) {
@@ -36,23 +47,23 @@ const CrewInvitePage: React.FC = () => {
     };
 
     fetchMyCrews();
-  }, []);
+  }, [crewId]);
 
   useEffect(() => {
-    if (crewId === null) return;
+    if (!crewId) return;
 
     const fetchMembers = async () => {
       setSearching(true);
       try {
         const response: SearchInviteMemberResponseDto =
           await searchInviteMember({
-            crewId,
-            query,
+            crewId: parseInt(crewId, 10),
+            query: query.trim() === "" ? "" : query,
           });
-        console.log("Search Invite Member Response:", response); // 응답 로그 추가
+        console.log("Search Invite Member response:", response);
         setMembers(response.items);
       } catch (error) {
-        console.error("멤버 검색 오류:", error);
+        console.error("Search Invite Member error:", error);
       } finally {
         setSearching(false);
       }
@@ -61,29 +72,25 @@ const CrewInvitePage: React.FC = () => {
     fetchMembers();
   }, [crewId, query]);
 
-  useEffect(() => {
-    const fetchAllUsers = async () => {
-      setSearching(true);
-      try {
-        const allUsersResponse = await fetchAllMembers();
-        console.log("All Users Response:", allUsersResponse); // 응답 로그 추가
-        setAllUsers(allUsersResponse);
-      } catch (error) {
-        console.error("유저 검색 오류:", error);
-      } finally {
-        setSearching(false);
-      }
-    };
-
-    fetchAllUsers();
-  }, []);
-
   const debouncedFetchMembers = useCallback(
     debounce(async (query: string) => {
       if (query.trim() === "") {
         setMembers([]);
-        setAllUsers([]);
         setShowDropdown(false);
+        try {
+          const response: SearchInviteMemberResponseDto =
+            await searchInviteMember({
+              crewId: parseInt(crewId!, 10),
+              query: "",
+            });
+          console.log("Debounced Fetch All Members response:", response);
+          setMembers(response.items);
+          setShowDropdown(true);
+        } catch (error) {
+          console.error("Fetch all members error:", error);
+        } finally {
+          setSearching(false);
+        }
         return;
       }
 
@@ -92,17 +99,14 @@ const CrewInvitePage: React.FC = () => {
       try {
         const response: SearchInviteMemberResponseDto =
           await searchInviteMember({
-            crewId: crewId!,
+            crewId: parseInt(crewId!, 10),
             query,
           });
+        console.log("Debounced Search Invite Member response:", response);
         setMembers(response.items);
-
-        const allUsersResponse = await fetchAllMembers();
-        setAllUsers(allUsersResponse);
-
         setShowDropdown(true);
       } catch (error) {
-        console.error("멤버 검색 오류:", error);
+        console.error("Search Invite Member error:", error);
       } finally {
         setSearching(false);
       }
@@ -111,19 +115,46 @@ const CrewInvitePage: React.FC = () => {
   );
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-    debouncedFetchMembers(event.target.value);
+    const newQuery = event.target.value;
+    setQuery(newQuery);
+    debouncedFetchMembers(newQuery);
+  };
+
+  const handleInviteClick = async (member: CrewMemberDto) => {
+    if (!crewId) return;
+
+    const inviteDto: CrewInviteRequestDto = {
+      memberId: member.memberId,
+      crewId: parseInt(crewId, 10),
+    };
+
+    console.log("Invite DTO:", inviteDto);
+
+    try {
+      const response: CrewInviteResponseDto = await inviteCrewMember(inviteDto);
+      console.log("Invite Crew Member response:", response);
+
+      if (response) {
+        setMembers((prevMembers) =>
+          prevMembers.map((m) =>
+            m.memberId === member.memberId ? { ...m, isInvited: true } : m
+          )
+        );
+      }
+    } catch (error) {
+      console.error("초대 오류:", error);
+    }
   };
 
   const renderMemberList = (
     filterFn: (member: CrewMemberDto) => boolean,
     title: string
   ) => (
-    <div className="mb-6">
+    <div className="">
       <h2 className="text-lg font-bold mb-2 ml-4">{title}</h2>
       <ul>
         {members.filter(filterFn).length === 0 ? (
-          <div className="text-center">등록된 멤버가 없습니다.</div>
+          <div></div>
         ) : (
           members.filter(filterFn).map((member) => (
             <li
@@ -154,7 +185,10 @@ const CrewInvitePage: React.FC = () => {
                     초대 중
                   </button>
                 ) : (
-                  <button className="border border-gray-400 w-20 h-10 rounded-md text-sm">
+                  <button
+                    className="border border-gray-400 w-20 h-10 rounded-md text-sm"
+                    onClick={() => handleInviteClick(member)}
+                  >
                     초대하기
                   </button>
                 )}
@@ -165,65 +199,6 @@ const CrewInvitePage: React.FC = () => {
       </ul>
     </div>
   );
-
-  const renderUserList = (title: string) => {
-    // 검색어가 있는 경우, 검색어에 맞게 필터링
-    const filteredUsers =
-      query.trim() === ""
-        ? allUsers
-        : allUsers.filter(
-            (user) =>
-              user.memberName.toLowerCase().includes(query.toLowerCase()) ||
-              user.memberNickName.toLowerCase().includes(query.toLowerCase())
-          );
-
-    // 이미 초대되었거나 초대 진행 중인 멤버 ID를 추출
-    const invitedAndAllowedMemberIds = members.map((member) => member.memberId);
-
-    // 초대되었거나 초대 진행 중이지 않은 사용자만 필터링
-    const finalFilteredUsers = filteredUsers.filter(
-      (user) => !invitedAndAllowedMemberIds.includes(user.memberId)
-    );
-
-    return (
-      <div className="mb-6">
-        <h2 className="text-lg font-bold mb-2 ml-4">{title}</h2>
-        <ul>
-          {finalFilteredUsers.length === 0 ? (
-            <div className="text-center">등록된 유저가 없습니다.</div>
-          ) : (
-            finalFilteredUsers.map((user) => (
-              <li
-                key={user.memberId}
-                className="flex items-center p-2 border-b"
-              >
-                <div className="w-12 h-12 flex-shrink-0">
-                  {user.profileUrl ? (
-                    <img
-                      src={user.profileUrl}
-                      alt={user.memberName}
-                      className="w-full h-full object-cover rounded-full"
-                    />
-                  ) : (
-                    <CrewinLogo className="w-full h-full object-cover rounded-full" />
-                  )}
-                </div>
-                <div className="flex-1 ml-3">
-                  <div className="font-bold">{user.memberName}</div>
-                  <div className="text-gray-600">{user.memberNickName}</div>
-                </div>
-                <div className="flex gap-2">
-                  <button className="border border-gray-400 w-20 h-10 rounded-md text-sm">
-                    초대하기
-                  </button>
-                </div>
-              </li>
-            ))
-          )}
-        </ul>
-      </div>
-    );
-  };
 
   if (loading) {
     return <p>Loading crew information...</p>;
@@ -271,7 +246,6 @@ const CrewInvitePage: React.FC = () => {
               member.isInvited === true,
             "Invitation in Progress"
           )}
-          {renderUserList("All Users")}
         </>
       )}
     </div>

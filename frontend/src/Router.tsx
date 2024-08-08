@@ -88,7 +88,7 @@ export const router = createBrowserRouter([
                 path: "membersearch/captain",
                 element: <CaptainPovCrewMemberSearchPage />,
               },
-              { path: "invite", element: <CrewInvitePage /> },
+              { path: ":crewId/invite", element: <CrewInvitePage /> },
             ],
           },
           { path: "mypage/session/:type", element: <MySessionPage /> },
