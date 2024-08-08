@@ -55,4 +55,9 @@ public class MemberCrew {
     public void updatePosition(Position position) {
         this.position = position;
     }
+
+    public void updateInvited(Boolean invited) {
+        this.isInvited = invited;
+    }
+
 }

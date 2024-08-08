@@ -12,6 +12,7 @@ import com.luckycookie.crewin.dto.base.PagingItemsResponse;
 import com.luckycookie.crewin.exception.crew.*;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.memberCrew.NotFoundMemberCrewException;
+import com.luckycookie.crewin.exception.memberSession.DuplicateApplyException;
 import com.luckycookie.crewin.exception.post.NotFoundPostException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
@@ -451,14 +452,17 @@ public class CrewService {
                 .build();
 
         if (position == Position.CAPTAIN) {
-            // 초대 하면 회원 크루에 넣기 (이미 초대 요청이 보내진 멤버한테는 초대 요청을 보내면 안됨)
+            // 이미 초대 요청이 보내진 멤버한테는 초대 요청을 보내면 안됨
             Optional<MemberCrew> memberCrew = memberCrewRepository.findByMemberAndCrew(invitedMember, crew);
-            if (!memberCrew.orElseThrow().getIsInvited()) {
+            if (memberCrew.isEmpty()) { // 처음에 memberCrew 에 없었으면 초대 할 때 들어가고
                 memberCrewRepository.save(invitedMemberCrew);
                 notificationService.createNotification(NotificationType.INVITATION, crewMemberRequest.getCrewId(), crewMemberRequest.getMemberId(), null);
-            } else {
-                // 이미 초대된 요청 입니다. Exception
-                throw new CrewDupulicateException();
+            } else { // memberCrew 에 있었으면 isInvited 체크
+                if(memberCrew.orElseThrow().getIsInvited()){ // true 면 이미 중복된 요청
+                    throw new CrewDupulicateException();
+                } else { // false 면
+                    memberCrew.get().updateInvited(true);  // 요청 보냈으니까 true 로 변경
+                }
             }
         } else {
             throw new CrewUnauthorizedException(); // CAPTAIN 만 초대 가능
