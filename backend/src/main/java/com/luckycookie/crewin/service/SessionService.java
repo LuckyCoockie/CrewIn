@@ -282,6 +282,8 @@ public class SessionService {
                         sessionCrewName = session.getCrew().getCrewName();
                     }
 
+                    List<MemberSession> memberSessionList = memberSessionRepository.findBySession(session);
+
                     return SessionItem.builder().crewName(sessionCrewName)
                             .sessionName(session.getName())
                             .spot(session.getSpot())
@@ -289,6 +291,7 @@ public class SessionService {
                             .sessionThumbnail(session.getPosterImages().get(0).getImageUrl())
                             .sessionType(session.getSessionType())
                             .maxPeople(session.getMaxPeople())
+                            .currentPeople(memberSessionList.size())
                             .sessionId(session.getId())
                             .startAt(session.getStartAt())
                             .build();

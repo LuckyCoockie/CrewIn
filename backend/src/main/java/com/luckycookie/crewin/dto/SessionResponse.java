@@ -23,6 +23,7 @@ public class SessionResponse {
         private String sessionThumbnail;
         private SessionType sessionType;
         private int maxPeople;
+        private int currentPeople;
         private long sessionId;
 
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
