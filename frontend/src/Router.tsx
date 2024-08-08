@@ -35,7 +35,6 @@ import MyProfilePage from "./pages/MyProfilePage.tsx";
 import PeopleProfilePage from "./pages/PeopleProfilePage.tsx";
 import CrewRedirectPage from "./pages/crew/CrewRedirectPage.tsx";
 import AttendancePage from "./pages/attendance/AttendancePage.tsx";
-import AttendancePage from "./pages/Attendance/AttendancePage.tsx";
 import CrewNoticeDetailPage from "./pages/CrewNoticeDetailPage.tsx";
 import CourseDetailPage from "./pages/course/CourseDetailPage.tsx";
 
