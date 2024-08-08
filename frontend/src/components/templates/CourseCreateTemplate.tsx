@@ -33,7 +33,7 @@ import {
 type OwnProps = {
   initPosition?: Point;
   initValue?: FormValues;
-  onSave: ({ polylines, markers, title, image }: FormValues) => Promise<void>;
+  onSave: (data: FormValues) => Promise<void>;
 };
 
 type FormValues = {
@@ -104,7 +104,8 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
     // TODO : 상세 정보 체크 되면 저장 하는거 고려해보기
     setTimeout(async () => {
       await handleSave();
-      onSave(data);
+      // TODO : setTimeout 삭제
+      setTimeout(() => onSave(data), 100);
     }, 500);
   };
 
@@ -186,8 +187,10 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
       });
 
       canvas.toBlob(
-        async (blob) => {
-          if (blob) setImage(new File([blob], "temp.png"));
+        (blob) => {
+          if (blob) {
+            setImage(new File([blob], "image.png", { type: "image/png" }));
+          }
         },
         "image/png",
         1
