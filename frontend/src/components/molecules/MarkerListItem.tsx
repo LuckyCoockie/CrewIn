@@ -1,4 +1,4 @@
-import CloseIcon from "../../assets/icons/CloseIcon.svg";
+import { ReactComponent as CloseIcon } from "../../assets/icons/CloseIcon.svg";
 import { Avatar } from "../atoms/Avartar";
 import EditableText from "../atoms/EditableText";
 
@@ -10,6 +10,7 @@ export type OwnProps = {
   onClick?: () => void;
   onChange?: (text: string) => void;
   onDelete?: () => void;
+  editable?: boolean;
 };
 
 export const MarkerListItem = ({
@@ -20,6 +21,7 @@ export const MarkerListItem = ({
   onClick,
   onChange,
   onDelete,
+  editable,
 }: OwnProps) => {
   return (
     <div>
@@ -39,14 +41,9 @@ export const MarkerListItem = ({
           />
         </div>
         <div className="min-w-0 flex-1">
-          <EditableText text={title} onChange={onChange} />
+          <EditableText text={title} onChange={onChange} editable={editable} />
         </div>
-        <div
-          className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white"
-          onClick={onDelete}
-        >
-          <img src={CloseIcon} />
-        </div>
+        {editable && <CloseIcon onClick={onDelete} />}
       </div>
     </div>
   );
