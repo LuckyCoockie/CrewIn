@@ -4,7 +4,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { ReactComponent as CrewinLogo } from "../assets/icons/crewinlogo.svg";
 import { ReactComponent as Alarmicon } from "../assets/icons/alarm_deactivated.svg";
 import { ReactComponent as Searchicon } from "../assets/icons/searchicon.svg";
-import { ReactComponent as Postcreateicon } from "../assets/icons/postcreateicon.svg";
+import { ReactComponent as Plus } from "../assets/icons/plus.svg";
 import FloatingActionButton from "../components/atoms/Button/FloatingActionButton";
 import InfiniteScrollComponent from "../util/paging/component/InfinityScrollComponent";
 import PostItemComponent, {
@@ -67,7 +67,7 @@ const PostMainPage: React.FC = () => {
         />
       </div>
       <FloatingActionButton onClick={handlePostCreate}>
-        <Postcreateicon />
+        <Plus />
       </FloatingActionButton>
       <PWAInstallPrompt />
       <PWAOpenAppPrompt />
