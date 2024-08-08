@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
-    List<Course> findByCreator(Member creator);
+    List<Course> findByCreatorOrderByIdDesc(Member creator);
 }
