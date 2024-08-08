@@ -64,7 +64,7 @@ const CrewNoticeDetailTemplate: React.FC = () => {
   return (
     <>
       <header>
-        <BackHeaderMediumOrganism text="공지사항" />
+        <BackHeaderMediumOrganism text={noticeData.title} />
       </header>
       <div className="w-full">
         <div className="flex items-center mb-3">
@@ -97,7 +97,6 @@ const CrewNoticeDetailTemplate: React.FC = () => {
           ))}
         </Carousel>
         <div className="mt-2">
-          <h2 className="text-xl font-bold">{noticeData.title}</h2>
           <p>{noticeData.content}</p>
         </div>
         <div className="flex items-center mt-2">

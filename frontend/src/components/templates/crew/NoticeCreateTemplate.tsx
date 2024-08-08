@@ -20,6 +20,8 @@ import { createNotice } from "../../../apis/api/crewdetail";
 
 import { useNavigate, useParams } from "react-router-dom";
 
+import SpinnerFullComponent from "../../atoms/SpinnerFullComponent";
+
 // 유효성 검사 스키마 정의
 const schema = yup.object({
   title: yup.string().required(),
@@ -36,7 +38,8 @@ const NoticeCreateTemplate: React.FC = () => {
   const { crewId } = useParams<{ crewId: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient(); // useQueryClient 추가
-  console.log(crewId);
+
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const {
     control,
@@ -61,6 +64,7 @@ const NoticeCreateTemplate: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    setIsSubmitting(true); // 로딩 상태 시작
     const urls = await checkUndefined(croppedFiles);
 
     const submitData = {
@@ -156,6 +160,7 @@ const NoticeCreateTemplate: React.FC = () => {
 
   return (
     <div className="mx-auto w-full max-w-[550px]">
+      {isSubmitting && <SpinnerFullComponent />}
       <div className="flex flex-col items-center justify-center">
         <header>
           <BackHeaderMediumOrganism text="공지글 작성" />
