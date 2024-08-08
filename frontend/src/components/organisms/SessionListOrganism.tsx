@@ -5,12 +5,14 @@ import { useQuery } from "react-query";
 import { AxiosError } from "axios";
 import ErrorResponseDto from "../../apis/utils/errorCode/ErrorResponseDto";
 import qs from "query-string";
+import { useNavigate } from "react-router";
 
 type OwnProps<T> = {
   fetchData: (props: T) => Promise<SessionDto[]>;
 };
 
 const SessionListComponent = <T,>({ fetchData }: OwnProps<T>) => {
+  const navigate = useNavigate();
   const query = qs.parse(location.search) as T;
 
   const { data, isError } = useQuery<
@@ -26,13 +28,15 @@ const SessionListComponent = <T,>({ fetchData }: OwnProps<T>) => {
   return (
     <GridListComponent items={data}>
       {({ item }) => (
-        <SessionListItemMolecules
-          key={item.sessionId}
-          crewName={item.crewName}
-          area={item.area}
-          date={item.startAt}
-          imageUrl={item.sessionThumbnail}
-        />
+        <div onClick={() => navigate(`/session/${item.sessionId}`)}>
+          <SessionListItemMolecules
+            key={item.sessionId}
+            crewName={item.crewName}
+            area={item.area}
+            date={item.startAt}
+            imageUrl={item.sessionThumbnail}
+          />
+        </div>
       )}
     </GridListComponent>
   );

@@ -4,7 +4,7 @@ type OwnProps = {
   name: string;
   nickname: string;
   imageUrl: string;
-  children: React.ReactElement;
+  children?: React.ReactElement;
 };
 
 const MemberListItem: React.FC<OwnProps> = ({

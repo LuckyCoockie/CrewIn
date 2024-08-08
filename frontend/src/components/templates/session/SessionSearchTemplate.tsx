@@ -19,12 +19,17 @@ import SessionListItemMolecules from "../../molecules/SessionListItemMolecules";
 
 type OwnProps = {
   onSearch: (dto: GetSessionListRequestDto) => Promise<void>;
+  onSessionItemClick: (sessionId: number) => Promise<void>;
   fetchData: (
     dto: GetSessionListRequestDto
   ) => Promise<PageNationData<SessionDto>>;
 };
 
-const SessionSearchTemplate: React.FC<OwnProps> = ({ onSearch, fetchData }) => {
+const SessionSearchTemplate: React.FC<OwnProps> = ({
+  onSearch,
+  onSessionItemClick,
+  fetchData,
+}) => {
   const navigate = useNavigate();
 
   const query = qs.parse(location.search);
@@ -85,13 +90,15 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({ onSearch, fetchData }) => {
           fetchData={handleFetchData}
           initPage={parseInt(query.pageNo ?? "0")}
           ItemComponent={({ data }) => (
-            <SessionListItemMolecules
-              key={data.sessionId}
-              crewName={data.crewName}
-              area={data.area}
-              date={data.startAt}
-              imageUrl={data.sessionThumbnail}
-            />
+            <div onClick={() => onSessionItemClick(data.sessionId)}>
+              <SessionListItemMolecules
+                key={data.sessionId}
+                crewName={data.crewName}
+                area={data.area}
+                date={data.startAt}
+                imageUrl={data.sessionThumbnail}
+              />
+            </div>
           )}
         />
         <FloatingActionButton onClick={handleSessionCreateRoute}>
