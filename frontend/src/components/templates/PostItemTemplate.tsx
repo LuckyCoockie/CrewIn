@@ -11,11 +11,12 @@ import emptyFire from "../../assets/images/emptyfire.png";
 import shareIcon from "../../assets/images/shareicon.png";
 import { PostDto } from "../../apis/api/postlist";
 import { deletePost } from "../../apis/api/postdelete";
+import { registerPostHeart } from "../../apis/api/heart";
+import { deletePostHeart } from "../../apis/api/heartdelete";
 
 export interface ItemComponentProps<T> {
   data: T;
 }
-
 
 const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   const {
@@ -27,7 +28,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     isHearted,
     createdAt,
     profileImage,
-    postType
+    postType,
   } = data;
 
   const [likes, setLikes] = useState<number>(heartCount);
@@ -43,47 +44,45 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
 
   const handleDelete = async () => {
     try {
-      const response = await deletePost(id);
-      if (response.statusCode === 204) {
-        navigate(0);
-      } else {
-        console.error(response.message);
-        alert(response.message);
-      }
+      await deletePost(id);
+      navigate(0);
     } catch (error) {
       console.error("게시물 삭제 요청 중 오류가 발생했습니다:", error);
     }
   };
 
-  const handleLike = () => {
-    setLikes((prevLikes) => (isHeartedState ? prevLikes - 1 : prevLikes + 1));
-    setIsHeartedState(!isHeartedState);
-
-    if (!isHeartedState) {
-      const alarmMessages = JSON.parse(localStorage.getItem("alarms") || "[]");
-      alarmMessages.push("@@님이 회원님의 게시글에 좋아요를 눌렀습니다.");
-      localStorage.setItem("alarms", JSON.stringify(alarmMessages));
+  const handleLike = async () => {
+    try {
+      if (isHeartedState) {
+        console.log(`Removing heart from post with ID: ${id}`);
+        await deletePostHeart(id);
+        setLikes((prevLikes) => prevLikes - 1);
+      } else {
+        console.log(`Adding heart to post with ID: ${id}`);
+        await registerPostHeart(id);
+        setLikes((prevLikes) => prevLikes + 1);
+      }
+      setIsHeartedState(!isHeartedState);
+    } catch (error) {
+      console.error("좋아요 처리 중 오류가 발생했습니다:", error);
     }
   };
 
-  const handleShare = () => {
-    const url = window.location.href;
-    const shareUrl = `https://instagram.com/sharer.php?u=${encodeURIComponent(url)}`;
-    window.open(shareUrl, '_blank');
-  };
+  const handleShare = () => {};
 
   const toggleContent = () => {
     setIsExpanded(!isExpanded);
   };
 
+  // Remove the prefix "약 " from the time ago string
   const timeAgo = formatDistanceToNow(parseISO(createdAt), {
     addSuffix: true,
     locale: ko,
-  });
+  }).replace("약 ", "");
 
   return (
-    <div className="w-full mb-4">
-      {postType === 'NOTICE' ? (
+    <div className="w-full mb-4 pb-3">
+      {postType === "NOTICE" ? (
         <UserProfileBarNoMenu
           profileImage={profileImage}
           username={authorName}

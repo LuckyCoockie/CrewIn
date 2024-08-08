@@ -74,16 +74,11 @@ const PostEditPage: React.FC = () => {
         isPublic,
         postImages,
       };
-
-      const response = await updatePost(Number(postId), updateData);
-      if (response.statusCode === 200) {
-        navigate("/home");
-      } else {
-        alert(response.message);
-      }
-    } catch (error) {
+      await updatePost(Number(postId), updateData);
       navigate("/home");
-      console.error("게시글 수정 오류:", error);
+    } catch (error) {
+      console.error(error);
+      alert("수정 실패");
     }
   };
 
