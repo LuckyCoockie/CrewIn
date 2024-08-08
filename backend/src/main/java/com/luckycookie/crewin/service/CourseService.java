@@ -50,7 +50,7 @@ public class CourseService {
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
-        // id 기준 역순 정렬 
+        // id 기준 역순 정렬
         List<Course> courseList = courseRepository.findByCreatorOrderByIdDesc(member);
         return courseList.stream().map(this::convertToDto).collect(Collectors.toList());
     }

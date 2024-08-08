@@ -15,10 +15,10 @@ import java.util.List;
 public interface SessionRepository extends JpaRepository<Session, Long> {
 
     // 내가 만든 세션 조회
-    @Query("SELECT s FROM Session s WHERE s.host = :member AND s.sessionType = :sessionType")
+    @Query("SELECT s FROM Session s WHERE s.host = :member AND s.sessionType = :sessionType order by s.id desc")
     Page<Session> findByHostAndSessionType(Pageable pageable, Member member, SessionType sessionType);
 
-    @Query("SELECT s FROM Session s WHERE s.host = :member")
+    @Query("SELECT s FROM Session s WHERE s.host = :member order by s.id desc")
     Page<Session> findAllByHost(Pageable pageable, Member member);
 
 }
