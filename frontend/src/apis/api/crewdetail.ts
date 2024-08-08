@@ -146,3 +146,34 @@ export const deleteCrew = async (crewId: number): Promise<void> => {
   const response = await api.delete(`/crew/${crewId}`);
   return response.data;
 };
+
+// 크루 공지사항 디테일
+export type CrewNoticeDetailRequestDto = {
+  crewId: number;
+  noticeId: number;
+};
+
+export type CrewNoticeDetailResponseDto = {
+  id: number;
+  authorName: string;
+  authorId: number;
+  content: string;
+  heartCount: number;
+  isHearted: boolean;
+  isPublic: boolean;
+  postType: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  postImages: string[];
+  profileImage: string
+};
+
+export const getCrewNoticeDetail = async (
+  dto: CrewNoticeDetailRequestDto
+): Promise<CrewNoticeDetailResponseDto> => {
+  const response = await api.get(
+    `/crew/notice?crew-id=${dto.crewId}&notice-id=${dto.noticeId}`
+  );
+  return response.data;
+};

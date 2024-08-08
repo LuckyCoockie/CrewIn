@@ -36,6 +36,8 @@ const MyPageMapOrganism: React.FC<FetchDataProps> = ({
                 src={data.thumbnailImage}
                 alt={data.name}
                 text={data.name}
+                router="course"
+                routerId={data.id}
               />
             )}
           />

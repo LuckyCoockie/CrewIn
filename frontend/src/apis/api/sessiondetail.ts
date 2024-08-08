@@ -7,7 +7,7 @@ export type SessionDetailDto = {
   isSessionHost: boolean;
   hostname: string;
   hostNickname: string;
-  crewName: string;
+  crewName: string | null;
   courseThumbnail: string;
   sessionName: string;
   spot: string;
@@ -52,8 +52,6 @@ export type EditSessionRequestDto = {
 export const editSession = async (
   dto: EditSessionRequestDto
 ): Promise<void> => {
-  return console.log("세션 수정 요청 정보: ", dto);
-
   const { sessionId, ...body } = dto;
   const response = await api.put(`/session/detail/${sessionId}`, body);
   return response.data;
@@ -61,8 +59,6 @@ export const editSession = async (
 
 // 세션 삭제
 export const deleteSession = async (sessionId: number): Promise<void> => {
-  return console.log("세션 삭제 요청 ID: ", sessionId);
-
   const response = await api.delete(`/session/detail/${sessionId}`);
   return response.data;
 };
@@ -108,8 +104,21 @@ export type ParticipateSessionRequestDto = {
 export const participateSession = async (
   dto: ParticipateSessionRequestDto
 ): Promise<void> => {
-  console.log("참가신청 완료");
-
   const response = await api.post(`/session/${dto}`);
+  console.log("참가 신청 완료");
+  return response.data;
+};
+
+// 세션 취소
+export type CancelSEssionRequestDto = {
+  sessionId: number;
+};
+
+export const cancelSession = async (
+  sessionId: CancelSEssionRequestDto
+): Promise<void> => {
+  const response = await api.delete(`session/${sessionId}`);
+  console.log("참가 취소 완료");
+
   return response.data;
 };
