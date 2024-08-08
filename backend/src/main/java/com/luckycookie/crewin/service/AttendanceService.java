@@ -3,9 +3,11 @@ package com.luckycookie.crewin.service;
 import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.domain.MemberSession;
 import com.luckycookie.crewin.domain.Session;
-import com.luckycookie.crewin.dto.AttendanceRequest.StartAttendanceRequest;
+import com.luckycookie.crewin.dto.AttendanceRequest.AttendanceInfoRequest;
 import com.luckycookie.crewin.dto.AttendanceResponse.AttendanceMemberItem;
 import com.luckycookie.crewin.dto.AttendanceResponse.AttendanceMemberResponse;
+import com.luckycookie.crewin.exception.attendance.InvalidLocationException;
+import com.luckycookie.crewin.exception.attendance.InvalidRequestTimeException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.memberSession.NotFoundMemberSessionException;
 import com.luckycookie.crewin.exception.session.InvalidSessionException;
@@ -39,7 +41,7 @@ public class AttendanceService {
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private final ScheduledService scheduledService;
 
-    public void startAttendance(Long sessionId, String email, StartAttendanceRequest startAttendanceRequest) {
+    public void startAttendance(Long sessionId, String email, AttendanceInfoRequest attendanceInfoRequest) {
         // 세션 존재 체크
         Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundSessionException::new);
 
@@ -55,7 +57,7 @@ public class AttendanceService {
         }
 
         // 주최자 위치 등록, 시작시간 등록, 주최자 출석 true
-        session.startSession(startAttendanceRequest);
+        session.startSession(attendanceInfoRequest);
         MemberSession hostAttendance = memberSessionRepository.findByMemberAndSession(host, session).orElseThrow(NotFoundMemberSessionException::new);
         hostAttendance.changeAttend(true);
 
@@ -98,5 +100,52 @@ public class AttendanceService {
                 .items(attendanceMemberItems)
                 .build();
 
+    }
+
+    // 출석체크
+    public void attend(Long sessionId, String email, AttendanceInfoRequest attendanceInfoRequest) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
+        Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundSessionException::new);
+        MemberSession memberSession = memberSessionRepository.findByMemberAndSession(member, session)
+                .orElseThrow(NotFoundMemberSessionException::new);
+
+        // 출석이 시작했는지 체크
+        // 출석 시간이 맞는지 체크(출석 시작부터 10분간)
+        if (session.getAttendanceStart() == null || LocalDateTime.now().isBefore(session.getAttendanceStart()) || LocalDateTime.now().isAfter(session.getAttendanceStart().plusMinutes(10))) {
+            throw new InvalidRequestTimeException();
+        }
+
+        // 호스트 위치가 존재하는지 체크 + 출석 반경에 있는지 체크
+        if (session.getHost() == null || isDistanceMoreThan100Meters(session.getLat(), session.getLng(), attendanceInfoRequest.getLat(), attendanceInfoRequest.getLng())) {
+            throw new InvalidLocationException();
+        }
+
+        // 멤버-세션에 출석여부 반영
+        memberSession.changeAttend(true);
+    }
+
+    // 두 좌표 간의 거리를 계산하는 메소드
+    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        // 지구의 반지름 (단위: 미터)
+        double EARTH_RADIUS = 6371e3;
+
+        double lat1Rad = Math.toRadians(lat1);
+        double lat2Rad = Math.toRadians(lat2);
+        double deltaLatRad = Math.toRadians(lat2 - lat1);
+        double deltaLonRad = Math.toRadians(lon2 - lon1);
+
+        double a = Math.sin(deltaLatRad / 2) * Math.sin(deltaLatRad / 2) +
+                Math.cos(lat1Rad) * Math.cos(lat2Rad) *
+                        Math.sin(deltaLonRad / 2) * Math.sin(deltaLonRad / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return EARTH_RADIUS * c; // 두 지점 간의 거리 (단위: 미터)
+    }
+
+    // 두 좌표가 100미터 이상 떨어져 있는지 확인하는 메소드
+    private boolean isDistanceMoreThan100Meters(double lat1, double lon1, double lat2, double lon2) {
+        double distance = calculateDistance(lat1, lon1, lat2, lon2);
+        return distance > 100;
     }
 }

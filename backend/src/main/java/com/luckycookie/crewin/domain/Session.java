@@ -2,9 +2,7 @@ package com.luckycookie.crewin.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.luckycookie.crewin.domain.enums.SessionType;
-import com.luckycookie.crewin.dto.AttendanceRequest;
-import com.luckycookie.crewin.dto.AttendanceRequest.StartAttendanceRequest;
-import com.luckycookie.crewin.dto.SessionRequest;
+import com.luckycookie.crewin.dto.AttendanceRequest.AttendanceInfoRequest;
 import com.luckycookie.crewin.dto.SessionRequest.UpdateSessionRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -102,9 +100,9 @@ public class Session {
         }
     }
 
-    public void startSession(StartAttendanceRequest startAttendanceRequest) {
-        lat = startAttendanceRequest.getLat();
-        lng = startAttendanceRequest.getLng();
+    public void startSession(AttendanceInfoRequest attendanceInfoRequest) {
+        lat = attendanceInfoRequest.getLat();
+        lng = attendanceInfoRequest.getLng();
         attendanceStart = LocalDateTime.now();
     }
 

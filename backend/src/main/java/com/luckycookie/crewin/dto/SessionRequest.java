@@ -48,7 +48,7 @@ public class SessionRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class UploadSessionImageRequest{
+    public static class UploadSessionImageRequest {
         private Long sessionId;
         private List<String> sessionImageUrls;
     }

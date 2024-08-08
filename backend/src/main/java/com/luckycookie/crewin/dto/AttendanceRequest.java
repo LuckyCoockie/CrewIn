@@ -11,8 +11,10 @@ public class AttendanceRequest {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class StartAttendanceRequest {
+    public static class AttendanceInfoRequest {
         private double lat;
         private double lng;
     }
+
+
 }

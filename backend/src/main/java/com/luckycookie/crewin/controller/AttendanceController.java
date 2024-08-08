@@ -1,6 +1,6 @@
 package com.luckycookie.crewin.controller;
 
-import com.luckycookie.crewin.dto.AttendanceRequest.StartAttendanceRequest;
+import com.luckycookie.crewin.dto.AttendanceRequest.AttendanceInfoRequest;
 import com.luckycookie.crewin.dto.AttendanceResponse.AttendanceMemberResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.security.dto.CustomUser;
@@ -24,10 +24,18 @@ public class AttendanceController {
 
     private final AttendanceService attendanceService;
 
+    // 출석체크 시작
     @PostMapping("/start/{session-id}")
-    public ResponseEntity<BaseResponse<Void>> startAttendance(@PathVariable("session-id") Long sessionId, @RequestBody StartAttendanceRequest startAttendanceRequest, @AuthenticationPrincipal CustomUser customUser) {
-        attendanceService.startAttendance(sessionId, customUser.getEmail(), startAttendanceRequest);
+    public ResponseEntity<BaseResponse<Void>> startAttendance(@PathVariable("session-id") Long sessionId, @RequestBody AttendanceInfoRequest attendanceInfoRequest, @AuthenticationPrincipal CustomUser customUser) {
+        attendanceService.startAttendance(sessionId, customUser.getEmail(), attendanceInfoRequest);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "출석이 정상적으로 시작되었습니다."));
+    }
+
+    // 참가자 출석
+    @PostMapping("/guest/{session-id}")
+    public ResponseEntity<BaseResponse<Void>> attend(@PathVariable("session-id") Long sessionId, @AuthenticationPrincipal CustomUser customUser, @RequestBody AttendanceInfoRequest attendanceInfoRequest) {
+        attendanceService.attend(sessionId, customUser.getEmail(), attendanceInfoRequest);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "출석이 정상적으로 처리되었습니다."));
     }
 
     // 출석부 목록 조회
