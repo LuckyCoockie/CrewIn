@@ -145,11 +145,20 @@ public class SessionService {
         Member host = memberRepository.findById(session.getHost().getId())
                 .orElseThrow(NotFoundMemberException::new);
 
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+
         boolean userSessionCompare;
         userSessionCompare = customUser.getEmail().equals(host.getEmail());
 
         Course course = courseRepository.findById(session.getCourse().getId())
                 .orElseThrow(NotFoundCourseException::new);
+
+        // 현재 세션에 참가한 사람
+        List<MemberSession> memberSessionList = memberSessionRepository.findBySession(session);
+
+        // 내가 현재 이 세션에 참가 중인지 아닌지
+        Boolean isJoined = memberSessionList.stream().anyMatch(memberSession -> memberSession.getMember().equals(member));
 
         String crewName = null;
         if (session.getSessionType() != THUNDER) {
@@ -164,9 +173,11 @@ public class SessionService {
                 .area(session.getArea())
                 .hostNickname(host.getNickname())
                 .crewName(crewName)
+                .isJoined(isJoined)
                 .sessionName(session.getName())
                 .spot(session.getSpot())
                 .content(session.getContent())
+                .currentPeople(memberSessionList.size())
                 .courseThumbnail(course.getThumbnailImage())
                 .maxPeople(session.getMaxPeople())
                 .pace(session.getPace())
