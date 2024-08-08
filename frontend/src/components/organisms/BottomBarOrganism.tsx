@@ -30,28 +30,28 @@ const BottomBarOrganism: React.FC<Current> = (props) => {
   return (
     <>
       <div className="mx-auto w-full max-w-[550px] bg-white fixed bottom-0 left-0 right-0 flex justify-center items-center border-gray-200 border-t z-50">
-        <div className="w-full h-full button">
+        <div className="w-full h-full">
           <HomeTabMolecule
             name="Home"
             tab={currentTab === "home"}
             onClick={() => selectedTab("home")}
           />
         </div>
-        <div className="w-full h-full button">
+        <div className="w-full h-full">
           <SessionTabMolecule
             name="Session"
             tab={currentTab === "session"}
             onClick={() => selectedTab("session?status=active")}
           />
         </div>
-        <div className="w-full h-full button">
+        <div className="w-full h-full">
           <CrewTabMolecule
             name="Crew"
             tab={currentTab === "crew"}
             onClick={() => selectedTab("crew")}
           />
         </div>
-        <div className="w-full h-full button">
+        <div className="w-full h-full">
           <ProfileTabMolecule
             name="Profile"
             tab={currentTab === "profile"}

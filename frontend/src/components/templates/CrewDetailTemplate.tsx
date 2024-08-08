@@ -8,9 +8,7 @@ import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import CrewAlbumOrganism from "../organisms/CrewAlbumOrganism";
 import CrewHeaderBarOrganism from "../organisms/CrewHeaderBarOrganism";
 import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
-
 import GroupsButton from "../atoms/Button/GroupsButton";
-import MemberPlusButton from "../atoms/Button/MemberPlusButton";
 import { getCrewInfo, getCrewGalleryList } from "../../apis/api/crewdetail";
 import { getMyCrews } from "../../apis/api/mycrew";
 import { useParams } from "react-router";
@@ -114,9 +112,7 @@ const CrewDetailTemplate: React.FC = () => {
         );
       case "사진첩":
         return galleryData ? (
-          <CrewAlbumOrganism
-            photos={galleryData.flatMap((gallery) => gallery.thumbnailImage)}
-          />
+          <CrewAlbumOrganism fetchgalleryData={galleryData} />
         ) : (
           <div>No Gallery Data</div>
         );
@@ -152,11 +148,13 @@ const CrewDetailTemplate: React.FC = () => {
           {isUserCrewMember && <GroupsButton userPosition={userPosition!} />}
           {isUserCrewMember && userPosition === "CAPTAIN" && (
             <>
-              {infoData?.crewId !== undefined && <MemberPlusButton idData={infoData.crewId} />}
-              <EditDeleteDropdownOrganism
-                type="CREW"
-                idData={infoData?.crewId}
-              />
+              <div className="ms-2">
+                <EditDeleteDropdownOrganism
+                  type="CREW"
+                  idData={infoData?.crewId}
+                  isCrew={true}
+                />
+              </div>
             </>
           )}
         </div>

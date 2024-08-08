@@ -73,7 +73,12 @@ const SessionAlbumOrganism: React.FC<SessionAlbumOrganismProps> = ({
   const PhotoItem = ({
     data,
   }: ItemComponentProps<string>): React.ReactElement => (
-    <img src={data} alt="Session Album" className="photo-item" />
+    <img
+      src={data}
+      alt="Session Album"
+      className="photo-item"
+      style={{ border: "1px solid rgba(255, 0, 0, 0)" }}
+    />
   );
 
   return (

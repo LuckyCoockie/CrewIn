@@ -12,6 +12,7 @@ import shareIcon from "../../assets/images/shareicon.png";
 import { PostDto } from "../../apis/api/postlist";
 import { deletePost } from "../../apis/api/postdelete";
 import { registerPostHeart } from "../../apis/api/heart";
+import { deletePostHeart } from "../../apis/api/heartdelete";
 
 export interface ItemComponentProps<T> {
   data: T;
@@ -57,21 +58,22 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
 
   const handleLike = async () => {
     try {
-      await registerPostHeart(id);
-      setLikes((prevLikes) => (isHeartedState ? prevLikes - 1 : prevLikes + 1));
+      if (isHeartedState) {
+        console.log(`Removing heart from post with ID: ${id}`);
+        await deletePostHeart(id);
+        setLikes((prevLikes) => prevLikes - 1);
+      } else {
+        console.log(`Adding heart to post with ID: ${id}`);
+        await registerPostHeart(id);
+        setLikes((prevLikes) => prevLikes + 1);
+      }
       setIsHeartedState(!isHeartedState);
     } catch (error) {
-      console.error("좋아요 등록 중 오류가 발생했습니다:", error);
+      console.error("좋아요 처리 중 오류가 발생했습니다:", error);
     }
   };
 
-  const handleShare = () => {
-    const url = window.location.href;
-    const shareUrl = `https://instagram.com/sharer.php?u=${encodeURIComponent(
-      url
-    )}`;
-    window.open(shareUrl, "_blank");
-  };
+  const handleShare = () => {};
 
   const toggleContent = () => {
     setIsExpanded(!isExpanded);

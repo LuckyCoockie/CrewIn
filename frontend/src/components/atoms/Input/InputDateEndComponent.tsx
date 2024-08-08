@@ -38,7 +38,7 @@ const InputDateEndComponent = React.forwardRef<DatePicker, InputDate>(
         wrapperClassName="custom-wrapper" // DatePicker wrapper에 적용할 클래스
         popperClassName="custom-popper" // Popper에 적용할 클래스
         minDate={props.minDate || addDays(new Date(), 0)}
-        maxDate={addDays(new Date(), 30)}
+        maxDate={addDays(props.selected!, 2)}
         ref={ref}
         withPortal
         portalId="root-portal"

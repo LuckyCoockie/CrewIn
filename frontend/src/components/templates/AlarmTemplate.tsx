@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import CrewinLogo from "../../assets/images/crewinlogo.png";
+import closeButton from "../../assets/images/closebutton.png";
 import { fetchNotifications, NotificationDto } from "../../apis/api/alarm";
+import { deleteNotification } from "../../apis/api/alarmdelete";
+import { replyToCrewInvitation } from "../../apis/api/crewallowreject";
 
 const AlarmTemplate: React.FC = () => {
   const [alarms, setAlarms] = useState<NotificationDto[]>([]);
@@ -30,6 +33,51 @@ const AlarmTemplate: React.FC = () => {
     loadNotifications();
   }, []);
 
+  const handleDelete = async (notificationId: number) => {
+    try {
+      const response = await deleteNotification(notificationId);
+      if (response.status === 204) {
+        setAlarms((prevAlarms) =>
+          prevAlarms.filter((alarm) => alarm.notificationId !== notificationId)
+        );
+      } else {
+        console.error("Failed to delete notification");
+        alert("Failed to delete notification");
+      }
+    } catch (error) {
+      console.error("알림 삭제 요청 중 오류가 발생했습니다:", error);
+      alert("알림 삭제 요청 중 오류가 발생했습니다.");
+    }
+  };
+
+  const handleAccept = async (notification: NotificationDto) => {
+    try {
+      await replyToCrewInvitation({
+        crewId: notification.senderId!,
+        replyStatus: true,
+      });
+
+      await handleDelete(notification.notificationId);
+    } catch (error) {
+      console.error("크루 초대 수락 중 오류가 발생했습니다:", error);
+      alert("크루 수락 중 오류 발생");
+    }
+  };
+
+  const handleReject = async (notification: NotificationDto) => {
+    try {
+      await replyToCrewInvitation({
+        crewId: notification.senderId!,
+        replyStatus: false,
+      });
+
+      await handleDelete(notification.notificationId);
+    } catch (error) {
+      console.error("크루 초대 거절 중 오류가 발생했습니다:", error);
+      alert("크루 초대 거절 중 오류가 발생했습니다.");
+    }
+  };
+
   if (loading) {
     return <p>Loading notifications...</p>;
   }
@@ -37,14 +85,6 @@ const AlarmTemplate: React.FC = () => {
   if (error) {
     return <p className="text-red-500">{error}</p>;
   }
-
-  const handleAccept = (notificationId: number) => {
-    console.log(`Accepted invitation for notification ${notificationId}`);
-  };
-
-  const handleReject = (notificationId: number) => {
-    console.log(`Rejected invitation for notification ${notificationId}`);
-  };
 
   return (
     <div className="flex flex-col max-w-[550px] mx-auto">
@@ -65,24 +105,33 @@ const AlarmTemplate: React.FC = () => {
                 <img
                   src={alarm.senderThumbnail || CrewinLogo}
                   alt={alarm.senderName}
-                  className="w-10 h-10 mr-4"
+                  className="w-8 h-8 mr-2"
                 />
                 <div className="flex flex-col flex-grow">
                   {alarm.notificationType === "INVITATION" && (
-                    <div className="flex justify-between items-center w-full">
-                      <div className="font-bold">
+                    <div className="flex justify-between items-center tracking-tighter">
+                      <div
+                        style={{
+                          fontWeight: "bold",
+                          maxWidth: "60%",
+                          overflow: "visible",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "break-word",
+                        }}
+                        className="text-sm"
+                      >
                         {alarm.senderName} 크루에 초대되었습니다.
                       </div>
-                      <div className="flex space-x-2">
+                      <div className="flex space-x-2 h-6">
                         <button
-                          className="bg-red-500 text-white px-3 py-1 rounded"
-                          onClick={() => handleReject(alarm.notificationId)}
+                          className="bg-[#D5D5D9] text-white px-3 py-1 rounded text-xs tracking-tighter"
+                          onClick={() => handleReject(alarm)}
                         >
                           거절
                         </button>
                         <button
-                          className="bg-green-500 text-white px-3 py-1 rounded"
-                          onClick={() => handleAccept(alarm.notificationId)}
+                          className="bg-[#2B2F40] text-white px-3 py-1 rounded text-xs tracking-tighter"
+                          onClick={() => handleAccept(alarm)}
                         >
                           수락
                         </button>
@@ -90,17 +139,43 @@ const AlarmTemplate: React.FC = () => {
                     </div>
                   )}
                   {alarm.notificationType === "LIKE" && (
-                    <div className="font-bold">
-                      {alarm.senderName}님이 회원님의 게시글에 좋아요를
-                      눌렀습니다.
+                    <div className="flex justify-between items-center w-full h-6 tracking-tighter">
+                      <div className="font-bold text-sm">
+                        {alarm.senderName}님이 회원님의 게시글에 좋아요를
+                        눌렀습니다.
+                      </div>
+                      <div className="flex items-center mt-3">
+                        <button
+                          onClick={() => handleDelete(alarm.notificationId)}
+                        >
+                          <img
+                            src={closeButton}
+                            alt="Delete"
+                            className="w-2 h-2"
+                          />
+                        </button>
+                      </div>
                     </div>
                   )}
                   {alarm.notificationType === "NOTICE" && (
-                    <div className="font-bold">
-                      {alarm.senderName} 크루에 공지가 올라왔습니다.
+                    <div className="flex justify-between items-center w-full tracking-tighter">
+                      <div className="font-bold text-sm">
+                        {alarm.senderName} 크루에 공지가 올라왔습니다.
+                      </div>
+                      <div className="flex items-center mt-3">
+                        <button
+                          onClick={() => handleDelete(alarm.notificationId)}
+                        >
+                          <img
+                            src={closeButton}
+                            alt="Delete"
+                            className="w-2 h-2"
+                          />
+                        </button>
+                      </div>
                     </div>
                   )}
-                  <div className="text-gray-500 text-sm">
+                  <div className="text-gray-500 text-xs">
                     {new Date(alarm.createdAt).toLocaleString()}{" "}
                   </div>
                 </div>

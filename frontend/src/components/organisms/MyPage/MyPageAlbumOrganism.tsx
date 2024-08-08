@@ -7,7 +7,7 @@ const MyPageAlbumOrganism: React.FC = () => {
   const fetchGallery = async (
     pageNo: number
   ): Promise<PageNationData<MyGalleryDto>> => {
-    return getMyGallery(pageNo - 1);
+    return getMyGallery(pageNo);
   };
 
   return (
@@ -20,6 +20,7 @@ const MyPageAlbumOrganism: React.FC = () => {
           alt={`gallery-item-${data.postId}`}
           key={`gallery-${data.postId}`}
           className="w-full h-full"
+          style={{ border: "1px solid rgba(255, 0, 0, 0)" }}
         />
       )}
       className="grid grid-cols-3"
