@@ -138,24 +138,35 @@ public class PostService {
 
         log.info("post : {}", postList.get(0).getContent());
         log.info("images : {}", postList.get(0).getPostImages().isEmpty());
-        List<PostItem> postItems = postList.stream().map(post -> PostItem.builder()
-                .id(post.getId())
-                .authorName(post.getAuthor().getNickname())
-                .authorId(post.getAuthor().getId())
-                .content(post.getContent())
-                .heartCount(post.getHearts().size())
-                .isHearted(heartRepository.existsByPostAndMember(post, viewer))
-                .isPublic(post.getIsPublic())
-                .postType(post.getPostType())
-                .profileImage(post.getAuthor().getImageUrl())
-                .postImages(post.getPostImages().stream()
-                        .sorted(Comparator.comparing(PostImage::getId))
-                        .map(PostImage::getImageUrl)
-                        .toList())
-                .createdAt(post.getCreatedAt())
-                .updatedAt(post.getUpdatedAt())
-                .title(post.getTitle())
-                .build()).toList();
+        List<PostItem> postItems = postList.stream().map(post ->{
+            String authNickName;
+            String authProfile;
+            if (PostType.NOTICE == post.getPostType()) {
+                authProfile = post.getCrew().getMainLogo();
+                authNickName = post.getCrew().getCrewName();
+            } else {
+                authProfile = post.getAuthor().getImageUrl();
+                authNickName = post.getAuthor().getNickname();
+            }
+            return PostItem.builder()
+                    .id(post.getId())
+                    .authorName(authNickName)
+                    .authorId(post.getAuthor().getId())
+                    .content(post.getContent())
+                    .heartCount(post.getHearts().size())
+                    .isHearted(heartRepository.existsByPostAndMember(post, viewer))
+                    .isPublic(post.getIsPublic())
+                    .postType(post.getPostType())
+                    .profileImage(authProfile)
+                    .postImages(post.getPostImages().stream()
+                            .sorted(Comparator.comparing(PostImage::getId))
+                            .map(PostImage::getImageUrl)
+                            .toList())
+                    .createdAt(post.getCreatedAt())
+                    .updatedAt(post.getUpdatedAt())
+                    .title(post.getTitle())
+                    .build();
+        }).toList();
 
         return PagingItemsResponse.<PostItem>builder()
                 .items(postItems)
@@ -346,3 +357,4 @@ public class PostService {
 
 
 }
+

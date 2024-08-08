@@ -581,6 +581,7 @@ public class CrewService {
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
                 .postImages(imageUrls)
+                .profileImage(member.getImageUrl())
                 .build();
 
     }

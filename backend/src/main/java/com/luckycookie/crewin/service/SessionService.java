@@ -24,6 +24,7 @@ import com.luckycookie.crewin.exception.sessionImage.SessionImageUploadException
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -56,6 +57,10 @@ public class SessionService {
     private final SessionImageRepository sessionImageRepository;
     private final MemberSessionRepository memberSessionRepository;
     private final S3Service s3Service;
+
+    @Value("${image.default.session-poster}")
+    private String defaultSessionPoster;
+
 
     public void createSession(CreateSessionRequest createSessionRequest, CustomUser customUser) {
 
@@ -125,7 +130,11 @@ public class SessionService {
                 sessionPosterRepository.save(sessionPoster);
             }
         } else {
-
+            SessionPoster sessionPoster = SessionPoster.builder()
+                    .session(session)
+                    .imageUrl(defaultSessionPoster)
+                    .build();
+            sessionPosterRepository.save(sessionPoster);
         }
 
         memberSessionRepository
@@ -144,11 +153,20 @@ public class SessionService {
         Member host = memberRepository.findById(session.getHost().getId())
                 .orElseThrow(NotFoundMemberException::new);
 
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+
         boolean userSessionCompare;
         userSessionCompare = customUser.getEmail().equals(host.getEmail());
 
         Course course = courseRepository.findById(session.getCourse().getId())
                 .orElseThrow(NotFoundCourseException::new);
+
+        // 현재 세션에 참가한 사람
+        List<MemberSession> memberSessionList = memberSessionRepository.findBySession(session);
+
+        // 내가 현재 이 세션에 참가 중인지 아닌지
+        Boolean isJoined = memberSessionList.stream().anyMatch(memberSession -> memberSession.getMember().equals(member));
 
         String crewName = null;
         if (session.getSessionType() != THUNDER) {
@@ -163,9 +181,11 @@ public class SessionService {
                 .area(session.getArea())
                 .hostNickname(host.getNickname())
                 .crewName(crewName)
+                .isJoined(isJoined)
                 .sessionName(session.getName())
                 .spot(session.getSpot())
                 .content(session.getContent())
+                .currentPeople(memberSessionList.size())
                 .courseThumbnail(course.getThumbnailImage())
                 .maxPeople(session.getMaxPeople())
                 .pace(session.getPace())
