@@ -2,22 +2,22 @@ import {
   GetCrewGalleryListDetailReqeustParams,
   PostDto,
 } from "../../apis/api/crewGallaryList";
-import CrewGallaryListDetailComponent from "../organisms/CrewGalleryDetailListOrganism";
+import CrewGalleryListDetailComponent from "../organisms/CrewGalleryDetailListOrganism";
 
 type OwnProps = {
   postId: number;
   fetchData: (dto: GetCrewGalleryListDetailReqeustParams) => Promise<PostDto[]>;
 };
 
-const CrewGallaryListDetailTemplate: React.FC<OwnProps> = ({
+const CrewGalleryListDetailTemplate: React.FC<OwnProps> = ({
   postId,
   fetchData,
 }: OwnProps) => {
   return (
     <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20">
-      <CrewGallaryListDetailComponent postId={postId} fetchData={fetchData} />
+      <CrewGalleryListDetailComponent postId={postId} fetchData={fetchData} />
     </div>
   );
 };
 
-export default CrewGallaryListDetailTemplate;
+export default CrewGalleryListDetailTemplate;

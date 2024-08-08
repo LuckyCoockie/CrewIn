@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import CrewGallaryListDetailTemplate from "../components/templates/CrewGalleryDetailListTemplate";
+import CrewGalleryListDetailTemplate from "../components/templates/CrewGalleryDetailListTemplate";
 import {
   getCrewGallaryDetailList,
   GetCrewGalleryListDetailReqeustParams,
@@ -7,7 +7,7 @@ import {
 import { useParams } from "react-router";
 import qs from "query-string";
 
-const CrewGallaryListDetailPage: React.FC = () => {
+const CrewGalleryListDetailPage: React.FC = () => {
   const { crewId } = useParams();
   const { postId } = qs.parse(location.search);
 
@@ -28,8 +28,8 @@ const CrewGallaryListDetailPage: React.FC = () => {
   if (!postId || !parseInt(postId)) return "postId가 필요합니다.";
 
   return (
-    <CrewGallaryListDetailTemplate postId={postId} fetchData={fetchData} />
+    <CrewGalleryListDetailTemplate postId={postId} fetchData={fetchData} />
   );
 };
 
-export default CrewGallaryListDetailPage;
+export default CrewGalleryListDetailPage;

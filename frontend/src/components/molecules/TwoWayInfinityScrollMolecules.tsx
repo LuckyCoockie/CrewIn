@@ -40,7 +40,7 @@ const TwoWayInfiniteScrollComponent = <T extends { id: number }>({
     ({
       pageParam = {
         postId: postId,
-        direction: "increase",
+        direction: "decrease",
       },
     }) => fetchData(pageParam),
     {

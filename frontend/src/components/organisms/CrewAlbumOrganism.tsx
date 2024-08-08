@@ -3,9 +3,13 @@ import { CrewGalleryDto } from "../../apis/api/crewdetail";
 
 type PhotosProps = {
   fetchgalleryData: CrewGalleryDto[];
+  onItemClicked?: (postId: number) => Promise<void>;
 };
 
-const CrewAlbumOrganism: React.FC<PhotosProps> = ({ fetchgalleryData }) => {
+const CrewAlbumOrganism: React.FC<PhotosProps> = ({
+  fetchgalleryData,
+  onItemClicked,
+}) => {
   return (
     <>
       {fetchgalleryData.length > 0 ? (
@@ -16,6 +20,9 @@ const CrewAlbumOrganism: React.FC<PhotosProps> = ({ fetchgalleryData }) => {
             key={index}
             className="w-1/3 h-1/3"
             style={{ border: "1px solid rgba(255, 0, 0, 0)" }}
+            onClick={() => {
+              if (onItemClicked) onItemClicked(photo.postId);
+            }}
           />
         ))
       ) : (

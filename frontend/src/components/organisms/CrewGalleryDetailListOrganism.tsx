@@ -13,7 +13,7 @@ type OwnProps = {
   ) => Promise<PostDto[]>;
 };
 
-const CrewGallaryListDetailComponent: React.FC<OwnProps> = ({
+const CrewGalleryListDetailComponent: React.FC<OwnProps> = ({
   postId,
   fetchData,
 }) => {
@@ -29,4 +29,4 @@ const CrewGallaryListDetailComponent: React.FC<OwnProps> = ({
   );
 };
 
-export default CrewGallaryListDetailComponent;
+export default CrewGalleryListDetailComponent;

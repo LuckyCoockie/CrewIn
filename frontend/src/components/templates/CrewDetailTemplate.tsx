@@ -11,9 +11,11 @@ import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism"
 import GroupsButton from "../atoms/Button/GroupsButton";
 import { getCrewInfo, getCrewGalleryList } from "../../apis/api/crewdetail";
 import { getMyCrews } from "../../apis/api/mycrew";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import { createSearchParams } from "react-router-dom";
 
 const CrewDetailTemplate: React.FC = () => {
+  const navigate = useNavigate();
   const [currentTab, setCurrentTab] = useState<string>("공지사항");
   const { crewId } = useParams<{ crewId: string }>();
   const numericCrewId = Number(crewId);
@@ -112,7 +114,16 @@ const CrewDetailTemplate: React.FC = () => {
         );
       case "사진첩":
         return galleryData ? (
-          <CrewAlbumOrganism fetchgalleryData={galleryData} />
+          <CrewAlbumOrganism
+            fetchgalleryData={galleryData}
+            onItemClicked={async (postId) =>
+              navigate(
+                `/crew/gallery/${crewId}?${createSearchParams({
+                  postId: postId.toString(),
+                })}`
+              )
+            }
+          />
         ) : (
           <div>No Gallery Data</div>
         );
