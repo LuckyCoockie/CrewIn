@@ -2,7 +2,7 @@ import api from "../utils/instance";
 
 export type SessionCreateDto = {
   courseId: number;
-  crewId: number | null;
+  crewId: number | undefined;
   sessionType: string;
   name: string;
   images: string[];

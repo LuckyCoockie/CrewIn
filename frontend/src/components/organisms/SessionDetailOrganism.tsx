@@ -5,14 +5,19 @@ import DetailInfoMolecule from "../molecules/Content/DetailInfoMolecule";
 import DetailInfoPaceMolecule from "../molecules/Content/DetailInfoPaceMolecule";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 
-import { SessionDetailDto } from "../../apis/api/sessiondetail";
+import {
+  SessionDetailDto,
+  participateSession,
+} from "../../apis/api/sessiondetail";
 
 type SessionDetailOrganismProps = {
   detailData: SessionDetailDto;
+  sessionId: number;
 };
 
 const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
   detailData,
+  sessionId,
 }) => {
   const {
     hostname,
@@ -27,6 +32,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
     area,
     content,
     sessionPosters,
+    isSessionHost,
   } = detailData;
   const isSessionStarted = detailData ? new Date(startAt) < new Date() : false;
   const sessionTypeSubstitute = (type: string) => {
@@ -63,8 +69,9 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
     return `${month} ${day}일 ${period} ${adjustedHours}시 ${minutes}분`;
   };
 
-  const handleParticipate = () => {};
-  console.log(startAt, endAt);
+  const handleParticipate = () => {
+    participateSession({ sessionId });
+  };
 
   return (
     <>
@@ -98,7 +105,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
         <DetailInfoMolecule title="집결지" content={spot} />
         <DetailInfoMolecule title="코스" content={area} />
         <DetailInfoMolecule title="내용" content={content} />
-        {!isSessionStarted && (
+        {!isSessionHost && !isSessionStarted && (
           <LargeAbleButton onClick={handleParticipate} text="참가 신청" />
         )}
       </main>

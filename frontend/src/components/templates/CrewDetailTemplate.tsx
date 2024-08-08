@@ -8,7 +8,6 @@ import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import CrewAlbumOrganism from "../organisms/CrewAlbumOrganism";
 import CrewHeaderBarOrganism from "../organisms/CrewHeaderBarOrganism";
 import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
-
 import GroupsButton from "../atoms/Button/GroupsButton";
 import { getCrewInfo, getCrewGalleryList } from "../../apis/api/crewdetail";
 import { getMyCrews } from "../../apis/api/mycrew";
@@ -113,9 +112,7 @@ const CrewDetailTemplate: React.FC = () => {
         );
       case "사진첩":
         return galleryData ? (
-          <CrewAlbumOrganism
-            photos={galleryData.flatMap((gallery) => gallery.thumbnailImage)}
-          />
+          <CrewAlbumOrganism fetchgalleryData={galleryData} />
         ) : (
           <div>No Gallery Data</div>
         );
