@@ -15,7 +15,7 @@ const UserProfileBarNoMenu: React.FC<ProfileHeaderProps> = ({
   timeAgo,
 }) => {
   return (
-    <div className="flex items-center w-full">
+    <div className="flex items-center w-full mb-4">
       <ProfileImageComponent src={profileImage} />
       <div className="flex flex-col">
         <BarTitle title={username} />
