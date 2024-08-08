@@ -74,10 +74,11 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     setIsExpanded(!isExpanded);
   };
 
+  // Remove the prefix "약 " from the time ago string
   const timeAgo = formatDistanceToNow(parseISO(createdAt), {
     addSuffix: true,
     locale: ko,
-  });
+  }).replace("약 ", "");
 
   return (
     <div className="w-full mb-4 pb-3">
