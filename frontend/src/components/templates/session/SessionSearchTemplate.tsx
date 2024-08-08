@@ -1,5 +1,5 @@
 import { ReactComponent as InfoIcon } from "../../../assets/icons/info_icon.svg";
-import { ReactComponent as RunningIcon } from "../../../assets/icons/running_icon.svg";
+import { ReactComponent as Plus } from "../../../assets/icons/plus.svg";
 import {
   GetSessionListRequestDto,
   SessionDto,
@@ -95,7 +95,7 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({ onSearch, fetchData }) => {
           )}
         />
         <FloatingActionButton onClick={handleSessionCreateRoute}>
-          <RunningIcon className="w-6 h-6" />
+          <Plus />
         </FloatingActionButton>
       </div>
     </main>

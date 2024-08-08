@@ -3,7 +3,7 @@ import {
   GetSessionListRequestDto,
   getSessionList,
 } from "../../apis/api/session";
-import SessionSearchTemplate from "../../components/templates/session/SessionSearchtTemplate";
+import SessionSearchTemplate from "../../components/templates/session/SessionSearchTemplate";
 import { createSearchParams, useNavigate } from "react-router-dom";
 import { removeUndefinedKey } from "../../util/removeUndefinedKey";
 
