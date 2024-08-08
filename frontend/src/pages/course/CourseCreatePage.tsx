@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import { createCourse } from "../../apis/api/course.ts";
 import { uploadImage } from "../../apis/api/presigned.ts";
 import CourseCreateTemplate from "../../components/templates/CourseCreateTemplate.tsx";
@@ -8,6 +9,7 @@ import { reversGeocodingApi } from "../../util/maps/tmap/apis/api/geocodeApi.ts"
 
 const CourseCreatePage: React.FC = () => {
   const { location } = useGeolocation();
+  const navigate = useNavigate();
 
   const encodeInfo = async (
     markers: { title: string; point: Point }[],
@@ -56,6 +58,8 @@ const CourseCreatePage: React.FC = () => {
               thumbnailImage: imageUrl,
               area: area,
             });
+
+            navigate("/profile", { replace: true });
           }}
         />
       </NaverMapProvider>
