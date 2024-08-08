@@ -18,6 +18,19 @@ const MyPageMadeSessionOrganism: React.FC<MyPageMadeSessionOrganismProps> = ({
   isMadeSessionsError,
   isMadeSessionsLoading,
 }) => {
+  const convertText = (startAt: string, endAt: string) => {
+    const now = new Date();
+    const startAtDate = new Date(startAt);
+    const endAtDate = new Date(endAt);
+
+    if (now < startAtDate) {
+      return "진행 예정";
+    } else if (now >= startAtDate && now <= endAtDate) {
+      return "진행중";
+    } else {
+      return "종료";
+    }
+  };
 
   return (
     <>
@@ -36,7 +49,9 @@ const MyPageMadeSessionOrganism: React.FC<MyPageMadeSessionOrganismProps> = ({
                 key={index}
                 src={data.imageUrl}
                 alt={data.sessionName}
-                text={data.sessionName}
+                text={convertText(data.startAt, data.endAt)}
+                router="session"
+                routerId={data.sessionId}
               />
             )}
           />

@@ -38,6 +38,8 @@ const MyPageParticipatedSessionOrganism: React.FC<
                 src={data.imageUrl}
                 alt={data.sessionName}
                 text={data.sessionName}
+                router="session"
+                routerId={data.sessionId}
               />
             )}
           />
