@@ -38,6 +38,10 @@ public class MemberCrew {
 
     private int attendanceCount;
 
+    public void plusAttendance(){
+        attendanceCount++;
+    }
+
     public void updateMemberCrewInvitation(Boolean replyStatus) {
         if (replyStatus) { // 이때는 수락
             this.isInvited = true;

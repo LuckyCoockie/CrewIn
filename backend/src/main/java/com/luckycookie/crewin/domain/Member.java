@@ -9,13 +9,15 @@ import lombok.NoArgsConstructor;
 
 import org.hibernate.annotations.DynamicInsert;
 
+import java.time.Duration;
+
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert
-@Table(name="member")
+@Table(name = "member")
 public class Member {
 
     @Id
@@ -44,16 +46,25 @@ public class Member {
 
     private int totalAttendance;
 
-    public void changePassword(String newPassword){
+    public void changePassword(String newPassword) {
         this.password = newPassword;
     }
 
-    public void updateMemberNotification(boolean bool) { this.existNotification = bool; }
+    public void updateMemberNotification(boolean bool) {
+        this.existNotification = bool;
+    }
 
     public void updateProfileImage(String profileImageUrl) {
         this.imageUrl = profileImageUrl;
     }
 
-    public void changeNickname(String newNickname){ this.nickname = newNickname; }
+    public void changeNickname(String newNickname) {
+        this.nickname = newNickname;
+    }
 
+    public void updateRunRecord(Session session) {
+        this.totalDistance += session.getCourse().getLength();
+        this.totalTime += (int) Duration.between(session.getStartAt(), session.getEndAt()).toSeconds();
+        this.totalAttendance += 1;
+    }
 }

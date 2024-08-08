@@ -1,12 +1,9 @@
 package com.luckycookie.crewin.service;
 
 import com.luckycookie.crewin.domain.Member;
-import com.luckycookie.crewin.domain.MemberCrew;
 import com.luckycookie.crewin.domain.MemberSession;
 import com.luckycookie.crewin.domain.Session;
-import com.luckycookie.crewin.dto.AttendanceRequest;
 import com.luckycookie.crewin.dto.AttendanceRequest.StartAttendanceRequest;
-import com.luckycookie.crewin.dto.AttendanceResponse;
 import com.luckycookie.crewin.dto.AttendanceResponse.AttendanceMemberItem;
 import com.luckycookie.crewin.dto.AttendanceResponse.AttendanceMemberResponse;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
@@ -18,16 +15,17 @@ import com.luckycookie.crewin.repository.MemberRepository;
 import com.luckycookie.crewin.repository.MemberSessionRepository;
 import com.luckycookie.crewin.repository.SessionRepository;
 import com.luckycookie.crewin.security.dto.CustomUser;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional
@@ -38,6 +36,8 @@ public class AttendanceService {
     private final SessionRepository sessionRepository;
     private final MemberRepository memberRepository;
     private final MemberSessionRepository memberSessionRepository;
+    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledService scheduledService;
 
     public void startAttendance(Long sessionId, String email, StartAttendanceRequest startAttendanceRequest) {
         // 세션 존재 체크
@@ -49,9 +49,7 @@ public class AttendanceService {
             throw new SessionAuthorizationException();
         }
 
-        // 이미 시작한 세션은 또 시작 불가능
-
-        //시작 시간이 세션 시작시간 이후인지 체크
+        // 이미 시작한 세션은 또 시작 불가능 && 시작 시간이 세션 시작시간 이후인지 체크
         if (session.getAttendanceStart() != null || LocalDateTime.now().isBefore(session.getStartAt())) {
             throw new InvalidSessionException();
         }
@@ -62,11 +60,16 @@ public class AttendanceService {
         hostAttendance.changeAttend(true);
 
         // 스케줄러 등록
-        
+        long delay = Duration.between(LocalDateTime.now(), session.getEndAt()).toSeconds();
+        if (delay < 0) {
+            throw new InvalidSessionException();
+        }
+
+        executorService.schedule(() -> scheduledService.closeAttendance(session), delay, TimeUnit.SECONDS);
     }
 
     // 출석부 목록 조회
-    public AttendanceMemberResponse getAttendanceMemberList(Long sessionId, CustomUser customUser){
+    public AttendanceMemberResponse getAttendanceMemberList(Long sessionId, CustomUser customUser) {
 
         Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundSessionException::new);
 

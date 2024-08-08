@@ -3,14 +3,12 @@ package com.luckycookie.crewin.service;
 import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.Position;
 import com.luckycookie.crewin.domain.enums.SessionType;
-import com.luckycookie.crewin.dto.*;
 import com.luckycookie.crewin.dto.SessionRequest.CreateSessionRequest;
 import com.luckycookie.crewin.dto.SessionRequest.UpdateSessionRequest;
 import com.luckycookie.crewin.dto.SessionRequest.UploadSessionImageRequest;
 import com.luckycookie.crewin.dto.SessionResponse.SessionItem;
 import com.luckycookie.crewin.dto.base.PagingItemsResponse;
 import com.luckycookie.crewin.exception.course.NotFoundCourseException;
-import com.luckycookie.crewin.exception.crew.CrewMemberNotExistException;
 import com.luckycookie.crewin.exception.crew.CrewUnauthorizedException;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.MemberNotFoundException;
@@ -37,7 +35,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.luckycookie.crewin.domain.enums.SessionType.*;
 import static com.luckycookie.crewin.dto.SessionResponse.*;
@@ -127,6 +124,8 @@ public class SessionService {
                         .build();
                 sessionPosterRepository.save(sessionPoster);
             }
+        } else {
+
         }
 
         memberSessionRepository

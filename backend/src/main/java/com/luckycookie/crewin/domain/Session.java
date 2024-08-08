@@ -47,7 +47,6 @@ public class Session {
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "session")
     private List<SessionPoster> posterImages = new ArrayList<>();
 
-
     @Enumerated(EnumType.STRING)
     private SessionType sessionType;
 
@@ -99,7 +98,7 @@ public class Session {
     public void startSession(StartAttendanceRequest startAttendanceRequest) {
         lat = startAttendanceRequest.getLat();
         lng = startAttendanceRequest.getLng();
-        startAt = LocalDateTime.now();
+        attendanceStart = LocalDateTime.now();
     }
 
 }

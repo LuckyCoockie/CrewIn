@@ -1,8 +1,6 @@
 package com.luckycookie.crewin.controller;
 
-import com.luckycookie.crewin.dto.AttendanceRequest;
 import com.luckycookie.crewin.dto.AttendanceRequest.StartAttendanceRequest;
-import com.luckycookie.crewin.dto.AttendanceResponse;
 import com.luckycookie.crewin.dto.AttendanceResponse.AttendanceMemberResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.security.dto.CustomUser;
@@ -25,12 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
-//
-//    @PostMapping("/start/{session-id}")
-//    public ResponseEntity<BaseResponse<Void>> startAttendance(@PathVariable("session-id") String sessionId, @RequestBody StartAttendanceRequest startAttendanceRequest, @AuthenticationPrincipal CustomUser customUser) {
-//        attendanceService.startAttendance();
-//
-//    }
+
+    @PostMapping("/start/{session-id}")
+    public ResponseEntity<BaseResponse<Void>> startAttendance(@PathVariable("session-id") Long sessionId, @RequestBody StartAttendanceRequest startAttendanceRequest, @AuthenticationPrincipal CustomUser customUser) {
+        attendanceService.startAttendance(sessionId, customUser.getEmail(), startAttendanceRequest);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "출석이 정상적으로 시작되었습니다."));
+    }
 
     // 출석부 목록 조회
     @GetMapping("/member/{session-id}")
