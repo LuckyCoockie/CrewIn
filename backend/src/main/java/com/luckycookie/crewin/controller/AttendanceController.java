@@ -38,6 +38,13 @@ public class AttendanceController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "출석이 정상적으로 처리되었습니다."));
     }
 
+    // 출석체크 수정
+    @PutMapping("/{member-session-id}")
+    public ResponseEntity<BaseResponse<Void>> updateAttendance(@PathVariable("member-session-id") Long memberSessionId, @RequestParam("attend") boolean attendValue, @AuthenticationPrincipal CustomUser customUser) {
+        attendanceService.updateAttendance(memberSessionId, attendValue, customUser.getEmail());
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "출석이 정상적으로 수정되었습니다."));
+    }
+
     // 출석부 목록 조회
     @GetMapping("/member/{session-id}")
     public ResponseEntity<BaseResponse<AttendanceMemberResponse>> getAttendanceMemberList(@PathVariable("session-id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {

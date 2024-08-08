@@ -8,6 +8,7 @@ import com.luckycookie.crewin.dto.AttendanceResponse.AttendanceMemberItem;
 import com.luckycookie.crewin.dto.AttendanceResponse.AttendanceMemberResponse;
 import com.luckycookie.crewin.exception.attendance.InvalidLocationException;
 import com.luckycookie.crewin.exception.attendance.InvalidRequestTimeException;
+import com.luckycookie.crewin.exception.attendance.UnauthorizedRequestException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.memberSession.NotFoundMemberSessionException;
 import com.luckycookie.crewin.exception.session.InvalidSessionException;
@@ -147,5 +148,26 @@ public class AttendanceService {
     private boolean isDistanceMoreThan100Meters(double lat1, double lon1, double lat2, double lon2) {
         double distance = calculateDistance(lat1, lon1, lat2, lon2);
         return distance > 100;
+    }
+
+    public void updateAttendance(Long memberSessionId, boolean attendValue, String email) {
+        MemberSession memberSession = memberSessionRepository.findByIdWithSessionHost(memberSessionId).orElseThrow(NotFoundMemberSessionException::new);
+        Member client = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
+
+        // 수정 요청자가 호스트인지 체크
+        if (!memberSession.getSession().getHost().getId().equals(client.getId())) {
+            throw new UnauthorizedRequestException();
+        }
+
+        Session session = memberSession.getSession();
+
+        // 수정시간은 자동출석 끝난 뒤부터 세션 종료 시간까지
+        if (LocalDateTime.now().isBefore(session.getAttendanceStart().plusMinutes(10)) ||
+                LocalDateTime.now().isAfter(session.getEndAt())) {
+            throw new InvalidRequestTimeException();
+        }
+
+        // 출석 수정
+        memberSession.changeAttend(attendValue);
     }
 }

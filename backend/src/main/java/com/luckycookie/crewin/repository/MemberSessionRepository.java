@@ -36,4 +36,7 @@ public interface MemberSessionRepository extends JpaRepository<MemberSession, Lo
     List<MemberSession> findBySession(Session session);
 
     boolean existsByMemberAndSession(Member member, Session session);
+
+    @Query("select ms from MemberSession ms join fetch ms.session s join fetch s.host where ms.id = :id")
+    Optional<MemberSession> findByIdWithSessionHost(Long id);
 }
