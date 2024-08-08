@@ -61,7 +61,7 @@ public class CrewRequest {
 
     // 초대 당한 사람 (강퇴 당한 사람)
     @Getter
-    @SuperBuilder
+    @Builder
     @AllArgsConstructor
     @NoArgsConstructor
     public static class CrewMemberRequest{
@@ -71,10 +71,11 @@ public class CrewRequest {
 
     // 초대 당한 사람의 응답
     @Getter
-    @SuperBuilder
+    @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class CrewReplyMemberRequest extends CrewMemberRequest{
+    public static class CrewReplyMemberRequest {
+        private Long crewId; // 초대한 사람의 crewId
         private Boolean replyStatus; // 수락인지, 거절인지 (수락이면 true, 거절이면 false)
     }
 
