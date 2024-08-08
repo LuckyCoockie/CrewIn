@@ -26,6 +26,7 @@ import com.luckycookie.crewin.exception.sessionImage.SessionImageUploadException
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,7 +38,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.luckycookie.crewin.domain.enums.SessionType.*;
 import static com.luckycookie.crewin.dto.SessionResponse.*;
@@ -59,6 +59,10 @@ public class SessionService {
     private final SessionImageRepository sessionImageRepository;
     private final MemberSessionRepository memberSessionRepository;
     private final S3Service s3Service;
+
+    @Value("${image.default.session-poster}")
+    private String defaultSessionPoster;
+
 
     public void createSession(CreateSessionRequest createSessionRequest, CustomUser customUser) {
 
@@ -127,6 +131,12 @@ public class SessionService {
                         .build();
                 sessionPosterRepository.save(sessionPoster);
             }
+        }else {
+            SessionPoster sessionPoster = SessionPoster.builder()
+                    .session(session)
+                    .imageUrl(defaultSessionPoster)
+                    .build();
+            sessionPosterRepository.save(sessionPoster);
         }
 
         memberSessionRepository
