@@ -231,20 +231,20 @@ const CrewInvitePage: React.FC = () => {
       {crewId === null ? (
         <p>Loading crew information...</p>
       ) : searching ? (
-        <p>Searching members...</p>
+        ""
       ) : (
         <>
           {renderMemberList(
             (member) =>
               (member.isJoined === false || member.isJoined === null) &&
               (member.isInvited === false || member.isInvited === null),
-            "Invitation Allowed"
+            ""
           )}
           {renderMemberList(
             (member) =>
               (member.isJoined === false || member.isJoined === null) &&
               member.isInvited === true,
-            "Invitation in Progress"
+            ""
           )}
         </>
       )}

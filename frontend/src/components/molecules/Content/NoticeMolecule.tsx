@@ -7,12 +7,18 @@ type NoticeInfo = {
   text: string;
   title: string;
   date: string;
+  onClick: () => void;
 };
 
-const NoticeMolecule: React.FC<NoticeInfo> = ({ text, title, date }) => {
+const NoticeMolecule: React.FC<NoticeInfo> = ({
+  text,
+  title,
+  date,
+  onClick,
+}) => {
   return (
     <>
-      <div className="flex w-full items-center py-2">
+      <div className="flex w-full items-center py-2" onClick={onClick}>
         <div className="flex w-3/12 justify-center">
           <RoleChip text={text} />
         </div>

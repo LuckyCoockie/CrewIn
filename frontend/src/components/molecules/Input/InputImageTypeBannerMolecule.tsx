@@ -1,5 +1,5 @@
 import React from "react";
-import InputIBannermageComponent from "../../atoms/Input/InputIBannermageComponent";
+import InputBannermageComponent from "../../atoms/Input/InputBannermageComponent";
 import InputLabelComponent from "../../atoms/Input/InputLabelComponent";
 
 type InputData = {
@@ -10,23 +10,24 @@ type InputData = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const InputImageTypeBannerMolecule = React.forwardRef<HTMLInputElement, InputData>(
-  (props, ref) => {
-    return (
-      <>
-        <div className="mb-4">
-          <InputLabelComponent id={props.id} title={props.title} />
-          <InputIBannermageComponent
-            placeholder={props.placeholder}
-            id={props.id}
-            name={props.name}
-            ref={ref}
-            onChange={props.onChange}
-          />
-        </div>
-      </>
-    );
-  }
-);
+const InputImageTypeBannerMolecule = React.forwardRef<
+  HTMLInputElement,
+  InputData
+>((props, ref) => {
+  return (
+    <>
+      <div className="mb-4">
+        <InputLabelComponent id={props.id} title={props.title} />
+        <InputBannermageComponent
+          placeholder={props.placeholder}
+          id={props.id}
+          name={props.name}
+          ref={ref}
+          onChange={props.onChange}
+        />
+      </div>
+    </>
+  );
+});
 
 export default InputImageTypeBannerMolecule;

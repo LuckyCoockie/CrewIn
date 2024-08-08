@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import {
   AttendanceMemberDto,
   ChangeAttendRequestDto,
@@ -37,7 +37,9 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
   // TODO : SSE url 추가 필요
   const { setIsActive } = useSSE("/");
 
-  setIsActive(isAttendStarted);
+  useEffect(() => {
+    setIsActive(isAttendStarted);
+  }, [isAttendStarted, setIsActive]);
 
   return (
     <>

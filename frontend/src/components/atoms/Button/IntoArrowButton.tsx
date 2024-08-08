@@ -14,7 +14,7 @@ const IntoArrowButton: React.FC<Props> = ({ router }) => {
   return (
     <IntoArrowIcon
       onClick={moveRouter}
-      className="ms-2 cursor-pointer rounded-full bg-gray-50"
+      className="ms-2 cursor-pointer rounded-full"
     />
   );
 };
