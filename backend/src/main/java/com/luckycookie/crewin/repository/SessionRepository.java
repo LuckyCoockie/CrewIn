@@ -18,7 +18,7 @@ import java.util.Optional;
 public interface SessionRepository extends JpaRepository<Session, Long> {
 
     // 내가 만든 세션 조회
-    @Query("SELECT s FROM Session s JOIN FETCH s.host JOIN FETCH s.course JOIN FETCH s.crew" +
+    @Query("SELECT s FROM Session s JOIN FETCH s.host JOIN FETCH s.course LEFT JOIN s.crew" +
             " WHERE s.host = :member AND s.sessionType = :sessionType order by s.id desc")
     Page<Session> findByHostAndSessionType(Pageable pageable, Member member, SessionType sessionType);
 
