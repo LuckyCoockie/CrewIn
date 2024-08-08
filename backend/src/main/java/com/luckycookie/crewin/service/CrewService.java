@@ -473,22 +473,22 @@ public class CrewService {
 
     // 크루 수락, 거절
     public void replyCrewInvitation(CustomUser customUser, CrewReplyMemberRequest crewReplyMemberRequest) {
+        // 초대한 사람 (어떤 크루 인지 crewId)
+        Crew crew = crewRepository.findById(crewReplyMemberRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
 
         // 초대된 사람 (memberId)
         Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
-        if (!Objects.equals(member.getId(), crewReplyMemberRequest.getMemberId())) {
-            throw new CrewMemberInvitedException();
-        }
-
-        // 초대한 사람 (어떤 크루 인지 crewId)
-        Crew crew = crewRepository.findById(crewReplyMemberRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
 
         MemberCrew memberCrew = memberCrewRepository.findByMemberAndCrew(member, crew).orElseThrow(NotFoundMemberCrewException::new);
 
         // 초대된 사람의 응답 (수락 or 거절)
         if (memberCrew.getPosition() == Position.MEMBER) {
-            if (memberCrew.getIsInvited() && !memberCrew.getIsJoined()) { // isInvited는 true 이고, isJoined는 false인 상태면 초대 미수락 상태
-                memberCrew.updateMemberCrewInvitation(crewReplyMemberRequest.getReplyStatus());
+            if (!memberCrew.getIsInvited()) {
+                throw new CrewMemberInvitedException();
+            } else {
+                if (!memberCrew.getIsJoined()) { // isInvited는 true 이고, isJoined는 false인 상태면 초대 미수락 상태
+                    memberCrew.updateMemberCrewInvitation(crewReplyMemberRequest.getReplyStatus());
+                }
             }
         } else {
             throw new CrewUnauthorizedException(); // Member 일때만 가능 해야 함
