@@ -28,12 +28,20 @@ pipeline {
                     def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
                     def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
                     def Commit_Message = sh(script: "git log -1 --pretty=%B", returnStdout: true).trim()
+                    
+                    // 모든 커밋 메시지 가져오기
+                    def allCommits = sh(script: "git log --pretty=format:'%h - %s (%an)' ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}..HEAD", returnStdout: true).trim()
+                    def formattedCommits = allCommits.split('\n').collect { "• ${it}" }.join('\n')
+
                     def message = """
-                        #### 빌드 시작 : ${Commit_Message}
+                        #### FE 빌드 시작 : ${Commit_Message}
                         **빌드 번호** ${env.JOB_NAME} #${env.BUILD_NUMBER}
                         **브랜치:** ${env.GIT_BRANCH}
                         **작성자:** ${Author_ID} (${Author_Name})
                         **빌드 URL:** [Details](${env.BUILD_URL})
+
+                        **포함된 커밋:**
+                        ${formattedCommits}
                     """.stripIndent()
 
                     mattermostSend(
@@ -121,22 +129,28 @@ pipeline {
                 def Build_Status = currentBuild.result ?: 'SUCCESS'
                 def Status_Color = Build_Status == 'SUCCESS' ? 'good' : (Build_Status == 'UNSTABLE' ? 'warning' : 'danger')
                 def Status_Text = Build_Status == 'SUCCESS' ? '빌드 성공' : (Build_Status == 'UNSTABLE' ? '빌드 불안정' : '빌드 실패')
+    
+                // 모든 커밋 메시지 가져오기
+                def allCommits = sh(script: "git log --pretty=format:'%h - %s (%an)' ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}..HEAD", returnStdout: true).trim()
+                def formattedCommits = allCommits.split('\n').collect { "• ${it}" }.join('\n')
 
                 def message = """
-                    #### ${Status_Text} : ${Commit_Message}
+                    #### FE ${Status_Text} : ${Commit_Message}
                     **빌드 번호** ${env.JOB_NAME} #${env.BUILD_NUMBER}
                     **브랜치:** ${env.GIT_BRANCH}
                     **작성자:** ${Author_ID} (${Author_Name})
                     **빌드 URL:** [Details](${env.BUILD_URL})
-                """.stripIndent()
 
+                    **포함된 커밋:**
+                    ${formattedCommits}
+                """.stripIndent()
 
                 mattermostSend(
                     color: Status_Color,
                     message: message,
                     endpoint: "${env.MATTERMOST_WEBHOOK_URL}",
                     channel: "${env.MATTERMOST_CHANNEL_NAME}",
-                    icon: 'https://jenkins.io/images/logos/jenkins/jenkins.png'  // Jenkins 로고 URL
+                    icon: 'https://jenkins.io/images/logos/jenkins/jenkins.png'
                 )
             }
         }
