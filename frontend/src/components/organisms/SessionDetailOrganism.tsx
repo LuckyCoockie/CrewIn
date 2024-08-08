@@ -88,7 +88,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
         ))}
       </Carousel>
       <main>
-        <DetailInfoMolecule title="크루명" content={crewName} />
+        {crewName && <DetailInfoMolecule title="크루명" content={crewName} />}
         <DetailInfoMolecule
           title="개최자"
           content={hostNickname + `(${hostname})`}
