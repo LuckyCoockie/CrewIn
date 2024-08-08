@@ -16,7 +16,7 @@ const InputImageMultiTypeMolecule = React.forwardRef<
 >((props, ref) => {
   return (
     <>
-      <div className="mb-4">
+      <div className="mb-4 w-full">
         <InputLabelComponent id={props.id} title={props.title} />
         <InputImageMultiComponent
           placeholder={props.placeholder}

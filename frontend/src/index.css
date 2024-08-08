@@ -140,9 +140,6 @@ header {
   padding-bottom: 8px;
   padding-left: 14px;
   border: 1px solid #d1d5db;
-  /* Tailwind's border-gray-300 */
-  border: 1px solid #d1d5db;
-  /* Tailwind's border-gray-300 */
   cursor: pointer;
 }
 
@@ -195,4 +192,10 @@ header {
   .photo-item {
     height: 180px; /* 화면 너비가 550px 이상일 때 높이 설정 */
   }
+}
+
+/* IOS 버전 */
+input[type="file"] {
+  appearance: none;
+  -webkit-appearance: none;
 }
