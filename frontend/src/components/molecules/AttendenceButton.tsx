@@ -1,3 +1,4 @@
+import React from "react";
 import { useCallback, useState } from "react";
 
 type OwnProps = {
@@ -37,4 +38,4 @@ const AttendenceButton: React.FC<OwnProps> = ({
   );
 };
 
-export default AttendenceButton;
+export default React.memo(AttendenceButton);

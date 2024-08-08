@@ -27,56 +27,56 @@ export const getAttendanceMemberList = async (
         "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
     },
     {
-      memberSessionId: 1,
+      memberSessionId: 2,
       name: "name",
       nickname: "nickname",
       profileUrl:
         "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
     },
     {
-      memberSessionId: 1,
+      memberSessionId: 3,
       name: "name",
       nickname: "nickname",
       profileUrl:
         "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
     },
     {
-      memberSessionId: 1,
+      memberSessionId: 4,
       name: "name",
       nickname: "nickname",
       profileUrl:
         "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
     },
     {
-      memberSessionId: 1,
+      memberSessionId: 5,
       name: "name",
       nickname: "nickname",
       profileUrl:
         "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
     },
     {
-      memberSessionId: 1,
+      memberSessionId: 6,
       name: "name",
       nickname: "nickname",
       profileUrl:
         "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
     },
     {
-      memberSessionId: 1,
+      memberSessionId: 7,
       name: "name",
       nickname: "nickname",
       profileUrl:
         "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
     },
     {
-      memberSessionId: 1,
+      memberSessionId: 8,
       name: "name",
       nickname: "nickname",
       profileUrl:
         "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
     },
     {
-      memberSessionId: 1,
+      memberSessionId: 9,
       name: "name",
       nickname: "nickname",
       profileUrl:

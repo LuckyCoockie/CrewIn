@@ -7,6 +7,7 @@ import LargeAbleButton from "../../atoms/Button/LargeAbleButton";
 import AttendenceMemberListOrganism from "../../organisms/AttendenceMemberListOrganism";
 import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
 import TimerOrganism from "../../organisms/TimerOrganism";
+import useSSE from "../../../util/sse/useSSE";
 
 type OwnProps = {
   onStartAttendanceClick: () => Promise<void>;
@@ -33,6 +34,11 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     return currentTime.getTime() >= givenTime.getTime();
   }, [startAt]);
 
+  // TODO : SSE url 추가 필요
+  const { setIsActive } = useSSE("/");
+
+  setIsActive(isAttendStarted);
+
   return (
     <>
       <header>
@@ -45,7 +51,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
           onPostAttendanceClick={onHostAttendanceClick}
         />
         <div className="mx-auto w-full max-w-[550px] fixed bottom-0 left-0 right-0 flex justify-center items-center z-50 px-2 pb-20 pt-5 bg-white">
-          {isSessionStarted ? (
+          {!isSessionStarted ? (
             isSessionHost ? (
               isAttendStarted ? (
                 <TimerOrganism initSeconds={1} />
