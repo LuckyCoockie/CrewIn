@@ -34,6 +34,7 @@ import MySessionPage from "./pages/session/MySessionPage.tsx";
 import MyProfilePage from "./pages/MyProfilePage.tsx";
 import PeopleProfilePage from "./pages/PeopleProfilePage.tsx";
 import CrewRedirectPage from "./pages/crew/CrewRedirectPage.tsx";
+import AttendancePage from "./pages/Attendance/AttendancePage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -52,7 +53,13 @@ export const router = createBrowserRouter([
             children: [
               { path: "", element: <SessionSearchPage /> },
               { path: "create", element: <SessionCreatePage /> },
-              { path: "detail/:sessionId", element: <SessionDetailPage /> },
+              {
+                path: ":sessionId",
+                children: [
+                  { path: "", element: <SessionDetailPage /> },
+                  { path: "attendance", element: <AttendancePage /> },
+                ],
+              },
             ],
           },
           {
