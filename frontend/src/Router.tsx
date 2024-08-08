@@ -34,7 +34,7 @@ import MySessionPage from "./pages/session/MySessionPage.tsx";
 import MyProfilePage from "./pages/MyProfilePage.tsx";
 import PeopleProfilePage from "./pages/PeopleProfilePage.tsx";
 import CrewRedirectPage from "./pages/crew/CrewRedirectPage.tsx";
-import AttendancePage from "./pages/Attendance/AttendancePage.tsx";
+import AttendancePage from "./pages/attendance/AttendancePage.tsx";
 
 export const router = createBrowserRouter([
   {
