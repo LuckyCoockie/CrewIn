@@ -55,8 +55,8 @@ public class MyPageService {
 
         List<MyPageSessionItem> myPageSessionItems = new ArrayList<>();
 
-        if (sessionType == null) {
-            sessionType = "ALL";
+        if (sessionType == null) { // null 이면
+            sessionType = "ALL"; // 전체
         }
 
         // sessionType 에 따라서 분리 (STANDARD, OPEN, THUNDER, ALL)
