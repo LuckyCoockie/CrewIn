@@ -11,8 +11,8 @@ import qs from "query-string";
 import DropdownTypeComponent from "../../atoms/Input/DropdownItemComponent";
 import InfiniteScrollComponent from "../../../util/paging/component/InfinityScrollComponent";
 import SessionListItemMolecules from "../../molecules/SessionListItemMolecules";
-import LargeTitleMolecule from "../../molecules/Title/LargeTitleMolecule";
 import { PageNationData } from "../../../util/paging/type";
+import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
 
 type OwnProps = {
   title: string;
@@ -51,12 +51,10 @@ const SessionListTemplate: React.FC<OwnProps> = ({
     <main>
       <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20 relative">
         <div className="flex items-center bg-white w-full mb-5 xs:mb-10 h-10">
-          <div className="pr-1">
-            <LargeTitleMolecule text={title} />
-          </div>
-          <div className="flex items-center">
-            <InfoIcon />
-          </div>
+          <header>
+            <BackHeaderMediumOrganism text={title} />
+            <InfoIcon className="ml-2" />
+          </header>
         </div>
         <div className="mb-3 xs:mb-5 flex items-center bg-white w-full">
           <DropdownTypeComponent

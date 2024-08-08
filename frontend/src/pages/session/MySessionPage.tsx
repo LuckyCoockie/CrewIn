@@ -14,7 +14,9 @@ const MySessionPage: React.FC = () => {
 
   const onSearch = useCallback(
     async (dto: GetMySessionRequestDto) => {
-      navigate(`/mypage/session/${type}?${createSearchParams(dto)}`);
+      navigate(`/mypage/session/${type}?${createSearchParams(dto)}`, {
+        replace: true,
+      });
     },
     [navigate, type]
   );
