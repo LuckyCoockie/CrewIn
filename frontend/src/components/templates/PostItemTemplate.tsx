@@ -44,13 +44,8 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
 
   const handleDelete = async () => {
     try {
-      const response = await deletePost(id);
-      if (response.statusCode === 204) {
-        navigate(0);
-      } else {
-        console.error(response.message);
-        alert(response.message);
-      }
+      await deletePost(id);
+      navigate(0);
     } catch (error) {
       console.error("게시물 삭제 요청 중 오류가 발생했습니다:", error);
     }
@@ -79,10 +74,11 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     setIsExpanded(!isExpanded);
   };
 
+  // Remove the prefix "약 " from the time ago string
   const timeAgo = formatDistanceToNow(parseISO(createdAt), {
     addSuffix: true,
     locale: ko,
-  });
+  }).replace("약 ", "");
 
   return (
     <div className="w-full mb-4 pb-3">

@@ -7,10 +7,7 @@ export type UpdatePostRequestDto = {
   postImages: string[];
 };
 
-export type UpdatePostResponseDto = {
-  status: number;
-  message: string;
-};
+export type UpdatePostResponseDto = {};
 
 export const updatePost = async (
   id: number,
