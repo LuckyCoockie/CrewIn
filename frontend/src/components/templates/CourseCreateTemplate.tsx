@@ -29,6 +29,7 @@ import {
   clearMarker,
   focusMarker,
 } from "../../util/maps/naver_map/context";
+import { debounce } from "lodash";
 
 type OwnProps = {
   initPosition?: Point;
@@ -101,12 +102,7 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
     setLength(
       directions.reduce((sum, direction) => sum + direction.distance, 0)
     );
-    // TODO : 상세 정보 체크 되면 저장 하는거 고려해보기
-    setTimeout(async () => {
-      await handleSave();
-      // TODO : setTimeout 삭제
-      setTimeout(() => onSave(data), 100);
-    }, 500);
+    handleSave(data);
   };
 
   const {
@@ -144,22 +140,18 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
     [setValue]
   );
 
-  const setImage = useCallback(
-    (image: File) => {
-      setValue("image", image);
-    },
-    [setValue]
-  );
-
   const captureRef = useRef<HTMLDivElement>(null);
 
-  const handleSave = async () => {
+  const handleSave = debounce(async (data: FormValues) => {
     if (captureRef.current) {
       const svgNodesToRemove: HTMLCanvasElement[] = [];
 
-      const svgElements = document.body.querySelectorAll("svg");
+      const polylineSvg = Array.from(
+        document.body.querySelectorAll("svg")
+      ).filter((svg) => svg.tagName !== "svg");
+      console.log(polylineSvg);
 
-      svgElements.forEach((item) => {
+      polylineSvg.forEach((item) => {
         const svg = item.outerHTML.trim();
 
         const canvas = document.createElement("canvas");
@@ -170,9 +162,9 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
         canvg(canvas, svg);
 
         if (item.style.position) {
-          canvas.style.position += item.style.position;
-          canvas.style.left += item.style.left;
-          canvas.style.top += item.style.top;
+          canvas.style.position = item.style.position;
+          canvas.style.left = item.style.left;
+          canvas.style.top = item.style.top;
         }
 
         item.parentNode?.appendChild(canvas);
@@ -189,7 +181,10 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
       canvas.toBlob(
         (blob) => {
           if (blob) {
-            setImage(new File([blob], "image.png", { type: "image/png" }));
+            onSave({
+              ...data,
+              image: new File([blob], "image.png", { type: "image/png" }),
+            });
           }
         },
         "image/png",
@@ -200,7 +195,7 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
         element.remove();
       });
     }
-  };
+  }, 500);
 
   useEffect(() => {
     dispatch(clearMarker());
