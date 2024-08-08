@@ -462,6 +462,7 @@ public class CrewService {
                     throw new CrewDupulicateException();
                 } else { // false 면
                     memberCrew.get().updateInvited(true);  // 요청 보냈으니까 true 로 변경
+                    notificationService.createNotification(NotificationType.INVITATION, crewMemberRequest.getCrewId(), crewMemberRequest.getMemberId(), null);
                 }
             }
         } else {
