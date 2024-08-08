@@ -19,7 +19,7 @@ const CrewGalleryListDetailPage: React.FC = () => {
           crewId: parseInt(crewId),
           params: dto,
         })
-      ).posts;
+      ).items;
     },
     [crewId]
   );

@@ -26,13 +26,16 @@ export type GetCrewGalleryListDetailReqeustDto = {
 };
 
 export type GetCrewGalleryListDetailResponseDto = {
-  posts: PostDto[];
+  pageNo: number;
+  lastPageNo: number;
+  items: PostDto[];
 };
 
 export const getCrewGallaryDetailList = async (
   dto: GetCrewGalleryListDetailReqeustDto
 ): Promise<GetCrewGalleryListDetailResponseDto> => {
-  const response = await api.get(`/crew/gallery/detail/${dto.crewId}`, {
+  // TODO : 누른애가 안나옴...
+  const response = await api.get(`/post/crew/gallery/detail/${dto.crewId}`, {
     params: dto.params,
   });
   return response.data;

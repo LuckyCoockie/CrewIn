@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useInfiniteQuery } from "react-query";
 
 type FetchParams = {
@@ -44,14 +44,16 @@ const TwoWayInfiniteScrollComponent = <T extends { id: number }>({
       },
     }) => fetchData(pageParam),
     {
+      refetchOnWindowFocus: false,
       getNextPageParam: (lastPage) => {
-        // 데이터가 없을때 문제가 생기는 중...
+        if (!lastPage[lastPage.length - 1]) return;
         return {
           postId: lastPage[lastPage.length - 1].id,
           direction: "increase",
         };
       },
       getPreviousPageParam: (firstPage) => {
+        if (!firstPage[0]) return;
         return {
           postId: firstPage[0].id,
           direction: "decrease",
@@ -59,6 +61,11 @@ const TwoWayInfiniteScrollComponent = <T extends { id: number }>({
       },
     }
   );
+
+  useEffect(() => {
+    fetchNextPage();
+    fetchPreviousPage();
+  }, [fetchNextPage, fetchPreviousPage]);
 
   useEffect(() => {
     const handleScroll = async () => {
@@ -90,10 +97,22 @@ const TwoWayInfiniteScrollComponent = <T extends { id: number }>({
     };
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    ref.current?.scrollIntoView({ behavior: "instant", block: "center" });
+  }, [ref]);
+
   return (
     <div className={className}>
-      {data?.pages.map((data) => (
-        <>{data?.map((data) => ItemComponent({ data }))}</>
+      {data?.pages.map((data, index) => (
+        <React.Fragment key={index}>
+          {data?.map((data) => (
+            <div ref={data.id == postId ? ref : null}>
+              {ItemComponent({ data })}
+            </div>
+          ))}
+        </React.Fragment>
       ))}
     </div>
   );
