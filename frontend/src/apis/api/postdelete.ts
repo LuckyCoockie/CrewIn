@@ -1,9 +1,6 @@
 import api from "../index";
 
-export type DeletePostResponseDto = {
-  statusCode: number;
-  message?: string;
-};
+export type DeletePostResponseDto = {};
 
 export const deletePost = async (
   id: number

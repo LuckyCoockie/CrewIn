@@ -11,7 +11,6 @@ import {
 import {
   changeAuthority,
   ChangeAuthorityRequestDto,
-  ChangeAuthorityResponseDto,
 } from "../../../apis/api/changeauthority";
 
 const CaptainPovCrewMemberListTemplate: React.FC = () => {
@@ -27,9 +26,6 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
       setError(null);
       try {
         const data: CrewMemberListResponseDto = await getCrewMemberList(crewId);
-        console.log(data.items);
-        console.log(data);
-
         setMembers(data.items);
       } catch (error) {
         if (error instanceof Error) {
@@ -61,18 +57,13 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
         position: newPosition,
       };
 
-      const response: ChangeAuthorityResponseDto = await changeAuthority(dto);
-      if (response.statusCode === 200) {
-        setMembers((prevMembers) =>
-          prevMembers.map((member) =>
-            member.email === email
-              ? { ...member, position: newPosition }
-              : member
-          )
-        );
-      } else {
-        setError(response.message);
-      }
+      await changeAuthority(dto);
+
+      setMembers((prevMembers) =>
+        prevMembers.map((member) =>
+          member.email === email ? { ...member, position: newPosition } : member
+        )
+      );
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
@@ -126,7 +117,7 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
                 </div>
                 <div>
                   <select
-                    className="border border-gray-400 w-30 h-10 rounded-md text-sm bg-white"
+                    className="border border-gray-400 w-30 h-10 rounded-md text-sm"
                     value={member.position}
                     onChange={(e) =>
                       handlePositionChange(
@@ -170,24 +161,9 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
                   <div className="text-gray-600">{member.nickname}</div>
                 </div>
                 <div>
-                  <select
-                    className="border border-gray-400 w-30 h-10 rounded-md text-sm bg-white"
-                    value="WAITING"
-                    onChange={(e) =>
-                      handlePositionChange(
-                        member.memberId,
-                        member.email,
-                        e.target.value
-                      )
-                    }
-                  >
-                    <option value="WAITING">WAITING</option>
-                    {positions.map((position) => (
-                      <option key={position} value={position}>
-                        {position}
-                      </option>
-                    ))}
-                  </select>
+                  <button className="border border-gray-400 w-20 h-10 rounded-md text-sm">
+                    WAITING
+                  </button>
                 </div>
               </li>
             ))}

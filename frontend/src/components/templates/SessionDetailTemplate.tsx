@@ -44,6 +44,8 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
     ? new Date(detailData.startAt) < new Date()
     : false;
 
+  if (!sessionId) return;
+
   return (
     <>
       <header>
@@ -51,6 +53,8 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
           text={detailData?.sessionName || "Loading..."}
         />
         <div className="flex ms-auto">
+          <AttendanceButton {...detailData} />
+          {detailData?.isSessionHost && (
           <AttendanceButton />
           {detailData?.isSessionHost && !isSessionStarted && (
             <EditDeleteDropdownOrganism

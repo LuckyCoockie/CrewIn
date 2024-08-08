@@ -3,7 +3,7 @@ import api from "../index";
 
 export type PostDto = {
   id: number;
-  authorName: string;
+  authorName: string; //닉네임
   authorId: number;
   content: string;
   heartCount: number;
@@ -26,12 +26,7 @@ export const getPostList = async (
     const response = await api.get("/post/home", {
       params: { "page-no": pageNo },
     });
-
-    if (response.status === 200) {
-      return response.data;
-    } else {
-      throw new Error(`Error fetching post list: ${response.statusText}`);
-    }
+    return response.data;
   } catch (error) {
     console.error("게시글 목록 조회 오류:", error);
     throw error;

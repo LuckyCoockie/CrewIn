@@ -71,7 +71,7 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({
   };
 
   const handleRouter = () => {
-    navigate(`/crew/member/captain`);
+    navigate(`/crew/${idData}/invite`);
   };
 
   useEffect(() => {
