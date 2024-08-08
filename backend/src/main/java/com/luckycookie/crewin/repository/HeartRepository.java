@@ -10,6 +10,8 @@ import java.util.Optional;
 
 @Repository
 public interface HeartRepository extends JpaRepository<Heart, Long> {
+
+
     boolean existsByPostAndMember(Post post, Member member);
 
     Optional<Heart> findByMemberAndPost(Member member, Post post);

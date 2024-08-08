@@ -453,7 +453,7 @@ public class CrewService {
         if (position == Position.CAPTAIN) {
             // 초대 하면 회원 크루에 넣기 (이미 초대 요청이 보내진 멤버한테는 초대 요청을 보내면 안됨)
             Optional<MemberCrew> memberCrew = memberCrewRepository.findByMemberAndCrew(invitedMember, crew);
-            if (memberCrew.isEmpty()) { // memberCrew 에 없을 때만 요청 보내기
+            if (!memberCrew.orElseThrow().getIsInvited()) {
                 memberCrewRepository.save(invitedMemberCrew);
                 notificationService.createNotification(NotificationType.INVITATION, crewMemberRequest.getCrewId(), crewMemberRequest.getMemberId(), null);
             } else {
