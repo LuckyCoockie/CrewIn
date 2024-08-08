@@ -39,7 +39,7 @@ public class MemberController {
                 .secure(true).httpOnly(true).maxAge(Duration.ofDays(7L)).build();
         log.info("refreshToken 발급: {}", responseCookie.getValue());
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString())
-                .body(BaseResponse.create(HttpStatus.OK.value(), "로그인에 성공했습니다.", TokenResponse.builder().accessToken(token.getAccessToken()).build()));
+                .body(BaseResponse.create(HttpStatus.OK.value(), "로그인에 성공했습니다.", TokenResponse.builder().accessToken(token.getAccessToken()).memberId(token.getMemberId()).build()));
     }
 
     @PostMapping("/signup")
@@ -79,7 +79,7 @@ public class MemberController {
         ResponseCookie responseCookie = ResponseCookie.from("refreshToken", token.getRefreshToken()).path("/")
                 .secure(true).httpOnly(true).maxAge(Duration.ofDays(7L)).build();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString())
-                .body(BaseResponse.create(HttpStatus.OK.value(), "토큰 재발급에 성공했습니다.", TokenResponse.builder().accessToken(token.getAccessToken()).build()));
+                .body(BaseResponse.create(HttpStatus.OK.value(), "토큰 재발급에 성공했습니다.", TokenResponse.builder().accessToken(token.getAccessToken()).memberId(token.getMemberId()).build()));
     }
 
     @PostMapping("/logout")

@@ -91,7 +91,7 @@ public class TokenUtil {
         // redis에 refresh Token 저장
         refreshTokenRedisRepository.save(Auth.builder().email(member.getEmail()).refreshToken(refreshToken).build());
 
-        return Token.builder().accessToken(accessToken).refreshToken(refreshToken).build();
+        return Token.builder().memberId(member.getId()).accessToken(accessToken).refreshToken(refreshToken).build();
     }
 
     @PostConstruct
