@@ -135,7 +135,7 @@ public class SessionService {
                 .save(MemberSession.builder()
                         .member(member)
                         .session(session)
-                        .isAttend(false)
+                        .isAttend(true)
                         .build());
 
     }
