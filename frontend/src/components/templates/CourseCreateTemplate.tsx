@@ -149,7 +149,6 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
       const polylineSvg = Array.from(
         document.body.querySelectorAll("svg")
       ).filter((svg) => svg.tagName !== "svg");
-      console.log(polylineSvg);
 
       polylineSvg.forEach((item) => {
         const svg = item.outerHTML.trim();
