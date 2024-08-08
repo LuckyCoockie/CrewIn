@@ -16,10 +16,7 @@ import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.memberCrew.NotFoundMemberCrewException;
 import com.luckycookie.crewin.exception.memberSession.DuplicateApplyException;
 import com.luckycookie.crewin.exception.memberSession.NotFoundMemberSessionException;
-import com.luckycookie.crewin.exception.session.InvalidSessionException;
-import com.luckycookie.crewin.exception.session.NotFoundSessionException;
-import com.luckycookie.crewin.exception.session.SessionAuthorizationException;
-import com.luckycookie.crewin.exception.session.SessionInProgressException;
+import com.luckycookie.crewin.exception.session.*;
 import com.luckycookie.crewin.exception.sessionImage.SessionImageUploadException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
@@ -277,6 +274,8 @@ public class SessionService {
                         sessionCrewName = session.getCrew().getCrewName();
                     }
 
+                    List<MemberSession> memberSessionList = memberSessionRepository.findBySession(session);
+
                     return SessionItem.builder().crewName(sessionCrewName)
                             .sessionName(session.getName())
                             .spot(session.getSpot())
@@ -284,6 +283,7 @@ public class SessionService {
                             .sessionThumbnail(session.getPosterImages().get(0).getImageUrl())
                             .sessionType(session.getSessionType())
                             .maxPeople(session.getMaxPeople())
+                            .currentPeople(memberSessionList.size())
                             .sessionId(session.getId())
                             .startAt(session.getStartAt())
                             .build();
@@ -368,6 +368,7 @@ public class SessionService {
         sessionImageRepository.delete(sessionImage);
     }
 
+    // 세션 참가 신청
     public void applySession(Long sessionId, String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
         Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundSessionException::new);
@@ -381,6 +382,13 @@ public class SessionService {
 
         if (memberSessionRepository.existsByMemberAndSession(member, session)) {
             throw new DuplicateApplyException();
+        }
+
+        // 현재 신청한 인원
+        List<MemberSession> memberSessionList = memberSessionRepository.findBySession(session);
+        // 신청 인원이 최대 인원 넘어 갔으면 예외 처리
+        if(session.getMaxPeople() < memberSessionList.size()) {
+            throw new SessionMaxMemberException();
         }
 
         // 크루원이 아닌 회원이 정규런 신청할 경우 예외처리

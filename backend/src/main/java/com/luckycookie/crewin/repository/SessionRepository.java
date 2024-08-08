@@ -19,11 +19,11 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
 
     // 내가 만든 세션 조회
     @Query("SELECT s FROM Session s JOIN FETCH s.host JOIN FETCH s.course JOIN FETCH s.crew" +
-            " WHERE s.host = :member AND s.sessionType = :sessionType")
+            " WHERE s.host = :member AND s.sessionType = :sessionType order by s.id desc")
     Page<Session> findByHostAndSessionType(Pageable pageable, Member member, SessionType sessionType);
 
     @Query("SELECT s FROM Session s JOIN FETCH s.host JOIN FETCH s.course JOIN FETCH s.crew" +
-            " WHERE s.host = :member")
+            " WHERE s.host = :member order by s.id desc")
     Page<Session> findAllByHost(Pageable pageable, Member member);
 
     @Override
