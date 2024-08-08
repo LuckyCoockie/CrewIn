@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SessionRequest {
@@ -24,7 +25,7 @@ public class SessionRequest {
         private SessionType sessionType;
         private String name; // 세션 이름
         // 한 세션에 포스터 여러장 가능
-        private List<String> images;
+        private List<String> images = new ArrayList<>();
         // 평균 페이스
         private int pace;
         // 집결지 정보

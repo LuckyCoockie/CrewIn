@@ -75,6 +75,13 @@ public class Session {
 
     private LocalDateTime attendanceStart;
 
+    public void setSessionPosters(List<SessionPoster> sessionPosters){
+        this.posterImages = sessionPosters;
+        for(SessionPoster sessionPoster : sessionPosters){
+            sessionPoster.setImageSession(this);
+        }
+    }
+
     public void updateSession(UpdateSessionRequest updateSessionRequest, Course course) {
         this.course = course;
         this.sessionType = updateSessionRequest.getSessionType();

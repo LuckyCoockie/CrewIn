@@ -94,6 +94,14 @@ public class SessionService {
         Course course = courseRepository.findById(createSessionRequest.getCourseId())
                 .orElseThrow(NotFoundCourseException::new);
 
+        List<String> sessionPosterUrls = new ArrayList<>();
+
+        if (createSessionRequest.getImages().isEmpty()) {
+            sessionPosterUrls.add(defaultSessionPoster);
+        } else {
+            sessionPosterUrls.addAll(createSessionRequest.getImages());
+        }
+
         Session session = Session.builder()
                 .sessionType(createSessionRequest.getSessionType())
                 .host(member)
@@ -109,6 +117,12 @@ public class SessionService {
                 .maxPeople(createSessionRequest.getMaxPeople())
                 .build();
 
+        List<SessionPoster> sessionPosters = sessionPosterUrls.stream().map(url ->
+                SessionPoster.builder().imageUrl(url).build()
+        ).toList();
+
+        session.setSessionPosters(sessionPosters);
+
         if (createSessionRequest.getSessionType() != THUNDER) { // 정규런, 오픈런일 때
             assert memberCrew != null;
             if (memberCrew.getPosition() == Position.MEMBER) { // 만약 position이 member면 exception
@@ -118,23 +132,6 @@ public class SessionService {
             }
         } else {
             sessionRepository.save(session);
-        }
-
-        // 세션 포스터 이미지
-        if (createSessionRequest.getImages() != null) {
-            for (String imageUrl : createSessionRequest.getImages()) {
-                SessionPoster sessionPoster = SessionPoster.builder()
-                        .session(session)
-                        .imageUrl(imageUrl)
-                        .build();
-                sessionPosterRepository.save(sessionPoster);
-            }
-        } else {
-            SessionPoster sessionPoster = SessionPoster.builder()
-                    .session(session)
-                    .imageUrl(defaultSessionPoster)
-                    .build();
-            sessionPosterRepository.save(sessionPoster);
         }
 
         memberSessionRepository

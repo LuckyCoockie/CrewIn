@@ -1,10 +1,7 @@
 package com.luckycookie.crewin.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
 @Entity
@@ -13,7 +10,7 @@ import org.hibernate.annotations.DynamicInsert;
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert
-@Table(name="sessionposter")
+@Table(name = "sessionposter")
 public class SessionPoster {
 
     @Id
@@ -26,4 +23,8 @@ public class SessionPoster {
 
     @Column(columnDefinition = "TEXT")
     private String imageUrl;
+
+    public void setImageSession(Session session) {
+        this.session = session;
+    }
 }
