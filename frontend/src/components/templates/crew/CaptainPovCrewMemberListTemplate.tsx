@@ -11,7 +11,6 @@ import {
 import {
   changeAuthority,
   ChangeAuthorityRequestDto,
-  ChangeAuthorityResponseDto,
 } from "../../../apis/api/changeauthority";
 
 const CaptainPovCrewMemberListTemplate: React.FC = () => {
@@ -58,18 +57,13 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
         position: newPosition,
       };
 
-      const response: ChangeAuthorityResponseDto = await changeAuthority(dto);
-      if (response.statusCode === 200) {
-        setMembers((prevMembers) =>
-          prevMembers.map((member) =>
-            member.email === email
-              ? { ...member, position: newPosition }
-              : member
-          )
-        );
-      } else {
-        setError(response.message);
-      }
+      await changeAuthority(dto);
+
+      setMembers((prevMembers) =>
+        prevMembers.map((member) =>
+          member.email === email ? { ...member, position: newPosition } : member
+        )
+      );
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);

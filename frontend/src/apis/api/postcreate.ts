@@ -7,10 +7,7 @@ export type CreatePostRequestDto = {
   postImages: string[];
 };
 
-export type CreatePostResponseDto = {
-  statusCode: number;
-  message: string;
-};
+export type CreatePostResponseDto = {};
 
 export const createPost = async (
   dto: CreatePostRequestDto

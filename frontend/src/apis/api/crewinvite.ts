@@ -5,10 +5,7 @@ export type CrewInviteRequestDto = {
   crewId: number;
 };
 
-export type CrewInviteResponseDto = {
-  statusCode: number;
-  message: string;
-};
+export type CrewInviteResponseDto = {};
 
 export const inviteCrewMember = async (
   dto: CrewInviteRequestDto
