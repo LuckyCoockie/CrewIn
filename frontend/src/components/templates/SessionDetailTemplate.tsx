@@ -53,7 +53,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
           text={detailData?.sessionName || "Loading..."}
         />
         <div className="flex ms-auto">
-          <AttendanceButton {...detailData} />
+          <AttendanceButton {...detailData!} />
           {detailData?.isSessionHost && (
             <EditDeleteDropdownOrganism
               type="SESSION"

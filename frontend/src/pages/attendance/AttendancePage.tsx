@@ -5,6 +5,7 @@ import {
   ChangeAttendRequestDto,
   changeAttend,
   getAttendanceMemberList,
+  postAttend,
   startAttendance,
 } from "../../apis/api/attendance";
 import useGeolocation from "../../util/geolocation/gelocation";
@@ -14,33 +15,50 @@ const AttendancePage: React.FC = () => {
   const { location } = useGeolocation();
   const { state } = useLocation();
 
-  console.log(state);
+  // TODO : 출석이 시작되었는지는 확인 필요
+  const isAttendStarted = false;
 
   const getMemberList = useCallback(async () => {
     if (!sessionId) return [];
     return getAttendanceMemberList({ sessionId: parseInt(sessionId) });
   }, [sessionId]);
 
-  const onStartAttendance = useCallback(async () => {
+  const onStartAttendanceClick = useCallback(async () => {
     if (!sessionId || !location) return;
 
     startAttendance({
+      sessionId: parseInt(sessionId),
+      lat: location.latitude,
+      lng: location.longitude,
+    });
+  }, [location, sessionId]);
+
+  const onHostAttendanceClick = useCallback(
+    async (dto: ChangeAttendRequestDto) => {
+      changeAttend(dto);
+    },
+    []
+  );
+
+  const onGuestAttendanceClick = useCallback(async () => {
+    if (!sessionId || !location) return;
+
+    postAttend({
       sessionId: parseInt(sessionId),
       lat: location?.latitude,
       lng: location?.longitude,
     });
   }, [location, sessionId]);
 
-  const onAttendanceChange = useCallback(async (dto: ChangeAttendRequestDto) => {
-    changeAttend(dto);
-  }, []);
-
   return (
     <AttendanceTemplate
       fetchMemberList={getMemberList}
-      onStartAttendance={onStartAttendance}
+      onStartAttendanceClick={onStartAttendanceClick}
       isSessionHost={state ? state.isSessionHost : false}
-      onAttendanceChange={onAttendanceChange}
+      onHostAttendanceClick={onHostAttendanceClick}
+      onGuestAttendanceClick={onGuestAttendanceClick}
+      startAt={state.startAt}
+      isAttendStarted={isAttendStarted}
     />
   );
 };

@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   AttendanceMemberDto,
   ChangeAttendRequestDto,
@@ -5,20 +6,33 @@ import {
 import LargeAbleButton from "../../atoms/Button/LargeAbleButton";
 import AttendenceMemberListOrganism from "../../organisms/AttendenceMemberListOrganism";
 import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
+import TimerOrganism from "../../organisms/TimerOrganism";
 
 type OwnProps = {
-  onStartAttendance: () => Promise<void>;
-  onAttendanceChange: (dto: ChangeAttendRequestDto) => Promise<void>;
+  onStartAttendanceClick: () => Promise<void>;
+  onGuestAttendanceClick: () => Promise<void>;
+  onHostAttendanceClick: (dto: ChangeAttendRequestDto) => Promise<void>;
   fetchMemberList: () => Promise<AttendanceMemberDto[]>;
   isSessionHost: boolean;
+  startAt: string;
+  isAttendStarted: boolean;
 };
 
 const AttendanceTemplate: React.FC<OwnProps> = ({
-  onStartAttendance,
-  onAttendanceChange,
+  onStartAttendanceClick,
+  onGuestAttendanceClick,
+  onHostAttendanceClick,
   fetchMemberList,
   isSessionHost,
+  startAt,
+  isAttendStarted,
 }) => {
+  const isSessionStarted = useMemo(() => {
+    const givenTime = new Date(startAt);
+    const currentTime = new Date();
+    return currentTime.getTime() >= givenTime.getTime();
+  }, [startAt]);
+
   return (
     <>
       <header>
@@ -28,16 +42,31 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
         <AttendenceMemberListOrganism
           fetchData={fetchMemberList}
           isSessionHost={isSessionHost}
-          onAttendanceChange={onAttendanceChange}
+          onPostAttendanceClick={onHostAttendanceClick}
         />
-        {isSessionHost && (
-          <div className="mx-auto w-full max-w-[550px] fixed bottom-20 left-0 right-0 flex justify-center items-center z-50">
-            <LargeAbleButton
-              text="자동 출석 시작"
-              onClick={onStartAttendance}
-            />
-          </div>
-        )}
+        <div className="mx-auto w-full max-w-[550px] fixed bottom-0 left-0 right-0 flex justify-center items-center z-50 px-2 pb-20 pt-5 bg-white">
+          {isSessionStarted ? (
+            isSessionHost ? (
+              isAttendStarted ? (
+                <TimerOrganism initSeconds={1} />
+              ) : (
+                <LargeAbleButton
+                  text="자동 출석 시작"
+                  onClick={onStartAttendanceClick}
+                />
+              )
+            ) : (
+              <LargeAbleButton
+                text="출석하기"
+                onClick={onGuestAttendanceClick}
+              />
+            )
+          ) : (
+            <div className="font-bold">
+              {"출석은 세션 시작 시각 이후 시작할 수 있습니다."}
+            </div>
+          )}
+        </div>
       </div>
     </>
   );

@@ -9,15 +9,17 @@ import {
 import MemberListItem from "../molecules/List/MemberListMolecule";
 import AttendenceButton from "../molecules/AttendenceButton";
 
+// 출석 시작 전, 출석 중, 출석 종료 후
+
 type OwnProps<T> = {
   fetchData: (props: T) => Promise<AttendanceMemberDto[]>;
-  onAttendanceChange: (dto: ChangeAttendRequestDto) => Promise<void>;
+  onPostAttendanceClick: (dto: ChangeAttendRequestDto) => Promise<void>;
   isSessionHost: boolean;
 };
 
 const AttendenceMemberListOrganism = <T,>({
   fetchData,
-  onAttendanceChange,
+  onPostAttendanceClick: onAttendanceChange,
   isSessionHost,
 }: OwnProps<T>) => {
   const query = qs.parse(location.search) as T;
