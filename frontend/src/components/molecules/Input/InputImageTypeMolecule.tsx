@@ -8,6 +8,7 @@ type InputData = {
   name: string;
   placeholder: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  text?: string
 };
 
 const InputImageTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
@@ -22,6 +23,7 @@ const InputImageTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
             name={props.name}
             ref={ref}
             onChange={props.onChange}
+            text={props.text}
           />
         </div>
       </>

@@ -242,6 +242,7 @@ const CrewCreateOrganism: React.FC = () => {
                   onChange={(e) => {
                     setValue("main_logo", e.target.files![0]);
                   }}
+                  text="프로필 사진에 노출됩니다."
                 />
               )}
             />
@@ -259,6 +260,7 @@ const CrewCreateOrganism: React.FC = () => {
                   onChange={(e) => {
                     setValue("sub_logo", e.target.files![0]);
                   }}
+                  text="게시글 생성 시 사용됩니다."
                 />
               )}
             />

@@ -5,21 +5,25 @@ type InputImage = {
   id: string;
   name: string;
   placeholder: string;
+  text?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
   (props, ref) => {
     const [preview, setPreview] = useState<string | null>(null);
+    const [fileCount, setFileCount] = useState(0);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (file) {
+      const files = e.target.files;
+      setFileCount(files ? files.length : 0);
+
+      if (files && files[0]) {
         const reader = new FileReader();
         reader.onloadend = () => {
           setPreview(reader.result as string);
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(files[0]);
       } else {
         setPreview(null);
       }
@@ -28,37 +32,56 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
 
     return (
       <>
-        <input
-          className="image-file-input mb-3 focus:ring-0"
-          id={props.id}
-          type="file"
-          name={props.name}
-          placeholder={props.placeholder}
-          onChange={handleChange}
-          ref={ref}
-          accept="image/*"
-        ></input>
+        <div className="flex flex-col items-center w-full">
+          <label htmlFor={props.id} className="w-full">
+            <div className="flex p-2 border border-gray-300 rounded-lg w-full text-end">
+              <p className="ml-1">🔗</p>
+              {fileCount > 0 ? (
+                <p className="text-gray-600 font-semibold ml-1">
+                  이미지가 선택되었습니다.
+                </p>
+              ) : (
+                <p className="text-gray-600 font-semibold ml-1">{props.text}</p>
+              )}
+            </div>
+          </label>
+          <input
+            id={props.id}
+            type="file"
+            name={props.name}
+            onChange={handleChange}
+            ref={ref}
+            accept="image/*"
+            aria-describedby={`${props.id}-description`}
+            className="hidden"
+            multiple
+          />
+        </div>
         {preview ? (
-          <>
-            <div className="w-full text-center">
-              <img
-                src={preview}
-                alt="Preview"
-                className="mx-auto border-2 w-32 h-32 rounded-full object-cover"
-              />
-            </div>
-          </>
+          <div className="w-full text-center mt-4">
+            <img
+              src={preview}
+              alt="Preview"
+              className="mx-auto border-2 w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover"
+            />
+            <p className="mt-2 text-sm font-medium text-gray-500">
+              이미지 노출 예시
+            </p>
+          </div>
         ) : (
-          <>
-            <div className="w-full text-center">
-              <img
-                src={crewinlogo}
-                alt="crewinlogo"
-                className="mx-auto border-2 w-32 h-32 rounded-full object-cover"
-              />
-              <p className="mt-2 font-bold text-gray-color">예시</p>
-            </div>
-          </>
+          <div className="w-full text-center mt-4">
+            <img
+              src={crewinlogo}
+              alt="crewinlogo"
+              className="mx-auto border-2 w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover"
+            />
+            <label
+              htmlFor={props.id}
+              className="text-center block mt-2 text-sm font-medium text-gray-500 dark:text-white"
+            >
+              *{props.placeholder}
+            </label>
+          </div>
         )}
       </>
     );
