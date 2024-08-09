@@ -71,6 +71,9 @@ public class AttendanceService {
             emitterRepository.deleteById(sessionId);
             log.info("SSE emitter onTimeout");
         });
+        emitter.onError((ex) -> {
+            log.error("SSE emitter Error occurred: {}", ex.getMessage());
+        });
 
         // 503 에러 방지용, 최초 요청시 전체 멤버 데이터를 반환
         sendNotification(emitter, "connect", sessionId, "connect complete");
