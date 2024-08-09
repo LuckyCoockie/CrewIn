@@ -43,7 +43,7 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({
     if (type === "CREW") {
       navigate(`/crew/edit/${idData}`); // 페이지 이동
     } else if (type === "SESSION") {
-      navigate(`/session/edit/${idData}`); // 페이지 이동
+      navigate(`/session/${idData}/edit`); // 페이지 이동
     } else if (type === "NOTICE") {
       navigate(`/crew/detail/${idData2}/noticeedit/${idData}`);
     }
