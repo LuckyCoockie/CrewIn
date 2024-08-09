@@ -97,7 +97,6 @@ export const router = createBrowserRouter([
                 element: <CaptainPovCrewMemberSearchPage />,
               },
               { path: ":crewId/invite", element: <CrewInvitePage /> },
-              { path: "invite", element: <CrewInvitePage /> },
               {
                 path: "detail/:crewId/notice/:noticeId",
                 element: <CrewNoticeDetailPage />,
