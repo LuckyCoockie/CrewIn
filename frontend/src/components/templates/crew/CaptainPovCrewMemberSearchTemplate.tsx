@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
 import { ReactComponent as Searchicon } from "../../../assets/icons/searchicon.svg";
@@ -29,6 +29,10 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
 
   const fetchCrewMembers = useCallback(
     async (page: number): Promise<GetCrewMemberListResponseDto> => {
+      if (!searchQuery) {
+        return { pageNo: 0, lastPageNo: 0, items: [] };
+      }
+
       setLoading(true);
       setError(null);
       try {
@@ -41,8 +45,10 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
         );
 
         const sortedItems = filteredItems.sort((a, b) => {
-          const positionA = sortPositions[a.position as keyof typeof sortPositions] ?? Infinity;
-          const positionB = sortPositions[b.position as keyof typeof sortPositions] ?? Infinity;
+          const positionA =
+            sortPositions[a.position as keyof typeof sortPositions] ?? Infinity;
+          const positionB =
+            sortPositions[b.position as keyof typeof sortPositions] ?? Infinity;
           return positionA - positionB;
         });
 
@@ -70,7 +76,6 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
     );
 
     if (member) {
-      console.log("Changing position for:", member);
       try {
         if (newPosition === "CAPTAIN" && currentCaptain) {
           await changeCaptain({
@@ -78,7 +83,6 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
             memberId: member.memberId,
             position: "PACER",
           });
-          console.log("Captain changed successfully");
           setMembers((prevMembers) =>
             prevMembers
               .map((m) =>
@@ -89,8 +93,12 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
                   : m
               )
               .sort((a, b) => {
-                const positionA = sortPositions[a.position as keyof typeof sortPositions] ?? Infinity;
-                const positionB = sortPositions[b.position as keyof typeof sortPositions] ?? Infinity;
+                const positionA =
+                  sortPositions[a.position as keyof typeof sortPositions] ??
+                  Infinity;
+                const positionB =
+                  sortPositions[b.position as keyof typeof sortPositions] ??
+                  Infinity;
                 return positionA - positionB;
               })
           );
@@ -101,15 +109,18 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
             memberId: member.memberId,
             position: newPosition,
           });
-          console.log("Position changed successfully");
           setMembers((prevMembers) =>
             prevMembers
               .map((m) =>
                 m.email === email ? { ...m, position: newPosition } : m
               )
               .sort((a, b) => {
-                const positionA = sortPositions[a.position as keyof typeof sortPositions] ?? Infinity;
-                const positionB = sortPositions[b.position as keyof typeof sortPositions] ?? Infinity;
+                const positionA =
+                  sortPositions[a.position as keyof typeof sortPositions] ??
+                  Infinity;
+                const positionB =
+                  sortPositions[b.position as keyof typeof sortPositions] ??
+                  Infinity;
                 return positionA - positionB;
               })
           );
@@ -164,6 +175,12 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
     </li>
   );
 
+  useEffect(() => {
+    if (searchQuery) {
+      setMembers([]);
+    }
+  }, [searchQuery]);
+
   return (
     <div className="relative flex flex-col max-w-[550px] mx-auto">
       <header className="mb-1">
@@ -186,12 +203,14 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
       {error && <div className="text-red-500 text-center mt-2">{error}</div>}
 
       <div>
-        <InfiniteScrollComponent
-          fetchKey="crewMembers"
-          fetchData={fetchCrewMembers}
-          ItemComponent={({ data }) => renderMemberItem(data)}
-          className="crew-member-list"
-        />
+        {searchQuery && (
+          <InfiniteScrollComponent
+            fetchKey={["crewMembers", searchQuery]}
+            fetchData={fetchCrewMembers}
+            ItemComponent={({ data }) => renderMemberItem(data)}
+            className="crew-member-list"
+          />
+        )}
       </div>
     </div>
   );
