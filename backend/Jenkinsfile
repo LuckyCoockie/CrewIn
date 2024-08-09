@@ -39,7 +39,7 @@ pipeline {
                     def formattedCommits = allCommits.split('\n').collect { line ->
                         def escapedLine = line.replaceAll("([\\[\\]\\(\\)])", '\\\\$1')
                         "• ${escapedLine}"
-                    }.join('\\n')
+                    }.join('\n')
                     def message = """
                         #### 🌐BE 빌드 시작
                         **빌드 번호** $env.JOB_NAME #$env.BUILD_NUMBER
@@ -175,7 +175,7 @@ pipeline {
                 def formattedCommits = allCommits.split('\n').collect { line ->
                     def escapedLine = line.replaceAll("([\\[\\]\\(\\)])", '\\\\$1')
                     "• ${escapedLine}"
-                }.join('\\n')
+                }.join('\n')
 
                 def message = """
                     #### 🌐BE $Status_Text
