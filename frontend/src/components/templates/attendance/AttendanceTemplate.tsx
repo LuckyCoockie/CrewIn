@@ -35,7 +35,9 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     return currentTime >= startTime;
   }, [startAt]);
 
-  const { setIsActive } = useSSE(`/attendance/connect/${sessionId}`);
+  const { setIsActive } = useSSE({
+    url: `/attendance/connect/${sessionId}`,
+  });
 
   const [autoCheckStatus, setAutoCheckStatus] =
     useState<AutoCheckStatus>("BEFORE");
@@ -65,7 +67,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
   }, [getMemberList]);
 
   useEffect(() => {
-    setIsActive(true);
+    setIsActive(isDuringAutoCheck);
   }, [isDuringAutoCheck, setIsActive]);
 
   return (

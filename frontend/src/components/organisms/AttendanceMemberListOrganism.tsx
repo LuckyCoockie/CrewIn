@@ -54,7 +54,10 @@ const AttendanceMemberListOrganism = <T,>({
     [attendanceStateMap]
   );
 
-  useSSE(`/attendance/connect/${sessionId}`, handleAttendanceChange);
+  useSSE({
+    url: `/attendance/connect/${sessionId}`,
+    onMessage: handleAttendanceChange,
+  });
 
   if (isError || !memberList) return "데이터를 불러오지 못했습니다.";
 
