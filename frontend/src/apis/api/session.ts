@@ -57,6 +57,7 @@ export type SessionDto = {
   maxPeople: number;
   sessionId: number;
   startAt: string;
+  currentPeople: number
 };
 
 export type GetSessionListRequestDto = {

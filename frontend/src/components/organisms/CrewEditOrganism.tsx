@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { useQuery, useMutation, useQueryClient } from "react-query";
+import { useParams, useNavigate } from "react-router-dom";
 
 import InputTextTypeMolecule from "../molecules/Input/InputTextTypeMolecule";
 import InputImageTypeMolecule from "../molecules/Input/InputImageTypeMolecule";
@@ -13,12 +15,15 @@ import { regions } from "../../regions";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 
-import { CrewCreateDto, postCreateCrew } from "../../apis/api/crewcreate";
+import {
+  getCrewInfo,
+  editCrew,
+  CrewInfoDto,
+  EditCrewRequestDto,
+} from "../../apis/api/crewdetail";
 
 import { uploadImage } from "../../apis/api/presigned";
-import { useNavigate } from "react-router";
 
-// 유효성 검사 스키마 정의
 const schema = yup.object({
   crew_name: yup
     .string()
@@ -28,8 +33,8 @@ const schema = yup.object({
     .string()
     .max(50, "50글자 이내로 입력해주세요.")
     .required("슬로건을 입력해주세요."),
-  main_logo: yup.mixed(),
-  sub_logo: yup.mixed(),
+  mainLogo: yup.mixed(),
+  subLogo: yup.mixed(),
   banner: yup.mixed(),
   crewcreatedat: yup.date().nullable(),
   introduction: yup
@@ -39,11 +44,12 @@ const schema = yup.object({
   city: yup.string().required("도시를 선택해주세요."),
   district: yup.string().required("시/군/구를 선택해주세요."),
 });
+
 type FormValues = {
   crew_name: string;
   slogan: string;
-  main_logo?: File;
-  sub_logo?: File;
+  mainLogo?: File;
+  subLogo?: File;
   banner?: File;
   crewcreatedat?: Date | null;
   introduction: string;
@@ -51,9 +57,23 @@ type FormValues = {
   district: string;
 };
 
-const CrewCreateOrganism: React.FC = () => {
+const CrewEditOrganism: React.FC = () => {
+  const { crewId } = useParams<{ crewId: string }>();
   const navigate = useNavigate();
-  const [selectedCity, setSelectedCity] = useState<string>("");
+  const queryClient = useQueryClient();
+
+  const { data: crewData, isLoading } = useQuery<CrewInfoDto, Error>(
+    ["getCrewInfo", crewId],
+    () => getCrewInfo({ crewId: Number(crewId) })
+  );
+  console.log(crewData);
+
+  const mutation = useMutation(editCrew, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["getCrewInfo", crewId]);
+      navigate(`/crew/detail/${crewId}`);
+    },
+  });
 
   const {
     control,
@@ -63,23 +83,53 @@ const CrewCreateOrganism: React.FC = () => {
     formState: { errors, isValid },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
-    // 유효성 검사 mode
     mode: "onChange",
     defaultValues: {
       crewcreatedat: new Date(),
     },
   });
 
+  const [mainLogoPreview, setMainLogoPreview] = useState<string | undefined>(
+    undefined
+  );
+  const [subLogoPreview, setSubLogoPreview] = useState<string | undefined>(
+    undefined
+  );
+  const [bannerPreview, setBannerPreview] = useState<string | undefined>(
+    undefined
+  );
+
+  useEffect(() => {
+    if (crewData) {
+      setValue("crew_name", crewData.crewName);
+      setValue("slogan", crewData.slogan);
+      setValue("introduction", crewData.introduction);
+      const [city, district] = crewData.area.split(" ");
+      setValue("city", city);
+      setValue("district", district);
+      setValue("crewcreatedat", new Date(crewData.crewBirth));
+
+      setMainLogoPreview(crewData.mainLogo);
+      setSubLogoPreview(crewData.subLogo);
+      setBannerPreview(crewData.banner);
+      console.log(crewData);
+    }
+  }, [crewData, setValue]);
+
   const checkUndefined = async (file?: File) => {
     if (file) {
       return uploadImage(file);
     }
+    return undefined;
   };
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
+    if (isValid === false) {
+      return;
+    }
     Promise.all([
-      checkUndefined(data.main_logo),
-      checkUndefined(data.sub_logo),
+      checkUndefined(data.mainLogo),
+      checkUndefined(data.subLogo),
       checkUndefined(data.banner),
     ])
       .then(([mainLogoImageUrl, subLogoImageUrl, bannerImageUrl]) => {
@@ -89,47 +139,41 @@ const CrewCreateOrganism: React.FC = () => {
           const day = String(date.getDate()).padStart(2, "0");
           return `${year}-${month}-${day}`;
         };
-        const submitData: CrewCreateDto = {
+        const submitData: EditCrewRequestDto = {
+          crewId: Number(crewId),
           name: data.crew_name,
           slogan: data.slogan,
           area: `${data.city} ${data.district}`,
           introduction: data.introduction,
           crewBirth: formatDate(data.crewcreatedat!),
-          mainLogo: mainLogoImageUrl!,
-          subLogo: subLogoImageUrl!,
-          banner: bannerImageUrl!,
+          mainLogo: mainLogoImageUrl ?? crewData?.mainLogo ?? "",
+          subLogo: subLogoImageUrl ?? crewData?.subLogo ?? "",
+          banner: bannerImageUrl ?? crewData?.banner ?? "",
         };
-
-        console.log(submitData);
-        // 제출 API
-        return postCreateCrew(submitData); // 제출 API 호출
+        return mutation.mutate(submitData);
       })
-      .then((response) => {
-        console.log("Crew created successfully");
-        console.log(response.crewId);
-
-        // 성공 시 크루 Detail페이지로 이동
-        navigate(`/crew/detail/${response.crewId}`);
+      .then(() => {
+        console.log("수정 완료");
       })
       .catch((error) => {
-        console.error("Crew created fail:", error);
+        console.error("Crew edited fail:", error);
       });
   };
 
-  // 도시 선택 이후 시/군/구 함수
   const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const city = event.target.value;
-    setSelectedCity(city);
     setValue("city", city);
     setValue("district", ""); // 도시가 변경되면 구/군/구 필드를 초기화
   };
 
-  // watch 함수를 사용하여 실시간으로 city 필드 값 모니터링
-  const watchedCity = watch("city", selectedCity);
+  const watchedCity = watch("city");
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
-      {/* 본문 파트 */}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-wrap">
           <div className="w-full">
@@ -164,7 +208,6 @@ const CrewCreateOrganism: React.FC = () => {
               )}
             />
           </div>
-          {/* 도시 */}
           <div className="w-2/5 me-auto">
             <Controller
               name="city"
@@ -189,7 +232,6 @@ const CrewCreateOrganism: React.FC = () => {
               )}
             />
           </div>
-          {/* 시/군/구 */}
           <div className="w-2/5">
             <Controller
               name="district"
@@ -231,36 +273,40 @@ const CrewCreateOrganism: React.FC = () => {
           </div>
           <div className="w-full">
             <Controller
-              name="main_logo"
+              name="mainLogo"
               control={control}
               render={({ field }) => (
                 <InputImageTypeMolecule
-                  id="main_logo"
+                  id="mainLogo"
                   title="메인로고"
                   placeholder="1:1 비율이 가장 적합합니다."
+                  text="프로필 사진에 노출됩니다."
+                  previewUrl={mainLogoPreview}
                   {...field}
                   onChange={(e) => {
-                    setValue("main_logo", e.target.files![0]);
+                    setValue("mainLogo", e.target.files![0]);
+                    setMainLogoPreview(URL.createObjectURL(e.target.files![0]));
                   }}
-                  text="프로필 사진에 노출됩니다."
                 />
               )}
             />
           </div>
           <div className="w-full">
             <Controller
-              name="sub_logo"
+              name="subLogo"
               control={control}
               render={({ field }) => (
                 <InputImageTypeMolecule
-                  id="sub_logo"
+                  id="subLogo"
                   title="서브로고"
                   placeholder="1:1 비율이 가장 적합합니다."
+                  text="게시글 생성 시 사용됩니다."
+                  previewUrl={subLogoPreview}
                   {...field}
                   onChange={(e) => {
-                    setValue("sub_logo", e.target.files![0]);
+                    setValue("subLogo", e.target.files![0]);
+                    setSubLogoPreview(URL.createObjectURL(e.target.files![0]));
                   }}
-                  text="게시글 생성 시 사용됩니다."
                 />
               )}
             />
@@ -274,9 +320,11 @@ const CrewCreateOrganism: React.FC = () => {
                   id="banner"
                   title="배너"
                   placeholder="3:2 비율이 가장 적합합니다."
+                  previewUrl={bannerPreview}
                   {...field}
                   onChange={(e) => {
                     setValue("banner", e.target.files![0]);
+                    setBannerPreview(URL.createObjectURL(e.target.files![0]));
                   }}
                 />
               )}
@@ -300,11 +348,10 @@ const CrewCreateOrganism: React.FC = () => {
           </div>
         </div>
         <div>
-          {/* 유효성 검사 통과 여부에 따라 버튼 교체 */}
           {isValid ? (
-            <LargeAbleButton text="생성" />
+            <LargeAbleButton text="수정 완료" />
           ) : (
-            <LargeDisableButton text="생성" />
+            <LargeDisableButton text="수정 완료" />
           )}
         </div>
       </form>
@@ -312,4 +359,4 @@ const CrewCreateOrganism: React.FC = () => {
   );
 };
 
-export default CrewCreateOrganism;
+export default CrewEditOrganism;

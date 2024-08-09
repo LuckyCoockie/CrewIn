@@ -10,6 +10,7 @@ interface ProfileHeaderProps {
   timeAgo: string;
   onEdit: () => void;
   onDelete: () => void;
+  onClick?: () => void;
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({
@@ -18,6 +19,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   timeAgo,
   onEdit,
   onDelete,
+  onClick,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -49,8 +51,10 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
   return (
     <div className="flex items-center w-full mb-4">
-      <ProfileImageComponent src={profileImage} />
-      <div className="flex flex-col">
+      <div className="cursor-pointer" onClick={onClick}>
+        <ProfileImageComponent src={profileImage} />
+      </div>
+      <div className="flex flex-col cursor-pointer" onClick={onClick}>
         <BarTitle title={username} />
         <BarContent content={timeAgo} />
       </div>

@@ -39,7 +39,7 @@ const CrewHeaderBarOrganism: React.FC<CrewHeaderBarOrganismProps> = ({
               router="crew/detail"
               routerId={crew.crewId}
               key={crew.crewId}
-              src={crew.imageUrl}
+              src={crew.mainLogo}
               alt={crew.crewName}
               text={crew.crewName}
             />

@@ -37,6 +37,8 @@ import CrewRedirectPage from "./pages/crew/CrewRedirectPage.tsx";
 import AttendancePage from "./pages/attendance/AttendancePage.tsx";
 import CrewNoticeDetailPage from "./pages/CrewNoticeDetailPage.tsx";
 import CourseDetailPage from "./pages/course/CourseDetailPage.tsx";
+import CrewEditPage from "./pages/CrewEditPage.tsx";
+import SessionEditPage from "./pages/SessionEditPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -62,6 +64,7 @@ export const router = createBrowserRouter([
                   { path: "attendance", element: <AttendancePage /> },
                 ],
               },
+              { path: ":sessionId/edit", element: <SessionEditPage /> },
             ],
           },
           {
@@ -101,6 +104,7 @@ export const router = createBrowserRouter([
                 path: "detail/:crewId/notice/:noticeId",
                 element: <CrewNoticeDetailPage />,
               },
+              { path: "edit/:crewId", element: <CrewEditPage /> },
             ],
           },
           { path: "mypage/session/:type", element: <MySessionPage /> },

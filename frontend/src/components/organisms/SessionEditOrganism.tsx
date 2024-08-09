@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { useParams, useNavigate } from "react-router-dom";
 
 import InputTextTypeMolecule from "../molecules/Input/InputTextTypeMolecule";
 import InputNumberTypeMolecule from "../molecules/Input/InputNumberTypeMolecule";
@@ -14,19 +15,13 @@ import InputDateEndTypeMolecule from "../molecules/Input/InputDateEndTypeMolecul
 import { pace } from "../../pace";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
-import InputRadioTypeMolecule from "../molecules/Input/InputRadioTypeMolecule";
-import { useNavigate } from "react-router-dom";
-
 import {
-  SessionCreateDto,
-  postCreateSession,
-} from "../../apis/api/sessioncreate";
-
+  editSession,
+  getSessionDetail,
+  EditSessionRequestDto,
+  SessionDetailDto,
+} from "../../apis/api/sessiondetail";
 import { uploadImage } from "../../apis/api/presigned";
-// 내 크루 조회
-import { getMyCrews, CrewDto } from "../../apis/api/mycrew";
-
-// 내 코스 조회
 import { getMapList } from "../../apis/api/mycourse";
 
 // 유효성 검사 스키마 정의
@@ -61,6 +56,7 @@ const schema = yup.object({
   sessioninfo: yup.string().max(1000).required("상세내용을 작성해주세요."),
   sessioncourse: yup.string().nullable(),
 });
+
 type FormValues = {
   sessiontype: string;
   sessiontitle: string;
@@ -74,15 +70,20 @@ type FormValues = {
   sessioninfo: string;
 };
 
-const SessionCreateOrganism: React.FC = () => {
+const SessionEditOrganism: React.FC = () => {
+  // 내 크루 및 지도 정보를 가져오는 쿼리
+  const { sessionId } = useParams<{ sessionId: string }>();
+  const { data: mapData } = useQuery("myMaps", getMapList);
+  // 세션 상세 정보를 가져오는 쿼리
+  const { data: sessionData } = useQuery<SessionDetailDto, Error>(
+    ["getSessionDetail", sessionId],
+    () => getSessionDetail({ sessionId: Number(sessionId) })
+  );
   const navigate = useNavigate();
-  const [selectedMinutes, setSelectedMinutes] = useState<number>();
-  const [userRole, setUserRole] = useState<string>("");
-  const [hasCrew, setHasCrew] = useState<boolean>(false);
-  const [crewId, setCrewId] = useState<number | undefined>(undefined);
-  const [mapId, setMapId] = useState<number>(0);
-  const [FilteredCrews, setFilteredCrews] = useState<CrewDto[]>([]);
 
+  const [selectedMinutes, setSelectedMinutes] = useState<number>();
+  const [mapId, setMapId] = useState<number>(0);
+  const [currentImages, setCurrentImages] = useState<string[]>([]);
   const {
     control,
     handleSubmit,
@@ -91,53 +92,48 @@ const SessionCreateOrganism: React.FC = () => {
     formState: { errors, isValid },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
-    // 유효성 검사 mode
     mode: "onChange",
     defaultValues: {
-      sessiontype: "번개런",
+      sessionmembers: sessionData ? sessionData.maxPeople : 1,
       sessionstart: new Date(),
       sessionend: new Date(),
     },
   });
-  const { data: crewData } = useQuery("myCrews", getMyCrews);
-  const { data: mapData } = useQuery("myMaps", getMapList);
+  console.log(isValid);
 
   useEffect(() => {
-    // 시작 시간을 현재 시간보다 30분 이후로 설정
-    const currentDate = new Date();
-    currentDate.setMinutes(currentDate.getMinutes() + 30);
-    setValue("sessionstart", currentDate);
+    console.log(sessionData?.maxPeople);
+
+    if (sessionData) {
+      setValue("sessiontype", sessionData.sessionType);
+      setValue("sessiontitle", sessionData.sessionName);
+      setValue("sessionmembers", sessionData.maxPeople);
+      setValue("sessionspot", sessionData.spot);
+      setValue("sessionstart", new Date(sessionData.startAt));
+      setValue("sessionend", new Date(sessionData.endAt));
+      setValue("sessionpaceminutes", Math.floor(sessionData.pace / 60));
+      setValue("sessionpaceseconds", sessionData.pace % 60);
+      setValue("sessioninfo", sessionData.content);
+      setMapId(sessionData.courseId);
+      setCurrentImages(sessionData.sessionPosters);
+    }
+  }, [sessionData, setValue]);
+
+  useEffect(() => {
     if (mapData && mapData.length === 0) {
       window.alert("지도를 생성해주세요");
       return navigate(`/profile`);
     }
-
-    if (crewData && crewData.crews.length > 0) {
-      // 크루 선택창 활성화 조건
-      setHasCrew(true);
-
-      setUserRole("CAPTAIN");
-      const filteredCrews = crewData.crews.filter(
-        (crew) => crew.position === "PACER" || crew.position === "CAPTAIN"
-      );
-      // 필터된 크루의 조건중에 페이서나 캡틴이 없다면 번개런/오픈런 버튼 랜더링 삭제
-      console.log(filteredCrews.length);
-
-      setFilteredCrews(filteredCrews);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [crewData]);
+  }, [mapData, navigate]);
 
   const checkUndefined = async (files: FileList) => {
     if (files) {
-      // files를 배열로 변환한 다음 역순으로 정렬
-      const reversedFiles = Array.from(files).reverse();
-
-      const uploadPromises = reversedFiles.map(async (file) => {
-        const result = await uploadImage(file);
-        return result;
-      });
-
+      const uploadPromises = Array.from(files)
+        .reverse()
+        .map(async (file) => {
+          const result = await uploadImage(file);
+          return result;
+        });
       return Promise.all(uploadPromises);
     } else {
       return [];
@@ -145,7 +141,11 @@ const SessionCreateOrganism: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    const urls = await checkUndefined(data.sessionposter!);
+    if (isValid === false) {
+      return;
+    }
+    const uploadedUrls = await checkUndefined(data.sessionposter!);
+    const images = uploadedUrls.length > 0 ? uploadedUrls : currentImages;
     const formatDate = (date: Date): string => {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -155,21 +155,13 @@ const SessionCreateOrganism: React.FC = () => {
       const seconds = String(date.getSeconds()).padStart(2, "0");
       return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     };
-    const formType = (type: string) => {
-      if (type === "번개런") {
-        return "THUNDER";
-      } else if (type === "정규런") {
-        return "STANDARD";
-      } else if (type === "오픈런") {
-        return "OPEN";
-      }
-    };
-    const submitData: SessionCreateDto = {
-      crewId: crewId,
+
+    const submitData: EditSessionRequestDto = {
+      sessionId: Number(sessionId),
       courseId: mapId,
-      sessionType: formType(data.sessiontype)!,
+      sessionType: data.sessiontype,
       name: data.sessiontitle,
-      images: urls!,
+      images: images!,
       pace: data.sessionpaceminutes * 60 + data.sessionpaceseconds,
       spot: data.sessionspot,
       startAt: formatDate(data.sessionstart!),
@@ -178,13 +170,11 @@ const SessionCreateOrganism: React.FC = () => {
       maxPeople: data.sessionmembers,
     };
     console.log(submitData);
-    // spinner 및 클릭 방지 실행 부분
-    return postCreateSession(submitData) // 제출 API 호출
+    return editSession(submitData)
       .then(() => {
-        navigate(`/session?status=active`);
+        navigate(`/session/${sessionId}`);
       })
       .catch((error) => {
-        // 실패시 spinner 제거
         console.log(error);
       });
   };
@@ -199,74 +189,21 @@ const SessionCreateOrganism: React.FC = () => {
   const watchedMinutes = watch("sessionpaceminutes", selectedMinutes);
   const watchedSessionStart = watch("sessionstart");
   const watchedSessionEnd = watch("sessionend");
-  const watchedSessionType = watch("sessiontype");
-
-  useEffect(() => {
-    if (watchedSessionType === "번개런") {
-      setCrewId(undefined);
-    }
-  }, [watchedSessionType]);
 
   useEffect(() => {
     if (watchedSessionStart) {
-      setValue("sessionend", watchedSessionStart); // 시작시간 변경 시 종료시간 최소값 설정
+      setValue("sessionend", watchedSessionStart);
     }
   }, [watchedSessionStart, setValue]);
 
-  const renderSessionTypeOptions = () => {
-    if (!hasCrew) {
-      return ["번개런"];
-    }
-
-    if (userRole === "CAPTAIN" || userRole === "PACER") {
-      return ["번개런", "정규런", "오픈런"];
-    }
-
-    return ["번개런"];
-  };
+  if (!sessionData) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-wrap w-full">
-          <div className="w-full">
-            <Controller
-              name="sessiontype"
-              control={control}
-              render={({ field }) => (
-                <InputRadioTypeMolecule
-                  id="sessiontype"
-                  title="세션 종류"
-                  default="번개런"
-                  {...field}
-                  value={renderSessionTypeOptions()}
-                  error={errors.sessiontype?.message}
-                  hasError={!!errors.sessiontype}
-                  onChange={(e) => {
-                    field.onChange(e);
-                  }}
-                />
-              )}
-            />
-          </div>
-          {watchedSessionType !== "번개런" && (
-            <div className="w-2/5 me-auto">
-              <InputDropdonwTypeMolecule
-                id="crewId"
-                title="크루 선택"
-                text=""
-                options={FilteredCrews.map((crew) => ({
-                  label: crew.crewName,
-                  value: crew.crewId,
-                }))}
-                value={crewId}
-                onChange={(e) => {
-                  setCrewId(Number(e.target.value));
-                }}
-                hasError={false}
-              />
-            </div>
-          )}
           {mapData && (
             <div className="w-2/5">
               <InputDropdonwTypeMolecule
@@ -372,7 +309,7 @@ const SessionCreateOrganism: React.FC = () => {
               <ImageMultiTypeMolecule
                 id="sessionposter"
                 title="포스터"
-                text="가장 처음에 선택한 사진이 메인에 노출됩니다."
+                text="포스터 다시 선택하기"
                 placeholder=""
                 {...field}
                 onChange={(e) => {
@@ -461,4 +398,4 @@ const SessionCreateOrganism: React.FC = () => {
   );
 };
 
-export default SessionCreateOrganism;
+export default SessionEditOrganism;

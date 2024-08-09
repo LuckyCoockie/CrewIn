@@ -1,87 +1,86 @@
-import React, { useRef, useState } from "react";
-import { useMutation, useQueryClient } from "react-query";
-import InfiniteScrollComponent, {
-  ItemComponentProps,
-} from "../organisms/InfiniteScrollOrganism";
-
-import FloatingActionButton from "../atoms/Button/FloatingActionButton";
-import { ReactComponent as PlusIcon } from "../../assets/icons/plus.svg";
-import { uploadImage } from "../../apis/api/presigned";
+import React, { useRef, useState, useEffect } from "react";
 import {
+  GetSessionAlbumDto,
+  getSessionAlbum,
   uploadSessionImages,
   UploadSessionImageRequestDto,
-  GetSessionAlbumDto,
 } from "../../apis/api/sessiondetail";
+import InfiniteScrollComponent from "../../util/paging/component/InfinityScrollComponent";
 import { PageNationData } from "../../util/paging/type";
+import { ReactComponent as PlusIcon } from "../../assets/icons/plus.svg";
+import FloatingActionButton from "../atoms/Button/FloatingActionButton";
+import { uploadImage } from "../../apis/api/presigned";
 
-type SessionAlbumOrganismProps = {
-  fetchAlbumData: (page: number) => Promise<PageNationData<GetSessionAlbumDto>>;
+type PropsData = {
   sessionId: number;
 };
 
-const SessionAlbumOrganism: React.FC<SessionAlbumOrganismProps> = ({
-  fetchAlbumData,
-  sessionId,
-}) => {
-  const [totalImageCount, setTotalImageCount] = useState<number>(0);
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const queryClient = useQueryClient();
+const SessionAlbumOrganism: React.FC<PropsData> = ({ sessionId }) => {
+  const [images, setImages] = useState<GetSessionAlbumDto[]>([]); // 이미지 데이터 상태 추가
+  const [fetchKey, setFetchKey] = useState(0); // fetchKey 상태 추가
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  // 갤러리 데이터 가져오기
+  const fetchGallery = async (
+    pageNo: number
+  ): Promise<PageNationData<GetSessionAlbumDto>> => {
+    const data = await getSessionAlbum(pageNo, sessionId);
+    if (pageNo === 0) {
+      setImages(data.items);
+    } else {
+      setImages((prevImages) => [...prevImages, ...data.items]);
+    }
+    return data;
+  };
+
+  // 파일 업로드 버튼 클릭 핸들러
   const handleAlbumUpload = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
 
-  const uploadImageMutation = useMutation(uploadImage, {
-    onSuccess: (data) => {
-      setUploadedImages((prevImages) => [data, ...prevImages]);
-      setTotalImageCount((prevCount) => prevCount + 1);
-    },
-  });
-
-  const uploadSessionImagesMutation = useMutation(
-    (dto: UploadSessionImageRequestDto) => uploadSessionImages(dto),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("sessionAlbum");
-      },
-    }
-  );
-
-  const handleImageUpload = async (
+  // 파일 변경 이벤트 핸들러
+  const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    if (event.target.files) {
-      const files = Array.from(event.target.files);
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      try {
+        const uploadedUrls = await Promise.all(
+          Array.from(files).map((file) => uploadImage(file))
+        );
 
-      const uploadPromises = files.map(async (file) => {
-        const imageUrl = await uploadImageMutation.mutateAsync(file);
-        return imageUrl;
-      });
+        const uploadDto: UploadSessionImageRequestDto = {
+          sessionId: sessionId,
+          sessionImageUrls: uploadedUrls,
+        };
+        await uploadSessionImages(uploadDto);
 
-      const uploadedImageUrls = await Promise.all(uploadPromises);
-      const uploadSessionImageRequestDto: UploadSessionImageRequestDto = {
-        sessionId,
-        sessionImageUrls: uploadedImageUrls,
-      };
-      await uploadSessionImagesMutation.mutateAsync(
-        uploadSessionImageRequestDto
-      );
+        // 업로드 성공 후 갤러리 갱신
+        await refreshGallery(); // 갤러리 갱신 함수 호출
+        setFetchKey((prevKey) => prevKey + 1); // fetchKey 갱신
+      } catch (error) {
+        console.error("Image upload failed", error);
+      }
     }
   };
 
-  const PhotoItem = ({
-    data,
-  }: ItemComponentProps<string>): React.ReactElement => (
-    <img
-      src={data}
-      alt="Session Album"
-      className="photo-item"
-      style={{ border: "1px solid rgba(255, 0, 0, 0)" }}
-    />
-  );
+  // 갤러리 갱신 함수
+  const refreshGallery = async () => {
+    try {
+      // 첫 페이지의 데이터를 다시 불러옴
+      const updatedData = await getSessionAlbum(0, sessionId);
+      setImages(updatedData.items); // 이미지를 다시 설정
+    } catch (error) {
+      console.error("Failed to refresh gallery", error);
+    }
+  };
+
+  // 컴포넌트가 마운트될 때 갤러리 데이터를 불러옴
+  useEffect(() => {
+    refreshGallery();
+  }, [sessionId]);
 
   return (
     <>
@@ -89,32 +88,43 @@ const SessionAlbumOrganism: React.FC<SessionAlbumOrganismProps> = ({
         type="file"
         accept="image/*"
         multiple
-        onChange={handleImageUpload}
-        ref={fileInputRef}
         className="hidden"
+        ref={fileInputRef}
+        onChange={handleFileChange}
       />
       <FloatingActionButton onClick={handleAlbumUpload}>
         <PlusIcon />
       </FloatingActionButton>
-      {totalImageCount === 0 ? (
+      {images.length === 0 ? (
         <div className="text-gray-300 w-full text-center mt-4">
           등록된 사진이 없습니다.
         </div>
       ) : (
         <InfiniteScrollComponent
-          fetchKey="sessionAlbum"
-          fetchData={async (page: number) => {
-            const fetchedData = (await fetchAlbumData(page)).items;
-            const imageUrls = fetchedData.map((item) => item.imageUrl);
-            return [...uploadedImages, ...imageUrls];
-          }}
-          ItemComponent={({ data }: ItemComponentProps<string>) => (
-            <React.Fragment>
-              <PhotoItem data={data} />
-            </React.Fragment>
+          fetchKey={`sessionGallery-${fetchKey}`} // fetchKey에 동적 값 추가
+          fetchData={fetchGallery}
+          ItemComponent={({ data }) => (
+            <div
+              className="w-full h-full"
+              style={{ position: "relative", paddingBottom: "100%" }}
+            >
+              <img
+                src={data.imageUrl}
+                alt={`gallery-item-${data.sessionImageId}`}
+                key={`gallery-${data.sessionImageId}`}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover", // 또는 contain으로 변경 가능
+                  border: "1px solid rgba(255, 0, 0, 0)",
+                }}
+              />
+            </div>
           )}
-          className="photo-grid"
-          pageSize={12}
+          className="grid grid-cols-3"
         />
       )}
     </>

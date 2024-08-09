@@ -2,15 +2,27 @@ import { useEffect, useMemo, useState } from "react";
 import "../../styles/square.css";
 import React from "react";
 import sessionLogoImage from "../../assets/images/sessionLogo.png";
+import { ReactComponent as Sessionpeople } from "../../assets/icons/sessinpeople.svg";
 
 interface OwnProps {
-  crewName: string;
+  max?: number;
+  current?: number;
+  crewName?: string;
   area: string;
   date: string;
   imageUrl: string;
+  title: string;
 }
 
-const SessionListItem = ({ crewName, area, date, imageUrl }: OwnProps) => {
+const SessionListItem = ({
+  title,
+  // crewName,
+  area,
+  date,
+  imageUrl,
+  current,
+  max,
+}: OwnProps) => {
   const [image, setImage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -50,19 +62,39 @@ const SessionListItem = ({ crewName, area, date, imageUrl }: OwnProps) => {
   return (
     <div className="max-w-sm rounded-lg border-primary bg-primary tracking-tighter truncate">
       <div className="flex justify-center items-center p-[6px] xs:p-2">
-        <div className="square">
+        <div className="square relative">
           {image ? (
-            <img
-              alt="session image"
-              src={image}
-              className="b border xs:border-2 border-white w-full"
-            />
+            <>
+              <img
+                alt="session image"
+                src={image}
+                className="border xs:border-2 w-full"
+              />
+              <div className="absolute top-1 right-1 border rounded-xl bg-white flex h-4 xs:h-5 px-1 justify-center items-center shadow-sm bg-opacity-85 border-opacity-85">
+                <div className="me-1">
+                  <Sessionpeople />
+                </div>
+                <div className="text-[10px] xs:text-sm font-bold ">
+                  {current} / {max}
+                </div>
+              </div>
+            </>
           ) : (
-            <img
-              alt="session image"
-              src={sessionLogoImage}
-              className="b border xs:border-2 border-white w-full"
-            />
+            <>
+              <img
+                alt="session image"
+                src={sessionLogoImage}
+                className="border xs:border-2 border-white w-full"
+              />
+              <div className="absolute top-1 right-1 border rounded-xl bg-white flex h-4 xs:h-5 px-1 justify-center items-center shadow-sm bg-opacity-85 border-opacity-85">
+                <div className="me-1">
+                  <Sessionpeople />
+                </div>
+                <div className="text-[10px] xs:text-sm font-bold ">
+                  {current} / {max}
+                </div>
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -73,21 +105,21 @@ const SessionListItem = ({ crewName, area, date, imageUrl }: OwnProps) => {
               className="text-white font-bold text-xs xs:text-base truncate"
               style={{ lineHeight: "0.8em" }}
             >
-              {crewName}
+              {title.length > 10 ? `${title.substring(0, 9)}...` : title}
             </p>
-            <p className="text-white text-[10px] xs:text-xs sm:text-sm truncate">
+            <p className="text-gray-300 text-[10px] xs:text-xs sm:text-sm truncate">
               {area}
             </p>
           </div>
-          <div className="right-element text-right items-center overflow-hidden">
+          <div className="right-element text-right items-center">
             <p
-              className="text-white text-[10px] xs:text-xs sm:text-sm truncate"
+              className="text-gray-300 text-[10px] xs:text-xs sm:text-sm truncate"
               style={{ lineHeight: "0.95em" }}
             >
               {parsedDate}
             </p>
             <p
-              className="text-white text-[10px] xs:text-xs sm:text-sm truncate"
+              className="text-gray-300 text-[10px] xs:text-xs sm:text-sm truncate"
               style={{ lineHeight: "0.95em" }}
             >
               {parsedTime}
