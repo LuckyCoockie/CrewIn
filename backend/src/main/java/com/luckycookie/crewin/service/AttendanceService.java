@@ -61,7 +61,8 @@ public class AttendanceService {
             throw new SessionAuthorizationException();
         }
 
-        SseEmitter emitter = emitterRepository.save(sessionId, new SseEmitter(60 * 1000L * 10));
+//        SseEmitter emitter = emitterRepository.save(sessionId, new SseEmitter(60 * 1000L * 10));
+        SseEmitter emitter = emitterRepository.save(sessionId, new SseEmitter(10 * 1000L));
         emitter.onCompletion(() -> emitterRepository.deleteById(sessionId));
         emitter.onTimeout(() -> emitterRepository.deleteById(sessionId));
 
