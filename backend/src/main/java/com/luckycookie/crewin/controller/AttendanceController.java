@@ -53,7 +53,7 @@ public class AttendanceController {
     }
 
     // SSE 구독
-    @PostMapping("/connect/{session-id}")
+    @GetMapping("/connect/{session-id}")
     public ResponseEntity<SseEmitter> subscribeSSE(@PathVariable("session-id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
         log.info("Subscribe SSE");
         return ResponseEntity.ok(attendanceService.subscribeSSE(sessionId, customUser.getEmail()));
