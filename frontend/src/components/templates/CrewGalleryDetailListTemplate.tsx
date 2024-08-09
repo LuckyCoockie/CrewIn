@@ -1,17 +1,14 @@
-import {
-  GetCrewGalleryListDetailReqeustParams,
-  PostDto,
-} from "../../apis/api/crewGallaryList";
+import { GetCrewGalleryListDetailResponseDto } from "../../apis/api/crewGallaryList";
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import CrewGalleryListDetailComponent from "../organisms/CrewGalleryDetailListOrganism";
 
 type OwnProps = {
-  postId: number;
-  fetchData: (dto: GetCrewGalleryListDetailReqeustParams) => Promise<PostDto[]>;
+  initPage: number;
+  fetchData: (pageNo: number) => Promise<GetCrewGalleryListDetailResponseDto>;
 };
 
 const CrewGalleryListDetailTemplate: React.FC<OwnProps> = ({
-  postId,
+  initPage,
   fetchData,
 }: OwnProps) => {
   return (
@@ -19,7 +16,10 @@ const CrewGalleryListDetailTemplate: React.FC<OwnProps> = ({
       <header>
         <BackHeaderMediumOrganism text={"사진첩 상세조회"} />
       </header>
-      <CrewGalleryListDetailComponent postId={postId} fetchData={fetchData} />
+      <CrewGalleryListDetailComponent
+        initPage={initPage}
+        fetchData={fetchData}
+      />
     </div>
   );
 };

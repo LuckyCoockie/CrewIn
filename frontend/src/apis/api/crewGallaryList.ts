@@ -1,3 +1,4 @@
+import { PageNationData } from "../../util/paging/type";
 import api from "../utils/instance";
 
 export type PostDto = {
@@ -16,8 +17,7 @@ export type PostDto = {
 };
 
 export type GetCrewGalleryListDetailReqeustParams = {
-  postId: number;
-  direction: "increase" | "decrease";
+  pageNo?: number;
 };
 
 export type GetCrewGalleryListDetailReqeustDto = {
@@ -25,16 +25,11 @@ export type GetCrewGalleryListDetailReqeustDto = {
   params: GetCrewGalleryListDetailReqeustParams;
 };
 
-export type GetCrewGalleryListDetailResponseDto = {
-  pageNo: number;
-  lastPageNo: number;
-  items: PostDto[];
-};
+export type GetCrewGalleryListDetailResponseDto = PageNationData<PostDto>;
 
 export const getCrewGallaryDetailList = async (
   dto: GetCrewGalleryListDetailReqeustDto
 ): Promise<GetCrewGalleryListDetailResponseDto> => {
-  // TODO : 누른애가 안나옴...
   const response = await api.get(`/post/crew/gallery/detail/${dto.crewId}`, {
     params: dto.params,
   });

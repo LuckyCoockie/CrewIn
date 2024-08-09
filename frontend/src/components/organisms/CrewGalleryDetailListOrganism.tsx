@@ -1,30 +1,25 @@
 import React from "react";
-import TwoWayInfiniteScrollComponent from "../molecules/TwoWayInfinityScrollMolecules";
 import PostItemComponent from "./PostItemOrganism";
-import {
-  GetCrewGalleryListDetailReqeustParams,
-  PostDto,
-} from "../../apis/api/crewGallaryList";
+import { GetCrewGalleryListDetailResponseDto } from "../../apis/api/crewGallaryList";
+import InfiniteScrollComponent from "../../util/paging/component/InfinityScrollComponent";
 
 type OwnProps = {
-  postId: number;
-  fetchData: (
-    params: GetCrewGalleryListDetailReqeustParams
-  ) => Promise<PostDto[]>;
+  initPage: number;
+  fetchData: (pageNo: number) => Promise<GetCrewGalleryListDetailResponseDto>;
 };
 
 const CrewGalleryListDetailComponent: React.FC<OwnProps> = ({
-  postId,
+  initPage,
   fetchData,
 }) => {
   return (
-    <TwoWayInfiniteScrollComponent
-      fetchKey={["crewGallaryList"]}
+    <InfiniteScrollComponent
+      fetchKey={["crewGallaryDetail"]}
       fetchData={fetchData}
       ItemComponent={({ data }) => (
         <PostItemComponent key={data.id} postData={data} />
       )}
-      postId={postId}
+      initPage={initPage}
     />
   );
 };

@@ -3,6 +3,7 @@ import { useInfiniteQuery } from "react-query";
 import { PageNationData } from "../type";
 
 export type ItemComponentProps<T> = {
+  pageNo: number;
   data: T;
 };
 
@@ -23,19 +24,31 @@ const InfiniteScrollComponent = <T,>({
   className,
   initPage,
 }: OwnProps<T>) => {
-  const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
-    useInfiniteQuery(
-      fetchKey,
-      ({ pageParam = initPage ?? 0 }) => fetchData(pageParam),
-      {
-        refetchOnWindowFocus: false,
-        getNextPageParam: (lastPage) => {
-          if (lastPage.lastPageNo <= lastPage.pageNo) return;
-          const nextPage = lastPage.pageNo + 1;
-          return nextPage;
-        },
-      }
-    );
+  const {
+    data,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasPreviousPage,
+    fetchPreviousPage,
+    isFetchingPreviousPage,
+  } = useInfiniteQuery(
+    fetchKey,
+    ({ pageParam = initPage ?? 0 }) => fetchData(pageParam),
+    {
+      refetchOnWindowFocus: false,
+      getNextPageParam: (lastPage) => {
+        if (lastPage.pageNo <= lastPage.lastPageNo) return;
+        const nextPage = lastPage.pageNo + 1;
+        return nextPage;
+      },
+      getPreviousPageParam: (firstPage) => {
+        if (firstPage.pageNo <= 0) return;
+        const previousPage = firstPage.pageNo - 1;
+        return previousPage;
+      },
+    }
+  );
 
   useEffect(() => {
     const handleScroll = async () => {
@@ -54,11 +67,30 @@ const InfiniteScrollComponent = <T,>({
     };
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
+  useEffect(() => {
+    const handleScroll = async () => {
+      const { scrollHeight, scrollTop, clientHeight } =
+        document.documentElement;
+      if (
+        !isFetchingPreviousPage &&
+        scrollHeight - scrollTop <= clientHeight * 1.2
+      ) {
+        if (hasPreviousPage) await fetchPreviousPage();
+      }
+    };
+    document.addEventListener("scroll", handleScroll);
+    return () => {
+      document.removeEventListener("scroll", handleScroll);
+    };
+  }, [fetchPreviousPage, hasPreviousPage, isFetchingPreviousPage]);
+
   return (
     <div className={className}>
-      {data?.pages.map((data, index) => (
+      {data?.pages.map((page, index) => (
         <React.Fragment key={index}>
-          {data?.items.map((data) => ItemComponent({ data }))}
+          {page?.items.map((data) =>
+            ItemComponent({ pageNo: page.pageNo, data: data })
+          )}
         </React.Fragment>
       ))}
     </div>

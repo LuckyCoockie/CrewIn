@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useQuery } from "react-query";
 import CrewInfoOrganism from "../organisms/CrewInfoOrganism";
 import CrewNoticeOrganism from "../organisms/CrewNoticeOrganism";
@@ -9,7 +9,11 @@ import CrewAlbumOrganism from "../organisms/CrewAlbumOrganism";
 import CrewHeaderBarOrganism from "../organisms/CrewHeaderBarOrganism";
 import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
 import GroupsButton from "../atoms/Button/GroupsButton";
-import { getCrewInfo, getCrewGalleryList } from "../../apis/api/crewdetail";
+import {
+  getCrewInfo,
+  getCrewGalleryList,
+  GetCrewGalleryListResponseDto,
+} from "../../apis/api/crewdetail";
 import { getMyCrews } from "../../apis/api/mycrew";
 import { useNavigate, useParams } from "react-router";
 import { createSearchParams } from "react-router-dom";
@@ -36,6 +40,23 @@ const CrewDetailTemplate: React.FC = () => {
     error: myCrewsError,
   } = useQuery("myCrews", getMyCrews);
 
+  const handleFetchGalleryData = useCallback(
+    async (pageNo: number): Promise<GetCrewGalleryListResponseDto> => {
+      if (!crewId) {
+        return {
+          pageNo: 0,
+          lastPageNo: 0,
+          items: [],
+        };
+      }
+      return getCrewGalleryList({
+        crewId: parseInt(crewId),
+        pageNo: pageNo,
+      });
+    },
+    [crewId]
+  );
+
   const userCrew = myCrewsData?.crews.find(
     (crew) => crew.crewId === numericCrewId
   );
@@ -46,33 +67,17 @@ const CrewDetailTemplate: React.FC = () => {
   console.log("isUserCrewMember:", isUserCrewMember);
   console.log("userPosition:", userPosition);
 
-  // 사진첩을 가져오는 React Query 훅
-  const {
-    data: galleryData,
-    isLoading: galleryLoading,
-    error: galleryError,
-  } = useQuery(
-    ["crewGallery", { crewId }],
-    () =>
-      getCrewGalleryList({ crewId: numericCrewId, pageNo: 0 }).then(
-        (data) => data.items
-      ),
-    {
-      enabled: isUserCrewMember, // isUserCrewMember가 true일 때만 호출
-    }
-  );
-
   const handleTabClick = (tab: string) => {
     console.log("Tab clicked:", tab);
     setCurrentTab(tab);
   };
 
   const renderTab = () => {
-    if (infoLoading || galleryLoading || myCrewsLoading) {
+    if (infoLoading || myCrewsLoading) {
       return <div>Loading...</div>;
     }
 
-    if (infoError || galleryError || myCrewsError) {
+    if (infoError || myCrewsError) {
       return <div>Error loading data</div>;
     }
 
@@ -113,19 +118,17 @@ const CrewDetailTemplate: React.FC = () => {
           <div>No Info Data</div>
         );
       case "사진첩":
-        return galleryData ? (
+        return (
           <CrewAlbumOrganism
-            fetchgalleryData={galleryData}
-            onItemClicked={async (postId) =>
+            fetchgalleryData={handleFetchGalleryData}
+            onItemClicked={async (pageNo) =>
               navigate(
                 `/crew/gallery/${crewId}?${createSearchParams({
-                  postId: postId.toString(),
+                  pageNo: pageNo.toString(),
                 })}`
               )
             }
           />
-        ) : (
-          <div>No Gallery Data</div>
         );
       default:
         return infoData ? (
