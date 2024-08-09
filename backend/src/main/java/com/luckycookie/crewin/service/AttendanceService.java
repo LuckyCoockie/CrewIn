@@ -79,7 +79,7 @@ public class AttendanceService {
         });
 
         // 503 에러 방지용, 최초 요청시 전체 멤버 데이터를 반환
-        sendNotification(emitter, "connect", sessionId, "connect complete\n\n");
+        sendNotification(emitter, "connect", sessionId, "connect complete");
 
         return emitter;
     }
