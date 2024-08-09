@@ -73,6 +73,7 @@ public class AttendanceService {
                     .data(data)
             );
         } catch (IOException exception) {
+            log.error("SSE Exception Occirred!!! : " + exception.getMessage());
             emitterRepository.deleteById(emitterId);
         }
     }
