@@ -30,6 +30,7 @@ const SessionListComponent = <T,>({ fetchData }: OwnProps<T>) => {
       {({ item }) => (
         <div onClick={() => navigate(`/session/${item.sessionId}`)}>
           <SessionListItemMolecules
+            title={item.sessionName}
             key={item.sessionId}
             crewName={item.crewName}
             area={item.area}
