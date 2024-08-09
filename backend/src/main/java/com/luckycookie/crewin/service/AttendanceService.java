@@ -4,6 +4,8 @@ import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.domain.MemberSession;
 import com.luckycookie.crewin.domain.Session;
 import com.luckycookie.crewin.dto.AttendanceRequest.AttendanceInfoRequest;
+import com.luckycookie.crewin.dto.AttendanceResponse;
+import com.luckycookie.crewin.dto.AttendanceResponse.AttendanceInfo;
 import com.luckycookie.crewin.dto.AttendanceResponse.AttendanceMemberItem;
 import com.luckycookie.crewin.dto.AttendanceResponse.AttendanceMemberResponse;
 import com.luckycookie.crewin.exception.attendance.InvalidLocationException;
@@ -14,6 +16,7 @@ import com.luckycookie.crewin.exception.memberSession.NotFoundMemberSessionExcep
 import com.luckycookie.crewin.exception.session.InvalidSessionException;
 import com.luckycookie.crewin.exception.session.NotFoundSessionException;
 import com.luckycookie.crewin.exception.session.SessionAuthorizationException;
+import com.luckycookie.crewin.repository.EmitterRepository;
 import com.luckycookie.crewin.repository.MemberRepository;
 import com.luckycookie.crewin.repository.MemberSessionRepository;
 import com.luckycookie.crewin.repository.SessionRepository;
@@ -22,7 +25,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,6 +46,36 @@ public class AttendanceService {
     private final MemberSessionRepository memberSessionRepository;
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private final ScheduledService scheduledService;
+    private final EmitterRepository emitterRepository;
+
+    // SSE 구독
+    public SseEmitter subscribeSSE(Long sessionId, String email) {
+        Session session = sessionRepository.findByIdWithHost(sessionId).orElseThrow(NotFoundSessionException::new);
+        if (!session.getHost().getEmail().equals(email)) {
+            throw new SessionAuthorizationException();
+        }
+
+        SseEmitter emitter = emitterRepository.save(sessionId, new SseEmitter(60 * 1000L * 10));
+        emitter.onCompletion(() -> emitterRepository.deleteById(sessionId));
+        emitter.onTimeout(() -> emitterRepository.deleteById(sessionId));
+
+        // 503 에러 방지용, 최초 요청시 전체 멤버 데이터를 반환
+        sendNotification(emitter, "connect", sessionId, null);
+
+        return emitter;
+    }
+
+    private void sendNotification(SseEmitter emitter, String eventId, Long emitterId, Object data) { // (4)
+        try {
+            emitter.send(SseEmitter.event()
+                    .id(eventId)
+                    .name("sse")
+                    .data(data)
+            );
+        } catch (IOException exception) {
+            emitterRepository.deleteById(emitterId);
+        }
+    }
 
     public void startAttendance(Long sessionId, String email, AttendanceInfoRequest attendanceInfoRequest) {
         // 세션 존재 체크
@@ -91,14 +126,20 @@ public class AttendanceService {
                     .builder()
                     .memberSessionId(memberSession.getId())
                     .name(member.getName())
+                    .isAttend(memberSession.getIsAttend())
                     .profileUrl(member.getImageUrl())
                     .nickname(member.getNickname())
                     .build();
         }).toList();
 
+        boolean inProgress = session.getAttendanceStart() != null &&
+                LocalDateTime.now().isAfter(session.getAttendanceStart()) &&
+                LocalDateTime.now().isBefore(session.getAttendanceStart().plusMinutes(10));
+
         return AttendanceMemberResponse
                 .builder()
                 .items(attendanceMemberItems)
+                .AutoCheckInProgress(inProgress)
                 .build();
 
     }
@@ -123,6 +164,9 @@ public class AttendanceService {
 
         // 멤버-세션에 출석여부 반영
         memberSession.changeAttend(true);
+
+        // 호스트에게 sse 전송
+        sendNotification(emitterRepository.findById(sessionId), "attendance", sessionId, AttendanceInfo.builder().memberSessionId(memberSession.getId()).isAttend(true).build());
     }
 
     // 두 좌표 간의 거리를 계산하는 메소드
@@ -169,5 +213,12 @@ public class AttendanceService {
 
         // 출석 수정
         memberSession.changeAttend(attendValue);
+
+        // 호스트에게 sse 전송
+        Long sessionId = memberSession.getSession().getId();
+        sendNotification(emitterRepository.findById(sessionId), "attendance",
+                sessionId, AttendanceInfo.builder().memberSessionId(memberSession.getId()).isAttend(attendValue).build());
     }
+
+
 }

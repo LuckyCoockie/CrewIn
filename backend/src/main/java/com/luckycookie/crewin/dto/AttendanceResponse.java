@@ -13,19 +13,30 @@ public class AttendanceResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class AttendanceMemberResponse{
+    public static class AttendanceMemberResponse {
         List<AttendanceMemberItem> items;
+        Boolean AutoCheckInProgress;
     }
 
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class AttendanceMemberItem{
+    public static class AttendanceMemberItem {
         private Long memberSessionId;
         private String name;
         private String nickname;
         private String profileUrl;
+        private Boolean isAttend;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class AttendanceInfo {
+        private Long memberSessionId;
+        private Boolean isAttend;
     }
 
 }

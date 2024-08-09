@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -49,6 +50,13 @@ public class AttendanceController {
     @GetMapping("/member/{session-id}")
     public ResponseEntity<BaseResponse<AttendanceMemberResponse>> getAttendanceMemberList(@PathVariable("session-id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "출석부 목록 조회를 성공했습니다.", attendanceService.getAttendanceMemberList(sessionId, customUser)));
+    }
+
+    // SSE 구독
+    @PostMapping("/connect/{session-id}")
+    public ResponseEntity<SseEmitter> subscribeSSE(@PathVariable("session-id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
+        log.info("Subscribe SSE");
+        return ResponseEntity.ok(attendanceService.subscribeSSE(sessionId, customUser.getEmail()));
     }
 }
 
