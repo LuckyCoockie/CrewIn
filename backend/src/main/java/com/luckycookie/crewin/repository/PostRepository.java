@@ -22,11 +22,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByCrewAndPostType(Crew crew, PostType postType, Pageable pageable);
 
     // 1. isPublic이 true인 글 (isPublic은 tinyInt형임) or
-    // 2. 남(targetMember)가 작성한 게시글 중 크루가 태그되지 않은 글 or
-    // 3. 크루가 태그되었다면 해당 크루에 targetMember와 Member가 속해있는 글들 (tagetMember와 Member가 같은 크루에 있을 때만)
+    // 2. 크루가 태그되었다면 해당 크루에 targetMember와 Member가 속해있는 글들 (tagetMember와 Member가 같은 크루에 있을 때만)
     @Query("SELECT p FROM Post p " +
-            "WHERE (p.isPublic = true) " +
-            "OR (p.author = :targetMember AND p.crew IS NULL) " +
+            "WHERE (p.isPublic = true) AND p.postType ='STANDARD'" +
             "OR (p.crew IS NOT NULL AND " +
             "     EXISTS (SELECT mc FROM MemberCrew mc WHERE mc.crew = p.crew AND mc.member = :targetMember) AND " +
             "     EXISTS (SELECT mc FROM MemberCrew mc WHERE mc.crew = p.crew AND mc.member = :member)) " +
@@ -38,17 +36,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByMember(Member member, Pageable pageable);
 
     // 크루
-    // PostId가 기준보다 큰 포스트들을 오름차순으로 가져오는 메서드
-    Page<Post> findByCrewAndIdGreaterThanAndPostTypeOrderByIdAsc(Crew crew, Long id, PostType postType, Pageable pageable);
-
-    // PostId가 기준보다 작은 포스트들을 내림차순으로 가져오는 메서드
-    Page<Post> findByCrewAndIdLessThanAndPostTypeOrderByIdAsc(Crew crew, Long id, PostType postType, Pageable pageable);
+    Page<Post> findByCrewAndPostTypeOrderByIdDesc(Crew crew, PostType postType, Pageable pageable);
 
     // 멤버
-    // PostId가 기준보다 큰 포스트들
-    Page<Post> findByAuthorAndIdGreaterThanAndPostTypeOrderByIdAsc(Member author, Long id, PostType postType, Pageable pageable);
-
-    // PostId가 기준보다 작은 포스트들
-    Page<Post> findByAuthorAndIdLessThanAndPostTypeOrderByIdAsc(Member author, Long id, PostType postType, Pageable pageable);
-
+    Page<Post> findByAuthorAndPostTypeOrderByIdDesc(Member author, PostType postType, Pageable pageable);
 }
