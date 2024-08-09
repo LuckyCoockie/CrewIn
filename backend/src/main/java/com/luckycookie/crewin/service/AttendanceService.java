@@ -63,8 +63,14 @@ public class AttendanceService {
 
 //        SseEmitter emitter = emitterRepository.save(sessionId, new SseEmitter(60 * 1000L * 10));
         SseEmitter emitter = emitterRepository.save(sessionId, new SseEmitter(10 * 1000L));
-        emitter.onCompletion(() -> emitterRepository.deleteById(sessionId));
-        emitter.onTimeout(() -> emitterRepository.deleteById(sessionId));
+        emitter.onCompletion(() -> {
+            emitterRepository.deleteById(sessionId);
+            log.info("SSE emitter onCompletion");
+        });
+        emitter.onTimeout(() -> {
+            emitterRepository.deleteById(sessionId);
+            log.info("SSE emitter onTimeout");
+        });
 
         // 503 에러 방지용, 최초 요청시 전체 멤버 데이터를 반환
         sendNotification(emitter, "connect", sessionId, "connect complete");
