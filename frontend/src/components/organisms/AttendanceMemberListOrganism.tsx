@@ -23,7 +23,7 @@ type OwnProps<T> = {
 
 const AttendanceMemberListOrganism = <T,>({
   fetchData,
-  onPostAttendanceClick: onAttendanceChange,
+  onPostAttendanceClick,
   isSessionHost,
   sessionId,
   isAutoCheckInProgress,
@@ -74,9 +74,9 @@ const AttendanceMemberListOrganism = <T,>({
               initPresent={
                 attendanceStateMap.get(member.memberSessionId) ?? false
               }
-              isAuto={isAutoCheckInProgress}
+              isAttendanceStarted={isAutoCheckInProgress}
               onClick={(state) => {
-                onAttendanceChange({
+                onPostAttendanceClick({
                   attend: state,
                   memberSessionId: member.memberSessionId,
                 });

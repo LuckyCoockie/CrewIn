@@ -44,7 +44,7 @@ export const useSSE = ({ url, onMessage, onError, onOpen }: UseSSEProps) => {
 
   useEffect(() => {
     if (isActive) connect();
-    return eventSourceRef.current?.close;
+    return () => eventSourceRef.current?.close();
   }, [isActive, connect]);
 
   return { setIsActive };
