@@ -6,6 +6,8 @@ import ListButtonMolecule from "../../molecules/List/ListButtonMolecule";
 import { MyMadeSessionDto } from "../../../apis/api/mypage";
 import ErrorText from "../../atoms/ErrorText";
 import SpinnerComponent from "../../atoms/SpinnerComponent";
+import { MySessionType } from "../../../apis/api/session";
+import { useNavigate } from "react-router";
 
 interface MyPageMadeSessionOrganismProps {
   sessions: MyMadeSessionDto[];
@@ -18,6 +20,10 @@ const MyPageMadeSessionOrganism: React.FC<MyPageMadeSessionOrganismProps> = ({
   isMadeSessionsError,
   isMadeSessionsLoading,
 }) => {
+  const navigate = useNavigate();
+  const clickRouter = () => {
+    navigate(`/mypage/session/created`);
+  };
   const convertText = (startAt: string, endAt: string) => {
     const now = new Date();
     const startAtDate = new Date(startAt);
@@ -34,10 +40,9 @@ const MyPageMadeSessionOrganism: React.FC<MyPageMadeSessionOrganismProps> = ({
 
   return (
     <>
-      <div className="flex items-center mb-4">
+      <div className="flex items-center cursor-pointer" onClick={clickRouter}>
         <MediumTitleMolecule text="최근 생성한 세션" />
-        {/* 전체 리스트로 이동 */}
-        <IntoArrowButton router="/mypage/session/created" />
+        <IntoArrowButton router={`/mypage/session/${MySessionType.CREATED}`} />
       </div>
       {!isMadeSessionsError ? (
         !isMadeSessionsLoading && (
@@ -47,7 +52,7 @@ const MyPageMadeSessionOrganism: React.FC<MyPageMadeSessionOrganismProps> = ({
             renderItem={(data, index) => (
               <ListButtonMolecule
                 key={index}
-                src={data.imageUrl}
+                src={data.sessionThumbnail}
                 alt={data.sessionName}
                 text={convertText(data.startAt, data.endAt)}
                 router="session"

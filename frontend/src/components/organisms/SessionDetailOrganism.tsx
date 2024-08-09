@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import OneToOneImageMolecule from "../molecules/Image/OneToOneImageMolecule";
 import DetailInfoMolecule from "../molecules/Content/DetailInfoMolecule";
 import DetailInfoPaceMolecule from "../molecules/Content/DetailInfoPaceMolecule";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
+import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 
 import {
   SessionDetailDto,
@@ -35,8 +36,13 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
     sessionPosters,
     isSessionHost,
     courseThumbnail,
+    currentPeople,
   } = detailData;
+
+  const [isJoined, setIsJoined] = useState(detailData.isJoined);
+
   const isSessionStarted = detailData ? new Date(startAt) < new Date() : false;
+
   const sessionTypeSubstitute = (type: string) => {
     if (type === "OPEN") {
       return "오픈런";
@@ -46,6 +52,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
       return "번개런";
     }
   };
+
   const formatKoreanDate = (dateString: string) => {
     const date = new Date(dateString.replace(" ", "T")); // 문자열을 Date 객체로 변환
     const months = [
@@ -71,11 +78,22 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
     return `${month} ${day}일 ${period} ${adjustedHours}시 ${minutes}분`;
   };
 
-  const handleParticipate = () => {
-    participateSession({ sessionId });
+  const handleParticipate = async () => {
+    try {
+      await participateSession(sessionId);
+      setIsJoined(true);
+    } catch (error) {
+      console.error("참가 신청 실패:", error);
+    }
   };
-  const handleCancle = () => {
-    cancelSession({ sessionId });
+
+  const handleCancel = async () => {
+    try {
+      await cancelSession(sessionId);
+      setIsJoined(false);
+    } catch (error) {
+      console.error("참가 취소 실패:", error);
+    }
   };
 
   return (
@@ -117,12 +135,23 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
             className="m-4 w-2/3"
           />
         </div>
-        {!isSessionHost && !isSessionStarted && (
-          <LargeAbleButton onClick={handleParticipate} text="참가 신청" />
-        )}
-        {!isSessionHost && isSessionStarted && (
-          <LargeAbleButton onClick={handleCancle} text="참가 취소" />
-        )}
+        {!isSessionHost &&
+          !isSessionStarted &&
+          !isJoined &&
+          currentPeople < maxPeople && (
+            <LargeAbleButton onClick={handleParticipate} text="참가 신청" />
+          )}
+        {!isSessionHost &&
+          !isSessionStarted &&
+          !isJoined &&
+          currentPeople >= maxPeople && <LargeDisableButton text="인원 마감" />}
+        {!isSessionHost &&
+          !isSessionStarted &&
+          isJoined &&
+          currentPeople < maxPeople && (
+            <LargeAbleButton onClick={handleCancel} text="참가 취소" />
+          )}
+        {isSessionStarted && <LargeDisableButton text="종료된 세션" />}
       </main>
     </>
   );

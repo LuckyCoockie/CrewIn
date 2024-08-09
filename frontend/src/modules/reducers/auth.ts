@@ -39,11 +39,9 @@ export type AuthActionTypes =
   | SetMemberIdAction;
 
 /* ----------------- 액션 함수 ------------------ */
-export const loading = () => {
-  return async (dispatch: Dispatch<AuthActionTypes>) => {
-    dispatch({ type: LOADING });
-  };
-};
+export const loading = (): Loading => ({
+  type: LOADING,
+});
 
 export const setAccessToken = (accessToken: string) => {
   return async (dispatch: Dispatch<AuthActionTypes>) => {
@@ -62,11 +60,10 @@ export const clearAccessToken = (error?: string) => {
   };
 };
 
-export const setMemberId = (memberId: number) => {
-  return async (dispatch: Dispatch<AuthActionTypes>) => {
-    dispatch({ type: SET_MEMBER_ID, memberId: memberId });
-  };
-};
+export const setMemberId = (memberId: number): SetMemberIdAction => ({
+  type: SET_MEMBER_ID,
+  memberId: memberId,
+});
 
 /* ----------------- 모듈 상태 타입 ------------------ */
 type AuthState = {
@@ -79,9 +76,9 @@ type AuthState = {
 
 /* ----------------- 모듈의 초기 상태 ------------------ */
 const initialState: AuthState = {
-  accessToken: null,
+  accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MTIzNEB0ZXN0LmNvbSIsImlhdCI6MTcyMjUyMDAxNywiZW1haWwiOiJ0ZXN0MTIzNEB0ZXN0LmNvbSIsImV4cCI6MTcyNTExMjAxN30.l5khomKGNT7AyWyxpWTL2Mc_8_DVSW0eSS07ofFu46jZyoyohx3jDMzhAvS2Hr4MEiyqEcHFRye_Ar2_QrR7Og",
   interceptorId: null,
-  memberId: 1, // TODO: memberId null 처리해야 타 계정 로그인 가능 
+  memberId: null,
   loading: false,
 };
 
@@ -100,11 +97,13 @@ const authReducer = (
         interceptorId: state.interceptorId
           ? clearTokenInterceptors(state.interceptorId)
           : null,
-          memberId: null,
+        memberId: null,
         accessToken: null,
         loading: false,
         error: action.error,
       };
+    case SET_MEMBER_ID:
+      return { ...state, memberId: action.memberId };
     default:
       return state;
   }

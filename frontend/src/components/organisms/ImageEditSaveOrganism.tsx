@@ -34,13 +34,27 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
   const [crewImageUrl, setCrewImageUrl] = useState<string | null>(null);
 
   const captureRef = useRef<HTMLDivElement>(null);
-
+  async function fetchImageAsFile(url: string): Promise<File> {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const fileName = url.split("/").pop() || "image.jpg"; // 파일 이름을 URL에서 추출
+    const file = new File([blob], fileName, { type: blob.type });
+    return file;
+  }
   useEffect(() => {
     const fetchCrewData = async () => {
       try {
         const response = await getMyCrews();
         if (response.crews.length > 0) {
-          setCrewImageUrl(response.crews[0].imageUrl);
+          setCrewImageUrl(response.crews[0].subLogo);
+          const crewImageUrl = response.crews[0].subLogo;
+          fetchImageAsFile(crewImageUrl);
+          fetchImageAsFile(crewImageUrl).then((file) => {
+            console.log(file);
+            // url 재설정
+            const imageUrl = URL.createObjectURL(file);
+            setCrewImageUrl(imageUrl);
+          });
         }
       } catch (error) {
         console.error("크루 데이터 로딩 오류:", error);
@@ -168,7 +182,7 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
                   />
                 )}
                 <p
-                  className={`info-text ${
+                  className={`info-text font-semibold tracking-tighter ${
                     showColorInput ? "text-white" : "text-black"
                   } m-0`}
                 >
@@ -179,7 +193,7 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
             {showDistanceInput && (
               <div className="flex items-center space-x-2">
                 <p
-                  className={`info-text ${
+                  className={`info-text font-semibold tracking-tighter ${
                     showColorInput ? "text-white" : "text-black"
                   } m-0`}
                 >
@@ -203,7 +217,7 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
                   />
                 )}
                 <p
-                  className={`info-text ${
+                  className={`info-text font-semibold tracking-tighter ${
                     showColorInput ? "text-white" : "text-black"
                   } m-0`}
                 >

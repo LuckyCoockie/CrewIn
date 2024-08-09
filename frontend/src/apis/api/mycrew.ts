@@ -7,7 +7,9 @@ export type CrewDto = {
   area: string;
   crewCount: number;
   captainName: string;
-  imageUrl: string;
+  mainLogo: string;
+  subLogo: string;
+  banner: string;
   position: string;
 };
 
