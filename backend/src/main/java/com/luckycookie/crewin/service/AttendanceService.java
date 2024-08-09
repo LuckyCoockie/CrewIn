@@ -31,6 +31,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -50,6 +52,9 @@ public class AttendanceService {
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private final ScheduledService scheduledService;
     private final EmitterRepository emitterRepository;
+
+    // 자동 출석 시간 인터벌
+    private final int AUTO_CHECK_TIME = 30;
 
     // SSE 구독
     public SseEmitter subscribeSSE(Long sessionId, String email) {
@@ -144,12 +149,15 @@ public class AttendanceService {
                 LocalDateTime.now().isAfter(session.getAttendanceStart()) &&
                 LocalDateTime.now().isBefore(session.getAttendanceStart().plusMinutes(10));
 
+        int leftTime = inProgress ?
+                (int) ChronoUnit.SECONDS.between(LocalDateTime.now(), session.getAttendanceStart().plusMinutes(AUTO_CHECK_TIME)) : 0;
+
         return AttendanceMemberResponse
                 .builder()
                 .items(attendanceMemberItems)
                 .AutoCheckInProgress(inProgress)
+                .leftTime(leftTime)
                 .build();
-
     }
 
     // 출석체크
@@ -160,9 +168,8 @@ public class AttendanceService {
                 .orElseThrow(NotFoundMemberSessionException::new);
 
         // 출석이 시작했는지 체크
-        // 출석 시간이 맞는지 체크(출석 시작부터 10분간) - 개발 단계에서는 일단 30분
-//        if (session.getAttendanceStart() == null || LocalDateTime.now().isBefore(session.getAttendanceStart()) || LocalDateTime.now().isAfter(session.getAttendanceStart().plusMinutes(10))) {
-        if (session.getAttendanceStart() == null || LocalDateTime.now().isBefore(session.getAttendanceStart()) || LocalDateTime.now().isAfter(session.getAttendanceStart().plusMinutes(30))) {
+        // 출석 시간이 맞는지 체크(출석 시작부터 10분간)
+        if (session.getAttendanceStart() == null || LocalDateTime.now().isBefore(session.getAttendanceStart()) || LocalDateTime.now().isAfter(session.getAttendanceStart().plusMinutes(AUTO_CHECK_TIME))) {
             throw new InvalidRequestTimeException();
         }
 
