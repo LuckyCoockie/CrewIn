@@ -5,9 +5,9 @@ import sessionLogoImage from "../../assets/images/sessionLogo.png";
 import { ReactComponent as Sessionpeople } from "../../assets/icons/sessinpeople.svg";
 
 interface OwnProps {
-  max: number;
-  current: number;
-  crewName: string;
+  max?: number;
+  current?: number;
+  crewName?: string;
   area: string;
   date: string;
   imageUrl: string;

@@ -84,6 +84,7 @@ const SessionListTemplate: React.FC<OwnProps> = ({
                 area={data.area}
                 date={data.startAt}
                 imageUrl={data.sessionThumbnail}
+                title={data.sessionName}
               />
             )}
           />

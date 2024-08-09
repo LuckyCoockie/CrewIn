@@ -19,8 +19,8 @@ export type SessionDetailDto = {
   endAt: string;
   sessionType: string;
   sessionPosters: string[];
-  isJoined:boolean
-  currentPeople:number
+  isJoined: boolean;
+  currentPeople: number;
 };
 
 export type GetSessionInfoRequestDto = {
@@ -75,8 +75,8 @@ export type GetSessionAlbumDto = {
 export type SessionAlbumResponseDto = PageNationData<GetSessionAlbumDto>;
 
 export const getSessionAlbum = async (
-  sessionId: number,
-  pageNo: number
+  pageNo: number,
+  sessionId: number
 ): Promise<SessionAlbumResponseDto> => {
   const response = await api.get(`/session/detail/gallery/${sessionId}`, {
     params: { "page-no": pageNo },
