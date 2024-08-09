@@ -92,7 +92,7 @@ const CrewCreateOrganism: React.FC = () => {
         const submitData: CrewCreateDto = {
           name: data.crew_name,
           slogan: data.slogan,
-          area: data.city + data.district,
+          area: `${data.city} ${data.district}`,
           introduction: data.introduction,
           crewBirth: formatDate(data.crewcreatedat!),
           mainLogo: mainLogoImageUrl!,
