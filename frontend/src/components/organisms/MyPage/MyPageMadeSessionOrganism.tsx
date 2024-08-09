@@ -47,7 +47,7 @@ const MyPageMadeSessionOrganism: React.FC<MyPageMadeSessionOrganismProps> = ({
             renderItem={(data, index) => (
               <ListButtonMolecule
                 key={index}
-                src={data.imageUrl}
+                src={data.sessionThumbnail}
                 alt={data.sessionName}
                 text={convertText(data.startAt, data.endAt)}
                 router="session"

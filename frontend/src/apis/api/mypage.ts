@@ -15,7 +15,6 @@ export type ProfileDto = {
 export const getMyProfileInfo = async (): Promise<ProfileDto> => {
   const response = await api.get(`/member/profile`);
   console.log(response.data);
-
   return response.data;
 };
 
@@ -32,7 +31,7 @@ export type MyMadeSessionDto = {
   startAt: string;
   endAt: string;
   sessionName: string;
-  imageUrl: string;
+  sessionThumbnail: string;
   sessionId: number;
   crewName: string;
   area: string;
@@ -54,7 +53,7 @@ export type MyParticipatedSessionDto = {
   startAt: string;
   endAt: string;
   sessionName: string;
-  imageUrl: string;
+  sessionThumbnail: string;
   sessionId: number;
   crewName: string;
   area: string;
