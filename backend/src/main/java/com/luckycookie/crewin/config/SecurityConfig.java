@@ -55,8 +55,7 @@ public class SecurityConfig {
                             .requestMatchers("/member/reissue").permitAll()
                             .requestMatchers("/member/email").permitAll() // 이메일(id) 찾기
                             .requestMatchers(HttpMethod.POST, "/member/password").permitAll() // 임시 비밀번호 발급만 접근 허용
-                            .requestMatchers(new AntPathRequestMatcher("/attendance/connect")).permitAll() // /attendance/connect?파라미터 형식 허용
-                            .requestMatchers("/attendance/**").authenticated() // 다른 모든 /attendance/ 경로는 인증 필요
+                            .requestMatchers("/attendance/**").permitAll()
                             .requestMatchers("/health").permitAll() // /health 엔드포인트 접근 허용
                             .anyRequest().authenticated();
                 });
