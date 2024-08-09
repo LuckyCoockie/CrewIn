@@ -77,44 +77,6 @@ public class CrewService {
 
     }
 
-    // 전체 크루 조회
-    @Transactional(readOnly = true)
-    public PagingItemsResponse<CrewItem> getAllCrewList(int pageNo) {
-        Pageable pageable = PageRequest.of(pageNo, 10); // pageNo 페이지 번호, 10 : 페이지 크기
-
-        Page<Crew> crewsPage;
-        List<Crew> crews;
-        int lastPageNo;
-
-        crewsPage = crewRepository.findAllByCrew(pageable);
-
-        crews = crewsPage.getContent();
-        lastPageNo = Math.max(crewsPage.getTotalPages() - 1, 0);
-
-        List<CrewItem> crewItems = crews.stream().map(crew -> {
-            int crewCount = crewRepository.countMembersByCrew(crew);
-            String captainName = crew.getCaptain().getName();
-
-            return CrewItem.builder()
-                    .crewId(crew.getId())
-                    .crewName(crew.getCrewName())
-                    .slogan(crew.getSlogan())
-                    .area(crew.getArea())
-                    .crewCount(crewCount)
-                    .captainName(captainName)
-                    .mainLogo(crew.getMainLogo())
-                    .subLogo(crew.getSubLogo())
-                    .banner(crew.getBanner())
-                    .build();
-        }).collect(Collectors.toList());
-
-        return PagingItemsResponse.<CrewItem>builder()
-                .items(crewItems)
-                .pageNo(pageNo)
-                .lastPageNo(lastPageNo)
-                .build();
-    }
-
     // 내가 속한 크루 조회
     @Transactional(readOnly = true)
     public MyCrewItemResponse getMyCrewList(CustomUser customUser) {

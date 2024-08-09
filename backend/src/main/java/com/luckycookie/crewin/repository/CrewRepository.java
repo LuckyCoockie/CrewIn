@@ -19,7 +19,7 @@ public interface CrewRepository extends JpaRepository<Crew, Long> {
     Page<Crew> findAllByCrewName(@Param("query") String query, Pageable pageable);
 
     // 인원 수 가져오기
-    @Query("SELECT COUNT(mc) FROM MemberCrew mc WHERE mc.crew = :crew")
+    @Query("SELECT COUNT(mc) FROM MemberCrew mc WHERE mc.crew = :crew and mc.isJoined = true")
     int countMembersByCrew(Crew crew);
 
 }
