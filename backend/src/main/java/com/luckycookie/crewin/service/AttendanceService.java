@@ -60,7 +60,7 @@ public class AttendanceService {
         emitter.onTimeout(() -> emitterRepository.deleteById(sessionId));
 
         // 503 에러 방지용, 최초 요청시 전체 멤버 데이터를 반환
-        sendNotification(emitter, "connect", sessionId, null);
+        sendNotification(emitter, "connect", sessionId, "connect complete");
 
         return emitter;
     }
@@ -73,7 +73,7 @@ public class AttendanceService {
                     .data(data)
             );
         } catch (IOException exception) {
-            log.error("SSE Exception Occirred!!! : " + exception.getMessage());
+            log.error("SSE Exception occurred!!! : " + exception.getMessage());
             emitterRepository.deleteById(emitterId);
         }
     }
