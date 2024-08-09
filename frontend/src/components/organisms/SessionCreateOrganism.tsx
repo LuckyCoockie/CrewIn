@@ -113,11 +113,16 @@ const SessionCreateOrganism: React.FC = () => {
     }
 
     if (crewData && crewData.crews.length > 0) {
+      // 크루 선택창 활성화 조건
       setHasCrew(true);
+
       setUserRole("CAPTAIN");
       const filteredCrews = crewData.crews.filter(
         (crew) => crew.position === "PACER" || crew.position === "CAPTAIN"
       );
+      // 필터된 크루의 조건중에 페이서나 캡틴이 없다면 번개런/오픈런 버튼 랜더링 삭제
+      console.log(filteredCrews.length);
+
       setFilteredCrews(filteredCrews);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -169,12 +174,13 @@ const SessionCreateOrganism: React.FC = () => {
       maxPeople: data.sessionmembers,
     };
     console.log(submitData);
-
+    // spinner 및 클릭 방지 실행 부분
     return postCreateSession(submitData) // 제출 API 호출
       .then(() => {
         navigate(`/session?status=active`);
       })
       .catch((error) => {
+        // 실패시 spinner 제거
         console.log(error);
       });
   };
