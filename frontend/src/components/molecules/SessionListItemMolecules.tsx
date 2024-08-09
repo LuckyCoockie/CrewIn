@@ -67,11 +67,11 @@ const SessionListItem = ({ crewName, area, date, imageUrl }: OwnProps) => {
         </div>
       </div>
       <div className="mt-[3px] m-2 xs:mt-2">
-        <div className="flex justify-between items-center flex mb-1 xs:mb-2">
-          <div className="left-element mr-2">
+        <div className="flex justify-between items-center mb-1 xs:mb-2">
+          <div className="mr-2 overflow-hidden w-[2/3]">
             <p
               className="text-white font-bold text-xs xs:text-base truncate"
-              style={{ lineHeight: "0.8em" }}
+              style={{ lineHeight: "1em" }}
             >
               {crewName}
             </p>
@@ -79,16 +79,16 @@ const SessionListItem = ({ crewName, area, date, imageUrl }: OwnProps) => {
               {area}
             </p>
           </div>
-          <div className="right-element text-right items-center overflow-hidden">
+          <div className="text-right items-center w-[1/3]">
             <p
               className="text-white text-[10px] xs:text-xs sm:text-sm truncate"
-              style={{ lineHeight: "0.95em" }}
+              style={{ lineHeight: "1em" }}
             >
               {parsedDate}
             </p>
             <p
               className="text-white text-[10px] xs:text-xs sm:text-sm truncate"
-              style={{ lineHeight: "0.95em" }}
+              style={{ lineHeight: "1em" }}
             >
               {parsedTime}
             </p>

@@ -19,12 +19,14 @@ type OwnProps = {
   fetchData: (
     dto: GetMySessionRequestDto
   ) => Promise<PageNationData<SessionDto>>;
+  onSessionItemClick: (sessionId: number) => Promise<void>;
 };
 
 const SessionListTemplate: React.FC<OwnProps> = ({
   title,
   onSearch,
   fetchData,
+  onSessionItemClick,
 }) => {
   const query = qs.parse(location.search);
 
@@ -78,13 +80,15 @@ const SessionListTemplate: React.FC<OwnProps> = ({
             fetchData={handleFetchData}
             initPage={parseInt(query.pageNo ?? "0")}
             ItemComponent={({ data }) => (
-              <SessionListItemMolecules
-                key={data.sessionId}
-                crewName={data.crewName}
-                area={data.area}
-                date={data.startAt}
-                imageUrl={data.sessionThumbnail}
-              />
+              <div onClick={() => onSessionItemClick(data.sessionId)}>
+                <SessionListItemMolecules
+                  key={data.sessionId}
+                  crewName={data.crewName ?? data.sessionName}
+                  area={data.area}
+                  date={data.startAt}
+                  imageUrl={data.sessionThumbnail}
+                />
+              </div>
             )}
           />
         </div>

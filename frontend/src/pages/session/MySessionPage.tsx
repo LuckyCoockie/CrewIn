@@ -29,6 +29,13 @@ const MySessionPage: React.FC = () => {
     [type]
   );
 
+  const onSessionItemClick = useCallback(
+    async (sessionId: number) => {
+      navigate(`/session/${sessionId}`);
+    },
+    [navigate]
+  );
+
   if (type !== MySessionType.CREATED && type !== MySessionType.JOINED)
     return "type이 필요합니다.";
 
@@ -37,6 +44,7 @@ const MySessionPage: React.FC = () => {
       title={mySessionTypeToLabel(type)}
       onSearch={onSearch}
       fetchData={fetchData}
+      onSessionItemClick={onSessionItemClick}
     />
   );
 };
