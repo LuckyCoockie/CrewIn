@@ -3,6 +3,7 @@ package com.luckycookie.crewin.service;
 import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.domain.MemberSession;
 import com.luckycookie.crewin.domain.Session;
+import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.AttendanceRequest.AttendanceInfoRequest;
 import com.luckycookie.crewin.dto.AttendanceResponse;
 import com.luckycookie.crewin.dto.AttendanceResponse.AttendanceInfo;
@@ -34,6 +35,8 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import static com.luckycookie.crewin.domain.enums.SessionType.THUNDER;
 
 @Service
 @Transactional
@@ -112,7 +115,11 @@ public class AttendanceService {
 
         Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundSessionException::new);
 
-        List<MemberSession> memberSessionList = memberSessionRepository.findBySessionSortedByPosition(session);
+        List<MemberSession> memberSessionList = null;
+        if (session.getSessionType() != THUNDER)
+            memberSessionList = memberSessionRepository.findBySessionSortedByPosition(session);
+        else
+            memberSessionList = memberSessionRepository.findBySessionWithMember(session);
 
         // 현재 로그인한 사용자
         Member currentMember = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
