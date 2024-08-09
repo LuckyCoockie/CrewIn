@@ -5,6 +5,7 @@ type InputImage = {
   name: string;
   placeholder: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  text?: string;
 };
 
 const InputImageMultiComponent = React.forwardRef<HTMLInputElement, InputImage>(
@@ -27,9 +28,7 @@ const InputImageMultiComponent = React.forwardRef<HTMLInputElement, InputImage>(
                 {fileCount}개의 이미지 선택
               </p>
             ) : (
-              <p className="text-gray-600 font-semibold ml-1">
-                첫 이미지는 메인 포스터입니다.
-              </p>
+              <p className="text-gray-500 font-normal ml-1">{props.text}</p>
             )}
           </div>
         </label>

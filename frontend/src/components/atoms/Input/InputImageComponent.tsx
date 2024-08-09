@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import crewinlogo from "../../../assets/images/crewinlogo.png";
 
 type InputImage = {
@@ -7,12 +7,20 @@ type InputImage = {
   placeholder: string;
   text?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  previewUrl?: string; // 추가
 };
 
 const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
   (props, ref) => {
-    const [preview, setPreview] = useState<string | null>(null);
+    const [preview, setPreview] = useState<string | null>(
+      props.previewUrl || null
+    );
     const [fileCount, setFileCount] = useState(0);
+    useEffect(() => {
+      if (props.previewUrl) {
+        setPreview(props.previewUrl);
+      }
+    }, [props.previewUrl]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const files = e.target.files;

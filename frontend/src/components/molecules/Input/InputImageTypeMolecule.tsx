@@ -9,6 +9,7 @@ type InputData = {
   placeholder: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   text?: string
+  previewUrl?: string
 };
 
 const InputImageTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
@@ -24,6 +25,7 @@ const InputImageTypeMolecule = React.forwardRef<HTMLInputElement, InputData>(
             ref={ref}
             onChange={props.onChange}
             text={props.text}
+            previewUrl={props.previewUrl}
           />
         </div>
       </>
