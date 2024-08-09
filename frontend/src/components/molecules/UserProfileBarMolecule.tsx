@@ -10,7 +10,7 @@ interface ProfileHeaderProps {
   timeAgo: string;
   onEdit: () => void;
   onDelete: () => void;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({

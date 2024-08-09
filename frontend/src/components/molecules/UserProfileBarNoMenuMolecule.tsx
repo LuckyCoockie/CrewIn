@@ -7,7 +7,7 @@ interface ProfileHeaderProps {
   profileImage: string;
   username: string;
   timeAgo: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 const UserProfileBarNoMenu: React.FC<ProfileHeaderProps> = ({
