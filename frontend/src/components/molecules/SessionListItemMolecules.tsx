@@ -11,10 +11,12 @@ interface OwnProps {
   area: string;
   date: string;
   imageUrl: string;
+  title: string;
 }
 
 const SessionListItem = ({
-  crewName,
+  title,
+  // crewName,
   area,
   date,
   imageUrl,
@@ -68,11 +70,11 @@ const SessionListItem = ({
                 src={image}
                 className="b border xs:border-2 border-white w-full"
               />
-              <div className="absolute top-1 right-1 border rounded-xl bg-white flex h-5 px-1 justify-center items-center shadow-sm">
+              <div className="absolute top-1 right-1 border rounded-xl bg-white flex h-4 xs:h-5 px-1 justify-center items-center shadow-sm">
                 <div className="me-1">
                   <Sessionpeople />
                 </div>
-                <div className="text-sm font-bold">
+                <div className="text-xs xs:text-sm font-bold">
                   {current} / {max}
                 </div>
               </div>
@@ -84,12 +86,12 @@ const SessionListItem = ({
                 src={sessionLogoImage}
                 className="b border xs:border-2 border-white w-full"
               />
-              <div className="absolute top-1 right-1 border rounded-xl bg-white flex h-5 px-1 justify-center items-center shadow-sm">
+              <div className="absolute top-1 right-1 border rounded-xl bg-white flex h-4 xs:h-5 px-1 justify-center items-center shadow-sm">
                 <div className="me-1">
                   <Sessionpeople />
                 </div>
-                <div className="text-sm font-bold">
-                  {current}/{max}
+                <div className="text-xs xs:text-sm font-bold">
+                  {current} / {max}
                 </div>
               </div>
             </>
@@ -103,21 +105,21 @@ const SessionListItem = ({
               className="text-white font-bold text-xs xs:text-base truncate"
               style={{ lineHeight: "0.8em" }}
             >
-              {crewName}
+              {title.length > 10 ? `${title.substring(0, 9)}...` : title}
             </p>
-            <p className="text-white text-[10px] xs:text-xs sm:text-sm truncate">
+            <p className="text-gray-300 text-[10px] xs:text-xs sm:text-sm truncate">
               {area}
             </p>
           </div>
-          <div className="right-element text-right items-center overflow-hidden">
+          <div className="right-element text-right items-center">
             <p
-              className="text-white text-[10px] xs:text-xs sm:text-sm truncate"
+              className="text-gray-300 text-[10px] xs:text-xs sm:text-sm truncate"
               style={{ lineHeight: "0.95em" }}
             >
               {parsedDate}
             </p>
             <p
-              className="text-white text-[10px] xs:text-xs sm:text-sm truncate"
+              className="text-gray-300 text-[10px] xs:text-xs sm:text-sm truncate"
               style={{ lineHeight: "0.95em" }}
             >
               {parsedTime}
