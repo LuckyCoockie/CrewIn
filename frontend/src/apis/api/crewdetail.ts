@@ -7,11 +7,13 @@ export type CrewInfoDto = {
   crewName: string;
   slogan: string;
   area: string;
+  introduction: string;
   crewCount: number;
   captainName: string;
-  imageUrl: string;
-  introduction: string;
   crewBirth: string;
+  mainLogo: string;
+  subLogo: string;
+  banner: string;
 };
 
 export type GetCrewInfoRequestDto = {
@@ -24,8 +26,6 @@ export const getCrewInfo = async (
   dto: GetCrewInfoRequestDto
 ): Promise<GetCrewInfoResponseDto> => {
   const response = await api.get(`/crew/detail/${dto.crewId}`);
-  console.log(response.data);
-
   return response.data;
 };
 
@@ -164,7 +164,7 @@ export type CrewNoticeDetailResponseDto = {
   createdAt: string;
   updatedAt: string;
   postImages: string[];
-  profileImage: string
+  profileImage: string;
 };
 
 export const getCrewNoticeDetail = async (

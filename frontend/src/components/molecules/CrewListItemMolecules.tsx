@@ -11,7 +11,7 @@ import { useNavigate } from "react-router";
 
 interface OwnProps {
   crewId: number;
-  imageUrl: string;
+  mainLogo: string;
   title: string;
   description: string;
   captain: string;
@@ -20,7 +20,7 @@ interface OwnProps {
 }
 
 const CrewListItem = ({
-  imageUrl,
+  mainLogo,
   title,
   description,
   captain,
@@ -40,7 +40,7 @@ const CrewListItem = ({
 
   useEffect(() => {
     console.log(`Fetching image for crewId: ${crewId}`);
-    fetch(imageUrl)
+    fetch(mainLogo)
       .then((response) => response.blob())
       .then((blob) => {
         const url = URL.createObjectURL(blob);
@@ -51,11 +51,11 @@ const CrewListItem = ({
       });
 
     return () => {
-      if (imageUrl) {
-        URL.revokeObjectURL(imageUrl);
+      if (mainLogo) {
+        URL.revokeObjectURL(mainLogo);
       }
     };
-  }, [imageUrl]);
+  }, [mainLogo]);
 
   return (
     <div className="max-w-sm rounded-lg border-[2px] xs:border-2 border-primary bg-white tracking-tighter truncate">
