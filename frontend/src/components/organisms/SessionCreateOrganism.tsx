@@ -130,10 +130,14 @@ const SessionCreateOrganism: React.FC = () => {
 
   const checkUndefined = async (files: FileList) => {
     if (files) {
-      const uploadPromises = Array.from(files).map(async (file) => {
+      // files를 배열로 변환한 다음 역순으로 정렬
+      const reversedFiles = Array.from(files).reverse();
+
+      const uploadPromises = reversedFiles.map(async (file) => {
         const result = await uploadImage(file);
         return result;
       });
+
       return Promise.all(uploadPromises);
     } else {
       return [];
