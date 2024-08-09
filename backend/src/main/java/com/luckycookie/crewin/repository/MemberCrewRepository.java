@@ -4,6 +4,7 @@ import com.luckycookie.crewin.domain.Crew;
 import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.domain.MemberCrew;
 import com.luckycookie.crewin.domain.enums.Position;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,9 +25,14 @@ public interface MemberCrewRepository extends JpaRepository<MemberCrew, Long> {
     @Query("SELECT mc.position FROM MemberCrew mc WHERE mc.member = :member and mc.crew = :crew")
     Optional<Position> findPositionByMemberAndCrew(Member member, Crew crew);
 
+
     @Modifying
     @Query("DELETE FROM MemberCrew mc WHERE mc.crew = :crew")
     void deleteByCrew(Crew crew);
+
+    @Modifying
+    @Query("DELETE FROM MemberCrew mc WHERE mc.member = :member AND mc.crew = :crew")
+    void deleteByMemberAndCrew(Member member, Crew crew);
 
     Optional<MemberCrew> findByMemberAndCrew(Member member, Crew crew);
 

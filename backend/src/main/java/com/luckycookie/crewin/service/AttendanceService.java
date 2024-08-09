@@ -79,16 +79,16 @@ public class AttendanceService {
         });
 
         // 503 에러 방지용, 최초 요청시 전체 멤버 데이터를 반환
-        sendNotification(emitter, "connect", sessionId, "connect complete");
+        sendNotification(emitter, "connect", "connect", sessionId, "connect complete");
 
         return emitter;
     }
 
-    private void sendNotification(SseEmitter emitter, String eventId, Long emitterId, Object data) { // (4)
+    private void sendNotification(SseEmitter emitter, String eventId, String eventName, Long emitterId, Object data) {
         try {
             emitter.send(SseEmitter.event()
                     .id(eventId)
-                    .name("sse")
+                    .name(eventName)
                     .data(data)
             );
         } catch (IOException exception) {
@@ -199,7 +199,7 @@ public class AttendanceService {
         memberSession.changeAttend(true);
 
         // 호스트에게 sse 전송
-        sendNotification(emitterRepository.findById(sessionId), "attendance", sessionId, AttendanceInfo.builder().memberSessionId(memberSession.getId()).isAttend(true).build());
+        sendNotification(emitterRepository.findById(sessionId), "attendance", "attendance", sessionId, AttendanceInfo.builder().memberSessionId(memberSession.getId()).isAttend(true).build());
     }
 
     // 두 좌표 간의 거리를 계산하는 메소드
@@ -249,7 +249,7 @@ public class AttendanceService {
 
         // 호스트에게 sse 전송
         Long sessionId = memberSession.getSession().getId();
-        sendNotification(emitterRepository.findById(sessionId), "attendance",
+        sendNotification(emitterRepository.findById(sessionId), "attendance", "attendance",
                 sessionId, AttendanceInfo.builder().memberSessionId(memberSession.getId()).isAttend(attendValue).build());
     }
 

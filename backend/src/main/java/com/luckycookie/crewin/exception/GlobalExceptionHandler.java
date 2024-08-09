@@ -20,7 +20,8 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<ErrorResponse> handleApplicationException(ApplicationException ex) {
-        loggingException(ex);
+//        loggingException(ex);
+        log.error(ex.getMessage());
         return ResponseEntity.status(ex.getHttpStatus()).body(new ErrorResponse(ex.getErrorCode(), ex.getMessage()));
     }
 
@@ -31,7 +32,8 @@ public class GlobalExceptionHandler {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(", "));
         ErrorResponse errorResponse = new ErrorResponse(errorCode, message);
-        loggingException(ex);
+//        loggingException(ex);
+        log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(errorResponse);
     }
 
@@ -40,7 +42,8 @@ public class GlobalExceptionHandler {
         String errorCode = "400";
         String message = "올바른 패턴을 입력하세요. ";
         ErrorResponse errorResponse = new ErrorResponse(errorCode, message);
-        loggingException(ex);
+//        loggingException(ex);
+        log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(errorResponse);
     }
 
@@ -49,7 +52,8 @@ public class GlobalExceptionHandler {
         String errorCode = "405";
         String message = "클라이언트가 사용한 HTTP 메서드가 리소스에서 허용되지 않습니다.";
         ErrorResponse errorResponse = new ErrorResponse(errorCode, message);
-        loggingException(ex);
+//        loggingException(ex);
+        log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED.value()).body(errorResponse);
     }
 
@@ -58,7 +62,8 @@ public class GlobalExceptionHandler {
         String errorCode = "500";
         String message = "서버에서 요청을 처리하는 동안 오류가 발생했습니다.";
         ErrorResponse errorResponse = new ErrorResponse(errorCode, message);
-        loggingException(ex);
+//        loggingException(ex);
+        log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(errorResponse);
     }
 

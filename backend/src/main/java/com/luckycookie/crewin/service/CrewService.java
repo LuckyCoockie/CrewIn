@@ -259,6 +259,26 @@ public class CrewService {
         }
     }
 
+    public void quitCrew(Long crewId, CustomUser customUser) {
+
+        Member member = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(NotFoundCrewException::new);
+        MemberCrew memberCrew = memberCrewRepository.findByMemberAndCrew(member, crew)
+                .orElseThrow(NotFoundMemberCrewException::new);
+
+        if (memberCrew.getPosition().equals(Position.CAPTAIN)) {
+            //캡틴은 탈퇴 불가. 크루 삭제나 권한 위임 후 탈퇴
+            throw new CaptainQuitErrorException();
+        }
+
+        //크루 태그한 게시물들을 찾아서 null 처리
+        postRepository.updateCrewIdToNull(member, crew);
+        memberCrewRepository.deleteByMemberAndCrew(member, crew);
+
+    }
+
     // 공지사항 조회
     @Transactional(readOnly = true)
     public PagingItemsResponse<CrewNoticeItem> getCrewNoticeList(int pageNo, Long crewId, CustomUser customUser) {
