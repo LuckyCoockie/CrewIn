@@ -18,7 +18,7 @@ export type UserSearchRequestDto = {
 export const searchMembers = async (
   dto: UserSearchRequestDto
 ): Promise<UserSearchResponseDto> => {
-  const { query, pageNo = 0 } = dto;
+  const { query, pageNo } = dto;
 
   try {
     const response = await api.get<UserSearchResponseDto>("/search/member", {

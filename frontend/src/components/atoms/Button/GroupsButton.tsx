@@ -1,6 +1,6 @@
 import React from "react";
 import { ReactComponent as GroupsIcon } from "../../../assets/icons/groups.svg";
-import { useNavigate } from "react-router";
+import { useParams, useNavigate } from "react-router";
 
 type PositionProps = {
   userPosition: string;
@@ -8,11 +8,13 @@ type PositionProps = {
 
 const GroupsButton: React.FC<PositionProps> = ({ userPosition }) => {
   const navigate = useNavigate();
+  const { crewId } = useParams<{ crewId: string }>();
+
   const handleNav = () => {
     if (userPosition === "CAPTAIN") {
-      navigate(`/crew/member/captain`);
+      navigate(`/crew/detail/${crewId}/member/captain`);
     } else {
-      navigate(`/crew/member`);
+      navigate(`/crew/detail/${crewId}/member`);
     }
   };
   return (
