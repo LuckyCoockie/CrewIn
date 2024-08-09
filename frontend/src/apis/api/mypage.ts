@@ -43,8 +43,6 @@ export type MyMadeSessionsResponseDto = PageNationData<MyMadeSessionDto>;
 export const getMyMadeSessions = async (
   pageNo: number
 ): Promise<MyMadeSessionsResponseDto> => {
-  console.log(pageNo);
-
   const response = await api.get(
     `/mypage/session?type=created&session-type=ALL&page-no=${pageNo}`
   );
@@ -95,9 +93,14 @@ export type MyGalleryDto = {
 export type MyGalleryResponseDto = PageNationData<MyGalleryDto>;
 
 export const getMyGallery = async (
-  pageNo: number
+  pageNo: number,
+  memberId: number
 ): Promise<MyGalleryResponseDto> => {
-  const response = await api.get(`/mypage/detail/gallery?page-no=${pageNo}`);
+  console.log(memberId);
+
+  const response = await api.get(
+    `/post/member/gallery/${memberId}?page-no=${pageNo}`
+  );
   console.log(response.data);
 
   return response.data;
