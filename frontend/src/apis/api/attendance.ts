@@ -15,6 +15,7 @@ export type GetAttendanceMemberListRequestDto = {
 export type GetAttendanceMemberListResponseDto = {
   items: AttendanceMemberDto[];
   autoCheckInProgress: boolean;
+  leftTime: number;
 };
 
 export const getAttendanceMemberList = async (

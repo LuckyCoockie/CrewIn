@@ -1,8 +1,9 @@
 import { useLocation, useParams } from "react-router";
 import AttendanceTemplate from "../../components/templates/attendance/AttendanceTemplate";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import {
   ChangeAttendRequestDto,
+  GetAttendanceMemberListResponseDto,
   changeAttend,
   getAttendanceMemberList,
   postAttend,
@@ -14,16 +15,20 @@ const AttendancePage: React.FC = () => {
   const { sessionId } = useParams();
   const { location } = useGeolocation();
   const { state } = useLocation();
-  const [isAttendStarted, setIsAttendStarted] = useState<boolean>(false);
 
-  const getMemberList = useCallback(async () => {
-    if (!sessionId) return [];
-    const response = await getAttendanceMemberList({
-      sessionId: parseInt(sessionId),
-    });
-    setIsAttendStarted(response.autoCheckInProgress);
-    return response.items;
-  }, [sessionId]);
+  const getMemberList =
+    useCallback(async (): Promise<GetAttendanceMemberListResponseDto> => {
+      if (!sessionId) {
+        return {
+          items: [],
+          autoCheckInProgress: false,
+          leftTime: 0,
+        };
+      }
+      return getAttendanceMemberList({
+        sessionId: parseInt(sessionId),
+      });
+    }, [sessionId]);
 
   const onStartAttendanceClick = useCallback(async () => {
     if (!sessionId || !location) return;
@@ -56,13 +61,12 @@ const AttendancePage: React.FC = () => {
 
   return (
     <AttendanceTemplate
-      fetchMemberList={getMemberList}
+      getMemberList={getMemberList}
       onStartAttendanceClick={onStartAttendanceClick}
       isSessionHost={state ? state.isSessionHost : false}
       onHostAttendanceClick={onHostAttendanceClick}
       onGuestAttendanceClick={onGuestAttendanceClick}
       startAt={state.startAt}
-      isAttendStarted={isAttendStarted}
       sessionId={parseInt(sessionId)}
     />
   );

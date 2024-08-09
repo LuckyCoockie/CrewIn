@@ -18,6 +18,7 @@ type OwnProps<T> = {
   onPostAttendanceClick: (dto: ChangeAttendRequestDto) => Promise<void>;
   isSessionHost: boolean;
   sessionId: number;
+  isAutoCheckInProgress: boolean;
 };
 
 const AttendanceMemberListOrganism = <T,>({
@@ -25,6 +26,7 @@ const AttendanceMemberListOrganism = <T,>({
   onPostAttendanceClick: onAttendanceChange,
   isSessionHost,
   sessionId,
+  isAutoCheckInProgress,
 }: OwnProps<T>) => {
   const query = qs.parse(location.search) as T;
   const [attendanceStateMap, setAttendanceStateMap] = useState(
@@ -65,7 +67,7 @@ const AttendanceMemberListOrganism = <T,>({
               initPresent={
                 attendanceStateMap.get(member.memberSessionId) ?? false
               }
-              isAuto={false}
+              isAuto={isAutoCheckInProgress}
               onClick={(state) => {
                 onAttendanceChange({
                   attend: state,

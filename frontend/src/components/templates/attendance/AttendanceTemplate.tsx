@@ -1,7 +1,7 @@
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  AttendanceMemberDto,
   ChangeAttendRequestDto,
+  GetAttendanceMemberListResponseDto,
 } from "../../../apis/api/attendance";
 import LargeAbleButton from "../../atoms/Button/LargeAbleButton";
 import AttendanceMemberListOrganism from "../../organisms/AttendanceMemberListOrganism";
@@ -13,10 +13,9 @@ type OwnProps = {
   onStartAttendanceClick: () => Promise<void>;
   onGuestAttendanceClick: () => Promise<void>;
   onHostAttendanceClick: (dto: ChangeAttendRequestDto) => Promise<void>;
-  fetchMemberList: () => Promise<AttendanceMemberDto[]>;
+  getMemberList: () => Promise<GetAttendanceMemberListResponseDto>;
   isSessionHost: boolean;
   startAt: string;
-  isAttendStarted: boolean;
   sessionId: number;
 };
 
@@ -24,10 +23,9 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
   onStartAttendanceClick,
   onGuestAttendanceClick,
   onHostAttendanceClick,
-  fetchMemberList,
+  getMemberList,
   isSessionHost,
   startAt,
-  isAttendStarted,
   sessionId,
 }) => {
   const isSessionStarted = useMemo(() => {
@@ -36,12 +34,23 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     return currentTime.getTime() >= givenTime.getTime();
   }, [startAt]);
 
-  // TODO : SSE url 추가 필요
   const { setIsActive } = useSSE(`/attendance/connect/${sessionId}`);
 
+  const [isAutoCheckInProgress, setIsAutoCheckInProgress] =
+    useState<boolean>(false);
+
+  const [leftTime, setLeftTime] = useState<number>(0);
+
+  const fetchMemberList = useCallback(async () => {
+    const response = await getMemberList();
+    setIsAutoCheckInProgress(response.autoCheckInProgress);
+    setLeftTime(response.leftTime);
+    return response.items;
+  }, [getMemberList]);
+
   useEffect(() => {
-    setIsActive(isAttendStarted);
-  }, [isAttendStarted, setIsActive]);
+    setIsActive(isAutoCheckInProgress);
+  }, [isAutoCheckInProgress, setIsActive]);
 
   return (
     <>
@@ -54,12 +63,13 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
           isSessionHost={isSessionHost}
           onPostAttendanceClick={onHostAttendanceClick}
           sessionId={sessionId}
+          isAutoCheckInProgress={isAutoCheckInProgress}
         />
         <div className="mx-auto w-full max-w-[550px] fixed bottom-0 left-0 right-0 flex justify-center items-center z-50 px-2 pb-20 pt-5 bg-white">
           {isSessionStarted ? (
             isSessionHost ? (
-              isAttendStarted ? (
-                <TimerOrganism initSeconds={1} />
+              isAutoCheckInProgress ? (
+                <TimerOrganism initSeconds={leftTime} />
               ) : (
                 <LargeAbleButton
                   text="자동 출석 시작"

@@ -24,10 +24,10 @@ const AttendanceButton: React.FC<OwnProps> = ({
       className="border border-gray-400 w-20 h-10 rounded-md text-sm bg-primary text-white"
       onClick={handleClick}
     >
-      {isAuto ? "출석" : "수동 출석"}
+      {"출석"}
     </button>
   ) : (
-    !isAuto && (
+    isAuto && (
       <button
         className="border border-gray-400 w-20 h-10 rounded-md text-sm"
         onClick={handleClick}
