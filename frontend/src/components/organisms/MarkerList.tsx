@@ -11,7 +11,11 @@ import {
 } from "../../util/maps/naver_map/context";
 import { ReactComponent as MarkerIcon } from "../../assets/icons/custom_marker.svg";
 
-const MarkerList: React.FC = () => {
+type OwnProps = {
+  editable?: boolean;
+};
+
+const MarkerList: React.FC<OwnProps> = ({ editable = true }) => {
   const { markers } = useNaverMapState();
   const dispatch = useNaverMapDispatch();
 
@@ -29,6 +33,7 @@ const MarkerList: React.FC = () => {
     <DndComponent
       onDragEndCallback={(markers) => dispatch(updateMarkerList(markers))}
       items={markers}
+      editable={editable}
     >
       {({ index, item }) => (
         <MarkerListItem
@@ -39,6 +44,7 @@ const MarkerList: React.FC = () => {
           onClick={() => onListItemClick(index)}
           onChange={(title) => dispatch(updateMarker(index, { title }))}
           onDelete={() => onListItemDelete(index)}
+          editable={editable}
         />
       )}
     </DndComponent>

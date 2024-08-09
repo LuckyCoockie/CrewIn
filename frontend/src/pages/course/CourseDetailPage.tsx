@@ -6,14 +6,13 @@ import {
 } from "../../apis/api/course.ts";
 import { uploadImage } from "../../apis/api/presigned.ts";
 import CourseCreateTemplate from "../../components/templates/CourseCreateTemplate.tsx";
-import useGeolocation from "../../util/geolocation/gelocation.ts";
 import { NaverMapProvider } from "../../util/maps/naver_map/context.tsx";
 import { Point } from "../../util/maps/tmap/apis/api/directionApi.ts";
 import { reversGeocodingApi } from "../../util/maps/tmap/apis/api/geocodeApi.ts";
 import { useParams } from "react-router";
+import BackHeaderMediumOrganism from "../../components/organisms/BackHeaderMediumOrganism.tsx";
 
 const CourseDetailPage: React.FC = () => {
-  const { location } = useGeolocation();
   const { courseId } = useParams();
   const [initValue, setInitValue] = useState<CreateCourseRequestDto>();
 
@@ -79,36 +78,35 @@ const CourseDetailPage: React.FC = () => {
 
   if (!courseId) return "course id가 필요합니다";
 
-  // TODO : edit 안되게 막기
-
   return (
     <>
-      {location && (
-        <NaverMapProvider>
-          <CourseCreateTemplate
-            initValue={parseInitValue(initValue)}
-            initPosition={location}
-            onSave={async ({ title, markers, polylines, length, image }) => {
-              const [info, area, imageUrl] = await Promise.all([
-                encodeInfo(markers, polylines!),
-                parseArea(markers[0].point),
-                uploadImage(image!),
-              ]);
+      <NaverMapProvider>
+        <header>
+          <BackHeaderMediumOrganism text="경로 상세보기" />
+        </header>
+        <CourseCreateTemplate
+          initValue={parseInitValue(initValue)}
+          editable={false}
+          onSave={async ({ title, markers, polylines, length, image }) => {
+            const [info, area, imageUrl] = await Promise.all([
+              encodeInfo(markers, polylines!),
+              parseArea(markers[0].point),
+              uploadImage(image!),
+            ]);
 
-              updateCourse({
-                id: parseInt(courseId),
-                value: {
-                  name: title,
-                  info: info,
-                  length: length!,
-                  thumbnailImage: imageUrl,
-                  area: area,
-                },
-              });
-            }}
-          />
-        </NaverMapProvider>
-      )}
+            updateCourse({
+              id: parseInt(courseId),
+              value: {
+                name: title,
+                info: info,
+                length: length!,
+                thumbnailImage: imageUrl,
+                area: area,
+              },
+            });
+          }}
+        />
+      </NaverMapProvider>
     </>
   );
 };
