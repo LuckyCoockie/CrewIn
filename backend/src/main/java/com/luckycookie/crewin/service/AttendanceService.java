@@ -68,6 +68,7 @@ public class AttendanceService {
             log.info("SSE emitter onCompletion");
         });
         emitter.onTimeout(() -> {
+            sendNotification(emitter, "disconnect", sessionId, "connect closed");
             emitterRepository.deleteById(sessionId);
             log.info("SSE emitter onTimeout");
         });
