@@ -214,24 +214,31 @@ public class SessionService {
         // update 할 세션 포스터 이미지 List
         List<String> updateSessionPosterUrls = updateSessionRequest.getImages();
 
-        // 더 큰 리스트 크기를 기준으로 비교
-        int maxSize = Math.max(sessionPosterUrls.size(), updateSessionPosterUrls.size());
+        if (!updateSessionPosterUrls.isEmpty()) {
+            // 더 큰 리스트 크기를 기준으로 비교
+            int maxSize = Math.max(sessionPosterUrls.size(), updateSessionPosterUrls.size());
 
-        // 기존 이미지 삭제 여부를 체크하기 위한 리스트
-        List<Boolean> toBeDeleted = new ArrayList<>(Collections.nCopies(sessionPosterUrls.size(), false));
+            // 기존 이미지 삭제 여부를 체크하기 위한 리스트
+            List<Boolean> toBeDeleted = new ArrayList<>(Collections.nCopies(sessionPosterUrls.size(), false));
 
-        for (int i = 0; i < maxSize; i++) {
-            if (i < sessionPosterUrls.size() && (i >= updateSessionPosterUrls.size() || !sessionPosterUrls.get(i).equals(updateSessionPosterUrls.get(i)))) {
-                // 기존 이미지 URL 리스트와 update 할 이미지 URL 리스트 비교해서
-                // 기존 이미지와 update 할 이미지가 다르면 기존 이미지 삭제
-                toBeDeleted.set(i, true);
+            for (int i = 0; i < maxSize; i++) {
+                if (i < sessionPosterUrls.size() && (i >= updateSessionPosterUrls.size() || !sessionPosterUrls.get(i).equals(updateSessionPosterUrls.get(i)))) {
+                    // 기존 이미지 URL 리스트와 update 할 이미지 URL 리스트 비교해서
+                    // 기존 이미지와 update 할 이미지가 다르면 기존 이미지 삭제
+                    toBeDeleted.set(i, true);
+                }
             }
-        }
 
-        // 기존 이미지 삭제
-        for (int i = 0; i < sessionPosterUrls.size(); i++) {
-            if (toBeDeleted.get(i)) {
-                s3Service.deleteImage(sessionPosterUrls.get(i));
+            // 기존 이미지 삭제
+            for (int i = 0; i < sessionPosterUrls.size(); i++) {
+                if (toBeDeleted.get(i)) {
+                    s3Service.deleteImage(sessionPosterUrls.get(i));
+                }
+            }
+        } else {
+            // 이미지가 없으면 기본 이미지 넣어주기
+            if (updateSessionRequest.getImages().isEmpty()) {
+                updateSessionRequest.getImages().add(defaultSessionPoster);
             }
         }
 
@@ -390,7 +397,7 @@ public class SessionService {
         // 현재 신청한 인원
         List<MemberSession> memberSessionList = memberSessionRepository.findBySessionSortedByPosition(session);
         // 신청 인원이 최대 인원 넘어 갔으면 예외 처리
-        if(session.getMaxPeople() < memberSessionList.size()) {
+        if (session.getMaxPeople() < memberSessionList.size()) {
             throw new SessionMaxMemberException();
         }
 

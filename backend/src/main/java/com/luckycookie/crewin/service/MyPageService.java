@@ -16,6 +16,7 @@ import com.luckycookie.crewin.repository.MemberSessionRepository;
 import com.luckycookie.crewin.repository.SessionRepository;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,8 +38,10 @@ public class MyPageService {
     private final MemberRepository memberRepository;
     private final SessionRepository sessionRepository;
     private final MemberSessionRepository memberSessionRepository;
-
     private final S3Service s3Service;
+
+    @Value("${image.default.member-profile}")
+    private String defaultProfileImage;
 
     // 내가 만든, 참가한 세션 조회 (전체)
     @Transactional(readOnly = true)
@@ -87,7 +90,7 @@ public class MyPageService {
             lastPageNo = Math.max(sessionPage.getTotalPages() - 1, 0);
 
             myPageSessionItems = sessions.stream().map(session -> {
-                String crewName = session.getSessionType() != THUNDER ? session.getCrew().getCrewName() : null;
+                        String crewName = session.getSessionType() != THUNDER ? session.getCrew().getCrewName() : null;
                         return MyPageSessionItem
                                 .builder()
                                 .sessionId(session.getId())
@@ -115,11 +118,15 @@ public class MyPageService {
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
-        if (!member.getImageUrl().equals(updateProfileRequest.getProfileImageUrl())) {
-            s3Service.deleteImage(member.getImageUrl()); // 기존 이미지 삭제
+        if (updateProfileRequest.getProfileImageUrl() != null) {
+            if (!member.getImageUrl().equals(updateProfileRequest.getProfileImageUrl())) {
+                s3Service.deleteImage(member.getImageUrl()); // 기존 이미지 삭제
+                member.updateProfileImage(updateProfileRequest.getProfileImageUrl());
+            }
+        } else {
+            member.updateProfileImage(defaultProfileImage);
         }
 
-        member.updateProfileImage(updateProfileRequest.getProfileImageUrl());
     }
 
     // 닉네임 변경
