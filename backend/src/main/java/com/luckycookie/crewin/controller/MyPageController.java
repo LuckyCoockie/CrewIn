@@ -51,13 +51,4 @@ public class MyPageController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "닉네임을 변경하는데 성공했습니다."));
     }
 
-
-    // 내 사진첩(갤러리) 조회 - 페이징
-    @GetMapping("/detail/gallery")
-    public ResponseEntity<BaseResponse<PagingItemsResponse<PostGalleryItem>>> getMyGalleryList(@AuthenticationPrincipal CustomUser customUser, @RequestParam("page-no") int pageNo) {
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "멤버 사진첩 조회를 성공했습니다.", postService.getMyPostGallery(pageNo, customUser)));
-    }
-
-
-
 }

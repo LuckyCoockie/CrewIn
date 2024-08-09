@@ -177,7 +177,7 @@ public class PostService {
 
     // 사진첩 조회
     public PagingItemsResponse<PostGalleryItem> getCrewPostGallery(int pageNo, long crewId, CustomUser customUser) {
-        PageRequest pageRequest = PageRequest.of(pageNo, 27);
+        PageRequest pageRequest = PageRequest.of(pageNo, 12);
         Member viewer = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
         Crew crew = crewRepository.findById(crewId)
@@ -190,25 +190,22 @@ public class PostService {
     }
 
     public PagingItemsResponse<PostGalleryItem> getUserPostGallery(int pageNo, long targetMemgerId, CustomUser customUser) {
-        PageRequest pageRequest = PageRequest.of(pageNo, 27);
+        PageRequest pageRequest = PageRequest.of(pageNo, 12);
         Member targetMember = memberRepository.findById(targetMemgerId)
                 .orElseThrow(NotFoundMemberException::new);
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
-        // 1. isPublic이 true인 글 (isPublic은 tinyInt형임) or
-        // 2. 남(targetMember)이 작성한 게시글 중 크루가 null인(태그되지 않은)글 or
-        // 3. 크루가 태그되었다면 해당 크루에 targetMember와 Member가 속해있는 글들
 
-        Page<Post> postListPage = postRepository.findByMemberAndTargetMember(member, targetMember, pageRequest);
-        return convertToGalleryItemResponse(pageNo, postListPage);
-    }
+        Page<Post> postListPage = null;
 
-    public PagingItemsResponse<PostGalleryItem> getMyPostGallery(int pageNo, CustomUser customUser) {
-        PageRequest pageRequest = PageRequest.of(pageNo, 27);
-        Member member = memberRepository.findByEmail(customUser.getEmail())
-                .orElseThrow(MemberNotFoundException::new);
-        // 내가 작성한 게시글(type이 standard인 글 중 작성자가 본인인 글)
-        Page<Post> postListPage = postRepository.findByMember(member, pageRequest);
+        if(member.getId() == targetMemgerId) {
+            postListPage = postRepository.findByMember(member, pageRequest);
+        } else {
+            // 1. isPublic이 true인 글 (isPublic은 tinyInt형임) or
+            // 2. 크루가 태그되었다면 해당 크루에 targetMember와 Member가 속해있는 글들
+            postListPage = postRepository.findByMemberAndTargetMember(member, targetMember, pageRequest);
+        }
+        
         return convertToGalleryItemResponse(pageNo, postListPage);
     }
 
@@ -231,7 +228,7 @@ public class PostService {
 
     // 사진첩 상세 조회
     // 크루
-    public PagingItemsResponse<PostItem> getCrewPostGalleryDetailResponse(Long crewId, Long postId, String direction, CustomUser customUser) {
+    public PagingItemsResponse<PostItem> getCrewPostGalleryDetailResponse(Long crewId, int pageNo, CustomUser customUser) {
         // 현재 로그인한 사용자
         Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
         Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
@@ -239,52 +236,29 @@ public class PostService {
         // 현재 로그인한 사용자가 해당 crew 에 포함되어 있는지 확인
         memberCrewRepository.findByMemberAndCrew(member, crew).orElseThrow(NotFoundMemberCrewException::new);
 
-        Page<Post> postListPage = null;
-        PageRequest pageRequest = PageRequest.of(0, 10);
+        PageRequest pageRequest = PageRequest.of(pageNo, 12);
+        Page<Post> postListPage = postRepository.findByCrewAndPostTypeOrderByIdDesc(crew, PostType.STANDARD, pageRequest);
 
-        // postId 기준으로 increase나 decrease에 따라 데이터 조회
-        if (direction.equals("increase")) {
-            // postId 보다 작은 포스트들을 가져옴
-            postListPage = postRepository.findByCrewAndIdLessThanAndPostTypeOrderByIdAsc(crew, postId, PostType.STANDARD, pageRequest);
-        } else if (direction.equals("decrease")) {
-            // postId 보다 큰 포스트들을 가져옴
-            postListPage = postRepository.findByCrewAndIdGreaterThanAndPostTypeOrderByIdAsc(crew, postId, PostType.STANDARD, pageRequest);
-        }
-
-        assert postListPage != null;
         return convertToPostItemsResponse(postListPage, customUser);
     }
 
     // 멤버
-    public PagingItemsResponse<PostItem> getMemberPostGalleryDetailResponse(Long memberId, Long postId, String direction, CustomUser customUser) {
+    public PagingItemsResponse<PostItem> getMemberPostGalleryDetailResponse(Long memberId, int pageNo, CustomUser customUser) {
         // 현재 로그인한 사용자
         Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
 
         Page<Post> postListPage = null;
-        PageRequest pageRequest = PageRequest.of(0, 10);
+        PageRequest pageRequest = PageRequest.of(pageNo, 12);
 
         // 현재 로그인한 사용자와 memberId가 같은지 다른지 확인
         // 같으면 내 게시물 다르면 다른 사람 게시물
         if (Objects.equals(member.getId(), memberId)) { // 내 게시물
-            if (direction.equals("increase")) {
-                // Id 보다 큰 포스트들을 오름차순으로 가져옴
-                postListPage = postRepository.findByAuthorAndIdGreaterThanAndPostTypeOrderByIdAsc(member, postId, PostType.STANDARD, pageRequest);
-            } else if (direction.equals("decrease")) {
-                // Id 보다 작은 포스트들을 내림차순으로 가져옴
-                postListPage = postRepository.findByAuthorAndIdLessThanAndPostTypeOrderByIdAsc(member, postId, PostType.STANDARD, pageRequest);
-            }
+            postListPage = postRepository.findByMember(member, pageRequest);
         } else { // 다른 사람 게시물
             Member otherMember = memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
-            if (direction.equals("increase")) {
-                // 다른 사람의 Id 보다 큰 포스트들을 오름차순으로 가져옴
-                postListPage = postRepository.findByAuthorAndIdGreaterThanAndPostTypeOrderByIdAsc(otherMember, postId, PostType.STANDARD, pageRequest);
-            } else if (direction.equals("decrease")) {
-                // 다른 사람의 Id 보다 작은 포스트들을 내림차순으로 가져옴
-                postListPage = postRepository.findByAuthorAndIdLessThanAndPostTypeOrderByIdAsc(otherMember, postId, PostType.STANDARD, pageRequest);
-            }
+            postListPage = postRepository.findByMemberAndTargetMember(member, otherMember, pageRequest);
         }
 
-        assert postListPage != null;
         return convertToPostItemsResponse(postListPage, customUser);
     }
 
