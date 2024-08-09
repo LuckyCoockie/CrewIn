@@ -110,8 +110,6 @@ export type GetCrewGalleryListResponseDto = PageNationData<CrewGalleryDto>;
 export const getCrewGalleryList = async (
   dto: GetCrewGalleryListRequestDto
 ): Promise<GetCrewGalleryListResponseDto> => {
-  console.log(dto);
-
   const response = await api.get(
     `/post/crew/gallery/${dto.crewId}?page-no=${dto.pageNo}`
   );

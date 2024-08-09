@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import crewinlogo from "../../assets/images/crewinlogo.png";
 import filledfire from "../../assets/images/filledfire.png";
 import emptyfire from "../../assets/images/emptyfire.png";
 import shareicon from "../../assets/images/shareicon.png";
@@ -63,8 +62,8 @@ const PostItemComponent: React.FC<OwnProps> = ({
     <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20 relative">
       <div className="w-full">
         <Userprofilebar
-          profileImage={crewinlogo}
-          username={postData.crewName}
+          profileImage={postData.profileImage}
+          username={postData.authorName}
           timeAgo={postData.updatedAt}
           onEdit={handleEdit}
           onDelete={handleDelete}

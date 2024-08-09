@@ -1,23 +1,30 @@
-import {
-  GetCrewGalleryListDetailReqeustParams,
-  PostDto,
-} from "../../apis/api/crewGallaryList";
-import CrewGallaryListDetailComponent from "../organisms/CrewGalleryDetailListOrganism";
+import { GetCrewGalleryListDetailResponseDto } from "../../apis/api/crewGallaryList";
+import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
+import CrewGalleryListDetailComponent from "../organisms/CrewGalleryDetailListOrganism";
 
 type OwnProps = {
-  postId: number;
-  fetchData: (dto: GetCrewGalleryListDetailReqeustParams) => Promise<PostDto[]>;
+  initPage?: number;
+  initPostId?: number;
+  fetchData: (pageNo: number) => Promise<GetCrewGalleryListDetailResponseDto>;
 };
 
-const CrewGallaryListDetailTemplate: React.FC<OwnProps> = ({
-  postId,
+const CrewGalleryListDetailTemplate: React.FC<OwnProps> = ({
+  initPage,
+  initPostId,
   fetchData,
 }: OwnProps) => {
   return (
     <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20">
-      <CrewGallaryListDetailComponent postId={postId} fetchData={fetchData} />
+      <header>
+        <BackHeaderMediumOrganism text={"사진첩 상세조회"} />
+      </header>
+      <CrewGalleryListDetailComponent
+        initPage={initPage}
+        initPostId={initPostId}
+        fetchData={fetchData}
+      />
     </div>
   );
 };
 
-export default CrewGallaryListDetailTemplate;
+export default CrewGalleryListDetailTemplate;
