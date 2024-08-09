@@ -59,4 +59,3 @@ public class AttendanceController {
         return ResponseEntity.ok(attendanceService.subscribeSSE(sessionId, customUser.getEmail()));
     }
 }
-
