@@ -121,10 +121,11 @@ const CrewDetailTemplate: React.FC = () => {
         return (
           <CrewAlbumOrganism
             fetchgalleryData={handleFetchGalleryData}
-            onItemClicked={async (pageNo) =>
+            onItemClicked={async (pageNo, postId) =>
               navigate(
                 `/crew/gallery/${crewId}?${createSearchParams({
                   pageNo: pageNo.toString(),
+                  postId: postId.toString(),
                 })}`
               )
             }

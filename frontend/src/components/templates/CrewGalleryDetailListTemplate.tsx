@@ -3,12 +3,14 @@ import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import CrewGalleryListDetailComponent from "../organisms/CrewGalleryDetailListOrganism";
 
 type OwnProps = {
-  initPage: number;
+  initPage?: number;
+  initPostId?: number;
   fetchData: (pageNo: number) => Promise<GetCrewGalleryListDetailResponseDto>;
 };
 
 const CrewGalleryListDetailTemplate: React.FC<OwnProps> = ({
   initPage,
+  initPostId,
   fetchData,
 }: OwnProps) => {
   return (
@@ -18,6 +20,7 @@ const CrewGalleryListDetailTemplate: React.FC<OwnProps> = ({
       </header>
       <CrewGalleryListDetailComponent
         initPage={initPage}
+        initPostId={initPostId}
         fetchData={fetchData}
       />
     </div>

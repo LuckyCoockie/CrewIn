@@ -6,7 +6,7 @@ import qs from "query-string";
 
 const CrewGalleryListDetailPage: React.FC = () => {
   const { crewId } = useParams();
-  const { page } = qs.parse(location.search);
+  const { page, postId } = qs.parse(location.search);
 
   const fetchData = useCallback(
     async (pageNo: number) => {
@@ -27,7 +27,11 @@ const CrewGalleryListDetailPage: React.FC = () => {
   if (!crewId || !parseInt(crewId)) return "crewId가 필요합니다.";
 
   return (
-    <CrewGalleryListDetailTemplate initPage={page} fetchData={fetchData} />
+    <CrewGalleryListDetailTemplate
+      initPage={page}
+      initPostId={postId}
+      fetchData={fetchData}
+    />
   );
 };
 

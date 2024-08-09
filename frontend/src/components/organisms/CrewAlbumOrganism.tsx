@@ -9,7 +9,7 @@ import InfiniteScrollComponent, {
 
 type PhotosProps = {
   fetchgalleryData: (pageNo: number) => Promise<GetCrewGalleryListResponseDto>;
-  onItemClicked?: (pageNo: number) => Promise<void>;
+  onItemClicked?: (pageNo: number, postId: number) => Promise<void>;
 };
 
 const CrewAlbumOrganism: React.FC<PhotosProps> = ({
@@ -32,7 +32,7 @@ const CrewAlbumOrganism: React.FC<PhotosProps> = ({
             className="w-1/3 h-1/3"
             style={{ border: "1px solid rgba(255, 0, 0, 0)" }}
             onClick={() => {
-              if (onItemClicked) onItemClicked(pageNo);
+              if (onItemClicked) onItemClicked(pageNo, data.postId);
             }}
           />
         )}

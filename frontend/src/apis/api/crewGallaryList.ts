@@ -3,8 +3,8 @@ import api from "../utils/instance";
 
 export type PostDto = {
   id: number;
-  crewName: string;
-  authorEmail: string;
+  authorName: string; //닉네임
+  authorId: number;
   content: string;
   heartCount: number;
   isHearted: boolean;
@@ -13,6 +13,7 @@ export type PostDto = {
   title: string;
   createdAt: string;
   updatedAt: string;
+  profileImage: string;
   postImages: string[];
 };
 
