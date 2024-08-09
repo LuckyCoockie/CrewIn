@@ -77,7 +77,9 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   const timeAgo = formatDistanceToNow(parseISO(createdAt), {
     addSuffix: true,
     locale: ko,
-  }).replace("약 ", "");
+  })
+    .replace("약 ", "")
+    .replace(" 후", " 전");
 
   return (
     <div className="w-full mb-4 pb-3">
