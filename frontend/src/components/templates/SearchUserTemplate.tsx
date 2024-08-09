@@ -83,12 +83,15 @@ const SearchUserTemplate: React.FC = () => {
                     src={props.data.profileUrl}
                     alt={props.data.memberName}
                     className="w-10 h-10 rounded-full mr-2"
+                    onClick={() => handleUserProfile}
                   />
                 ) : (
                   <CrewinLogo className="w-10 h-10 rounded-full mr-4" />
                 )}
                 <div className="flex-1">
-                  <div className="font-bold">{props.data.memberName}</div>
+                  <div className="font-bold" onClick={() => handleUserProfile}>
+                    {props.data.memberName}
+                  </div>
                   <div className="text-gray-600">
                     {props.data.memberNickName}
                   </div>
@@ -99,76 +102,6 @@ const SearchUserTemplate: React.FC = () => {
           />
         )}
       </div>
-      {showDropdown && results && !searchExecuted && (
-        <div className="absolute w-full mt-2 border border-gray-300 bg-white shadow-lg z-10 max-h-60 overflow-y-auto top-full">
-          {loading ? (
-            <div className="text-center p-2">Loading...</div>
-          ) : error ? (
-            <div className="text-red-500 text-center p-2">{error}</div>
-          ) : results.items.length === 0 ? (
-            <div className="text-center p-2">검색 결과가 없습니다.</div>
-          ) : (
-            <ul>
-              {results.items.map((member) => (
-                <li
-                  key={member.memberId}
-                  className="flex items-center p-2 border-b hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleUserProfile(member.memberId)}
-                >
-                  {member.profileUrl ? (
-                    <img
-                      src={member.profileUrl}
-                      alt={member.memberName}
-                      className="w-10 h-10 rounded-full mr-2"
-                    />
-                  ) : (
-                    <CrewinLogo className="w-10 h-10 rounded-full mr-2" />
-                  )}
-                  <div className="flex-1">
-                    <div className="font-bold">{member.memberName}</div>
-                    <div className="text-gray-600">{member.memberNickName}</div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
-
-      {searchExecuted && results && (
-        <div className="mt-4">
-          {loading ? (
-            <div className="text-center">Loading...</div>
-          ) : error ? (
-            <div className="text-red-500 text-center mt-4">{error}</div>
-          ) : results.items.length === 0 ? (
-            <div className="text-center">검색 결과가 없습니다.</div>
-          ) : (
-            <ul>
-              {results.items.map((member) => (
-                <li
-                  key={member.memberId}
-                  className="flex items-center p-2 border-b"
-                >
-                  {member.profileUrl ? (
-                    <img
-                      src={member.profileUrl}
-                      alt={member.memberName}
-                      className="w-10 h-10 rounded-full mr-2"
-                    />
-                  ) : (
-                    <CrewinLogo className="w-10 h-10 rounded-full mr-4" />
-                  )}
-                  <div className="flex-1">
-                    <div className="font-bold">{member.memberName}</div>
-                    <div className="text-gray-600">{member.memberNickName}</div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
     </div>
   );
 };
