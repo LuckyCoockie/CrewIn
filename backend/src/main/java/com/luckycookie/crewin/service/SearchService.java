@@ -2,11 +2,9 @@ package com.luckycookie.crewin.service;
 
 import com.luckycookie.crewin.domain.Crew;
 import com.luckycookie.crewin.domain.Member;
-import com.luckycookie.crewin.domain.MemberCrew;
 import com.luckycookie.crewin.dto.CrewResponse.CrewItem;
 import com.luckycookie.crewin.dto.MemberResponse.MemberItem;
 import com.luckycookie.crewin.dto.SearchResponse;
-import com.luckycookie.crewin.dto.SearchResponse.MemberInvitationResponse;
 import com.luckycookie.crewin.dto.base.PagingItemsResponse;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
@@ -108,41 +106,31 @@ public class SearchService {
                 .build();
     }
 
-    public PagingItemsResponse<MemberInvitationResponse> getMemberForCrewInvitation(Long crewId, String query, CustomUser customUser, int page) {
+    public PagingItemsResponse<SearchResponse.MemberInvitationResponse> getMemberForCrewInvitation(Long crewId, String query, CustomUser customUser, int page) {
         memberRepository.findByEmail(customUser.getEmail())
-                .orElseThrow(NotFoundMemberException::new); //요청
+                .orElseThrow(NotFoundMemberException::new);
         crewRepository.findById(crewId)
                 .orElseThrow(NotFoundCrewException::new);
-        Pageable pageable = PageRequest.of(page, 10);// 토큰 검증
-        Page<Object[]> resultPage;
-        if (query.isBlank()) {
-            resultPage = memberRepository.findMembersForCrewInvitation(crewId, pageable);
-        } else {
-            resultPage = memberRepository.findMembersForCrewInvitationByQuery(crewId, query, pageable);
-        }
+        Pageable pageable = PageRequest.of(page, 10);
 
+        Page<Object[]> resultPage = memberRepository.findMembersForCrewInvitationByQuery(crewId, query, pageable);
 
-        List<MemberInvitationResponse> memberResponses = resultPage.getContent().stream()
-                .map(result -> {
-                    Member member = (Member) result[0];
-                    MemberCrew memberCrew = (MemberCrew) result[1];
+        Page<SearchResponse.MemberInvitationResponse> mappedPage = resultPage.map(this::mapToMemberInvitationResponse);
 
-                    return SearchResponse.MemberInvitationResponse.builder()
-                            .memberId(member.getId())
-                            .name(member.getName())
-                            .nickname(member.getNickname())
-                            .imageUrl(member.getImageUrl())
-                            .attendanceCount(memberCrew != null ? memberCrew.getAttendanceCount() : null)
-                            .isJoined(memberCrew != null ? memberCrew.getIsJoined() : null)
-                            .isInvited(memberCrew != null ? memberCrew.getIsInvited() : null)
-                            .build();
-                }).collect(Collectors.toList());
-
-        return PagingItemsResponse.<MemberInvitationResponse>builder()
-                .items(memberResponses)
-                .pageNo(resultPage.getNumber())
-                .lastPageNo(resultPage.getTotalPages() - 1)
+        return PagingItemsResponse.<SearchResponse.MemberInvitationResponse>builder()
+                .items(mappedPage.getContent())
+                .pageNo(mappedPage.getNumber())
+                .lastPageNo(mappedPage.getTotalPages() - 1)
                 .build();
+    }
 
+    private SearchResponse.MemberInvitationResponse mapToMemberInvitationResponse(Object[] row) {
+        return SearchResponse.MemberInvitationResponse.builder()
+                .memberId(((Number) row[0]).longValue())
+                .name((String) row[1])
+                .nickname((String) row[2])
+                .imageUrl((String) row[3])
+                .attendanceCount(((Number) row[4]).intValue())
+                .build();
     }
 }
