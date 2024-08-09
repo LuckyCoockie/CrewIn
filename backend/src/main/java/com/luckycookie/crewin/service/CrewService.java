@@ -4,7 +4,6 @@ import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.NotificationType;
 import com.luckycookie.crewin.domain.enums.Position;
 import com.luckycookie.crewin.domain.enums.PostType;
-import com.luckycookie.crewin.dto.CrewRequest;
 import com.luckycookie.crewin.dto.CrewRequest.*;
 import com.luckycookie.crewin.dto.CrewResponse.*;
 import com.luckycookie.crewin.dto.PostResponse;
@@ -12,7 +11,6 @@ import com.luckycookie.crewin.dto.base.PagingItemsResponse;
 import com.luckycookie.crewin.exception.crew.*;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.memberCrew.NotFoundMemberCrewException;
-import com.luckycookie.crewin.exception.memberSession.DuplicateApplyException;
 import com.luckycookie.crewin.exception.post.NotFoundPostException;
 import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
@@ -104,7 +102,9 @@ public class CrewService {
                     .area(crew.getArea())
                     .crewCount(crewCount)
                     .captainName(captainName)
-                    .imageUrl(crew.getMainLogo())
+                    .mainLogo(crew.getMainLogo())
+                    .subLogo(crew.getSubLogo())
+                    .banner(crew.getBanner())
                     .build();
         }).collect(Collectors.toList());
 
@@ -136,7 +136,9 @@ public class CrewService {
                     .area(crew.getArea())
                     .crewCount(crewCount)
                     .captainName(captainName)
-                    .imageUrl(crew.getMainLogo())
+                    .mainLogo(crew.getMainLogo())
+                    .subLogo(crew.getSubLogo())
+                    .banner(crew.getBanner())
                     .position(memberCrew.getPosition())
                     .build();
         }).collect(Collectors.toList());
@@ -215,7 +217,9 @@ public class CrewService {
                 .slogan(crew.getSlogan())
                 .crewCount(crewCount)
                 .captainName(crew.getCaptain().getName())
-                .imageUrl(crew.getBanner())
+                .mainLogo(crew.getMainLogo())
+                .subLogo(crew.getSubLogo())
+                .banner(crew.getBanner())
                 .introduction(crew.getIntroduction())
                 .crewBirth(crew.getCrewBirth())
                 .build();

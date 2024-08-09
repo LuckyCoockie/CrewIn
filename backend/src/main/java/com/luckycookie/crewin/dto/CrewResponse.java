@@ -33,7 +33,9 @@ public class CrewResponse {
         private String area; // 활동 지역
         private int crewCount;
         private String captainName; // 크루장
-        private String imageUrl; // 크루 이미지
+        private String mainLogo; // 크루 메인 로고
+        private String subLogo; // 크루 서브 로고
+        private String banner; // 크루 배너 로고
     }
 
     @Getter

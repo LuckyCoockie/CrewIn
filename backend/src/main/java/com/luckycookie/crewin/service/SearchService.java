@@ -95,7 +95,9 @@ public class SearchService {
                     .area(crew.getArea())
                     .crewCount(crewCount)
                     .captainName(captainName)
-                    .imageUrl(crew.getMainLogo())
+                    .mainLogo(crew.getMainLogo())
+                    .subLogo(crew.getSubLogo())
+                    .banner(crew.getBanner())
                     .build();
         }).collect(Collectors.toList());
 

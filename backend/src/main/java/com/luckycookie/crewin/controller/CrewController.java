@@ -5,7 +5,7 @@ import com.luckycookie.crewin.dto.CrewRequest.CrewMemberRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewReplyMemberRequest;
 import com.luckycookie.crewin.dto.CrewRequest.UpdateCrewPositionRequest;
 import com.luckycookie.crewin.dto.CrewResponse;
-import com.luckycookie.crewin.dto.CrewResponse.CrewItem;
+import com.luckycookie.crewin.dto.CrewResponse.CrewInfoItem;
 import com.luckycookie.crewin.dto.CrewResponse.CrewMemberItem;
 import com.luckycookie.crewin.dto.CrewResponse.CrewNoticeItem;
 import com.luckycookie.crewin.dto.PostResponse;
@@ -37,12 +37,6 @@ public class CrewController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루를 생성하는데 성공했습니다.", crewResponse));
     }
 
-    // 전체 크루 조회 (크루 없는 사람)
-    @GetMapping()
-    public ResponseEntity<BaseResponse<PagingItemsResponse<CrewItem>>> getAllCrewList(@RequestParam("page-no") int pageNo) {
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "전체 크루 목록 조회를 성공했습니다.", crewService.getAllCrewList(pageNo)));
-    }
-
     // 내가 속한 크루 조회 (크루원 / 비크루원)
     @GetMapping("/my-crew")
     public ResponseEntity<BaseResponse<CrewResponse.MyCrewItemResponse>> getMyCrewList(@AuthenticationPrincipal CustomUser customUser) {
@@ -58,7 +52,7 @@ public class CrewController {
 
     // 크루 정보 조회
     @GetMapping("/detail/{crew-id}")
-    public ResponseEntity<BaseResponse<CrewResponse.CrewInfoItem>> getCrewDetailInfo(@PathVariable("crew-id") Long crewId) {
+    public ResponseEntity<BaseResponse<CrewInfoItem>> getCrewDetailInfo(@PathVariable("crew-id") Long crewId) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 정보 조회를 성공했습니다.", crewService.getCrewInfo(crewId)));
     }
 
