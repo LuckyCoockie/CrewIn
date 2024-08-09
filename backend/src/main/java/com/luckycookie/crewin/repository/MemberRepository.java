@@ -26,24 +26,17 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     // 크루 초대할 멤버 검색
 
-    @Query("SELECT m, mc FROM Member m " +
-            "LEFT JOIN MemberCrew mc ON m.id = mc.member.id AND (mc.crew.id = :crewId OR mc.crew.id IS NULL) " +
-            "WHERE mc.isJoined IS NULL OR mc.isJoined = false " +
-            "ORDER BY CASE " +
-            "    WHEN mc.isInvited IS NULL THEN 0 " +
-            "    WHEN mc.isInvited = false THEN 1 " +
-            "    WHEN mc.isInvited = true THEN 2 " +
-            "END, m.id")
-    Page<Object[]> findMembersForCrewInvitation(@Param("crewId") Long crewId, Pageable pageable);
-
-    @Query("SELECT m, mc FROM Member m " +
-            "LEFT JOIN MemberCrew mc ON m.id = mc.member.id AND (mc.crew.id = :crewId OR mc.crew.id IS NULL) " +
-            "WHERE (mc.isJoined IS NULL OR mc.isJoined = false) " +
-            "AND (LOWER(m.name) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(m.nickname) LIKE LOWER(CONCAT('%', :query, '%'))) " +
-            "ORDER BY CASE " +
-            "    WHEN mc.isInvited IS NULL THEN 0 " +
-            "    WHEN mc.isInvited = false THEN 1 " +
-            "    WHEN mc.isInvited = true THEN 2 " +
-            "END, m.id")
+    @Query(value = "SELECT m.id, m.name, m.nickname, m.image_url, " +
+            "CASE WHEN mc.member_id IS NOT NULL THEN mc.attendance_count ELSE 0 END AS attendance_count " +
+            "FROM member m " +
+            "LEFT JOIN MemberCrew mc ON m.id = mc.member_id AND mc.crew_id = :crewId " +
+            "WHERE (m.name LIKE %:query% OR m.nickname LIKE %:query%) " +
+            "AND (mc.member_id IS NULL OR mc.is_invited = false) " +
+            "ORDER BY LENGTH(m.name), LENGTH(m.nickname), m.name, m.nickname",
+            countQuery = "SELECT COUNT(*) FROM member m " +
+                    "LEFT JOIN MemberCrew mc ON m.id = mc.member_id AND mc.crew_id = :crewId " +
+                    "WHERE (m.name LIKE %:query% OR m.nickname LIKE %:query%) " +
+                    "AND (mc.member_id IS NULL OR mc.is_invited = false)",
+            nativeQuery = true)
     Page<Object[]> findMembersForCrewInvitationByQuery(@Param("crewId") Long crewId, @Param("query") String query, Pageable pageable);
 }

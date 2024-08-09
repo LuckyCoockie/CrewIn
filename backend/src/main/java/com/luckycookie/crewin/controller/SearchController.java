@@ -38,8 +38,11 @@ public class SearchController {
     @GetMapping("/invite-member/{crew-id}")
     public ResponseEntity<BaseResponse<PagingItemsResponse<MemberInvitationResponse>>> searchMemberForCrewInvitation(@AuthenticationPrincipal CustomUser customUser,
                                                                                                                      @PathVariable("crew-id") Long crewId,
-                                                                                                                     @RequestParam(name = "query", defaultValue = "") String query,
+                                                                                                                     @RequestParam(name = "query", required = true) String query,
                                                                                                                      @RequestParam(name = "page-no", defaultValue = "0") int pageNo) {
+        if (query == null || query.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(BaseResponse.create(HttpStatus.BAD_REQUEST.value(), "검색어는 비워둘 수 없습니다.", null));
+        }
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 초대를 위한 멤버 검색 결과 조회를 성공했습니다."
                 , searchService.getMemberForCrewInvitation(crewId, query, customUser, pageNo)));
 

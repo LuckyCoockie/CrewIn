@@ -15,7 +15,5 @@ public class SearchResponse {
         private String nickname;
         private String imageUrl;
         private Integer attendanceCount;
-        private Boolean isJoined;
-        private Boolean isInvited;
     }
 }
