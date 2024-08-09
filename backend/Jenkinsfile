@@ -36,10 +36,10 @@ pipeline {
 
                     // 모든 커밋 메시지 가져오기
                     def allCommits = sh(script: "git log --pretty=format:'%h - %s (%an)' $env.GIT_PREVIOUS_SUCCESSFUL_COMMIT..HEAD", returnStdout: true).trim()
-                    def formattedCommits = allCommits.split('\n').collect { line ->
-                        def escapedLine = line.replaceAll("([\\[\\]()])", '\\\\$1')
+                    def formattedCommits = allCommits.split('\\n').collect { line ->
+                        def escapedLine = line.replaceAll("([\\[\\]\\(\\)])", '\\\\$1')
                         "• ${escapedLine}"
-                    }.join('\n')
+                    }.join('\\n')
                     def message = """
                         #### 🌐BE 빌드 시작
                         **빌드 번호** $env.JOB_NAME #$env.BUILD_NUMBER
@@ -172,10 +172,10 @@ pipeline {
                 def Status_Text = Build_Status == 'SUCCESS' ? '빌드 성공' : (Build_Status == 'UNSTABLE' ? '빌드 불안정' : '빌드 실패')
 
                 def allCommits = sh(script: "git log --pretty=format:'%h - %s (%an)' $env.GIT_PREVIOUS_SUCCESSFUL_COMMIT..HEAD", returnStdout: true).trim()
-                def formattedCommits = allCommits.split('\n').collect { line ->
-                    def escapedLine = line.replaceAll("([\\[\\]()])", '\\\\$1')
+                def formattedCommits = allCommits.split('\\n').collect { line ->
+                    def escapedLine = line.replaceAll("([\\[\\]\\(\\)])", '\\\\$1')
                     "• ${escapedLine}"
-                }.join('\n')
+                }.join('\\n')
 
                 def message = """
                     #### 🌐BE $Status_Text
