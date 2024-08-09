@@ -6,6 +6,7 @@ import ListButtonMolecule from "../../molecules/List/ListButtonMolecule";
 import { MyMadeSessionDto } from "../../../apis/api/mypage";
 import ErrorText from "../../atoms/ErrorText";
 import SpinnerComponent from "../../atoms/SpinnerComponent";
+import { MySessionType } from "../../../apis/api/session";
 
 interface MyPageMadeSessionOrganismProps {
   sessions: MyMadeSessionDto[];
@@ -36,8 +37,7 @@ const MyPageMadeSessionOrganism: React.FC<MyPageMadeSessionOrganismProps> = ({
     <>
       <div className="flex items-center">
         <MediumTitleMolecule text="최근 생성한 세션" />
-        {/* 전체 리스트로 이동 */}
-        <IntoArrowButton router="/mypage/session/created" />
+        <IntoArrowButton router={`/mypage/session/${MySessionType.CREATED}`} />
       </div>
       {!isMadeSessionsError ? (
         !isMadeSessionsLoading && (

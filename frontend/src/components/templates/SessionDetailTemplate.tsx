@@ -6,11 +6,11 @@ import {
   SessionDetailDto,
   GetSessionInfoRequestDto,
 } from "../../apis/api/sessiondetail";
-import AttendanceButton from "../atoms/Button/AttendanceButton";
 import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
 import NavTabMolecule from "../molecules/Tab/NavTabMolecule";
 import SessionAlbumOrganism from "../organisms/SessionAlbumOrganism";
 import { useParams } from "react-router";
+import AttendanceButton from "../atoms/Button/AttendanceButton";
 
 type OwnDetailProps = {
   fetchDetailData: (dto: GetSessionInfoRequestDto) => Promise<SessionDetailDto>;

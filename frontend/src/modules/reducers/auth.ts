@@ -76,7 +76,7 @@ type AuthState = {
 
 /* ----------------- 모듈의 초기 상태 ------------------ */
 const initialState: AuthState = {
-  accessToken: null,
+  accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MTIzNEB0ZXN0LmNvbSIsImlhdCI6MTcyMjUyMDAxNywiZW1haWwiOiJ0ZXN0MTIzNEB0ZXN0LmNvbSIsImV4cCI6MTcyNTExMjAxN30.l5khomKGNT7AyWyxpWTL2Mc_8_DVSW0eSS07ofFu46jZyoyohx3jDMzhAvS2Hr4MEiyqEcHFRye_Ar2_QrR7Og",
   interceptorId: null,
   memberId: null,
   loading: false,
