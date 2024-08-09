@@ -1,9 +1,13 @@
 import store from "../../modules";
-import { loading, setAccessToken } from "../../modules/reducers/auth";
+import {
+  loading,
+  setAccessToken,
+  setMemberId,
+} from "../../modules/reducers/auth";
 import api from "../index";
 
 export type LoginRequestDto = { email: string; password: string };
-export type LoginResponseDto = { accessToken: string };
+export type LoginResponseDto = { accessToken: string; memberId: number };
 
 export const login = async (
   dto: LoginRequestDto
@@ -11,5 +15,6 @@ export const login = async (
   store.dispatch(loading());
   const response = await api.post<LoginResponseDto>("/member/login", dto);
   store.dispatch(setAccessToken(response.data.accessToken));
+  store.dispatch(setMemberId(response.data.memberId));
   return response.data;
 };

@@ -9,6 +9,7 @@ const BASE_ACTION_TYPE = "api/auth";
 export const LOADING = `${BASE_ACTION_TYPE}/LOADING`;
 export const SET_ACCESS_TOKEN = `${BASE_ACTION_TYPE}/SET_ACCESS_TOKEN`;
 export const CLEAR_ACCESS_TOKEN = `${BASE_ACTION_TYPE}/CLEAR_ACCESS_TOKEN`;
+export const SET_MEMBER_ID = `${BASE_ACTION_TYPE}/SET_MEMBER_ID`;
 
 /* ----------------- 액션 ------------------ */
 type Loading = {
@@ -26,10 +27,16 @@ type ClearAccessTokenAction = {
   error?: string;
 };
 
+type SetMemberIdAction = {
+  type: typeof SET_MEMBER_ID;
+  memberId: number; // member id
+};
+
 export type AuthActionTypes =
   | Loading
   | SetAccessTokenAction
-  | ClearAccessTokenAction;
+  | ClearAccessTokenAction
+  | SetMemberIdAction;
 
 /* ----------------- 액션 함수 ------------------ */
 export const loading = () => {
@@ -55,9 +62,16 @@ export const clearAccessToken = (error?: string) => {
   };
 };
 
+export const setMemberId = (memberId: number) => {
+  return async (dispatch: Dispatch<AuthActionTypes>) => {
+    dispatch({ type: SET_MEMBER_ID, memberId: memberId });
+  };
+};
+
 /* ----------------- 모듈 상태 타입 ------------------ */
 type AuthState = {
   accessToken: string | null;
+  memberId: number | null;
   interceptorId: number | null;
   loading: boolean;
   error?: string;
@@ -67,6 +81,7 @@ type AuthState = {
 const initialState: AuthState = {
   accessToken: null,
   interceptorId: null,
+  memberId: 1, // TODO: memberId null 처리해야 타 계정 로그인 가능 
   loading: false,
 };
 
@@ -85,6 +100,7 @@ const authReducer = (
         interceptorId: state.interceptorId
           ? clearTokenInterceptors(state.interceptorId)
           : null,
+          memberId: null,
         accessToken: null,
         loading: false,
         error: action.error,

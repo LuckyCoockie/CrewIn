@@ -23,6 +23,7 @@ const SessionAlbumOrganism: React.FC<SessionAlbumOrganismProps> = ({
   fetchAlbumData,
   sessionId,
 }) => {
+  const [totalImageCount, setTotalImageCount] = useState<number>(0);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
@@ -36,6 +37,7 @@ const SessionAlbumOrganism: React.FC<SessionAlbumOrganismProps> = ({
   const uploadImageMutation = useMutation(uploadImage, {
     onSuccess: (data) => {
       setUploadedImages((prevImages) => [data, ...prevImages]);
+      setTotalImageCount((prevCount) => prevCount + 1);
     },
   });
 
@@ -94,21 +96,27 @@ const SessionAlbumOrganism: React.FC<SessionAlbumOrganismProps> = ({
       <FloatingActionButton onClick={handleAlbumUpload}>
         <PlusIcon />
       </FloatingActionButton>
-      <InfiniteScrollComponent
-        fetchKey="sessionAlbum"
-        fetchData={async (page: number) => {
-          const fetchedData = (await fetchAlbumData(page)).items;
-          const imageUrls = fetchedData.map((item) => item.imageUrl);
-          return [...uploadedImages, ...imageUrls];
-        }}
-        ItemComponent={({ data }: ItemComponentProps<string>) => (
-          <React.Fragment>
-            <PhotoItem data={data} />
-          </React.Fragment>
-        )}
-        className="photo-grid"
-        pageSize={12}
-      />
+      {totalImageCount === 0 ? (
+        <div className="text-gray-300 w-full text-center mt-4">
+          등록된 사진이 없습니다.
+        </div>
+      ) : (
+        <InfiniteScrollComponent
+          fetchKey="sessionAlbum"
+          fetchData={async (page: number) => {
+            const fetchedData = (await fetchAlbumData(page)).items;
+            const imageUrls = fetchedData.map((item) => item.imageUrl);
+            return [...uploadedImages, ...imageUrls];
+          }}
+          ItemComponent={({ data }: ItemComponentProps<string>) => (
+            <React.Fragment>
+              <PhotoItem data={data} />
+            </React.Fragment>
+          )}
+          className="photo-grid"
+          pageSize={12}
+        />
+      )}
     </>
   );
 };

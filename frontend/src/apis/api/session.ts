@@ -43,7 +43,7 @@ export const mySessionTypeToLabel = (type: MySessionType) => {
     case MySessionType.CREATED:
       return "내가 만든 세션 조회";
     case MySessionType.JOINED:
-      return "참가한 세션 조회";
+      return "내가 참가한 세션 조회";
   }
 };
 

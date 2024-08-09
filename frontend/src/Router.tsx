@@ -17,7 +17,7 @@ import CrewDetailPage from "./pages/CrewDetailPage";
 import AlarmPage from "./pages/AlarmPage.tsx";
 import SessionSearchPage from "./pages/session/SessionSearchPage.tsx";
 import CrewSearchPage from "./pages/crew/CrewSearchPage.tsx";
-import CrewGallaryListDetailPage from "./pages/CrewGallaryListDetailPage.tsx";
+import CrewGalleryListDetailPage from "./pages/CrewGalleryListDetailPage.tsx";
 import FindPasswordPage from "./pages/FindPasswordPage.tsx";
 import NoticeCreatePage from "./pages/NoticeCreatePage.tsx";
 import { ProfileInfoPage } from "./pages/ProfileInfoPage.tsx";
@@ -35,6 +35,8 @@ import MyProfilePage from "./pages/MyProfilePage.tsx";
 import PeopleProfilePage from "./pages/PeopleProfilePage.tsx";
 import CrewRedirectPage from "./pages/crew/CrewRedirectPage.tsx";
 import AttendancePage from "./pages/attendance/AttendancePage.tsx";
+import CrewNoticeDetailPage from "./pages/CrewNoticeDetailPage.tsx";
+import CourseDetailPage from "./pages/course/CourseDetailPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -70,8 +72,8 @@ export const router = createBrowserRouter([
               { path: "search", element: <CrewSearchPage /> },
               { path: "create", element: <CrewCreatePage /> },
               {
-                path: "gallary/:crewId",
-                element: <CrewGallaryListDetailPage />,
+                path: "gallery/:crewId",
+                element: <CrewGalleryListDetailPage />,
               },
               {
                 path: "detail/:crewId",
@@ -95,6 +97,11 @@ export const router = createBrowserRouter([
                 element: <CaptainPovCrewMemberSearchPage />,
               },
               { path: ":crewId/invite", element: <CrewInvitePage /> },
+              { path: "invite", element: <CrewInvitePage /> },
+              {
+                path: "detail/:crewId/notice/:noticeId",
+                element: <CrewNoticeDetailPage />,
+              },
             ],
           },
           { path: "mypage/session/:type", element: <MySessionPage /> },
@@ -115,6 +122,7 @@ export const router = createBrowserRouter([
                 path: "create",
                 element: <CourseCreatePage />,
               },
+              { path: ":courseId", element: <CourseDetailPage /> },
               {
                 path: ":courseId/edit",
                 element: <CourseEditPage />,
