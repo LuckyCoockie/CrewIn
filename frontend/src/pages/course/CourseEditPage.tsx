@@ -10,6 +10,7 @@ import { NaverMapProvider } from "../../util/maps/naver_map/context.tsx";
 import { Point } from "../../util/maps/tmap/apis/api/directionApi.ts";
 import { reversGeocodingApi } from "../../util/maps/tmap/apis/api/geocodeApi.ts";
 import { useParams } from "react-router";
+import BackHeaderMediumOrganism from "../../components/organisms/BackHeaderMediumOrganism.tsx";
 
 const CourseEditPage: React.FC = () => {
   const { courseId } = useParams();
@@ -78,31 +79,32 @@ const CourseEditPage: React.FC = () => {
   if (!courseId) return "course id가 필요합니다";
 
   return (
-    <>
-      <NaverMapProvider>
-        <CourseCreateTemplate
-          initValue={parseInitValue(initValue)}
-          onSave={async ({ title, markers, polylines, length, image }) => {
-            const [info, area, imageUrl] = await Promise.all([
-              encodeInfo(markers, polylines!),
-              parseArea(markers[0].point),
-              uploadImage(image!),
-            ]);
+    <NaverMapProvider>
+      <header>
+        <BackHeaderMediumOrganism text="경로 수정하기" />
+      </header>
+      <CourseCreateTemplate
+        initValue={parseInitValue(initValue)}
+        onSave={async ({ title, markers, polylines, length, image }) => {
+          const [info, area, imageUrl] = await Promise.all([
+            encodeInfo(markers, polylines!),
+            parseArea(markers[0].point),
+            uploadImage(image!),
+          ]);
 
-            updateCourse({
-              id: parseInt(courseId),
-              value: {
-                name: title,
-                info: info,
-                length: length!,
-                thumbnailImage: imageUrl,
-                area: area,
-              },
-            });
-          }}
-        />
-      </NaverMapProvider>
-    </>
+          updateCourse({
+            id: parseInt(courseId),
+            value: {
+              name: title,
+              info: info,
+              length: length!,
+              thumbnailImage: imageUrl,
+              area: area,
+            },
+          });
+        }}
+      />
+    </NaverMapProvider>
   );
 };
 

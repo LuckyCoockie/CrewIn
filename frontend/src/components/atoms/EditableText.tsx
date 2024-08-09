@@ -4,15 +4,21 @@ type OwnProps = {
   text?: string;
   onChange?: (text: string) => void;
   children?: React.ReactNode;
+  editable?: boolean;
 };
 
-const EditableText = ({ text, onChange, children }: OwnProps) => {
+const EditableText = ({
+  text,
+  onChange,
+  children,
+  editable = true,
+}: OwnProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(text);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleTextClick = () => {
-    setIsEditing(true);
+    setIsEditing(editable);
   };
 
   const handleBlur: React.FocusEventHandler<HTMLInputElement> = (e) => {
@@ -48,7 +54,7 @@ const EditableText = ({ text, onChange, children }: OwnProps) => {
           {value}
         </p>
       )}
-      <div onClick={() => setIsEditing(true)}>{children}</div>
+      <div onClick={handleTextClick}>{children}</div>
     </div>
   );
 };

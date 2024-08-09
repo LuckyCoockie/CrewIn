@@ -6,6 +6,7 @@ import useGeolocation from "../../util/geolocation/gelocation.ts";
 import { NaverMapProvider } from "../../util/maps/naver_map/context.tsx";
 import { Point } from "../../util/maps/tmap/apis/api/directionApi.ts";
 import { reversGeocodingApi } from "../../util/maps/tmap/apis/api/geocodeApi.ts";
+import BackHeaderMediumOrganism from "../../components/organisms/BackHeaderMediumOrganism.tsx";
 
 const CourseCreatePage: React.FC = () => {
   const { location } = useGeolocation();
@@ -42,6 +43,9 @@ const CourseCreatePage: React.FC = () => {
   return (
     <>
       <NaverMapProvider>
+        <header>
+          <BackHeaderMediumOrganism text="경로 생성하기" />
+        </header>
         <CourseCreateTemplate
           initPosition={location}
           onSave={async ({ title, markers, polylines, length, image }) => {
