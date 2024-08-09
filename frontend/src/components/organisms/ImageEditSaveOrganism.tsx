@@ -40,7 +40,7 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
       try {
         const response = await getMyCrews();
         if (response.crews.length > 0) {
-          setCrewImageUrl(response.crews[0].imageUrl);
+          setCrewImageUrl(response.crews[0].subLogo);
         }
       } catch (error) {
         console.error("크루 데이터 로딩 오류:", error);

@@ -8,8 +8,10 @@ import {
 } from "../../apis/api/usersearch";
 import { ReactComponent as CrewinLogo } from "../../assets/icons/crewinlogo.svg";
 import InfiniteScrollComponent from "../../util/paging/component/InfinityScrollComponent";
+import { useNavigate } from "react-router";
 
 const SearchUserTemplate: React.FC = () => {
+  const navigate = useNavigate();
   const [query, setQuery] = useState<string>("");
 
   const fetchUserData = useCallback(
@@ -36,6 +38,10 @@ const SearchUserTemplate: React.FC = () => {
       e.preventDefault();
       handleSearch();
     }
+  };
+
+  const handleUserProfile = (memberId: number) => {
+    navigate(`/profile/${memberId}`);
   };
 
   return (
@@ -77,12 +83,15 @@ const SearchUserTemplate: React.FC = () => {
                     src={props.data.profileUrl}
                     alt={props.data.memberName}
                     className="w-10 h-10 rounded-full mr-2"
+                    onClick={() => handleUserProfile}
                   />
                 ) : (
                   <CrewinLogo className="w-10 h-10 rounded-full mr-4" />
                 )}
                 <div className="flex-1">
-                  <div className="font-bold">{props.data.memberName}</div>
+                  <div className="font-bold" onClick={() => handleUserProfile}>
+                    {props.data.memberName}
+                  </div>
                   <div className="text-gray-600">
                     {props.data.memberNickName}
                   </div>

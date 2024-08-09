@@ -8,6 +8,7 @@ type InputData = {
   name: string;
   placeholder: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  text?: string
 };
 
 const InputImageMultiTypeMolecule = React.forwardRef<
@@ -16,7 +17,7 @@ const InputImageMultiTypeMolecule = React.forwardRef<
 >((props, ref) => {
   return (
     <>
-      <div className="mb-4">
+      <div className="mb-4 w-full">
         <InputLabelComponent id={props.id} title={props.title} />
         <InputImageMultiComponent
           placeholder={props.placeholder}
@@ -24,6 +25,7 @@ const InputImageMultiTypeMolecule = React.forwardRef<
           name={props.name}
           ref={ref}
           onChange={props.onChange}
+          text={props.text}
         />
       </div>
     </>

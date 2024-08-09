@@ -35,7 +35,7 @@ const MyPageMadeSessionOrganism: React.FC<MyPageMadeSessionOrganismProps> = ({
 
   return (
     <>
-      <div className="flex items-center mb-4">
+      <div className="flex items-center">
         <MediumTitleMolecule text="최근 생성한 세션" />
         <IntoArrowButton router={`/mypage/session/${MySessionType.CREATED}`} />
       </div>
@@ -47,7 +47,7 @@ const MyPageMadeSessionOrganism: React.FC<MyPageMadeSessionOrganismProps> = ({
             renderItem={(data, index) => (
               <ListButtonMolecule
                 key={index}
-                src={data.imageUrl}
+                src={data.sessionThumbnail}
                 alt={data.sessionName}
                 text={convertText(data.startAt, data.endAt)}
                 router="session"

@@ -54,6 +54,7 @@ export const EditProfileImageOrganism = ({
             control={control}
             render={({ field }) => (
               <InputImageTypeMolecule
+                text=""
                 id="image"
                 title="프로필 사진"
                 placeholder="1:1 비율이 가장 적합합니다."
