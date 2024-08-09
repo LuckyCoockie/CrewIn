@@ -61,6 +61,12 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     return response.items;
   }, [getMemberList]);
 
+  const handleStartAttendanceClick = useCallback(async () => {
+    onStartAttendanceClick().then(() => {
+      setAutoCheckStatus("DURING");
+    });
+  }, [onStartAttendanceClick]);
+
   return (
     <>
       <header>
@@ -75,21 +81,27 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
           isAutoCheckInProgress={isDuringAutoCheck}
         />
         <div className="mx-auto w-full max-w-[550px] fixed bottom-0 left-0 right-0 flex justify-center items-center z-50 px-2 pb-20 pt-5 bg-white font-bold">
-          {!isSessionStarted && "출석 시작은 세션 시작 후 할 수 있습니다."}
-          {isBeforeAutoCheck &&
-            (isSessionHost ? (
-              <LargeAbleButton
-                text="자동 출석 시작"
-                onClick={onStartAttendanceClick}
-              />
-            ) : (
-              <LargeAbleButton
-                text="출석하기"
-                onClick={onGuestAttendanceClick}
-              />
-            ))}
-          {isDuringAutoCheck && <TimerOrganism initSeconds={leftTime} />}
-          {isAfterAutoCheck && "자동 출석이 종료되어 수동 출석만 가능합니다."}
+          {!isSessionStarted ? (
+            "출석 시작은 세션 시작 후 할 수 있습니다."
+          ) : (
+            <>
+              {isBeforeAutoCheck &&
+                (isSessionHost ? (
+                  <LargeAbleButton
+                    text="자동 출석 시작"
+                    onClick={handleStartAttendanceClick}
+                  />
+                ) : (
+                  <LargeAbleButton
+                    text="출석하기"
+                    onClick={onGuestAttendanceClick}
+                  />
+                ))}
+              {isDuringAutoCheck && <TimerOrganism initSeconds={leftTime} />}
+              {isAfterAutoCheck &&
+                "자동 출석이 종료되어 수동 출석만 가능합니다."}
+            </>
+          )}
         </div>
       </div>
     </>
