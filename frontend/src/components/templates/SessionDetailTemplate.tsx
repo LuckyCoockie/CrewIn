@@ -5,15 +5,11 @@ import SessionDetailOrganism from "../organisms/SessionDetailOrganism";
 import {
   SessionDetailDto,
   GetSessionInfoRequestDto,
-  getSessionAlbum,
-  GetSessionAlbumDto,
 } from "../../apis/api/sessiondetail";
 import AttendanceButton from "../atoms/Button/AttendanceButton";
 import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
 import NavTabMolecule from "../molecules/Tab/NavTabMolecule";
 import SessionAlbumOrganism from "../organisms/SessionAlbumOrganism";
-import { PageNationData } from "../../util/paging/type";
-
 import { useParams } from "react-router";
 
 type OwnDetailProps = {
@@ -31,12 +27,6 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
     () => fetchDetailData({ sessionId: Number(sessionId) })
   );
 
-  const fetchAlbumData = async (
-    page: number
-  ): Promise<PageNationData<GetSessionAlbumDto>> => {
-    return getSessionAlbum(Number(sessionId), page - 1);
-  };
-
   if (detailError) console.error("detailError", detailError);
 
   const tabs = ["세션정보", "사진첩"];
@@ -44,7 +34,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
     ? new Date(detailData.startAt) < new Date()
     : false;
 
-  if (!sessionId) return;
+  if (!sessionId) return null;
 
   return (
     <>
@@ -77,10 +67,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
           />
         )}
         {currentTab === "사진첩" && detailData && (
-          <SessionAlbumOrganism
-            sessionId={detailData.sessionId}
-            fetchAlbumData={fetchAlbumData}
-          />
+          <SessionAlbumOrganism sessionId={detailData.sessionId} />
         )}
       </>
     </>
