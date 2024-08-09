@@ -35,7 +35,7 @@ const MyPageParticipatedSessionOrganism: React.FC<
   };
   return (
     <>
-      <div className="flex items-center mb-4">
+      <div className="flex items-center">
         <MediumTitleMolecule text="최근 참가한 세션" />
         {/* 전체 리스트로 이동 */}
         <IntoArrowButton router="/mypage/session/joined" />
