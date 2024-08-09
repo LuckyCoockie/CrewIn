@@ -79,14 +79,14 @@ public class PostController {
     // 사진첩 상세 조회
     // 크루 사진첩 상세 조회
     @GetMapping("/crew/gallery/detail/{crew-id}")
-    public ResponseEntity<BaseResponse<PagingItemsResponse<PostItem>>> getCrewGalleryDetailList(@AuthenticationPrincipal CustomUser customUser, @PathVariable("crew-id") Long crewId, @RequestParam("post-id") Long postId, @RequestParam String direction) {
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 사진첩 상세 조회를 성공했습니다.", postService.getCrewPostGalleryDetailResponse(crewId, postId, direction, customUser)));
+    public ResponseEntity<BaseResponse<PagingItemsResponse<PostItem>>> getCrewGalleryDetailList(@AuthenticationPrincipal CustomUser customUser, @PathVariable("crew-id") Long crewId, @RequestParam("page-no") int pageNo) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 사진첩 상세 조회를 성공했습니다.", postService.getCrewPostGalleryDetailResponse(crewId, pageNo, customUser)));
     }
 
     // 멤버 사진첩 상세 조회
     @GetMapping("/member/gallery/detail/{member-id}")
-    public ResponseEntity<BaseResponse<PagingItemsResponse<PostItem>>> getMemberGalleryDetailList(@AuthenticationPrincipal CustomUser customUser, @PathVariable("member-id") Long memberId, @RequestParam("post-id") Long postId, @RequestParam String direction) {
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "멤버 사진첩 상세 조회를 성공했습니다.", postService.getMemberPostGalleryDetailResponse(memberId, postId, direction, customUser)));
+    public ResponseEntity<BaseResponse<PagingItemsResponse<PostItem>>> getMemberGalleryDetailList(@AuthenticationPrincipal CustomUser customUser, @PathVariable("member-id") Long memberId, @RequestParam("page-no") int pageNo) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "멤버 사진첩 상세 조회를 성공했습니다.", postService.getMemberPostGalleryDetailResponse(memberId, pageNo, customUser)));
     }
 
     //게시글 좋아요 등록

@@ -43,8 +43,9 @@ public interface MemberCrewRepository extends JpaRepository<MemberCrew, Long> {
 
     @Query("SELECT mc FROM MemberCrew mc " +
             "WHERE mc.crew = :crew " +
+            "AND (mc.isJoined = true OR (mc.isJoined = false AND mc.isInvited = true)) " +
             "ORDER BY " +
-            "CASE WHEN mc.isJoined = false AND mc.isInvited = false THEN 0 " +
+            "CASE WHEN mc.isJoined = true THEN 0 " +
             "     WHEN mc.isJoined = false AND mc.isInvited = true THEN 1 " +
             "     ELSE 2 END, " +
             "mc.id")
