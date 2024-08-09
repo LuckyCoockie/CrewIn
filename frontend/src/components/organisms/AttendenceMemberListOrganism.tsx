@@ -46,8 +46,8 @@ const AttendenceMemberListOrganism = <T,>({
   });
 
   const handleAttendanceChange = useCallback(
-    (data: { memberSessionId: number; state: boolean }) => {
-      attendanceStateMap.set(data.memberSessionId, data.state);
+    (data: { memberSessionId: number; isAttend: boolean }) => {
+      attendanceStateMap.set(data.memberSessionId, data.isAttend);
       setAttendanceStateMap(new Map(attendanceStateMap));
     },
     [attendanceStateMap]

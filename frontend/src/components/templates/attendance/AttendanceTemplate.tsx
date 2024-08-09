@@ -39,8 +39,9 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
   // TODO : SSE url 추가 필요
   const { setIsActive } = useSSE(`/attendance/connect/${sessionId}`);
 
+
   useEffect(() => {
-    setIsActive(isAttendStarted);
+    setIsActive(true);
   }, [isAttendStarted, setIsActive]);
 
   return (
