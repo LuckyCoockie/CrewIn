@@ -31,11 +31,9 @@ const MyProfileTemplate: React.FC = () => {
   // React Query를 사용하여 데이터를 한 번에 가져옴
   const {
     data: profileData,
-    isLoading: isProfileLoading,
-    isError: isProfileError,
-  } = useQuery<ProfileDto>(["myProfile", numericMemberId], () =>
-    getMyProfileInfo()
-  );
+    // isLoading: isProfileLoading,
+    // isError: isProfileError,
+  } = useQuery<ProfileDto>(["myProfile", numericMemberId], getMyProfileInfo);
 
   const {
     data: mapsData,
@@ -58,26 +56,6 @@ const MyProfileTemplate: React.FC = () => {
   } = useQuery<MyParticipatedSessionDto[]>(["myParticipatedSessions", 0], () =>
     getMyParticipatedSessions(0).then((res) => res.items)
   );
-
-  // 로딩 상태 처리
-  if (
-    isProfileLoading &&
-    isMapsLoading &&
-    isMadeSessionsLoading &&
-    isParticipatedSessionsLoading
-  ) {
-    return <div>Loading...</div>;
-  }
-
-  // 에러 상태 처리
-  if (
-    isProfileError &&
-    isMapsError &&
-    isMadeSessionsError &&
-    isParticipatedSessionsError
-  ) {
-    return <div>Error loading data</div>;
-  }
 
   return (
     <>
