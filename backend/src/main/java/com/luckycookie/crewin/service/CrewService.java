@@ -69,6 +69,7 @@ public class CrewService {
                 .member(member)
                 .crew(crew)
                 .position(Position.CAPTAIN)
+                .isInvited(true)
                 .isJoined(true)
                 .build();
 
