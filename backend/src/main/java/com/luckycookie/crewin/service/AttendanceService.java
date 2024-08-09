@@ -76,7 +76,7 @@ public class AttendanceService {
 
         Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundSessionException::new);
 
-        List<MemberSession> memberSessionList = memberSessionRepository.findBySession(session);
+        List<MemberSession> memberSessionList = memberSessionRepository.findBySessionSortedByPosition(session);
 
         // 현재 로그인한 사용자
         Member currentMember = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);

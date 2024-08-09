@@ -33,6 +33,8 @@ public interface MemberSessionRepository extends JpaRepository<MemberSession, Lo
             "  WHEN com.luckycookie.crewin.domain.enums.Position.MEMBER THEN 3 " +
             "  ELSE 4 " +
             "END")
+    List<MemberSession> findBySessionSortedByPosition(Session session);
+
     List<MemberSession> findBySession(Session session);
 
     boolean existsByMemberAndSession(Member member, Session session);

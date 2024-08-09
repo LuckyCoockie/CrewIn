@@ -385,7 +385,7 @@ public class SessionService {
         }
 
         // 현재 신청한 인원
-        List<MemberSession> memberSessionList = memberSessionRepository.findBySession(session);
+        List<MemberSession> memberSessionList = memberSessionRepository.findBySessionSortedByPosition(session);
         // 신청 인원이 최대 인원 넘어 갔으면 예외 처리
         if(session.getMaxPeople() < memberSessionList.size()) {
             throw new SessionMaxMemberException();
