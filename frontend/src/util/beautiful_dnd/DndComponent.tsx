@@ -35,7 +35,7 @@ export const DndComponent = <T,>({
 
   return (
     <DragDropContext onDragEnd={handleOnDragEnd}>
-      <Droppable droppableId="droppable" isDropDisabled={editable}>
+      <Droppable droppableId="droppable" isDropDisabled={!editable}>
         {(provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef}>
             {items.map((item, index) => (
@@ -43,7 +43,7 @@ export const DndComponent = <T,>({
                 key={index}
                 draggableId={`${index}`}
                 index={index}
-                isDragDisabled={editable}
+                isDragDisabled={!editable}
               >
                 {(provided) => (
                   <div
