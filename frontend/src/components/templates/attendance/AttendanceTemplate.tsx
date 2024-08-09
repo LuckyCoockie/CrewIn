@@ -78,7 +78,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
           isSessionHost={isSessionHost}
           onPostAttendanceClick={onHostAttendanceClick}
           sessionId={sessionId}
-          isAutoCheckInProgress={isDuringAutoCheck}
+          autoCheckStatus={autoCheckStatus}
         />
         <div className="mx-auto w-full max-w-[550px] fixed bottom-0 left-0 right-0 flex justify-center items-center z-50 px-2 pb-20 pt-5 bg-white font-bold">
           {!isSessionStarted ? (

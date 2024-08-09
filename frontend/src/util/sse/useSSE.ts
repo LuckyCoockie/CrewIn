@@ -7,12 +7,17 @@ const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 interface UseSSEProps {
   url: string;
-  onMessage?: (data: any) => void;
+  events?: { event: string; onEvent: (data: any) => void }[];
   onError?: (error: any) => void;
   onOpen?: () => void;
 }
 
-export const useSSE = ({ url, onMessage, onError, onOpen }: UseSSEProps) => {
+export const useSSE = ({
+  url,
+  events: onMessage,
+  onError,
+  onOpen,
+}: UseSSEProps) => {
   const [isActive, setIsActive] = useState<boolean>(false);
   const eventSourceRef = useRef<EventSource | null>(null);
 
@@ -31,16 +36,18 @@ export const useSSE = ({ url, onMessage, onError, onOpen }: UseSSEProps) => {
       if (onOpen) onOpen();
     };
 
-    eventSource.onmessage = (event) => {
-      if (onMessage) onMessage(event.data);
-    };
+    onMessage?.forEach(({ event, onEvent }) => {
+      eventSource.addEventListener(event, (event) => {
+        if (onMessage) onEvent(JSON.parse((event as MessageEvent).data));
+      });
+    });
 
     eventSource.onerror = (event) => {
       if (onError) onError(event);
     };
 
     eventSourceRef.current = eventSource;
-  }, [url, accessToken, onMessage, onError, onOpen]);
+  }, [url, accessToken, onError, onOpen]);
 
   useEffect(() => {
     if (isActive) connect();

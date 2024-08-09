@@ -4,6 +4,7 @@ import ErrorResponseDto from "../../apis/utils/errorCode/ErrorResponseDto";
 import qs from "query-string";
 import {
   AttendanceMemberDto,
+  AutoCheckStatus,
   ChangeAttendRequestDto,
 } from "../../apis/api/attendance";
 import MemberListItem from "../molecules/List/MemberListMolecule";
@@ -18,7 +19,7 @@ type OwnProps<T> = {
   onPostAttendanceClick: (dto: ChangeAttendRequestDto) => Promise<void>;
   isSessionHost: boolean;
   sessionId: number;
-  isAutoCheckInProgress: boolean;
+  autoCheckStatus: AutoCheckStatus;
 };
 
 const AttendanceMemberListOrganism = <T,>({
@@ -26,7 +27,7 @@ const AttendanceMemberListOrganism = <T,>({
   onPostAttendanceClick,
   isSessionHost,
   sessionId,
-  isAutoCheckInProgress,
+  autoCheckStatus,
 }: OwnProps<T>) => {
   const query = qs.parse(location.search) as T;
   const [attendanceStateMap, setAttendanceStateMap] = useState(
@@ -56,12 +57,12 @@ const AttendanceMemberListOrganism = <T,>({
 
   const { setIsActive } = useSSE({
     url: `/attendance/connect/${sessionId}`,
-    onMessage: handleAttendanceChange,
+    events: [{ event: "attendance", onEvent: handleAttendanceChange }],
   });
 
   useEffect(() => {
-    setIsActive(isAutoCheckInProgress);
-  }, [isAutoCheckInProgress, setIsActive]);
+    setIsActive(autoCheckStatus !== "BEFORE");
+  }, [autoCheckStatus, setIsActive]);
 
   if (isError || !memberList) return "데이터를 불러오지 못했습니다.";
 
@@ -69,22 +70,22 @@ const AttendanceMemberListOrganism = <T,>({
     <>
       {memberList.map((member, index) => (
         <MemberListItem key={index} {...member}>
-          {isSessionHost ? (
-            <AttendanceButton
-              initPresent={
-                attendanceStateMap.get(member.memberSessionId) ?? false
-              }
-              isAttendanceStarted={isAutoCheckInProgress}
-              onClick={(state) => {
-                onPostAttendanceClick({
-                  attend: state,
-                  memberSessionId: member.memberSessionId,
-                });
-              }}
-            />
-          ) : (
-            <></>
-          )}
+          <AttendanceButton
+            initPresent={
+              attendanceStateMap.get(member.memberSessionId) ?? false
+            }
+            isAutoAttendanceEnded={autoCheckStatus === "AFTER"}
+            onClick={
+              isSessionHost
+                ? (state) => {
+                    onPostAttendanceClick({
+                      attend: state,
+                      memberSessionId: member.memberSessionId,
+                    });
+                  }
+                : undefined
+            }
+          />
         </MemberListItem>
       ))}
     </>
