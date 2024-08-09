@@ -7,17 +7,21 @@ interface ProfileHeaderProps {
   profileImage: string;
   username: string;
   timeAgo: string;
+  onClick: () => void;
 }
 
 const UserProfileBarNoMenu: React.FC<ProfileHeaderProps> = ({
   profileImage,
   username,
   timeAgo,
+  onClick,
 }) => {
   return (
     <div className="flex items-center w-full mb-4">
-      <ProfileImageComponent src={profileImage} />
-      <div className="flex flex-col">
+      <div className="cursor-pointer" onClick={onClick}>
+        <ProfileImageComponent src={profileImage} />
+      </div>
+      <div className="flex flex-col" onClick={onClick}>
         <BarTitle title={username} />
         <BarContent content={timeAgo} />
       </div>
