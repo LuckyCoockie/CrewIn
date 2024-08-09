@@ -43,14 +43,8 @@ export const useSSE = ({ url, onMessage, onError, onOpen }: UseSSEProps) => {
   }, [url, accessToken, onMessage, onError, onOpen]);
 
   useEffect(() => {
-    if (isActive) {
-      connect();
-    }
-    return () => {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-      }
-    };
+    if (isActive) connect();
+    return eventSourceRef.current?.close;
   }, [isActive, connect]);
 
   return { setIsActive };
