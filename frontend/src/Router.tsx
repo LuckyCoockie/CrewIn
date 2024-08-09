@@ -17,7 +17,7 @@ import CrewDetailPage from "./pages/CrewDetailPage";
 import AlarmPage from "./pages/AlarmPage.tsx";
 import SessionSearchPage from "./pages/session/SessionSearchPage.tsx";
 import CrewSearchPage from "./pages/crew/CrewSearchPage.tsx";
-import CrewGallaryListDetailPage from "./pages/CrewGallaryListDetailPage.tsx";
+import CrewGalleryListDetailPage from "./pages/CrewGalleryListDetailPage.tsx";
 import FindPasswordPage from "./pages/FindPasswordPage.tsx";
 import NoticeCreatePage from "./pages/NoticeCreatePage.tsx";
 import { ProfileInfoPage } from "./pages/ProfileInfoPage.tsx";
@@ -72,8 +72,8 @@ export const router = createBrowserRouter([
               { path: "search", element: <CrewSearchPage /> },
               { path: "create", element: <CrewCreatePage /> },
               {
-                path: "gallary/:crewId",
-                element: <CrewGallaryListDetailPage />,
+                path: "gallery/:crewId",
+                element: <CrewGalleryListDetailPage />,
               },
               {
                 path: "detail/:crewId",
@@ -83,11 +83,17 @@ export const router = createBrowserRouter([
                 path: "detail/:crewId/noticecreate",
                 element: <NoticeCreatePage />,
               },
-              { path: "member", element: <CrewMemberPage /> },
-              { path: "member/captain", element: <CaptainPovCrewMemberPage /> },
-              { path: "membersearch", element: <CrewMemberSearchPage /> },
+              { path: "detail/:crewId/member", element: <CrewMemberPage /> },
               {
-                path: "membersearch/captain",
+                path: "detail/:crewId/member/captain",
+                element: <CaptainPovCrewMemberPage />,
+              },
+              {
+                path: "detail/:crewId/membersearch",
+                element: <CrewMemberSearchPage />,
+              },
+              {
+                path: "detail/:crewId/membersearch/captain",
                 element: <CaptainPovCrewMemberSearchPage />,
               },
               { path: ":crewId/invite", element: <CrewInvitePage /> },
