@@ -65,7 +65,7 @@ const InputIBannermageComponent = React.forwardRef<
             <img
               src={preview}
               alt="Preview"
-              className="border-2 h-40 sm:h-60 w-full object-cover"
+              className="border-2 w-60 h-40 object-cover"
             />
             <p className="mt-2 text-sm font-medium text-gray-500">
               배너 노출 예시
@@ -78,15 +78,15 @@ const InputIBannermageComponent = React.forwardRef<
             <img
               src={crewinbanner}
               alt="crewinbanner"
-              className="border-2 h-1/2 w-2/3 object-cover"
+              className="border-2 w-60 h-40 object-cover"
             />
-            <label
-              htmlFor={props.id}
-              className="text-center block mt-2 text-sm font-medium text-gray-500 dark:text-white"
-            >
-              *{props.placeholder}
-            </label>
           </div>
+          <label
+            htmlFor={props.id}
+            className="text-center block mt-2 text-sm font-medium text-gray-500 dark:text-white"
+          >
+            *{props.placeholder}
+          </label>
         </>
       )}
     </>
