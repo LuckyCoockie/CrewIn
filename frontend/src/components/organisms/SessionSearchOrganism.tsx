@@ -50,7 +50,6 @@ const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
     [date, input, onSearch]
   );
 
-  // TODO : input, date 입력창 구현
   const handleInputChange = useCallback((value: string) => {
     setInput(value ? value : undefined);
   }, []);

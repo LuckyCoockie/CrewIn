@@ -13,7 +13,9 @@ const SessionSearchPage: React.FC = () => {
   const onSearch = useCallback(
     async (dto: GetSessionListRequestDto) => {
       removeUndefinedKey(dto);
-      navigate(`/session?${createSearchParams(dto)}`);
+      navigate(`/session?${createSearchParams(dto)}`, {
+        replace: true,
+      });
     },
     [navigate]
   );

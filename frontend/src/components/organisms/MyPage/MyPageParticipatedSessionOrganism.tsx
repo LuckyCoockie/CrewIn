@@ -6,6 +6,7 @@ import ListButtonMolecule from "../../molecules/List/ListButtonMolecule";
 import { MyParticipatedSessionDto } from "../../../apis/api/mypage";
 import ErrorText from "../../atoms/ErrorText";
 import SpinnerComponent from "../../atoms/SpinnerComponent";
+import { MySessionType } from "../../../apis/api/session";
 import { useNavigate } from "react-router";
 
 interface MyPageParticipatedSessionOrganismProps {
@@ -42,8 +43,7 @@ const MyPageParticipatedSessionOrganism: React.FC<
     <>
       <div className="flex items-center cursor-pointer" onClick={clickRouter}>
         <MediumTitleMolecule text="최근 참가한 세션" />
-        {/* 전체 리스트로 이동 */}
-        <IntoArrowButton router="/mypage/session/joined" />
+        <IntoArrowButton router={`/mypage/session/${MySessionType.JOINED}`} />
       </div>
       {!isParticipatedSessionsError ? (
         !isParticipatedSessionsLoading && (

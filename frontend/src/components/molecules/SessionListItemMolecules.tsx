@@ -99,11 +99,11 @@ const SessionListItem = ({
         </div>
       </div>
       <div className="mt-[3px] m-2 xs:mt-2">
-        <div className="flex justify-between items-center flex mb-1 xs:mb-2">
-          <div className="left-element mr-2">
+        <div className="flex justify-between items-center mb-1 xs:mb-2">
+          <div className="mr-2 overflow-hidden w-[2/3]">
             <p
               className="text-white font-bold text-xs xs:text-base truncate"
-              style={{ lineHeight: "0.8em" }}
+              style={{ lineHeight: "1em" }}
             >
               {title.length > 10 ? `${title.substring(0, 9)}...` : title}
             </p>
@@ -111,16 +111,16 @@ const SessionListItem = ({
               {area}
             </p>
           </div>
-          <div className="right-element text-right items-center">
+          <div className="text-right items-center w-[1/3]">
             <p
               className="text-gray-300 text-[10px] xs:text-xs sm:text-sm truncate"
-              style={{ lineHeight: "0.95em" }}
+              style={{ lineHeight: "1em" }}
             >
               {parsedDate}
             </p>
             <p
               className="text-gray-300 text-[10px] xs:text-xs sm:text-sm truncate"
-              style={{ lineHeight: "0.95em" }}
+              style={{ lineHeight: "1em" }}
             >
               {parsedTime}
             </p>

@@ -12,7 +12,7 @@ const ProtectedRoute = () => {
 
   // TODO : true 빼기
   const isAuthenticated =
-    useMemo(() => accessToken !== null, [accessToken]) || true;
+    useMemo(() => accessToken !== null, [accessToken]);
 
   useEffect(() => {
     if (!loading && !isAuthenticated) navigate("/login");
