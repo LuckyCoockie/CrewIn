@@ -2,15 +2,25 @@ import { useEffect, useMemo, useState } from "react";
 import "../../styles/square.css";
 import React from "react";
 import sessionLogoImage from "../../assets/images/sessionLogo.png";
+import { ReactComponent as Sessionpeople } from "../../assets/icons/sessinpeople.svg";
 
 interface OwnProps {
+  max: number;
+  current: number;
   crewName: string;
   area: string;
   date: string;
   imageUrl: string;
 }
 
-const SessionListItem = ({ crewName, area, date, imageUrl }: OwnProps) => {
+const SessionListItem = ({
+  crewName,
+  area,
+  date,
+  imageUrl,
+  current,
+  max,
+}: OwnProps) => {
   const [image, setImage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -50,19 +60,39 @@ const SessionListItem = ({ crewName, area, date, imageUrl }: OwnProps) => {
   return (
     <div className="max-w-sm rounded-lg border-primary bg-primary tracking-tighter truncate">
       <div className="flex justify-center items-center p-[6px] xs:p-2">
-        <div className="square">
+        <div className="square relative">
           {image ? (
-            <img
-              alt="session image"
-              src={image}
-              className="b border xs:border-2 border-white w-full"
-            />
+            <>
+              <img
+                alt="session image"
+                src={image}
+                className="b border xs:border-2 border-white w-full"
+              />
+              <div className="absolute top-1 right-1 border rounded-xl bg-white flex h-5 px-1 justify-center items-center shadow-sm">
+                <div className="me-1">
+                  <Sessionpeople />
+                </div>
+                <div className="text-sm font-bold">
+                  {current} / {max}
+                </div>
+              </div>
+            </>
           ) : (
-            <img
-              alt="session image"
-              src={sessionLogoImage}
-              className="b border xs:border-2 border-white w-full"
-            />
+            <>
+              <img
+                alt="session image"
+                src={sessionLogoImage}
+                className="b border xs:border-2 border-white w-full"
+              />
+              <div className="absolute top-1 right-1 border rounded-xl bg-white flex h-5 px-1 justify-center items-center shadow-sm">
+                <div className="me-1">
+                  <Sessionpeople />
+                </div>
+                <div className="text-sm font-bold">
+                  {current}/{max}
+                </div>
+              </div>
+            </>
           )}
         </div>
       </div>
