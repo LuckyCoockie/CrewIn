@@ -1,12 +1,12 @@
 import React from "react";
-import CrewMemberTemplate from "../../components/templates/crew/CrewMemberListTemplate";
+import CrewMemberListTemplate from "../../components/templates/crew/CrewMemberListTemplate";
 
-const CrewMemberPage: React.FC = () => {
+const CrewMemberSearchPage: React.FC = () => {
   return (
     <>
-      <CrewMemberTemplate />
+      <CrewMemberListTemplate/>
     </>
   );
 };
 
-export default CrewMemberPage;
+export default CrewMemberSearchPage;
