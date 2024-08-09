@@ -53,7 +53,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
           text={detailData?.sessionName || "Loading..."}
         />
         <div className="flex ms-auto">
-          <AttendanceButton {...detailData} />
+          {detailData?.isJoined && <AttendanceButton {...detailData} />}
           {detailData?.isSessionHost && !isSessionStarted && (
             <EditDeleteDropdownOrganism
               type="SESSION"
@@ -63,7 +63,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
         </div>
       </header>
       <>
-        {isSessionStarted && (
+        {isSessionStarted && detailData?.isJoined && (
           <NavTabMolecule
             texts={tabs}
             onTabClick={setCurrentTab}
