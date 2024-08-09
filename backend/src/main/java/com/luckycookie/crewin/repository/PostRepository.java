@@ -7,8 +7,10 @@ import com.luckycookie.crewin.domain.enums.PostType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -40,4 +42,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     // 멤버
     Page<Post> findByAuthorAndPostTypeOrderByIdDesc(Member author, PostType postType, Pageable pageable);
+
+    // 크루 탈퇴 시 크루 태그된 게시글에서 태그 제거
+    @Modifying
+    @Query("UPDATE Post p SET p.crew = NULL WHERE p.postType = 'STANDARD' AND p.author = :author AND p.crew = :crew")
+    void updateCrewIdToNull(Member author, Crew crew);
+
 }
