@@ -6,8 +6,10 @@ import {
   UserSearchResponseDto,
 } from "../../apis/api/usersearch";
 import { ReactComponent as CrewinLogo } from "../../assets/icons/crewinlogo.svg";
+import { useNavigate } from "react-router";
 
 const SearchUserTemplate: React.FC = () => {
+  const navigate = useNavigate();
   const [query, setQuery] = useState<string>("");
   const [results, setResults] = useState<UserSearchResponseDto | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -61,6 +63,10 @@ const SearchUserTemplate: React.FC = () => {
     }
   };
 
+  const handleUserProfile = (memberId: number) => {
+    navigate(`/profile/${memberId}`);
+  };
+
   return (
     <div className="relative flex flex-col max-w-[550px] mx-auto">
       <header className="mb-1">
@@ -101,6 +107,7 @@ const SearchUserTemplate: React.FC = () => {
                 <li
                   key={member.memberId}
                   className="flex items-center p-2 border-b hover:bg-gray-100 cursor-pointer"
+                  onClick={() => handleUserProfile(member.memberId)}
                 >
                   {member.profileUrl ? (
                     <img

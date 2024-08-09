@@ -29,17 +29,27 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     createdAt,
     profileImage,
     postType,
+    authorId,
   } = data;
+  console.log(data);
+
+  const navigate = useNavigate();
 
   const [likes, setLikes] = useState<number>(heartCount);
   const [isHeartedState, setIsHeartedState] = useState<boolean>(isHearted);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
-  const navigate = useNavigate();
-
   const handleEdit = () => {
     console.log("edit");
     navigate(`/post/${id}/edit`, { state: { data } });
+  };
+
+  const handleUserProfile = (authorId: number) => {
+    navigate(`/profile/${authorId}`);
+  };
+
+  const handleCrewDetail = (crewId: number) => {
+    navigate(`/crew/detail/${crewId}`);
   };
 
   const handleDelete = async () => {
@@ -87,6 +97,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           profileImage={profileImage}
           username={authorName}
           timeAgo={timeAgo}
+          onClick={() => handleCrewDetail(authorId)}
         />
       ) : (
         <UserProfileBar
@@ -95,6 +106,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           timeAgo={timeAgo}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          onClick={() => handleUserProfile(authorId)}
         />
       )}
       {croppedImages && croppedImages.length > 0 && (
