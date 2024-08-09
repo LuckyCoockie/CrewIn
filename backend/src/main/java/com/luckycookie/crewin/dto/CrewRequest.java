@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CrewRequest {
@@ -45,7 +46,7 @@ public class CrewRequest {
         private Long crewId; // crewId
         private String title; // 공지글 제목
         private String content; // 공지글 내용
-        private List<String> noticeImages; // 공지 이미지 List
+        private List<String> noticeImages = new ArrayList<>(); // 공지 이미지 List
     }
 
     @Getter

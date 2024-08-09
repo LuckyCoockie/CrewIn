@@ -2,6 +2,7 @@ package com.luckycookie.crewin.dto;
 
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PostRequest {
@@ -15,7 +16,7 @@ public class PostRequest {
         private Long crewId;
         private String content;
         private Boolean isPublic;
-        List<String> postImages;
+        List<String> postImages = new ArrayList<>();
     }
 
     @Getter
@@ -27,6 +28,6 @@ public class PostRequest {
         private String title;
         private String content;
         private Boolean isPublic;
-        List<String> postImages;
+        List<String> postImages = new ArrayList<>();
     }
 }
