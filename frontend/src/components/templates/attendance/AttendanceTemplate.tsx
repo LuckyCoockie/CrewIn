@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   AutoCheckStatus,
   ChangeAttendRequestDto,
@@ -8,7 +8,6 @@ import LargeAbleButton from "../../atoms/Button/LargeAbleButton";
 import AttendanceMemberListOrganism from "../../organisms/AttendanceMemberListOrganism";
 import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
 import TimerOrganism from "../../organisms/TimerOrganism";
-import useSSE from "../../../util/sse/useSSE";
 
 type OwnProps = {
   onStartAttendanceClick: () => Promise<void>;
@@ -34,10 +33,6 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     const currentTime = new Date().getTime();
     return currentTime >= startTime;
   }, [startAt]);
-
-  const { setIsActive } = useSSE({
-    url: `/attendance/connect/${sessionId}`,
-  });
 
   const [autoCheckStatus, setAutoCheckStatus] =
     useState<AutoCheckStatus>("BEFORE");
@@ -65,10 +60,6 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     setLeftTime(response.leftTime);
     return response.items;
   }, [getMemberList]);
-
-  useEffect(() => {
-    setIsActive(isDuringAutoCheck);
-  }, [isDuringAutoCheck, setIsActive]);
 
   return (
     <>

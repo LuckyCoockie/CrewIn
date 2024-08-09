@@ -8,7 +8,7 @@ import {
 } from "../../apis/api/attendance";
 import MemberListItem from "../molecules/List/MemberListMolecule";
 import AttendanceButton from "../molecules/AttendanceButton";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useSSE from "../../util/sse/useSSE";
 
 // 출석 시작 전, 출석 중, 출석 종료 후
@@ -54,10 +54,14 @@ const AttendanceMemberListOrganism = <T,>({
     [attendanceStateMap]
   );
 
-  useSSE({
+  const { setIsActive } = useSSE({
     url: `/attendance/connect/${sessionId}`,
     onMessage: handleAttendanceChange,
   });
+
+  useEffect(() => {
+    setIsActive(isAutoCheckInProgress);
+  }, [isAutoCheckInProgress, setIsActive]);
 
   if (isError || !memberList) return "데이터를 불러오지 못했습니다.";
 
