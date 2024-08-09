@@ -153,8 +153,9 @@ public class AttendanceService {
                 .orElseThrow(NotFoundMemberSessionException::new);
 
         // 출석이 시작했는지 체크
-        // 출석 시간이 맞는지 체크(출석 시작부터 10분간)
-        if (session.getAttendanceStart() == null || LocalDateTime.now().isBefore(session.getAttendanceStart()) || LocalDateTime.now().isAfter(session.getAttendanceStart().plusMinutes(10))) {
+        // 출석 시간이 맞는지 체크(출석 시작부터 10분간) - 개발 단계에서는 일단 30분
+//        if (session.getAttendanceStart() == null || LocalDateTime.now().isBefore(session.getAttendanceStart()) || LocalDateTime.now().isAfter(session.getAttendanceStart().plusMinutes(10))) {
+        if (session.getAttendanceStart() == null || LocalDateTime.now().isBefore(session.getAttendanceStart()) || LocalDateTime.now().isAfter(session.getAttendanceStart().plusMinutes(30))) {
             throw new InvalidRequestTimeException();
         }
 
