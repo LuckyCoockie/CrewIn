@@ -7,6 +7,7 @@ import { MyMadeSessionDto } from "../../../apis/api/mypage";
 import ErrorText from "../../atoms/ErrorText";
 import SpinnerComponent from "../../atoms/SpinnerComponent";
 import { MySessionType } from "../../../apis/api/session";
+import { useNavigate } from "react-router";
 
 interface MyPageMadeSessionOrganismProps {
   sessions: MyMadeSessionDto[];
@@ -19,6 +20,10 @@ const MyPageMadeSessionOrganism: React.FC<MyPageMadeSessionOrganismProps> = ({
   isMadeSessionsError,
   isMadeSessionsLoading,
 }) => {
+  const navigate = useNavigate();
+  const clickRouter = () => {
+    navigate(`/mypage/session/created`);
+  };
   const convertText = (startAt: string, endAt: string) => {
     const now = new Date();
     const startAtDate = new Date(startAt);
@@ -35,7 +40,7 @@ const MyPageMadeSessionOrganism: React.FC<MyPageMadeSessionOrganismProps> = ({
 
   return (
     <>
-      <div className="flex items-center">
+      <div className="flex items-center cursor-pointer" onClick={clickRouter}>
         <MediumTitleMolecule text="최근 생성한 세션" />
         <IntoArrowButton router={`/mypage/session/${MySessionType.CREATED}`} />
       </div>

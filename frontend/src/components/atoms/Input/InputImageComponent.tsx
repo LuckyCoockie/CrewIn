@@ -45,11 +45,11 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
             <div className="flex p-2 border border-gray-300 rounded-lg w-full text-end">
               <p className="ml-1">🔗</p>
               {fileCount > 0 ? (
-                <p className="text-gray-600 font-semibold ml-1">
+                <p className="text-gray-500 font-semibold ml-1">
                   이미지가 선택되었습니다.
                 </p>
               ) : (
-                <p className="text-gray-600 font-semibold ml-1">{props.text}</p>
+                <p className="text-gray-500 font-semibold ml-1">{props.text}</p>
               )}
             </div>
           </label>

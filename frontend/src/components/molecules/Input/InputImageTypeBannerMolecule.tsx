@@ -8,7 +8,8 @@ type InputData = {
   name: string;
   placeholder: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  previewUrl?: string; // 추가
+  defaultValue?: string
+  previewUrl?: string
 };
 
 const InputImageTypeBannerMolecule = React.forwardRef<
@@ -25,7 +26,7 @@ const InputImageTypeBannerMolecule = React.forwardRef<
           name={props.name}
           ref={ref}
           onChange={props.onChange}
-          previewUrl={props.previewUrl} // 추가
+          previewUrl={props.previewUrl}
         />
       </div>
     </>

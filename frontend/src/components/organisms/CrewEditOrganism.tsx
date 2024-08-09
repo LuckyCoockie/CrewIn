@@ -279,8 +279,8 @@ const CrewEditOrganism: React.FC = () => {
                 <InputImageTypeMolecule
                   id="mainLogo"
                   title="메인로고"
-                  placeholder="1:1 비율이 가장 적합합니다."
-                  text="프로필 사진에 노출됩니다."
+                  placeholder="프로필 사진에 노출됩니다."
+                  text="1:1 비율이 가장 적합합니다."
                   previewUrl={mainLogoPreview}
                   {...field}
                   onChange={(e) => {
@@ -299,8 +299,8 @@ const CrewEditOrganism: React.FC = () => {
                 <InputImageTypeMolecule
                   id="subLogo"
                   title="서브로고"
-                  placeholder="1:1 비율이 가장 적합합니다."
-                  text="게시글 생성 시 사용됩니다."
+                  placeholder="게시글 생성 시 사용됩니다."
+                  text="1:1 비율이 가장 적합합니다."
                   previewUrl={subLogoPreview}
                   {...field}
                   onChange={(e) => {
@@ -319,7 +319,7 @@ const CrewEditOrganism: React.FC = () => {
                 <ImageTypeBannerMolecule
                   id="banner"
                   title="배너"
-                  placeholder="3:2 비율이 가장 적합합니다."
+                  placeholder="크루 상세페이지에 노출됩니다."
                   previewUrl={bannerPreview}
                   {...field}
                   onChange={(e) => {

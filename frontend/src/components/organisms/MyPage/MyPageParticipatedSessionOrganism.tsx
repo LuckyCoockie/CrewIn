@@ -7,6 +7,7 @@ import { MyParticipatedSessionDto } from "../../../apis/api/mypage";
 import ErrorText from "../../atoms/ErrorText";
 import SpinnerComponent from "../../atoms/SpinnerComponent";
 import { MySessionType } from "../../../apis/api/session";
+import { useNavigate } from "react-router";
 
 interface MyPageParticipatedSessionOrganismProps {
   sessions: MyParticipatedSessionDto[];
@@ -21,6 +22,10 @@ const MyPageParticipatedSessionOrganism: React.FC<
   isParticipatedSessionsLoading,
   isParticipatedSessionsError,
 }) => {
+  const navigate = useNavigate();
+  const clickRouter = () => {
+    navigate(`/mypage/session/joined`);
+  };
   const convertText = (startAt: string, endAt: string) => {
     const now = new Date();
     const startAtDate = new Date(startAt);
@@ -36,7 +41,7 @@ const MyPageParticipatedSessionOrganism: React.FC<
   };
   return (
     <>
-      <div className="flex items-center">
+      <div className="flex items-center cursor-pointer" onClick={clickRouter}>
         <MediumTitleMolecule text="최근 참가한 세션" />
         <IntoArrowButton router={`/mypage/session/${MySessionType.JOINED}`} />
       </div>
