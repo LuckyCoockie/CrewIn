@@ -96,7 +96,7 @@ public class MyPageService {
                                 .endAt(session.getEndAt())
                                 .area(session.getArea())
                                 .crewName(crewName)
-                                .imageUrl(session.getPosterImages().stream().map(SessionPoster::getImageUrl).toList().get(0))
+                                .sessionThumbnail(session.getPosterImages().stream().map(SessionPoster::getImageUrl).toList().get(0))
                                 .build();
                     }
             ).collect((Collectors.toList()));

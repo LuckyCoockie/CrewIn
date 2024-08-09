@@ -27,7 +27,7 @@ public class MyPageController {
     private final MyPageService myPageService;
     private final PostService postService;
 
-    // 내가 만든 세션 조회
+    // 내가 만든, 내가 참가한 세션 조회
     @GetMapping("/session")
     public ResponseEntity<BaseResponse<PagingItemsResponse<MyPageSessionItem>>> getCreatedMySession(@AuthenticationPrincipal CustomUser customUser, @RequestParam("page-no") int pageNo, @RequestParam(value = "type", required = false) String type, @RequestParam(value = "session-type", required = false) String sessionType) {
         if(type.equals("created")) {

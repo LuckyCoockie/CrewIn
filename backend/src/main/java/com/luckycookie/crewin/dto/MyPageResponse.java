@@ -21,7 +21,7 @@ public class MyPageResponse {
         private LocalDateTime endAt; // 종료 시간
 
         private String sessionName; // 세션명
-        private String imageUrl; // 세션 포스터 이미지 (첫번째)
+        private String sessionThumbnail; // 세션 포스터 이미지 (첫번째)
         private Long sessionId; // 세션 ID
         private String crewName; // 크루 이름
         private String area; // 코스 지역
