@@ -14,6 +14,7 @@ import com.luckycookie.crewin.exception.heart.NotFoundHeartException;
 import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.memberCrew.NotFoundMemberCrewException;
+import com.luckycookie.crewin.exception.post.ImageRequiredException;
 import com.luckycookie.crewin.exception.post.InvalidPostException;
 import com.luckycookie.crewin.exception.post.NotFoundPostException;
 import com.luckycookie.crewin.exception.post.UnauthorizedDeletionException;
@@ -47,8 +48,6 @@ public class PostService {
     private final S3Service s3Service;
 
     public void writePost(WritePostRequest writePostRequest, CustomUser customUser) {
-
-
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
@@ -84,6 +83,10 @@ public class PostService {
     }
 
     public void updatePost(Long postId, UpdatePostRequest updatePostRequest, String email) {
+        if (updatePostRequest.getPostImages().isEmpty()) {
+            throw new ImageRequiredException();
+        }
+
         Post post = postRepository.findById(postId)
                 .orElseThrow(NotFoundPostException::new);
 
@@ -138,7 +141,7 @@ public class PostService {
 
         log.info("post : {}", postList.get(0).getContent());
         log.info("images : {}", postList.get(0).getPostImages().isEmpty());
-        List<PostItem> postItems = postList.stream().map(post ->{
+        List<PostItem> postItems = postList.stream().map(post -> {
             String authNickName;
             String authProfile;
             if (PostType.NOTICE == post.getPostType()) {
@@ -198,14 +201,14 @@ public class PostService {
 
         Page<Post> postListPage = null;
 
-        if(member.getId() == targetMemgerId) {
+        if (member.getId() == targetMemgerId) {
             postListPage = postRepository.findByMember(member, pageRequest);
         } else {
             // 1. isPublic이 true인 글 (isPublic은 tinyInt형임) or
             // 2. 크루가 태그되었다면 해당 크루에 targetMember와 Member가 속해있는 글들
             postListPage = postRepository.findByMemberAndTargetMember(member, targetMember, pageRequest);
         }
-        
+
         return convertToGalleryItemResponse(pageNo, postListPage);
     }
 
