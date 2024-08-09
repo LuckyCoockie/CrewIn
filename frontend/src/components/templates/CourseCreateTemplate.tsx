@@ -13,7 +13,6 @@ import LargeDisableButton from "../atoms/Button/LargeAbleButton";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import html2canvas from "html2canvas";
 import canvg from "canvg";
-import BackHeaderMediumOrganism from "../../components/organisms/BackHeaderMediumOrganism.tsx";
 
 import {
   Point,
@@ -34,6 +33,7 @@ import { debounce } from "lodash";
 type OwnProps = {
   initPosition?: Point;
   initValue?: FormValues;
+  editable?: boolean;
   onSave: (data: FormValues) => Promise<void>;
 };
 
@@ -48,6 +48,7 @@ type FormValues = {
 const CourseCreateTemplate: React.FC<OwnProps> = ({
   initValue,
   initPosition,
+  editable = true,
   onSave,
 }: OwnProps) => {
   const schema = yup.object().shape({
@@ -207,12 +208,12 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
           longitude: point.longitude,
           latitude: point.latitude,
           title: title,
-          ondragend: () => dispatch(updateMarkerList()),
+          ondragend: editable ? () => dispatch(updateMarkerList()) : undefined,
         })
       );
     });
     dispatch(focusMarker(0));
-  }, [dispatch, initValue, setValue]);
+  }, [dispatch, editable, initValue, setValue]);
 
   const position = useMemo(
     () =>
@@ -225,13 +226,14 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
 
   return (
     <>
-      <header>
-        <BackHeaderMediumOrganism text="지도 생성하기" />
-      </header>
       <div className="mx-auto w-full max-w-[550px] pb-10">
         <div className="flex justify-center relative overflow-hidden">
           <div ref={captureRef}>
-            <NaverMap initPosition={position} onChange={setMarkers} />
+            <NaverMap
+              initPosition={position}
+              onChange={setMarkers}
+              editable={editable}
+            />
           </div>
           <div className="absolute bottom-0 right-4 p-4">
             <MapToggleButton />
@@ -252,7 +254,7 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
                       </p>
                     </div>
                   </div>
-                  <MarkerList />
+                  <MarkerList editable={editable} />
                 </>
               )}
             />
@@ -260,24 +262,37 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
               <Controller
                 name="title"
                 control={control}
-                render={({ field }) => (
-                  <InputTextTypeMolecule
-                    id="title"
-                    title="제목*"
-                    placeholder="ex) 한강 러닝"
-                    {...field}
-                    error={errors.title?.message}
-                    hasError={!!errors.title}
-                  />
-                )}
+                render={({ field }) =>
+                  editable ? (
+                    <InputTextTypeMolecule
+                      id="title"
+                      title="제목*"
+                      placeholder="ex) 한강 러닝"
+                      {...field}
+                      error={errors.title?.message}
+                      hasError={!!errors.title}
+                    />
+                  ) : (
+                    <div className="mb-4 w-full">
+                      <InputLabelComponent title={"제목"} />
+
+                      <div
+                        className={`data-input bg-white border border-gray-300`}
+                      >
+                        {field.value}
+                      </div>
+                    </div>
+                  )
+                }
               />
             </div>
             <div>
-              {isValid ? (
-                <LargeAbleButton text="저장하기" />
-              ) : (
-                <LargeDisableButton text="저장하기" />
-              )}
+              {editable &&
+                (isValid ? (
+                  <LargeAbleButton text="저장하기" />
+                ) : (
+                  <LargeDisableButton text="저장하기" />
+                ))}
             </div>
           </form>
         </div>

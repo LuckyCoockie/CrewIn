@@ -15,12 +15,14 @@ type props = {
   onChange?: (
     markers: { title: string; point: { latitude: number; longitude: number } }[]
   ) => void;
+  editable?: boolean;
 };
 
 const NaverMap: React.FC<props> = ({
   initPosition: initPoint,
   zoom,
   onChange,
+  editable = true,
 }: props) => {
   const { markers } = useNaverMapState();
   const dispatch = useNaverMapDispatch();
@@ -34,17 +36,19 @@ const NaverMap: React.FC<props> = ({
 
     dispatch(init(map));
 
-    map.addListener("click", (event) => {
-      const { y, x } = event.coord;
-      dispatch(
-        addMarker({
-          longitude: x,
-          latitude: y,
-          ondragend: () => dispatch(updateMarkerList()),
-        })
-      );
-    });
-  }, [dispatch, initPoint, zoom]);
+    if (editable) {
+      map.addListener("click", (event) => {
+        const { y, x } = event.coord;
+        dispatch(
+          addMarker({
+            longitude: x,
+            latitude: y,
+            ondragend: () => dispatch(updateMarkerList()),
+          })
+        );
+      });
+    }
+  }, [dispatch, editable, initPoint, zoom]);
 
   // update polyline on markers update
   useEffect(() => {

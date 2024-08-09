@@ -14,12 +14,14 @@ export type OwnProps<T> = {
   onDragEndCallback: (items: T[]) => void;
   items: T[];
   children: (props: ItemComponentProps<T>) => React.ReactElement<HTMLElement>;
+  editable?: boolean;
 };
 
 export const DndComponent = <T,>({
   onDragEndCallback,
   items,
   children: ItemComponent,
+  editable = true,
 }: OwnProps<T>) => {
   const handleOnDragEnd = (result: DropResult) => {
     if (!result.destination) return;
@@ -33,11 +35,16 @@ export const DndComponent = <T,>({
 
   return (
     <DragDropContext onDragEnd={handleOnDragEnd}>
-      <Droppable droppableId="droppable">
+      <Droppable droppableId="droppable" isDropDisabled={!editable}>
         {(provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef}>
             {items.map((item, index) => (
-              <Draggable key={index} draggableId={`${index}`} index={index}>
+              <Draggable
+                key={index}
+                draggableId={`${index}`}
+                index={index}
+                isDragDisabled={!editable}
+              >
                 {(provided) => (
                   <div
                     ref={provided.innerRef}
