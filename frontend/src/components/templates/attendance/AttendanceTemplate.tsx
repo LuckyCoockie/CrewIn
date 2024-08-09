@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  AutoCheckStatus,
   ChangeAttendRequestDto,
   GetAttendanceMemberListResponseDto,
 } from "../../../apis/api/attendance";
@@ -29,28 +30,43 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
   sessionId,
 }) => {
   const isSessionStarted = useMemo(() => {
-    const givenTime = new Date(startAt);
-    const currentTime = new Date();
-    return currentTime.getTime() >= givenTime.getTime();
+    const startTime = new Date(startAt).getTime();
+    const currentTime = new Date().getTime();
+    return currentTime >= startTime;
   }, [startAt]);
 
   const { setIsActive } = useSSE(`/attendance/connect/${sessionId}`);
 
-  const [isAutoCheckInProgress, setIsAutoCheckInProgress] =
-    useState<boolean>(false);
+  const [autoCheckStatus, setAutoCheckStatus] =
+    useState<AutoCheckStatus>("BEFORE");
+
+  const isBeforeAutoCheck = useMemo(
+    () => autoCheckStatus === "BEFORE",
+    [autoCheckStatus]
+  );
+
+  const isDuringAutoCheck = useMemo(
+    () => autoCheckStatus === "DURING",
+    [autoCheckStatus]
+  );
+
+  const isAfterAutoCheck = useMemo(
+    () => autoCheckStatus === "AFTER",
+    [autoCheckStatus]
+  );
 
   const [leftTime, setLeftTime] = useState<number>(0);
 
   const fetchMemberList = useCallback(async () => {
     const response = await getMemberList();
-    setIsAutoCheckInProgress(response.autoCheckInProgress);
+    setAutoCheckStatus(response.autoCheckStatus);
     setLeftTime(response.leftTime);
     return response.items;
   }, [getMemberList]);
 
   useEffect(() => {
-    setIsActive(isAutoCheckInProgress);
-  }, [isAutoCheckInProgress, setIsActive]);
+    setIsActive(true);
+  }, [isDuringAutoCheck, setIsActive]);
 
   return (
     <>
@@ -63,30 +79,24 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
           isSessionHost={isSessionHost}
           onPostAttendanceClick={onHostAttendanceClick}
           sessionId={sessionId}
-          isAutoCheckInProgress={isAutoCheckInProgress}
+          isAutoCheckInProgress={isDuringAutoCheck}
         />
-        <div className="mx-auto w-full max-w-[550px] fixed bottom-0 left-0 right-0 flex justify-center items-center z-50 px-2 pb-20 pt-5 bg-white">
-          {isSessionStarted ? (
-            isSessionHost ? (
-              isAutoCheckInProgress ? (
-                <TimerOrganism initSeconds={leftTime} />
-              ) : (
-                <LargeAbleButton
-                  text="자동 출석 시작"
-                  onClick={onStartAttendanceClick}
-                />
-              )
+        <div className="mx-auto w-full max-w-[550px] fixed bottom-0 left-0 right-0 flex justify-center items-center z-50 px-2 pb-20 pt-5 bg-white font-bold">
+          {!isSessionStarted && "출석 시작은 세션 시작 후 할 수 있습니다."}
+          {isBeforeAutoCheck &&
+            (isSessionHost ? (
+              <LargeAbleButton
+                text="자동 출석 시작"
+                onClick={onStartAttendanceClick}
+              />
             ) : (
               <LargeAbleButton
                 text="출석하기"
                 onClick={onGuestAttendanceClick}
               />
-            )
-          ) : (
-            <div className="font-bold">
-              {"출석은 세션 시작 시각 이후 시작할 수 있습니다."}
-            </div>
-          )}
+            ))}
+          {isDuringAutoCheck && <TimerOrganism initSeconds={leftTime} />}
+          {isAfterAutoCheck && "자동 출석이 종료되어 수동 출석만 가능합니다."}
         </div>
       </div>
     </>

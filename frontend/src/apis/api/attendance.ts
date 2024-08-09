@@ -12,9 +12,11 @@ export type GetAttendanceMemberListRequestDto = {
   sessionId: number;
 };
 
+export type AutoCheckStatus = "BEFORE" | "DURING" | "AFTER";
+
 export type GetAttendanceMemberListResponseDto = {
   items: AttendanceMemberDto[];
-  autoCheckInProgress: boolean;
+  autoCheckStatus: AutoCheckStatus;
   leftTime: number;
 };
 
