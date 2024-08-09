@@ -2,6 +2,7 @@ package com.luckycookie.crewin.controller;
 
 import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.*;
+import com.luckycookie.crewin.dto.SessionRequest.UpdateSessionRequest;
 import com.luckycookie.crewin.dto.SessionRequest.UploadSessionImageRequest;
 import com.luckycookie.crewin.dto.SessionResponse.SessionDetailResponse;
 import com.luckycookie.crewin.dto.SessionResponse.SessionGalleryItem;
@@ -59,7 +60,7 @@ public class SessionController {
 
     // 세션 수정
     @PutMapping("/detail/{id}")
-    public ResponseEntity<BaseResponse<Void>> updateSession(@PathVariable("id") Long sessionId, @RequestBody SessionRequest.UpdateSessionRequest updateSessionRequest, @AuthenticationPrincipal CustomUser customUser) {
+    public ResponseEntity<BaseResponse<Void>> updateSession(@PathVariable("id") Long sessionId, @RequestBody UpdateSessionRequest updateSessionRequest, @AuthenticationPrincipal CustomUser customUser) {
         sessionService.updateSession(sessionId, updateSessionRequest, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 정보를 수정하는데 성공했습니다."));
     }
