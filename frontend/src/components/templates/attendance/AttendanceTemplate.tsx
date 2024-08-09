@@ -17,6 +17,7 @@ type OwnProps = {
   isSessionHost: boolean;
   startAt: string;
   isAttendStarted: boolean;
+  sessionId: number;
 };
 
 const AttendanceTemplate: React.FC<OwnProps> = ({
@@ -27,6 +28,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
   isSessionHost,
   startAt,
   isAttendStarted,
+  sessionId,
 }) => {
   const isSessionStarted = useMemo(() => {
     const givenTime = new Date(startAt);
@@ -35,7 +37,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
   }, [startAt]);
 
   // TODO : SSE url 추가 필요
-  const { setIsActive } = useSSE("/");
+  const { setIsActive } = useSSE(`/attendance/connect/${sessionId}`);
 
   useEffect(() => {
     setIsActive(isAttendStarted);
@@ -51,9 +53,10 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
           fetchData={fetchMemberList}
           isSessionHost={isSessionHost}
           onPostAttendanceClick={onHostAttendanceClick}
+          sessionId={sessionId}
         />
         <div className="mx-auto w-full max-w-[550px] fixed bottom-0 left-0 right-0 flex justify-center items-center z-50 px-2 pb-20 pt-5 bg-white">
-          {!isSessionStarted ? (
+          {isSessionStarted ? (
             isSessionHost ? (
               isAttendStarted ? (
                 <TimerOrganism initSeconds={1} />

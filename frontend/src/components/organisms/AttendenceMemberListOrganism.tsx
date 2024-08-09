@@ -17,12 +17,14 @@ type OwnProps<T> = {
   fetchData: (props: T) => Promise<AttendanceMemberDto[]>;
   onPostAttendanceClick: (dto: ChangeAttendRequestDto) => Promise<void>;
   isSessionHost: boolean;
+  sessionId: number;
 };
 
 const AttendenceMemberListOrganism = <T,>({
   fetchData,
   onPostAttendanceClick: onAttendanceChange,
   isSessionHost,
+  sessionId,
 }: OwnProps<T>) => {
   const query = qs.parse(location.search) as T;
   const [attendanceStateMap, setAttendanceStateMap] = useState(
@@ -52,7 +54,7 @@ const AttendenceMemberListOrganism = <T,>({
   );
 
   // TODO : SSE url 추가 필요
-  useSSE("/", handleAttendanceChange);
+  useSSE(`/attendance/connect/${sessionId}`, handleAttendanceChange);
 
   if (isError || !memberList) return "데이터를 불러오지 못했습니다.";
 
