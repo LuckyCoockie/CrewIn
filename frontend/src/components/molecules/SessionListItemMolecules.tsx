@@ -68,13 +68,13 @@ const SessionListItem = ({
               <img
                 alt="session image"
                 src={image}
-                className="b border xs:border-2 border-white w-full"
+                className="border xs:border-2 w-full"
               />
-              <div className="absolute top-1 right-1 border rounded-xl bg-white flex h-4 xs:h-5 px-1 justify-center items-center shadow-sm">
+              <div className="absolute top-1 right-1 border rounded-xl bg-white flex h-4 xs:h-5 px-1 justify-center items-center shadow-sm bg-opacity-85 border-opacity-85">
                 <div className="me-1">
                   <Sessionpeople />
                 </div>
-                <div className="text-xs xs:text-sm font-bold">
+                <div className="text-[10px] xs:text-sm font-bold ">
                   {current} / {max}
                 </div>
               </div>
@@ -84,13 +84,13 @@ const SessionListItem = ({
               <img
                 alt="session image"
                 src={sessionLogoImage}
-                className="b border xs:border-2 border-white w-full"
+                className="border xs:border-2 border-white w-full"
               />
-              <div className="absolute top-1 right-1 border rounded-xl bg-white flex h-4 xs:h-5 px-1 justify-center items-center shadow-sm">
+              <div className="absolute top-1 right-1 border rounded-xl bg-white flex h-4 xs:h-5 px-1 justify-center items-center shadow-sm bg-opacity-85 border-opacity-85">
                 <div className="me-1">
                   <Sessionpeople />
                 </div>
-                <div className="text-xs xs:text-sm font-bold">
+                <div className="text-[10px] xs:text-sm font-bold ">
                   {current} / {max}
                 </div>
               </div>
