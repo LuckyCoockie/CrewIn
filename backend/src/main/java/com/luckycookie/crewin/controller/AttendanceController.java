@@ -7,6 +7,7 @@ import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.AttendanceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,14 +37,18 @@ public class AttendanceController {
     @PostMapping("/guest/{session-id}")
     public ResponseEntity<BaseResponse<Void>> attend(@PathVariable("session-id") Long sessionId, @AuthenticationPrincipal CustomUser customUser, @RequestBody AttendanceInfoRequest attendanceInfoRequest) {
         attendanceService.attend(sessionId, customUser.getEmail(), attendanceInfoRequest);
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "출석이 정상적으로 처리되었습니다."));
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Accel-Buffering", "no");
+        return new ResponseEntity<>(BaseResponse.create(HttpStatus.OK.value(), "출석이 정상적으로 처리되었습니다."), headers, HttpStatus.OK);
     }
 
     // 출석체크 수정
     @PutMapping("/{member-session-id}")
     public ResponseEntity<BaseResponse<Void>> updateAttendance(@PathVariable("member-session-id") Long memberSessionId, @RequestParam("attend") boolean attendValue, @AuthenticationPrincipal CustomUser customUser) {
         attendanceService.updateAttendance(memberSessionId, attendValue, customUser.getEmail());
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "출석이 정상적으로 수정되었습니다."));
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Accel-Buffering", "no");
+        return new ResponseEntity<>(BaseResponse.create(HttpStatus.OK.value(), "출석이 정상적으로 수정되었습니다."), headers, HttpStatus.OK);
     }
 
     // 출석부 목록 조회
@@ -56,6 +61,8 @@ public class AttendanceController {
     @GetMapping("/connect/{session-id}")
     public ResponseEntity<SseEmitter> subscribeSSE(@PathVariable("session-id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
         log.info("Subscribe SSE");
-        return ResponseEntity.ok(attendanceService.subscribeSSE(sessionId, customUser.getEmail()));
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Accel-Buffering", "no");
+        return new ResponseEntity<>(attendanceService.subscribeSSE(sessionId, customUser.getEmail()), headers, HttpStatus.OK);
     }
 }
