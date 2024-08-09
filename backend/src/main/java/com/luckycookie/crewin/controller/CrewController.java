@@ -57,9 +57,9 @@ public class CrewController {
     }
 
     // 크루 정보 수정
-    @PutMapping("/{id}")
+    @PutMapping("/{crew-id}")
     public ResponseEntity<BaseResponse<Void>> updateCrewInfo(
-            @PathVariable("id") Long crewId,
+            @PathVariable("crew-id") Long crewId,
             @RequestBody CrewRequest.CreateCrewRequest createCrewRequest, @AuthenticationPrincipal CustomUser customUser) {
         try {
             crewService.updateCrewInfo(crewId, createCrewRequest, customUser);
@@ -71,8 +71,8 @@ public class CrewController {
     }
 
     // 크루 정보 삭제
-    @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse<Void>> deleteCrew(@PathVariable("id") Long crewId, @AuthenticationPrincipal CustomUser customUser) {
+    @DeleteMapping("/{crew-id}")
+    public ResponseEntity<BaseResponse<Void>> deleteCrew(@PathVariable("crew-id") Long crewId, @AuthenticationPrincipal CustomUser customUser) {
         try {
             crewService.deleteCrewInfo(crewId, customUser);
             return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 정보를 삭제하는데 성공했습니다."));
@@ -81,7 +81,17 @@ public class CrewController {
                     .body(BaseResponse.create(HttpStatus.BAD_REQUEST.value(), "크루 정보 삭제를 실패했습니다: " + e.getMessage()));
         }
     }
-
+    // 크루 탈퇴
+    @DeleteMapping("/{crew-id}/leave")
+    public ResponseEntity<BaseResponse<Void>> leaveCrew(@PathVariable("crew-id") Long crewId, @AuthenticationPrincipal CustomUser customUser) {
+        try {
+            crewService.quitCrew(crewId, customUser);
+            return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루를 탙퇴하였습니다."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(BaseResponse.create(HttpStatus.BAD_REQUEST.value(), "크루 탈퇴를 실패했습니다: " + e.getMessage()));
+        }
+    }
     // 크루 공지 조회
     @GetMapping("/notice/{crew-id}")
     public ResponseEntity<BaseResponse<PagingItemsResponse<CrewNoticeItem>>> getCrewNoticeList(@AuthenticationPrincipal CustomUser customUser, @PathVariable("crew-id") Long crewId, @RequestParam("page-no") int pageNo) {
@@ -89,9 +99,9 @@ public class CrewController {
     }
 
     // 크루 공지 수정
-    @PutMapping("/notice/{id}")
+    @PutMapping("/notice/{notice-id}")
     public ResponseEntity<BaseResponse<Void>> updateNotice(
-            @PathVariable("id") Long noticeId,
+            @PathVariable("notice-id") Long noticeId,
             @RequestBody CrewRequest.CreateCrewNoticeRequest createCrewNoticeRequest) {
         try {
             crewService.updateNotice(noticeId, createCrewNoticeRequest);
@@ -103,8 +113,8 @@ public class CrewController {
     }
 
     // 크루 공지 삭제
-    @DeleteMapping("/notice/{id}")
-    public ResponseEntity<BaseResponse<Void>> deletePost(@PathVariable("id") Long noticeId) {
+    @DeleteMapping("/notice/{notice-id}")
+    public ResponseEntity<BaseResponse<Void>> deletePost(@PathVariable("notice-id") Long noticeId) {
         try {
             crewService.deleteNotice(noticeId);
             return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "공지 삭제를 성공했습니다."));
