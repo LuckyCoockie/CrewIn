@@ -61,7 +61,10 @@ public class AttendanceService {
             throw new SessionAuthorizationException();
         }
 
-//        SseEmitter emitter = emitterRepository.save(sessionId, new SseEmitter(60 * 1000L * 10));
+        if (session.getAttendanceStart() == null || LocalDateTime.now().isBefore(session.getAttendanceStart()) || LocalDateTime.now().isAfter(session.getEndAt()))
+            throw new InvalidRequestTimeException();
+
+//      SseEmitter emitter = emitterRepository.save(sessionId, new SseEmitter(60 * 1000L * 10));
         SseEmitter emitter = emitterRepository.save(sessionId, new SseEmitter(10 * 1000L));
         emitter.onCompletion(() -> {
             emitterRepository.deleteById(sessionId);
@@ -89,7 +92,7 @@ public class AttendanceService {
                     .data(data)
             );
         } catch (IOException exception) {
-            log.error("SSE Exception occurred!!! : " + exception.getMessage());
+            log.error("SSE Exception occurred!!! : {}", exception.getMessage());
             emitterRepository.deleteById(emitterId);
         }
     }
