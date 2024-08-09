@@ -4,7 +4,7 @@ import {
   ChangeAttendRequestDto,
 } from "../../../apis/api/attendance";
 import LargeAbleButton from "../../atoms/Button/LargeAbleButton";
-import AttendenceMemberListOrganism from "../../organisms/AttendenceMemberListOrganism";
+import AttendanceMemberListOrganism from "../../organisms/AttendanceMemberListOrganism";
 import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
 import TimerOrganism from "../../organisms/TimerOrganism";
 import useSSE from "../../../util/sse/useSSE";
@@ -39,9 +39,8 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
   // TODO : SSE url 추가 필요
   const { setIsActive } = useSSE(`/attendance/connect/${sessionId}`);
 
-
   useEffect(() => {
-    setIsActive(true);
+    setIsActive(isAttendStarted);
   }, [isAttendStarted, setIsActive]);
 
   return (
@@ -50,7 +49,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
         <BackHeaderMediumOrganism text={"출석부"} />
       </header>
       <div className="pb-20">
-        <AttendenceMemberListOrganism
+        <AttendanceMemberListOrganism
           fetchData={fetchMemberList}
           isSessionHost={isSessionHost}
           onPostAttendanceClick={onHostAttendanceClick}

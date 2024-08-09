@@ -7,7 +7,7 @@ type OwnProps = {
   onClick?: (state: boolean) => void;
 };
 
-const AttendenceButton: React.FC<OwnProps> = ({
+const AttendanceButton: React.FC<OwnProps> = ({
   initPresent,
   isAuto,
   onClick,
@@ -38,4 +38,4 @@ const AttendenceButton: React.FC<OwnProps> = ({
   );
 };
 
-export default React.memo(AttendenceButton);
+export default React.memo(AttendanceButton);

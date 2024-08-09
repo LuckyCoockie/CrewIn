@@ -7,7 +7,7 @@ import {
   ChangeAttendRequestDto,
 } from "../../apis/api/attendance";
 import MemberListItem from "../molecules/List/MemberListMolecule";
-import AttendenceButton from "../molecules/AttendenceButton";
+import AttendanceButton from "../molecules/AttendanceButton";
 import { useCallback, useState } from "react";
 import useSSE from "../../util/sse/useSSE";
 
@@ -20,7 +20,7 @@ type OwnProps<T> = {
   sessionId: number;
 };
 
-const AttendenceMemberListOrganism = <T,>({
+const AttendanceMemberListOrganism = <T,>({
   fetchData,
   onPostAttendanceClick: onAttendanceChange,
   isSessionHost,
@@ -38,9 +38,8 @@ const AttendenceMemberListOrganism = <T,>({
     refetchOnWindowFocus: false,
     refetchOnMount: true,
     onSuccess: (memberList) => {
-      // TODO : 처음에 누가 출석되어있는지 받아올 방법 필요
-      memberList.forEach(({ memberSessionId }) =>
-        attendanceStateMap.set(memberSessionId, false)
+      memberList.forEach(({ memberSessionId, isAttend }) =>
+        attendanceStateMap.set(memberSessionId, isAttend)
       );
     },
   });
@@ -53,7 +52,6 @@ const AttendenceMemberListOrganism = <T,>({
     [attendanceStateMap]
   );
 
-  // TODO : SSE url 추가 필요
   useSSE(`/attendance/connect/${sessionId}`, handleAttendanceChange);
 
   if (isError || !memberList) return "데이터를 불러오지 못했습니다.";
@@ -63,7 +61,7 @@ const AttendenceMemberListOrganism = <T,>({
       {memberList.map((member, index) => (
         <MemberListItem key={index} {...member}>
           {isSessionHost ? (
-            <AttendenceButton
+            <AttendanceButton
               initPresent={
                 attendanceStateMap.get(member.memberSessionId) ?? false
               }
@@ -84,4 +82,4 @@ const AttendenceMemberListOrganism = <T,>({
   );
 };
 
-export default AttendenceMemberListOrganism;
+export default AttendanceMemberListOrganism;

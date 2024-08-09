@@ -1,6 +1,6 @@
 import { useLocation, useParams } from "react-router";
 import AttendanceTemplate from "../../components/templates/attendance/AttendanceTemplate";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import {
   ChangeAttendRequestDto,
   changeAttend,
@@ -14,13 +14,15 @@ const AttendancePage: React.FC = () => {
   const { sessionId } = useParams();
   const { location } = useGeolocation();
   const { state } = useLocation();
-
-  // TODO : 출석이 시작되었는지는 확인 필요
-  const isAttendStarted = false;
+  const [isAttendStarted, setIsAttendStarted] = useState<boolean>(false);
 
   const getMemberList = useCallback(async () => {
     if (!sessionId) return [];
-    return getAttendanceMemberList({ sessionId: parseInt(sessionId) });
+    const response = await getAttendanceMemberList({
+      sessionId: parseInt(sessionId),
+    });
+    setIsAttendStarted(response.autoCheckInProgress);
+    return response.items;
   }, [sessionId]);
 
   const onStartAttendanceClick = useCallback(async () => {

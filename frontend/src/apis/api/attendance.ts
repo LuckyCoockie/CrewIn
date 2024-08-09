@@ -5,6 +5,7 @@ export type AttendanceMemberDto = {
   name: string;
   nickname: string;
   profileUrl: string;
+  isAttend: boolean;
 };
 
 export type GetAttendanceMemberListRequestDto = {
@@ -13,80 +14,16 @@ export type GetAttendanceMemberListRequestDto = {
 
 export type GetAttendanceMemberListResponseDto = {
   items: AttendanceMemberDto[];
+  autoCheckInProgress: boolean;
 };
 
 export const getAttendanceMemberList = async (
   dto: GetAttendanceMemberListRequestDto
-): Promise<AttendanceMemberDto[]> => {
-  return [
-    {
-      memberSessionId: 1,
-      name: "name",
-      nickname: "nickname",
-      profileUrl:
-        "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
-    },
-    {
-      memberSessionId: 2,
-      name: "name",
-      nickname: "nickname",
-      profileUrl:
-        "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
-    },
-    {
-      memberSessionId: 3,
-      name: "name",
-      nickname: "nickname",
-      profileUrl:
-        "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
-    },
-    {
-      memberSessionId: 4,
-      name: "name",
-      nickname: "nickname",
-      profileUrl:
-        "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
-    },
-    {
-      memberSessionId: 5,
-      name: "name",
-      nickname: "nickname",
-      profileUrl:
-        "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
-    },
-    {
-      memberSessionId: 6,
-      name: "name",
-      nickname: "nickname",
-      profileUrl:
-        "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
-    },
-    {
-      memberSessionId: 7,
-      name: "name",
-      nickname: "nickname",
-      profileUrl:
-        "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
-    },
-    {
-      memberSessionId: 8,
-      name: "name",
-      nickname: "nickname",
-      profileUrl:
-        "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
-    },
-    {
-      memberSessionId: 9,
-      name: "name",
-      nickname: "nickname",
-      profileUrl:
-        "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
-    },
-  ];
+): Promise<GetAttendanceMemberListResponseDto> => {
   const response = await api.get<GetAttendanceMemberListResponseDto>(
-    `/attendence/member/${dto.sessionId}`
+    `/attendance/member/${dto.sessionId}`
   );
-  return response.data.items;
+  return response.data;
 };
 
 export type StartAttendanceRequestDto = {
