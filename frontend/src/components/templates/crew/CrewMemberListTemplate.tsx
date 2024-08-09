@@ -1,47 +1,88 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useCallback, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
 import { ReactComponent as Searchicon } from "../../../assets/icons/searchicon.svg";
 import { ReactComponent as CrewinLogo } from "../../../assets/icons/crewinlogo.svg";
 import {
   getCrewMemberList,
-  CrewMemberListResponseDto,
+  GetCrewMemberListResponseDto,
   CrewMemberDto,
 } from "../../../apis/api/crewmemberlist";
+import InfiniteScrollComponent from "../../../util/paging/component/InfinityScrollComponent";
+
+const sortPositions: Record<string, number> = {
+  CAPTAIN: 1,
+  PACER: 2,
+  MEMBER: 3,
+};
 
 const CrewMemberListTemplate: React.FC = () => {
   const navigate = useNavigate();
-  const [crewId] = useState<number>(1); // 나중에 동적으로 설정
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [members, setMembers] = useState<CrewMemberDto[]>([]);
+  const { crewId } = useParams<{ crewId: string }>();
 
-  useEffect(() => {
-    const fetchMembers = async () => {
+  const [, setMembers] = useState<CrewMemberDto[]>([]);
+  const [, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchCrewMembers = useCallback(
+    async (page: number): Promise<GetCrewMemberListResponseDto> => {
       setLoading(true);
       setError(null);
       try {
-        const data: CrewMemberListResponseDto = await getCrewMemberList(crewId);
-        setMembers(data.items);
-      } catch (error) {
-        if (error instanceof Error) {
-          setError(error.message);
+        const response = await getCrewMemberList(Number(crewId), page);
+
+        const sortedItems = response.items.sort((a, b) => {
+          const positionA =
+            sortPositions[a.position as keyof typeof sortPositions] ?? Infinity;
+          const positionB =
+            sortPositions[b.position as keyof typeof sortPositions] ?? Infinity;
+          return positionA - positionB;
+        });
+
+        if (page === 0) {
+          setMembers(sortedItems);
+        } else {
+          setMembers((prev) => [...prev, ...sortedItems]);
         }
+        return { ...response, items: sortedItems };
+      } catch (error) {
+        console.error("크루원 데이터를 가져오는 중 오류 발생:", error);
+        setError("크루원 데이터를 가져오는 중 오류가 발생했습니다.");
+        return { pageNo: 0, lastPageNo: 0, items: [] };
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchMembers();
-  }, [crewId]);
+    },
+    [crewId]
+  );
 
   const onSearchClick = () => {
-    navigate("/crew/membersearch");
+    navigate(`/crew/detail/${crewId}/membersearch`);
   };
 
-  const joinedMembers = members.filter((member) => member.joined);
-  const invitedMembers = members.filter(
-    (member) => !member.joined && member.invited
+  const renderMemberItem = (member: CrewMemberDto) => (
+    <li key={member.email} className="flex items-center p-2 border-b">
+      <div className="w-12 h-12 flex-shrink-0">
+        {member.imageUrl ? (
+          <img
+            src={member.imageUrl}
+            alt={member.nickname}
+            className="w-full h-full object-cover rounded-full"
+          />
+        ) : (
+          <CrewinLogo className="w-full h-full object-cover rounded-full" />
+        )}
+      </div>
+      <div className="flex-1 ml-3">
+        <div className="font-bold">{member.name}</div>
+        <div className="text-gray-600">{member.nickname}</div>
+      </div>
+      <div>
+        <button className="border border-gray-400 w-20 h-10 rounded-md text-sm">
+          {member.joined ? member.position : "WAITING"}
+        </button>
+      </div>
+    </li>
   );
 
   return (
@@ -54,70 +95,15 @@ const CrewMemberListTemplate: React.FC = () => {
       </header>
       <hr />
 
-      {loading && <div className="text-center">Loading...</div>}
-      {error && <div className="text-red-500 text-center">{error}</div>}
+      {error && <div className="text-red-500 text-center mt-2">{error}</div>}
 
       <div>
-        {joinedMembers.length === 0 ? (
-          <div className="text-center">가입된 크루원이 없습니다.</div>
-        ) : (
-          <ul>
-            {joinedMembers.map((member) => (
-              <li key={member.email} className="flex items-center p-2 border-b">
-                <div className="w-12 h-12 flex-shrink-0">
-                  {member.imageUrl ? (
-                    <img
-                      src={member.imageUrl}
-                      alt={member.nickname}
-                      className="w-full h-full object-cover rounded-full"
-                    />
-                  ) : (
-                    <CrewinLogo className="w-full h-full object-cover rounded-full" />
-                  )}
-                </div>
-                <div className="flex-1 ml-3">
-                  <div className="font-bold">{member.name}</div>
-                  <div className="text-gray-600">{member.nickname}</div>
-                </div>
-                <div>
-                  <button className="border border-gray-400 w-20 h-10 rounded-md text-sm">
-                    {member.position}
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-        {invitedMembers.length === 0 ? (
-          <div className="text-center">초대된 크루원이 없습니다.</div>
-        ) : (
-          <ul>
-            {invitedMembers.map((member) => (
-              <li key={member.email} className="flex items-center p-2 border-b">
-                <div className="w-12 h-12 flex-shrink-0">
-                  {member.imageUrl ? (
-                    <img
-                      src={member.imageUrl}
-                      alt={member.nickname}
-                      className="w-full h-full object-cover rounded-full"
-                    />
-                  ) : (
-                    <CrewinLogo className="w-full h-full object-cover rounded-full" />
-                  )}
-                </div>
-                <div className="flex-1 ml-3">
-                  <div className="font-bold">{member.name}</div>
-                  <div className="text-gray-600">{member.nickname}</div>
-                </div>
-                <div>
-                  <button className="border border-gray-400 w-20 h-10 rounded-md text-sm">
-                    WAITING
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
+        <InfiniteScrollComponent
+          fetchKey="crewMembers"
+          fetchData={fetchCrewMembers}
+          ItemComponent={({ data }) => renderMemberItem(data)}
+          className="crew-member-list"
+        />
       </div>
     </div>
   );
