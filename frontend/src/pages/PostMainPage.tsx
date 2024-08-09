@@ -24,6 +24,7 @@ const PostMainPage: React.FC = () => {
   const fetchPostData = useCallback(
     async (page: number): Promise<GetPostListResponseDto> => {
       try {
+        console.log(getPostList(page));
         return getPostList(page);
       } catch (error) {
         console.error("게시글 데이터를 가져오는 중 오류 발생:", error);

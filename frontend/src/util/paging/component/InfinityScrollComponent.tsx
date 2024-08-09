@@ -38,7 +38,7 @@ const InfiniteScrollComponent = <T,>({
     {
       refetchOnWindowFocus: false,
       getNextPageParam: (lastPage) => {
-        if (lastPage.pageNo <= lastPage.lastPageNo) return;
+        if (lastPage.pageNo >= lastPage.lastPageNo) return;
         const nextPage = lastPage.pageNo + 1;
         return nextPage;
       },

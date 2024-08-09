@@ -22,10 +22,10 @@ export const searchMembers = async (
 
   try {
     const response = await api.get<UserSearchResponseDto>("/search/member", {
-      params: { query, pageNo },
+      params: { query, "page-no": pageNo },
     });
 
-    if (response.status === 200) {
+    if (response.status === 200 && response.data) {
       return response.data;
     } else {
       throw new Error(
@@ -43,19 +43,4 @@ export const searchMembers = async (
       );
     }
   }
-};
-
-export const fetchAllMembers = async (): Promise<MemberDto[]> => {
-  let pageNo = 0;
-  let lastPageNo = 0;
-  let allItems: MemberDto[] = [];
-
-  do {
-    const response = await searchMembers({ query: "", pageNo });
-    allItems = [...allItems, ...response.items];
-    lastPageNo = response.lastPageNo;
-    pageNo++;
-  } while (pageNo <= lastPageNo);
-
-  return allItems;
 };
