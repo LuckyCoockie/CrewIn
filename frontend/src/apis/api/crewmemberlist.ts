@@ -1,4 +1,5 @@
 import api from "../index";
+import { PageNationData } from "../../util/paging/type";
 
 export type CrewMemberDto = {
   memberId: number;
@@ -12,17 +13,19 @@ export type CrewMemberDto = {
   invited: boolean;
 };
 
-export type CrewMemberListResponseDto = {
-  pageNo: number;
-  lastPageNo: number;
-  items: CrewMemberDto[];
-};
+export type GetCrewMemberListResponseDto = PageNationData<CrewMemberDto>;
 
 export const getCrewMemberList = async (
-  crewId: number
-): Promise<CrewMemberListResponseDto> => {
-  const response = await api.get<CrewMemberListResponseDto>(
-    `/crew/member/${crewId}`
-  );
-  return response.data;
+  crewId: number,
+  pageNo: number = 0
+): Promise<GetCrewMemberListResponseDto> => {
+  try {
+    const response = await api.get(`/crew/member/${crewId}`, {
+      params: { "page-no": pageNo },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("크루원 목록 조회 오류:", error);
+    throw error;
+  }
 };

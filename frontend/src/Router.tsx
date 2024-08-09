@@ -81,11 +81,17 @@ export const router = createBrowserRouter([
                 path: "detail/:crewId/noticecreate",
                 element: <NoticeCreatePage />,
               },
-              { path: "member", element: <CrewMemberPage /> },
-              { path: "member/captain", element: <CaptainPovCrewMemberPage /> },
-              { path: "membersearch", element: <CrewMemberSearchPage /> },
+              { path: "detail/:crewId/member", element: <CrewMemberPage /> },
               {
-                path: "membersearch/captain",
+                path: "detail/:crewId/member/captain",
+                element: <CaptainPovCrewMemberPage />,
+              },
+              {
+                path: "detail/:crewId/membersearch",
+                element: <CrewMemberSearchPage />,
+              },
+              {
+                path: "detail/:crewId/membersearch/captain",
                 element: <CaptainPovCrewMemberSearchPage />,
               },
               { path: ":crewId/invite", element: <CrewInvitePage /> },
