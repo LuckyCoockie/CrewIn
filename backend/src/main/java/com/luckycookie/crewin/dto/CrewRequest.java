@@ -2,11 +2,7 @@ package com.luckycookie.crewin.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.luckycookie.crewin.domain.enums.Position;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -18,7 +14,7 @@ public class CrewRequest {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class CreateCrewRequest{
+    public static class CrewInfoRequest {
 
         private String name; // 크루명
         private String slogan; // 슬로건
@@ -26,10 +22,13 @@ public class CrewRequest {
         private String introduction; // 소개
 
         // main logo image
+        @Setter
         private String mainLogo;
         // sub logo image
+        @Setter
         private String subLogo;
         // banner image
+        @Setter
         private String banner;
 
         @DateTimeFormat(pattern = "yyyy-MM-dd")

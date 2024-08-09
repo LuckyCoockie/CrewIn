@@ -1,6 +1,7 @@
 package com.luckycookie.crewin.controller;
 
 import com.luckycookie.crewin.dto.CrewRequest;
+import com.luckycookie.crewin.dto.CrewRequest.CrewInfoRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewMemberRequest;
 import com.luckycookie.crewin.dto.CrewRequest.CrewReplyMemberRequest;
 import com.luckycookie.crewin.dto.CrewRequest.UpdateCrewPositionRequest;
@@ -30,9 +31,9 @@ public class CrewController {
 
     // 크루 생성
     @PostMapping()
-    public ResponseEntity<BaseResponse<CrewResponse.CrewCreateResponse>> createCrew(@AuthenticationPrincipal CustomUser customUser, @RequestBody CrewRequest.CreateCrewRequest createCrewRequest) {
+    public ResponseEntity<BaseResponse<CrewResponse.CrewCreateResponse>> createCrew(@AuthenticationPrincipal CustomUser customUser, @RequestBody CrewInfoRequest crewInfoRequest) {
         CrewResponse.CrewCreateResponse crewResponse = CrewResponse.CrewCreateResponse.builder()
-                .crewId(crewService.createCrew(createCrewRequest, customUser).getId())
+                .crewId(crewService.createCrew(crewInfoRequest, customUser).getId())
                 .build();
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루를 생성하는데 성공했습니다.", crewResponse));
     }
@@ -60,9 +61,9 @@ public class CrewController {
     @PutMapping("/{id}")
     public ResponseEntity<BaseResponse<Void>> updateCrewInfo(
             @PathVariable("id") Long crewId,
-            @RequestBody CrewRequest.CreateCrewRequest createCrewRequest, @AuthenticationPrincipal CustomUser customUser) {
+            @RequestBody CrewInfoRequest crewInfoRequest, @AuthenticationPrincipal CustomUser customUser) {
         try {
-            crewService.updateCrewInfo(crewId, createCrewRequest, customUser);
+            crewService.updateCrewInfo(crewId, crewInfoRequest, customUser);
             return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 정보를 수정하는데 성공했습니다."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

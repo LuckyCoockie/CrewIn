@@ -16,6 +16,7 @@ import com.luckycookie.crewin.repository.*;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,13 +37,18 @@ public class CrewService {
     private final MemberCrewRepository memberCrewRepository;
     private final PostRepository postRepository;
     private final PostImageRepository postImageRepository;
-
     private final NotificationService notificationService;
     private final HeartRepository heartRepository;
-
     private final S3Service s3Service;
 
-    public Crew createCrew(CreateCrewRequest createCrewRequest, CustomUser customUser) {
+    @Value("${image.default.crew-main-logo}")
+    private String defaultMainLogo;
+    @Value("${image.default.crew-sub-logo}")
+    private String defaultSubLogo;
+    @Value("${image.default.crew-banner}")
+    private String defaultBanner;
+
+    public Crew createCrew(CrewInfoRequest crewInfoRequest, CustomUser customUser) {
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
@@ -50,14 +56,14 @@ public class CrewService {
         Crew crew = Crew
                 .builder()
                 .captain(member)
-                .crewName(createCrewRequest.getName())
-                .slogan(createCrewRequest.getSlogan())
-                .introduction(createCrewRequest.getIntroduction())
-                .area(createCrewRequest.getArea())
-                .mainLogo(createCrewRequest.getMainLogo())
-                .subLogo(createCrewRequest.getSubLogo())
-                .banner(createCrewRequest.getBanner())
-                .crewBirth(createCrewRequest.getCrewBirth())
+                .crewName(crewInfoRequest.getName())
+                .slogan(crewInfoRequest.getSlogan())
+                .introduction(crewInfoRequest.getIntroduction())
+                .area(crewInfoRequest.getArea())
+                .mainLogo(crewInfoRequest.getMainLogo())
+                .subLogo(crewInfoRequest.getSubLogo())
+                .banner(crewInfoRequest.getBanner())
+                .crewBirth(crewInfoRequest.getCrewBirth())
                 .build();
 
         crewRepository.save(crew);
@@ -189,7 +195,7 @@ public class CrewService {
     }
 
     // 크루 정보 수정
-    public void updateCrewInfo(Long crewId, CreateCrewRequest createCrewRequest, CustomUser customUser) {
+    public void updateCrewInfo(Long crewId, CrewInfoRequest crewInfoRequest, CustomUser customUser) {
         Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
@@ -199,20 +205,29 @@ public class CrewService {
 
         // CAPTAIN 만 수정 가능
         if (position == Position.CAPTAIN) {
+            if (crewInfoRequest.getMainLogo() == null) {
+                crewInfoRequest.setMainLogo(defaultMainLogo);
+            }
+            if (crewInfoRequest.getSubLogo() == null) {
+                crewInfoRequest.setSubLogo(defaultSubLogo);
+            }
+            if (crewInfoRequest.getBanner() == null) {
+                crewInfoRequest.setBanner(defaultBanner);
+            }
 
             // 기존 크루 메인 로고, 서브 로고, 배너 삭제 (S3)
             // 기존 이미지와 update 할 이미지 url 이 다르면 기존꺼 지우고, 같으면 지우지 말고
-            if(!crew.getMainLogo().equals(createCrewRequest.getMainLogo())) {
+            if (!crew.getMainLogo().equals(crewInfoRequest.getMainLogo())) {
                 s3Service.deleteImage(crew.getMainLogo()); // 기존 이미지 삭제
             }
-            if(!crew.getSubLogo().equals(createCrewRequest.getSubLogo())) {
+            if (!crew.getSubLogo().equals(crewInfoRequest.getSubLogo())) {
                 s3Service.deleteImage(crew.getSubLogo()); // 기존 이미지 삭제
             }
-            if(!crew.getBanner().equals(createCrewRequest.getBanner())) {
+            if (!crew.getBanner().equals(crewInfoRequest.getBanner())) {
                 s3Service.deleteImage(crew.getBanner()); // 기존 이미지 삭제
             }
 
-            crew.updateCrewInfo(createCrewRequest);
+            crew.updateCrewInfo(crewInfoRequest);
         } else {
             throw new CrewUnauthorizedException();
         }
@@ -425,7 +440,7 @@ public class CrewService {
                 memberCrewRepository.save(invitedMemberCrew);
                 notificationService.createNotification(NotificationType.INVITATION, crewMemberRequest.getCrewId(), crewMemberRequest.getMemberId(), null);
             } else { // memberCrew 에 있었으면 isInvited 체크
-                if(memberCrew.orElseThrow().getIsInvited()){ // true 면 이미 중복된 요청
+                if (memberCrew.orElseThrow().getIsInvited()) { // true 면 이미 중복된 요청
                     throw new CrewDupulicateException();
                 } else { // false 면
                     memberCrew.get().updateInvited(true);  // 요청 보냈으니까 true 로 변경
