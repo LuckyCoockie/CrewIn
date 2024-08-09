@@ -15,7 +15,7 @@ public class AttendanceResponse {
     @Builder
     public static class AttendanceMemberResponse {
         List<AttendanceMemberItem> items;
-        Boolean AutoCheckInProgress;
+        String AutoCheckStatus;
         Integer leftTime;
     }
 

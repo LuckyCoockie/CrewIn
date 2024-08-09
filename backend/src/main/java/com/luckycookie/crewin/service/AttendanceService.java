@@ -3,9 +3,7 @@ package com.luckycookie.crewin.service;
 import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.domain.MemberSession;
 import com.luckycookie.crewin.domain.Session;
-import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.AttendanceRequest.AttendanceInfoRequest;
-import com.luckycookie.crewin.dto.AttendanceResponse;
 import com.luckycookie.crewin.dto.AttendanceResponse.AttendanceInfo;
 import com.luckycookie.crewin.dto.AttendanceResponse.AttendanceMemberItem;
 import com.luckycookie.crewin.dto.AttendanceResponse.AttendanceMemberResponse;
@@ -31,7 +29,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -39,6 +36,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static com.luckycookie.crewin.domain.enums.SessionType.THUNDER;
+import static com.luckycookie.crewin.service.AttendanceService.AutoCheckStatus.*;
 
 @Service
 @Transactional
@@ -145,17 +143,23 @@ public class AttendanceService {
                     .build();
         }).toList();
 
-        boolean inProgress = session.getAttendanceStart() != null &&
-                LocalDateTime.now().isAfter(session.getAttendanceStart()) &&
-                LocalDateTime.now().isBefore(session.getAttendanceStart().plusMinutes(10));
+        AutoCheckStatus status = null;
+        if (session.getAttendanceStart() == null || session.getAttendanceStart().isBefore(LocalDateTime.now())) {
+            status = BEFORE;
+        } else if (LocalDateTime.now().isAfter(session.getAttendanceStart()) &&
+                LocalDateTime.now().isBefore(session.getAttendanceStart().plusMinutes(AUTO_CHECK_TIME))) {
+            status = DURING;
+        } else {
+            status = AFTER;
+        }
 
-        int leftTime = inProgress ?
+        int leftTime = (status == DURING) ?
                 (int) ChronoUnit.SECONDS.between(LocalDateTime.now(), session.getAttendanceStart().plusMinutes(AUTO_CHECK_TIME)) : 0;
 
         return AttendanceMemberResponse
                 .builder()
                 .items(attendanceMemberItems)
-                .AutoCheckInProgress(inProgress)
+                .AutoCheckStatus(status.name())
                 .leftTime(leftTime)
                 .build();
     }
@@ -236,5 +240,7 @@ public class AttendanceService {
                 sessionId, AttendanceInfo.builder().memberSessionId(memberSession.getId()).isAttend(attendValue).build());
     }
 
-
+    enum AutoCheckStatus {
+        BEFORE, DURING, AFTER
+    }
 }
