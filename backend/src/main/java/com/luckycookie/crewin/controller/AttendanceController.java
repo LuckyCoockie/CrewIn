@@ -39,6 +39,7 @@ public class AttendanceController {
         attendanceService.attend(sessionId, customUser.getEmail(), attendanceInfoRequest);
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Accel-Buffering", "no");
+        headers.add("Cache-Control", "no-cache");
         return new ResponseEntity<>(BaseResponse.create(HttpStatus.OK.value(), "출석이 정상적으로 처리되었습니다."), headers, HttpStatus.OK);
     }
 
@@ -48,6 +49,7 @@ public class AttendanceController {
         attendanceService.updateAttendance(memberSessionId, attendValue, customUser.getEmail());
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Accel-Buffering", "no");
+        headers.add("Cache-Control", "no-cache");
         return new ResponseEntity<>(BaseResponse.create(HttpStatus.OK.value(), "출석이 정상적으로 수정되었습니다."), headers, HttpStatus.OK);
     }
 
@@ -63,6 +65,7 @@ public class AttendanceController {
         log.info("Subscribe SSE");
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Accel-Buffering", "no");
+        headers.add("Cache-Control", "no-cache");
         return new ResponseEntity<>(attendanceService.subscribeSSE(sessionId, customUser.getEmail()), headers, HttpStatus.OK);
     }
 }
