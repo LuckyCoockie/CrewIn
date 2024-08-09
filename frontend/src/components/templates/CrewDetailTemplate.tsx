@@ -175,7 +175,7 @@ const CrewDetailTemplate: React.FC = () => {
         </div>
       </header>
       <ThreeToTwoImageMolecule
-        src={infoData ? infoData.imageUrl : ""}
+        src={infoData ? infoData.banner : ""}
         alt="crewbanner"
       />
       <div>
