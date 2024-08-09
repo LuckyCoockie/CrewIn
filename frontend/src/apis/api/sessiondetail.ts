@@ -19,6 +19,8 @@ export type SessionDetailDto = {
   endAt: string;
   sessionType: string;
   sessionPosters: string[];
+  isJoined:boolean
+  currentPeople:number
 };
 
 export type GetSessionInfoRequestDto = {
@@ -97,14 +99,9 @@ export const uploadSessionImages = async (
 };
 
 // 세션 참가
-export type ParticipateSessionRequestDto = {
-  sessionId: number;
-};
 
-export const participateSession = async (
-  dto: ParticipateSessionRequestDto
-): Promise<void> => {
-  const response = await api.post(`/session/${dto}`);
+export const participateSession = async (sessionId: number): Promise<void> => {
+  const response = await api.post(`/session/${sessionId}`);
   console.log("참가 신청 완료");
   return response.data;
 };
@@ -114,9 +111,7 @@ export type CancelSEssionRequestDto = {
   sessionId: number;
 };
 
-export const cancelSession = async (
-  sessionId: CancelSEssionRequestDto
-): Promise<void> => {
+export const cancelSession = async (sessionId: number): Promise<void> => {
   const response = await api.delete(`session/${sessionId}`);
   console.log("참가 취소 완료");
 
