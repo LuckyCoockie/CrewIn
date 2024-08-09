@@ -14,6 +14,14 @@ public class SessionResponse {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
+    public static class SessionCreateResponse {
+        private long sessionId;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class SessionItem {
 
         private String crewName;

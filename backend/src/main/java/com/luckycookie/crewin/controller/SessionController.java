@@ -30,11 +30,10 @@ public class SessionController {
 
     // 세션 생성
     @PostMapping()
-    public ResponseEntity<BaseResponse<Void>> createSession(@RequestBody SessionRequest.CreateSessionRequest createSessionRequest, @AuthenticationPrincipal CustomUser customUser) {
-        sessionService.createSession(createSessionRequest, customUser);
+    public ResponseEntity<BaseResponse<SessionResponse.SessionCreateResponse>> createSession(@RequestBody SessionRequest.CreateSessionRequest createSessionRequest, @AuthenticationPrincipal CustomUser customUser) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(BaseResponse.create(HttpStatus.CREATED.value(), "세션을 등록하는데 성공했습니다."));
+                .body(BaseResponse.create(HttpStatus.CREATED.value(), "세션을 등록하는데 성공했습니다.", sessionService.createSession(createSessionRequest, customUser)));
     }
 
     // 세션 조회

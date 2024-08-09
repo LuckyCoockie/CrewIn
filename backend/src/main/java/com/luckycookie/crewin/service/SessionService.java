@@ -59,7 +59,7 @@ public class SessionService {
     private String defaultSessionPoster;
 
 
-    public void createSession(CreateSessionRequest createSessionRequest, CustomUser customUser) {
+    public SessionCreateResponse createSession(CreateSessionRequest createSessionRequest, CustomUser customUser) {
 
         // 현재 로그인한 사용자
         Member member = memberRepository.findByEmail(customUser.getEmail())
@@ -125,10 +125,10 @@ public class SessionService {
             if (memberCrew.getPosition() == Position.MEMBER) { // 만약 position이 member면 exception
                 throw new CrewUnauthorizedException(); // 권한 부족
             } else { // 내가 CAPTAIN, PACER 일 때만 가능
-                sessionRepository.save(session);
+                session = sessionRepository.save(session);
             }
         } else {
-            sessionRepository.save(session);
+            session = sessionRepository.save(session);
         }
 
         memberSessionRepository
@@ -138,6 +138,9 @@ public class SessionService {
                         .isAttend(true)
                         .build());
 
+        return SessionCreateResponse.builder()
+                .sessionId(session.getId())
+                .build();
     }
 
     public SessionDetailResponse getSessionDetail(Long sessionId, CustomUser customUser) {
