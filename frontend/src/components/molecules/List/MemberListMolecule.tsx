@@ -3,22 +3,22 @@ import { ReactComponent as CrewinLogo } from "../../../assets/icons/crewinlogo.s
 type OwnProps = {
   name: string;
   nickname: string;
-  imageUrl: string;
+  profileUrl: string;
   children?: React.ReactElement;
 };
 
 const MemberListItem: React.FC<OwnProps> = ({
   name,
   nickname,
-  imageUrl,
+  profileUrl,
   children,
 }) => {
   return (
     <div className="flex items-center p-2 border-b">
       <div className="w-12 h-12 flex-shrink-0">
-        {imageUrl ? (
+        {profileUrl ? (
           <img
-            src={imageUrl}
+            src={profileUrl}
             alt={name}
             className="w-full h-full object-cover rounded-full"
           />

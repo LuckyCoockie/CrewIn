@@ -92,7 +92,7 @@ const CrewCreateOrganism: React.FC = () => {
         const submitData: CrewCreateDto = {
           name: data.crew_name,
           slogan: data.slogan,
-          area: data.city + data.district,
+          area: `${data.city} ${data.district}`,
           introduction: data.introduction,
           crewBirth: formatDate(data.crewcreatedat!),
           mainLogo: mainLogoImageUrl!,
@@ -237,11 +237,12 @@ const CrewCreateOrganism: React.FC = () => {
                 <InputImageTypeMolecule
                   id="main_logo"
                   title="메인로고"
-                  placeholder="1:1 비율이 가장 적합합니다."
+                  placeholder="프로필 사진에 노출됩니다."
                   {...field}
                   onChange={(e) => {
                     setValue("main_logo", e.target.files![0]);
                   }}
+                  text="1:1 비율을 권장합니다."
                 />
               )}
             />
@@ -254,11 +255,12 @@ const CrewCreateOrganism: React.FC = () => {
                 <InputImageTypeMolecule
                   id="sub_logo"
                   title="서브로고"
-                  placeholder="1:1 비율이 가장 적합합니다."
+                  placeholder="게시글 생성 시 사용됩니다."
                   {...field}
                   onChange={(e) => {
                     setValue("sub_logo", e.target.files![0]);
                   }}
+                  text="1:1 비율을 권장합니다."
                 />
               )}
             />
@@ -271,7 +273,7 @@ const CrewCreateOrganism: React.FC = () => {
                 <ImageTypeBannerMolecule
                   id="banner"
                   title="배너"
-                  placeholder="3:2 비율이 가장 적합합니다."
+                  placeholder="크루 상세페이지에 노출됩니다."
                   {...field}
                   onChange={(e) => {
                     setValue("banner", e.target.files![0]);

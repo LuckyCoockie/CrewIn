@@ -5,17 +5,14 @@ import LogoutButton from "../../atoms/Button/LogoutButton";
 import { logout } from "../../../apis/api/logout";
 import { useNavigate } from "react-router-dom";
 import store from "../../../modules";
-import { clearAccessToken } from "../../../modules/reducers/auth";
+import { clearAccessToken, loading } from "../../../modules/reducers/auth";
 
 const MyPageHeaderOrganism: React.FC = () => {
   const navigate = useNavigate();
   const handleLogout = async () => {
-    console.log("로그아웃 시도 중");
     try {
-      await logout();
-      store.dispatch(clearAccessToken());
-      console.log("로그아웃 성공");
-      navigate(`/login`);
+      store.dispatch(loading());
+      logout().then(() => store.dispatch(clearAccessToken()));
     } catch (error) {
       console.error("로그아웃 실패:", error);
     }

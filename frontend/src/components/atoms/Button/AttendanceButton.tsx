@@ -1,12 +1,9 @@
 import React from "react";
 import { ReactComponent as AttendanceIcon } from "../../../assets/icons/attendance.svg";
 import { useNavigate } from "react-router";
+import { SessionDetailDto } from "../../../apis/api/sessiondetail";
 
-type OwnProps = {
-  sessionId?: number;
-  isSessionHost?: boolean;
-  startAt?: string;
-};
+type OwnProps = SessionDetailDto;
 
 const AttendanceButton: React.FC<OwnProps> = (props) => {
   const navigate = useNavigate();

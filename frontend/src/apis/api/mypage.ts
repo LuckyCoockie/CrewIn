@@ -15,7 +15,6 @@ export type ProfileDto = {
 export const getMyProfileInfo = async (): Promise<ProfileDto> => {
   const response = await api.get(`/member/profile`);
   console.log(response.data);
-
   return response.data;
 };
 
@@ -32,7 +31,7 @@ export type MyMadeSessionDto = {
   startAt: string;
   endAt: string;
   sessionName: string;
-  imageUrl: string;
+  sessionThumbnail: string;
   sessionId: number;
   crewName: string;
   area: string;
@@ -43,8 +42,6 @@ export type MyMadeSessionsResponseDto = PageNationData<MyMadeSessionDto>;
 export const getMyMadeSessions = async (
   pageNo: number
 ): Promise<MyMadeSessionsResponseDto> => {
-  console.log(pageNo);
-
   const response = await api.get(
     `/mypage/session?type=created&session-type=ALL&page-no=${pageNo}`
   );
@@ -56,7 +53,7 @@ export type MyParticipatedSessionDto = {
   startAt: string;
   endAt: string;
   sessionName: string;
-  imageUrl: string;
+  sessionThumbnail: string;
   sessionId: number;
   crewName: string;
   area: string;
@@ -95,9 +92,14 @@ export type MyGalleryDto = {
 export type MyGalleryResponseDto = PageNationData<MyGalleryDto>;
 
 export const getMyGallery = async (
-  pageNo: number
+  pageNo: number,
+  memberId: number
 ): Promise<MyGalleryResponseDto> => {
-  const response = await api.get(`/mypage/detail/gallery?page-no=${pageNo}`);
+  console.log(memberId);
+
+  const response = await api.get(
+    `/post/member/gallery/${memberId}?page-no=${pageNo}`
+  );
   console.log(response.data);
 
   return response.data;
@@ -117,7 +119,7 @@ export type PeopleGalleryResponseDto = {
 export const getPeopleGallery = async (
   pageNo: number,
   memberId: number
-): Promise<MyGalleryResponseDto> => {
+): Promise<PeopleGalleryResponseDto> => {
   const response = await api.get(
     `/post/member/gallery/${memberId}?page-no=${pageNo}`
   );

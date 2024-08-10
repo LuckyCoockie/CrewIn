@@ -2,15 +2,26 @@ import { useEffect, useMemo, useState } from "react";
 import "../../styles/square.css";
 import React from "react";
 import sessionLogoImage from "../../assets/images/sessionLogo.png";
+import { ReactComponent as Sessionpeople } from "../../assets/icons/sessinpeople.svg";
 
 interface OwnProps {
-  crewName: string;
+  max?: number;
+  current?: number;
+  crewName?: string;
   area: string;
   date: string;
   imageUrl: string;
+  title: string;
 }
 
-const SessionListItem = ({ crewName, area, date, imageUrl }: OwnProps) => {
+const SessionListItem = ({
+  title,
+  area,
+  date,
+  imageUrl,
+  current,
+  max,
+}: OwnProps) => {
   const [image, setImage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -48,47 +59,56 @@ const SessionListItem = ({ crewName, area, date, imageUrl }: OwnProps) => {
   }, [date]);
 
   return (
-    <div className="max-w-sm rounded-lg border-primary bg-primary tracking-tighter truncate">
-      <div className="flex justify-center items-center p-[6px] xs:p-2">
-        <div className="square">
-          {image ? (
-            <img
-              alt="session image"
-              src={image}
-              className="b border xs:border-2 border-white w-full"
-            />
-          ) : (
-            <img
-              alt="session image"
-              src={sessionLogoImage}
-              className="b border xs:border-2 border-white w-full"
-            />
+    <div className="max-w-sm rounded-lg border-primary bg-primary tracking-tighter truncate relative">
+      <div className="flex justify-center items-center p-[6px] xs:p-2 relative">
+        <div className="square relative">
+          <img
+            alt="session image"
+            src={image || sessionLogoImage}
+            className={`border xs:border-2 w-full ${
+              current! >= max! ? "grayscale" : ""
+            }`}
+          />
+          {current && max && (
+            <div className="absolute top-1 right-1 border rounded-xl bg-white flex h-4 xs:h-5 px-1 justify-center items-center shadow-sm bg-opacity-85 border-opacity-85">
+              <div className="me-1">
+                <Sessionpeople />
+              </div>
+              <div className="text-[10px] xs:text-sm font-bold ">
+                {current} / {max}
+              </div>
+            </div>
+          )}
+          {current! >= max! && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+              <p className="text-white text-xl font-bold">마감됨</p>
+            </div>
           )}
         </div>
       </div>
       <div className="mt-[3px] m-2 xs:mt-2">
-        <div className="flex justify-between items-center flex mb-1 xs:mb-2">
-          <div className="left-element mr-2">
+        <div className="flex justify-between items-center mb-1 xs:mb-2">
+          <div className="mr-2 overflow-hidden w-[2/3]">
             <p
               className="text-white font-bold text-xs xs:text-base truncate"
-              style={{ lineHeight: "0.8em" }}
+              style={{ lineHeight: "1em" }}
             >
-              {crewName}
+              {title.length > 10 ? `${title.substring(0, 9)}...` : title}
             </p>
-            <p className="text-white text-[10px] xs:text-xs sm:text-sm truncate">
+            <p className="text-gray-300 text-[10px] xs:text-xs sm:text-sm truncate">
               {area}
             </p>
           </div>
-          <div className="right-element text-right items-center overflow-hidden">
+          <div className="text-right items-center w-[1/3]">
             <p
-              className="text-white text-[10px] xs:text-xs sm:text-sm truncate"
-              style={{ lineHeight: "0.95em" }}
+              className="text-gray-300 text-[10px] xs:text-xs sm:text-sm truncate"
+              style={{ lineHeight: "1em" }}
             >
               {parsedDate}
             </p>
             <p
-              className="text-white text-[10px] xs:text-xs sm:text-sm truncate"
-              style={{ lineHeight: "0.95em" }}
+              className="text-gray-300 text-[10px] xs:text-xs sm:text-sm truncate"
+              style={{ lineHeight: "1em" }}
             >
               {parsedTime}
             </p>

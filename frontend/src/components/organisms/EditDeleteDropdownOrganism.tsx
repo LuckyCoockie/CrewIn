@@ -41,11 +41,11 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({
     setIsDropdownOpen(false);
     // 수정 로직 구현
     if (type === "CREW") {
-      navigate(`/crew/edit/${idData}`); // 페이지 이동
+      navigate(`/crew/edit/${idData}`); // 크루 수정 페이지 이동
     } else if (type === "SESSION") {
-      navigate(`/session/edit/${idData}`); // 페이지 이동
+      navigate(`/session/${idData}/edit`); // 세션 수정 페이지 이동
     } else if (type === "NOTICE") {
-      navigate(`/crew/detail/${idData2}/noticeedit/${idData}`);
+      navigate(`/crew/detail/${idData2}/notice/${idData}/edit`); // 공지사항 수정 페이지 이동
     }
   };
 

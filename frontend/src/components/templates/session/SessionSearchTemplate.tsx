@@ -92,6 +92,9 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({
           ItemComponent={({ data }) => (
             <div onClick={() => onSessionItemClick(data.sessionId)}>
               <SessionListItemMolecules
+                title={data.sessionName}
+                max={data.maxPeople}
+                current={data.currentPeople}
                 key={data.sessionId}
                 crewName={data.crewName}
                 area={data.area}

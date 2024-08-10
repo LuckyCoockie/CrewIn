@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState, useCallback, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
 import { ReactComponent as Searchicon } from "../../../assets/icons/searchicon.svg";
 import { ReactComponent as CrewinLogo } from "../../../assets/icons/crewinlogo.svg";
@@ -16,20 +16,45 @@ const sortPositions: Record<string, number> = {
   MEMBER: 3,
 };
 
+const useDebounce = (value: string, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+};
+
 const CrewMemberSearchTemplate: React.FC = () => {
-  const navigate = useNavigate();
   const { crewId } = useParams<{ crewId: string }>();
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [, setMembers] = useState<CrewMemberDto[]>([]);
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
   const fetchCrewMembers = useCallback(
     async (page: number): Promise<GetCrewMemberListResponseDto> => {
+      if (!debouncedSearchQuery) {
+        return { pageNo: 0, lastPageNo: 0, items: [] };
+      }
+
       try {
         const data = await getCrewMemberList(Number(crewId), page);
         const filteredItems = data.items.filter(
           (member) =>
             member.joined &&
-            (member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              member.nickname.toLowerCase().includes(searchQuery.toLowerCase()))
+            (member.name
+              .toLowerCase()
+              .includes(debouncedSearchQuery.toLowerCase()) ||
+              member.nickname
+                .toLowerCase()
+                .includes(debouncedSearchQuery.toLowerCase()))
         );
         const sortedItems = filteredItems.sort((a, b) => {
           const positionA =
@@ -38,18 +63,25 @@ const CrewMemberSearchTemplate: React.FC = () => {
             sortPositions[b.position as keyof typeof sortPositions] ?? Infinity;
           return positionA - positionB;
         });
+
+        setMembers((prevMembers) => [...prevMembers, ...sortedItems]);
+
         return { ...data, items: sortedItems };
       } catch (error) {
         console.error("크루원 데이터를 가져오는 중 오류 발생:", error);
         return { pageNo: 0, lastPageNo: 0, items: [] };
       }
     },
-    [crewId, searchQuery]
+    [crewId, debouncedSearchQuery]
   );
 
   const handleSearchIconClick = () => {
-    navigate("/crew/membersearch/captain");
+    // Implement navigation or other actions if needed
   };
+
+  useEffect(() => {
+    setMembers([]);
+  }, [debouncedSearchQuery]);
 
   const renderMemberItem = (member: CrewMemberDto) => (
     <li key={member.email} className="flex items-center p-2 border-b">
@@ -99,12 +131,14 @@ const CrewMemberSearchTemplate: React.FC = () => {
       <hr />
 
       <div>
-        <InfiniteScrollComponent
-          fetchKey="crewMembersSearch"
-          fetchData={fetchCrewMembers}
-          ItemComponent={({ data }) => renderMemberItem(data)}
-          className="crew-member-search-list"
-        />
+        {debouncedSearchQuery && (
+          <InfiniteScrollComponent
+            fetchKey={["crewMembersSearch", debouncedSearchQuery]}
+            fetchData={fetchCrewMembers}
+            ItemComponent={({ data }) => renderMemberItem(data)}
+            className="crew-member-search-list"
+          />
+        )}
       </div>
     </div>
   );

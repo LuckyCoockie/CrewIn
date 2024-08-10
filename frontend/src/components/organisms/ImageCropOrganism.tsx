@@ -176,6 +176,13 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
     }
   };
 
+  const handleClearImages = () => {
+    setImagePaths([]);
+    setCroppedImages([]);
+    setOriginalCroppedImages([]);
+    setIsCropped(false);
+  };
+
   return (
     <div className="flex flex-col items-center justify-center">
       {imagePaths.length === 0 ? (
@@ -224,26 +231,26 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
                         <img
                           src={editButton}
                           alt="edit Button"
-                          className="w-10 h-10"
+                          className="w-12 h-12"
                         />
                       </button>
                     </>
                   )}
                   <button
                     onClick={handleCropAll}
-                    className="absolute bottom-8 right-3 bg-transparent z-1 p-1"
+                    className="absolute bottom-6 right-3 bg-transparent z-1 p-1"
                   >
                     {isCropped ? (
                       <img
                         src={cropButton}
                         alt="crop Button"
-                        className="w-10 h-10"
+                        className="w-12 h-12"
                       />
                     ) : (
                       <img
                         src={checkButton}
                         alt="check Button"
-                        className="w-10 h-10"
+                        className="w-12 h-12"
                       />
                     )}
                   </button>
@@ -251,6 +258,12 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
               ))}
             </Carousel>
           </div>
+          <button
+            onClick={handleClearImages}
+            className="mt-2 button-color text-light p-2 rounded"
+          >
+            이미지 초기화
+          </button>
         </>
       )}
       <main>

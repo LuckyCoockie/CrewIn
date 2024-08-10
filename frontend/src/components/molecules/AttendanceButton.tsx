@@ -1,32 +1,37 @@
+import React from "react";
 import { useCallback, useState } from "react";
 
 type OwnProps = {
   initPresent: boolean; // 출석 여부
-  isAuto: boolean; // 자동 여부
+  isAutoAttendanceEnded: boolean; // 자동 여부
   onClick?: (state: boolean) => void;
 };
 
-const AttendenceButton: React.FC<OwnProps> = ({
+const AttendanceButton: React.FC<OwnProps> = ({
   initPresent,
-  isAuto,
+  isAutoAttendanceEnded,
   onClick,
 }) => {
   const [isPresent, setIsPresent] = useState(initPresent);
 
   const handleClick = useCallback(() => {
-    if (onClick && !isAuto) onClick(!isPresent);
-    setIsPresent(!isPresent);
-  }, [isAuto, isPresent, onClick]);
+    try {
+      if (onClick && isAutoAttendanceEnded) onClick(!isPresent);
+      setIsPresent(!isPresent);
+    } catch (e) {
+      alert("출석 정보가 반영되지 않았습니다.");
+    }
+  }, [isAutoAttendanceEnded, isPresent, onClick]);
 
   return initPresent ? (
     <button
       className="border border-gray-400 w-20 h-10 rounded-md text-sm bg-primary text-white"
       onClick={handleClick}
     >
-      {isAuto ? "출석" : "수동 출석"}
+      {"출석"}
     </button>
   ) : (
-    !isAuto && (
+    isAutoAttendanceEnded && (
       <button
         className="border border-gray-400 w-20 h-10 rounded-md text-sm"
         onClick={handleClick}
@@ -37,4 +42,4 @@ const AttendenceButton: React.FC<OwnProps> = ({
   );
 };
 
-export default AttendenceButton;
+export default React.memo(AttendanceButton);

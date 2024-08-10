@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import CrewinLogo from "../../assets/images/crewinlogo.png";
 import closeButton from "../../assets/images/closebutton.png";
 import { fetchNotifications, NotificationDto } from "../../apis/api/alarm";
 import { deleteNotification } from "../../apis/api/alarmdelete";
 import { replyToCrewInvitation } from "../../apis/api/crewallowreject";
+import { useSelector } from "react-redux";
+import { RootState } from "../../modules";
 
 const AlarmTemplate: React.FC = () => {
   const [alarms, setAlarms] = useState<NotificationDto[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const memberId = useSelector((state: RootState) => state.auth.memberId);
 
   useEffect(() => {
     const loadNotifications = async () => {
@@ -19,14 +22,9 @@ const AlarmTemplate: React.FC = () => {
         if (data) {
           console.log(data);
           setAlarms(data);
-        } else {
-          setError("데이터를 불러오지 못했습니다.");
         }
       } catch (error) {
         console.error("알림 목록을 가져오는 중 오류가 발생했습니다.", error);
-        setError("알림 목록을 가져오는 중 오류가 발생했습니다.");
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -78,13 +76,15 @@ const AlarmTemplate: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return <p>Loading notifications...</p>;
-  }
-
-  if (error) {
-    return <p className="text-red-500">{error}</p>;
-  }
+  const handleNotificationClick = (notification: NotificationDto) => {
+    if (notification.notificationType === "INVITATION") {
+      navigate(`/crew/detail/${notification.senderId}`);
+    } else if (notification.notificationType === "NOTICE") {
+      navigate(
+        `/crew/detail/${notification.senderId}/notice/${notification.postId}`
+      );
+    }
+  };
 
   return (
     <div className="flex flex-col max-w-[550px] mx-auto">
@@ -95,12 +95,18 @@ const AlarmTemplate: React.FC = () => {
         <div className="border-b border-gray-400"></div>
         {alarms.length > 0 ? (
           alarms
+            .filter((alarm) => alarm.notificationType !== "LIKE" || alarm.senderId !== memberId)
             .slice()
             .reverse()
             .map((alarm) => (
               <div
                 key={alarm.notificationId}
-                className="p-4 border-b border-gray-200 flex items-center"
+                className={`p-4 border-b border-gray-200 flex items-center ${
+                  alarm.isChecked && alarm.notificationType !== "INVITATION"
+                    ? "bg-gray-100"
+                    : ""
+                }`}
+                onClick={() => handleNotificationClick(alarm)}
               >
                 <img
                   src={alarm.senderThumbnail || CrewinLogo}
@@ -122,16 +128,22 @@ const AlarmTemplate: React.FC = () => {
                       >
                         {alarm.senderName} 크루에 초대되었습니다.
                       </div>
-                      <div className="flex space-x-2 h-6">
+                      <div className="flex space-x-2">
                         <button
-                          className="bg-[#D5D5D9] text-white px-3 py-1 rounded text-xs tracking-tighter"
-                          onClick={() => handleReject(alarm)}
+                          className="w-12 bg-[#D5D5D9] text-white px-3 py-1 rounded text-xs tracking-tighter"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleReject(alarm);
+                          }}
                         >
                           거절
                         </button>
                         <button
-                          className="bg-[#2B2F40] text-white px-3 py-1 rounded text-xs tracking-tighter"
-                          onClick={() => handleAccept(alarm)}
+                          className="w-12 bg-[#2B2F40] text-white px-3 py-1 rounded text-xs tracking-tighter"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAccept(alarm);
+                          }}
                         >
                           수락
                         </button>
@@ -139,14 +151,21 @@ const AlarmTemplate: React.FC = () => {
                     </div>
                   )}
                   {alarm.notificationType === "LIKE" && (
-                    <div className="flex justify-between items-center w-full h-6 tracking-tighter">
+                    <div
+                      className={`flex justify-between items-center w-full h-6 tracking-tighter ${
+                        alarm.isChecked ? "text-gray-500" : ""
+                      }`}
+                    >
                       <div className="font-bold text-sm">
                         {alarm.senderName}님이 회원님의 게시글에 좋아요를
                         눌렀습니다.
                       </div>
                       <div className="flex items-center mt-3">
                         <button
-                          onClick={() => handleDelete(alarm.notificationId)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(alarm.notificationId);
+                          }}
                         >
                           <img
                             src={closeButton}
@@ -158,13 +177,20 @@ const AlarmTemplate: React.FC = () => {
                     </div>
                   )}
                   {alarm.notificationType === "NOTICE" && (
-                    <div className="flex justify-between items-center w-full tracking-tighter">
+                    <div
+                      className={`flex justify-between items-center w-full tracking-tighter ${
+                        alarm.isChecked ? "text-gray-500" : ""
+                      }`}
+                    >
                       <div className="font-bold text-sm">
                         {alarm.senderName} 크루에 공지가 올라왔습니다.
                       </div>
                       <div className="flex items-center mt-3">
                         <button
-                          onClick={() => handleDelete(alarm.notificationId)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(alarm.notificationId);
+                          }}
                         >
                           <img
                             src={closeButton}
@@ -175,7 +201,13 @@ const AlarmTemplate: React.FC = () => {
                       </div>
                     </div>
                   )}
-                  <div className="text-gray-500 text-xs">
+                  <div
+                    className={`text-gray-500 text-xs ${
+                      alarm.isChecked && alarm.notificationType === "INVITATION"
+                        ? "text-black"
+                        : ""
+                    }`}
+                  >
                     {new Date(alarm.createdAt).toLocaleString()}{" "}
                   </div>
                 </div>

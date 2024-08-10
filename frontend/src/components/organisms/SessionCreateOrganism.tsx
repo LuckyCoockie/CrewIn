@@ -113,11 +113,16 @@ const SessionCreateOrganism: React.FC = () => {
     }
 
     if (crewData && crewData.crews.length > 0) {
+      // 크루 선택창 활성화 조건
       setHasCrew(true);
+
       setUserRole("CAPTAIN");
       const filteredCrews = crewData.crews.filter(
         (crew) => crew.position === "PACER" || crew.position === "CAPTAIN"
       );
+      // 필터된 크루의 조건중에 페이서나 캡틴이 없다면 번개런/오픈런 버튼 랜더링 삭제
+      console.log(filteredCrews.length);
+
       setFilteredCrews(filteredCrews);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -125,10 +130,14 @@ const SessionCreateOrganism: React.FC = () => {
 
   const checkUndefined = async (files: FileList) => {
     if (files) {
-      const uploadPromises = Array.from(files).map(async (file) => {
+      // files를 배열로 변환한 다음 역순으로 정렬
+      const reversedFiles = Array.from(files).reverse();
+
+      const uploadPromises = reversedFiles.map(async (file) => {
         const result = await uploadImage(file);
         return result;
       });
+
       return Promise.all(uploadPromises);
     } else {
       return [];
@@ -169,12 +178,13 @@ const SessionCreateOrganism: React.FC = () => {
       maxPeople: data.sessionmembers,
     };
     console.log(submitData);
-
+    // spinner 및 클릭 방지 실행 부분
     return postCreateSession(submitData) // 제출 API 호출
       .then(() => {
         navigate(`/session?status=active`);
       })
       .catch((error) => {
+        // 실패시 spinner 제거
         console.log(error);
       });
   };
@@ -362,6 +372,7 @@ const SessionCreateOrganism: React.FC = () => {
               <ImageMultiTypeMolecule
                 id="sessionposter"
                 title="포스터"
+                text="처음에 선택한 사진이 메인에 노출됩니다."
                 placeholder=""
                 {...field}
                 onChange={(e) => {

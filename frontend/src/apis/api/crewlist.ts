@@ -8,7 +8,7 @@ export type CrewDto = {
   area: string;
   crewCount: number;
   captainName: string;
-  imageUrl: string;
+  mainLogo: string;
 };
 
 export type GetCrewListRequestDto = {
@@ -22,5 +22,6 @@ export const getCrewList = async (
   dto: GetCrewListRequestDto
 ): Promise<GetCrewListResponseDto> => {
   const response = await api.get("/search/crew", { params: dto });
+  console.log(response.data);
   return response.data;
 };

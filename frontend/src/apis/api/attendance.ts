@@ -4,55 +4,27 @@ export type AttendanceMemberDto = {
   memberSessionId: number;
   name: string;
   nickname: string;
-  imageUrl: string;
+  profileUrl: string;
+  isAttend: boolean;
 };
 
 export type GetAttendanceMemberListRequestDto = {
   sessionId: number;
 };
 
+export type AutoCheckStatus = "BEFORE" | "DURING" | "AFTER";
+
+export type GetAttendanceMemberListResponseDto = {
+  items: AttendanceMemberDto[];
+  autoCheckStatus: AutoCheckStatus;
+  leftTime: number;
+};
+
 export const getAttendanceMemberList = async (
   dto: GetAttendanceMemberListRequestDto
-): Promise<AttendanceMemberDto[]> => {
-  return [
-    {
-      memberSessionId: 1,
-      name: "name",
-      nickname: "nickname",
-      imageUrl:
-        "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
-    },
-    {
-      memberSessionId: 1,
-      name: "name",
-      nickname: "nickname",
-      imageUrl:
-        "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
-    },
-    {
-      memberSessionId: 1,
-      name: "name",
-      nickname: "nickname",
-      imageUrl:
-        "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
-    },
-    {
-      memberSessionId: 1,
-      name: "name",
-      nickname: "nickname",
-      imageUrl:
-        "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
-    },
-    {
-      memberSessionId: 1,
-      name: "name",
-      nickname: "nickname",
-      imageUrl:
-        "https://crewin-bucket.s3.ap-northeast-2.amazonaws.com/crewin/crewinlogo.webp",
-    },
-  ];
-  const response = await api.get<AttendanceMemberDto[]>(
-    `/attendence/member/${dto.sessionId}`
+): Promise<GetAttendanceMemberListResponseDto> => {
+  const response = await api.get<GetAttendanceMemberListResponseDto>(
+    `/attendance/member/${dto.sessionId}`
   );
   return response.data;
 };
@@ -80,8 +52,10 @@ export const changeAttend = async (dto: ChangeAttendRequestDto) => {
 
 export type PostAttendRequestDto = {
   sessionId: number;
+  lat: number;
+  lng: number;
 };
 
 export const postAttend = async (dto: PostAttendRequestDto) => {
-  await api.post(`/attendance/guest/${dto.sessionId}`);
+  await api.post(`/attendance/guest/${dto.sessionId}`, dto);
 };

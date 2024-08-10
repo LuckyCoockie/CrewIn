@@ -19,7 +19,7 @@ import SessionSearchPage from "./pages/session/SessionSearchPage.tsx";
 import CrewSearchPage from "./pages/crew/CrewSearchPage.tsx";
 import CrewGalleryListDetailPage from "./pages/CrewGalleryListDetailPage.tsx";
 import FindPasswordPage from "./pages/FindPasswordPage.tsx";
-import NoticeCreatePage from "./pages/NoticeCreatePage.tsx";
+import CrewNoticeCreatePage from "./pages/CrewNoticeCreatePage.tsx";
 import { ProfileInfoPage } from "./pages/ProfileInfoPage.tsx";
 import ProtectedRoute from "./util/router/ProtectedRoute.tsx";
 import UnprotectedRoute from "./util/router/UnprotectedRoute.tsx";
@@ -37,6 +37,9 @@ import CrewRedirectPage from "./pages/crew/CrewRedirectPage.tsx";
 import AttendancePage from "./pages/attendance/AttendancePage.tsx";
 import CrewNoticeDetailPage from "./pages/CrewNoticeDetailPage.tsx";
 import CourseDetailPage from "./pages/course/CourseDetailPage.tsx";
+import CrewEditPage from "./pages/CrewEditPage.tsx";
+import SessionEditPage from "./pages/SessionEditPage.tsx";
+import CrewNoticeEditPage from "./pages/CrewNoticeEditPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -62,6 +65,7 @@ export const router = createBrowserRouter([
                   { path: "attendance", element: <AttendancePage /> },
                 ],
               },
+              { path: ":sessionId/edit", element: <SessionEditPage /> },
             ],
           },
           {
@@ -81,7 +85,7 @@ export const router = createBrowserRouter([
               },
               {
                 path: "detail/:crewId/noticecreate",
-                element: <NoticeCreatePage />,
+                element: <CrewNoticeCreatePage />,
               },
               { path: "detail/:crewId/member", element: <CrewMemberPage /> },
               {
@@ -97,11 +101,15 @@ export const router = createBrowserRouter([
                 element: <CaptainPovCrewMemberSearchPage />,
               },
               { path: ":crewId/invite", element: <CrewInvitePage /> },
-              { path: "invite", element: <CrewInvitePage /> },
               {
                 path: "detail/:crewId/notice/:noticeId",
                 element: <CrewNoticeDetailPage />,
               },
+              {
+                path: "detail/:crewId/notice/:noticeId/edit",
+                element: <CrewNoticeEditPage />,
+              },
+              { path: "edit/:crewId", element: <CrewEditPage /> },
             ],
           },
           { path: "mypage/session/:type", element: <MySessionPage /> },

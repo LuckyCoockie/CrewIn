@@ -98,6 +98,7 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
           setMembers((prevMembers) =>
             prevMembers.filter((m) => m.email !== email)
           );
+          navigate(0);
         } else {
           await changeAuthority({
             crewId: Number(crewId),
@@ -116,6 +117,7 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
                 );
               })
           );
+          navigate(0);
         }
       } catch (error) {
         console.error("권한 변경 오류:", error);

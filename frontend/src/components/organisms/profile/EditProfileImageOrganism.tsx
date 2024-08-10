@@ -54,9 +54,10 @@ export const EditProfileImageOrganism = ({
             control={control}
             render={({ field }) => (
               <InputImageTypeMolecule
+                text="프로필에 노출됩니다."
                 id="image"
                 title="프로필 사진"
-                placeholder="1:1 비율이 가장 적합합니다."
+                placeholder="1:1 비율을 권장합니다."
                 {...field}
                 onChange={(e) => {
                   if (!e.target.files || e.target.files.length <= 0) {

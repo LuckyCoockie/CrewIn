@@ -23,6 +23,7 @@ const PeopleAlbumOrganism: React.FC = () => {
           <img
             src={data.thumbnailImage}
             alt={`gallery-item-${data.postId}`}
+            key={`gallery-${data.postId}`}
             className="w-full h-full"
             style={{ border: "1px solid rgba(255, 0, 0, 0)" }}
           />

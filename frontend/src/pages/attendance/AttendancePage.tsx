@@ -3,8 +3,10 @@ import AttendanceTemplate from "../../components/templates/attendance/Attendance
 import { useCallback } from "react";
 import {
   ChangeAttendRequestDto,
+  GetAttendanceMemberListResponseDto,
   changeAttend,
   getAttendanceMemberList,
+  postAttend,
   startAttendance,
 } from "../../apis/api/attendance";
 import useGeolocation from "../../util/geolocation/gelocation";
@@ -14,33 +16,59 @@ const AttendancePage: React.FC = () => {
   const { location } = useGeolocation();
   const { state } = useLocation();
 
-  console.log(state);
+  const getMemberList =
+    useCallback(async (): Promise<GetAttendanceMemberListResponseDto> => {
+      if (!sessionId) {
+        return {
+          items: [],
+          autoCheckStatus: "BEFORE",
+          leftTime: 0,
+        };
+      }
+      return getAttendanceMemberList({
+        sessionId: parseInt(sessionId),
+      });
+    }, [sessionId]);
 
-  const getMemberList = useCallback(async () => {
-    if (!sessionId) return [];
-    return getAttendanceMemberList({ sessionId: parseInt(sessionId) });
-  }, [sessionId]);
-
-  const onStartAttendance = useCallback(async () => {
+  const onStartAttendanceClick = useCallback(async () => {
     if (!sessionId || !location) return;
 
     startAttendance({
+      sessionId: parseInt(sessionId),
+      lat: location.latitude,
+      lng: location.longitude,
+    });
+  }, [location, sessionId]);
+
+  const onHostAttendanceClick = useCallback(
+    async (dto: ChangeAttendRequestDto) => {
+      changeAttend(dto);
+    },
+    []
+  );
+
+  const onGuestAttendanceClick = useCallback(async () => {
+    if (!sessionId || !location) return;
+
+    postAttend({
       sessionId: parseInt(sessionId),
       lat: location?.latitude,
       lng: location?.longitude,
     });
   }, [location, sessionId]);
 
-  const onAttendanceChange = useCallback(async (dto: ChangeAttendRequestDto) => {
-    changeAttend(dto);
-  }, []);
+  if (!sessionId) return "sessionId가 필요합니다.";
 
   return (
     <AttendanceTemplate
-      fetchMemberList={getMemberList}
-      onStartAttendance={onStartAttendance}
+      getMemberList={getMemberList}
+      onStartAttendanceClick={onStartAttendanceClick}
       isSessionHost={state ? state.isSessionHost : false}
-      onAttendanceChange={onAttendanceChange}
+      onHostAttendanceClick={onHostAttendanceClick}
+      onGuestAttendanceClick={onGuestAttendanceClick}
+      startAt={state.startAt}
+      endAt={state.endAt}
+      sessionId={parseInt(sessionId)}
     />
   );
 };

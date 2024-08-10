@@ -1,20 +1,35 @@
+import axios from "axios";
 import store from "../../modules";
-import {
-  loading,
-  setAccessToken,
-  setMemberId,
-} from "../../modules/reducers/auth";
-import api from "../index";
+import { loading } from "../../modules/reducers/auth";
+import { checkAuth, clearAuth, setAuth } from "../../util/auth";
 
 export type LoginRequestDto = { email: string; password: string };
 export type LoginResponseDto = { accessToken: string; memberId: number };
 
-export const login = async (
-  dto: LoginRequestDto
-): Promise<LoginResponseDto> => {
+export const login = async (dto: LoginRequestDto) => {
   store.dispatch(loading());
-  const response = await api.post<LoginResponseDto>("/member/login", dto);
-  store.dispatch(setAccessToken(response.data.accessToken));
-  store.dispatch(setMemberId(response.data.memberId));
-  return response.data;
+  const response = await axios.post<{ data: LoginResponseDto }>(
+    `${import.meta.env.VITE_SERVER_URL}/member/login`,
+    dto
+  );
+  setAuth(response.data.data);
+};
+
+export const refreshToken = async () => {
+  if (!checkAuth()) {
+    clearAuth();
+    throw "";
+  }
+  try {
+    store.dispatch(loading());
+    const response = await axios.post<{ data: LoginResponseDto }>(
+      `${import.meta.env.VITE_SERVER_URL}/member/reissue`,
+      null,
+      { withCredentials: true }
+    );
+    setAuth(response.data.data);
+  } catch (e) {
+    clearAuth();
+    throw "";
+  }
 };

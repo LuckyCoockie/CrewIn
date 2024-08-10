@@ -8,7 +8,7 @@ const CrewSearchPage: React.FC = () => {
 
   const onSearch = useCallback(
     async (dto: GetCrewListRequestDto) => {
-      navigate(`/crew?${createSearchParams(dto)}`);
+      navigate(`/crew/search?${createSearchParams(dto)}`);
     },
     [navigate]
   );
