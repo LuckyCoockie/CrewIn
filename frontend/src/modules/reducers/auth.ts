@@ -19,7 +19,6 @@ type SetAccessTokenAction = {
   type: typeof SET_ACCESS_TOKEN;
   accessToken: string;
   memberId: number;
-  interceptorId: number;
 };
 
 type ClearAccessTokenAction = {
@@ -38,13 +37,12 @@ export const loading = (): Loading => ({
 });
 
 export const setAccessToken = (accessToken: string, memberId: number) => {
+  console.log("set access token", accessToken);
   return async (dispatch: Dispatch<AuthActionTypes>) => {
-    const interceptorId = setTokenInterceptors(accessToken);
     dispatch({
       type: SET_ACCESS_TOKEN,
       accessToken: accessToken,
       memberId: memberId,
-      interceptorId: interceptorId,
     });
   };
 };
@@ -88,7 +86,7 @@ const authReducer = (
         ...state,
         accessToken: action.accessToken,
         memberId: action.memberId,
-        interceptorId: action.interceptorId,
+        interceptorId: setTokenInterceptors(action.accessToken),
         loading: false,
       };
     case CLEAR_ACCESS_TOKEN: {
