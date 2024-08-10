@@ -57,7 +57,7 @@ const MyPageParticipatedSessionOrganism: React.FC<
   return (
     <>
       <div className="flex items-center">
-        <div>
+        <div className="cursor-pointer">
           <MediumTitleMolecule text="최근 참가한 세션" onClick={clickRouter} />
         </div>
         <IntoArrowButton router={`/mypage/session/${MySessionType.JOINED}`} />
