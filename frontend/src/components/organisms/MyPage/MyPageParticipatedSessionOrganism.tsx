@@ -47,8 +47,8 @@ const MyPageParticipatedSessionOrganism: React.FC<
     const bStatus = convertText(b.startAt, b.endAt);
     const statusOrder = {
       "진행 예정": 1,
-      "진행중": 2,
-      "종료": 3,
+      진행중: 2,
+      종료: 3,
     };
 
     return statusOrder[aStatus] - statusOrder[bStatus];
@@ -56,8 +56,10 @@ const MyPageParticipatedSessionOrganism: React.FC<
 
   return (
     <>
-      <div className="flex items-center cursor-pointer" onClick={clickRouter}>
-        <MediumTitleMolecule text="최근 참가한 세션" />
+      <div className="flex items-center">
+        <div>
+          <MediumTitleMolecule text="최근 참가한 세션" onClick={clickRouter} />
+        </div>
         <IntoArrowButton router={`/mypage/session/${MySessionType.JOINED}`} />
       </div>
       {!isParticipatedSessionsError ? (
