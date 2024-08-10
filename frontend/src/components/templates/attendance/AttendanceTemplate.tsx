@@ -96,24 +96,24 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
             "세션이 종료되어 출석을 수정할 수 없습니다."
           ) : (
             <>
-              {isBeforeAutoCheck &&
+              {isBeforeAutoCheck && isSessionHost && (
+                <LargeAbleButton
+                  text="자동 출석 시작"
+                  onClick={handleStartAttendanceClick}
+                />
+              )}
+              {isDuringAutoCheck &&
                 (isSessionHost ? (
-                  <LargeAbleButton
-                    text="자동 출석 시작"
-                    onClick={handleStartAttendanceClick}
-                  />
+                  <div className="w-full text-center">
+                    {"자동 출석 중에는 출석을 수정할 수 없습니다."}
+                    <TimerOrganism initSeconds={leftTime} />
+                  </div>
                 ) : (
                   <LargeAbleButton
                     text="출석하기"
                     onClick={onGuestAttendanceClick}
                   />
                 ))}
-              {isDuringAutoCheck && (
-                <div className="w-full text-center">
-                  {"자동 출석 중에는 출석을 수정할 수 없습니다."}
-                  <TimerOrganism initSeconds={leftTime} />
-                </div>
-              )}
               {isAfterAutoCheck &&
                 "자동 출석이 종료되어 수동 출석만 가능합니다."}
             </>
