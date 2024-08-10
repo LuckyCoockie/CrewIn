@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import useHistory for navigation
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import CrewinLogo from "../../assets/images/crewinlogo.png";
 import closeButton from "../../assets/images/closebutton.png";
@@ -10,6 +11,7 @@ const AlarmTemplate: React.FC = () => {
   const [alarms, setAlarms] = useState<NotificationDto[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate(); // Initialize useHistory
 
   useEffect(() => {
     const loadNotifications = async () => {
@@ -78,6 +80,14 @@ const AlarmTemplate: React.FC = () => {
     }
   };
 
+  const handleNotificationClick = (notification: NotificationDto) => {
+    if (notification.notificationType === "INVITATION") {
+      navigate(`/crew/detail/${notification.senderId}`);
+    } else if (notification.notificationType === "NOTICE") {
+      navigate(`/crew/detail/${notification.senderId}/notice/${notification.postId}`);
+    }
+  };
+
   if (loading) {
     return <p>Loading notifications...</p>;
   }
@@ -101,6 +111,7 @@ const AlarmTemplate: React.FC = () => {
               <div
                 key={alarm.notificationId}
                 className="p-4 border-b border-gray-200 flex items-center"
+                onClick={() => handleNotificationClick(alarm)} // Add onClick handler
               >
                 <img
                   src={alarm.senderThumbnail || CrewinLogo}
@@ -122,15 +133,15 @@ const AlarmTemplate: React.FC = () => {
                       >
                         {alarm.senderName} 크루에 초대되었습니다.
                       </div>
-                      <div className="flex space-x-2 h-6">
+                      <div className="flex space-x-2 h-7 mt-4">
                         <button
-                          className="bg-[#D5D5D9] text-white px-3 py-1 rounded text-xs tracking-tighter"
+                          className="w-12 bg-[#D5D5D9] text-white px-3 py-1 rounded text-xs tracking-tighter"
                           onClick={() => handleReject(alarm)}
                         >
                           거절
                         </button>
                         <button
-                          className="bg-[#2B2F40] text-white px-3 py-1 rounded text-xs tracking-tighter"
+                          className="w-12 bg-[#2B2F40] text-white px-3 py-1 rounded text-xs tracking-tighter"
                           onClick={() => handleAccept(alarm)}
                         >
                           수락
