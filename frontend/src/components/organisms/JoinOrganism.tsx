@@ -8,6 +8,7 @@ import InputEmailTypeMolecule from "../molecules/Input/InputEmailTypeMolecule";
 import InputPasswordTypeMolecule from "../molecules/Input/InputPasswordTypeMolecule";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
+import Timer from "../atoms/Timer";
 
 import {
   getEmailDuplicationCheck,
@@ -119,12 +120,14 @@ const LoginOrganism: React.FC = () => {
       window.alert("회원가입에 실패했습니다.");
     }
   };
+  const [timer, setTimer] = useState(false);
 
   const handleEmailVerification = async () => {
     const email = getValues("email");
     try {
       if (email) {
         await postMemberCheck({ email });
+        setTimer(true);
         setIsCodeInput(true);
         setIsEmailValid(true);
       } else return;
@@ -263,16 +266,21 @@ const LoginOrganism: React.FC = () => {
       {isEmailValid && (
         <>
           <div className="flex">
-            <div className="w-2/3 mb-4">
+            <div className="w-9/12 mb-4 relative">
               <input
-                type="text"
-                className="data-input"
+                type="number"
+                className="data-input focus:ring-0"
                 placeholder="인증번호"
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value)}
               />
+              {timer && (
+                <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                  <Timer />
+                </div>
+              )}
             </div>
-            <div className="w-1/4 mx-auto text-center">
+            <div className="w-3/12 ms-2 text-center">
               <button
                 type="button"
                 className="button-color w-full border-transparent"

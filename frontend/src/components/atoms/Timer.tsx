@@ -25,13 +25,10 @@ const Timer: React.FC = () => {
   );
   const second = String(Math.floor((timeLeft / 1000) % 60)).padStart(2, "0");
   return (
-    <div className="color-red text-xs">
+    <div className="text-red-500 text-xs">
       {minutes} : {second}
     </div>
   );
 };
 
 export default Timer;
-
-// 사용 코드
-// {isCodeShow && <Timer />}
