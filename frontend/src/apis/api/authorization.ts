@@ -1,3 +1,4 @@
+import axios from "axios";
 import store from "../../modules";
 import {
   loading,
@@ -21,7 +22,11 @@ export const login = async (
 
 export const refreshToken = async (): Promise<LoginResponseDto> => {
   store.dispatch(loading());
-  const response = await api.post<LoginResponseDto>("/member/reissue");
+  const response = await axios.post<LoginResponseDto>(
+    `${import.meta.env.VITE_SERVER_URL}/member/reissue`,
+    null,
+    { withCredentials: true }
+  );
   store.dispatch(setAccessToken(response.data.accessToken));
   store.dispatch(setMemberId(response.data.memberId));
   return response.data;
