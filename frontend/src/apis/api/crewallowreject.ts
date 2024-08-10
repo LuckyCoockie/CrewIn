@@ -2,6 +2,7 @@ import api from "../utils/instance";
 
 export type CrewReplyRequestDto = {
   crewId: number;
+  noticeId: number; // 알림 id
   replyStatus: boolean;
 };
 

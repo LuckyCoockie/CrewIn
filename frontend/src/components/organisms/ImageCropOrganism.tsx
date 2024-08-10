@@ -10,7 +10,7 @@ import cropButton from "../../assets/images/cropbutton.png";
 import checkButton from "../../assets/images/checkbutton.png";
 import InputTextAreaNoLimitTypeMolecule from "../molecules/Input/InputTextAreaNoLimitTypeMolecule";
 import InputRadioTypeMolecule from "../molecules/Input/InputRadioTypeMolecule";
-import InputDropdonwTypeMolecule from "../molecules/Input/InputDropdonwTypeMolecule";
+import InputDropdonwTypeMoleculeCenter from "../molecules/Input/InputDropdownTypeMoleculeLeft";
 import ImageUploadDropzone from "../molecules/Input/ImageUploadDropzone";
 import { createPost } from "../../apis/api/postcreate";
 import { getMyCrews, CrewDto } from "../../apis/api/mycrew";
@@ -280,8 +280,8 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
             />
           </div>
 
-          <div className="w-60">
-            <InputDropdonwTypeMolecule
+          <div className="w-60 text-center">
+            <InputDropdonwTypeMoleculeCenter
               id="crewId"
               title=""
               options={crews.map((crew) => ({
