@@ -39,7 +39,7 @@ const AlarmTemplate: React.FC = () => {
           prevAlarms.filter((alarm) => alarm.notificationId !== notificationId)
         );
       } else {
-        console.error("Failed to delete notification");
+        console.error("Failed to delete notification:", response);
         alert("Failed to delete notification");
       }
     } catch (error) {
@@ -52,10 +52,10 @@ const AlarmTemplate: React.FC = () => {
     try {
       await replyToCrewInvitation({
         crewId: notification.senderId!,
+        noticeId: notification.notificationId,
         replyStatus: true,
       });
-
-      await handleDelete(notification.notificationId);
+      navigate(0);
     } catch (error) {
       console.error("크루 초대 수락 중 오류가 발생했습니다:", error);
       alert("크루 수락 중 오류 발생");
@@ -66,6 +66,7 @@ const AlarmTemplate: React.FC = () => {
     try {
       await replyToCrewInvitation({
         crewId: notification.senderId!,
+        noticeId: notification.notificationId,
         replyStatus: false,
       });
 
@@ -95,7 +96,10 @@ const AlarmTemplate: React.FC = () => {
         <div className="border-b border-gray-400"></div>
         {alarms.length > 0 ? (
           alarms
-            .filter((alarm) => alarm.notificationType !== "LIKE" || alarm.senderId !== memberId)
+            .filter(
+              (alarm) =>
+                alarm.notificationType !== "LIKE" || alarm.senderId !== memberId
+            )
             .slice()
             .reverse()
             .map((alarm) => (
