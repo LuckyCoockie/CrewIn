@@ -5,7 +5,6 @@ export type NotificationDto = {
   isChecked: boolean;
   notificationType: string;
   senderId: number;
-  receiverId: number;
   postId: number | null;
   createdAt: string;
   senderName: string;
