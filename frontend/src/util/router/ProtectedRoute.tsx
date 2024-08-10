@@ -19,7 +19,7 @@ const ProtectedRoute = () => {
     }
   }, [isAuthenticated, loading, navigate]);
 
-  if (!isAuthenticated) return <>스플레쉬</>;
+  if (loading || !isAuthenticated) return <>스플레쉬</>;
   return <Outlet />;
 };
 
