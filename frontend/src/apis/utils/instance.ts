@@ -10,7 +10,6 @@ import {
   clearAccessToken,
   loading,
   setAccessToken,
-  setMemberId,
 } from "../../modules/reducers/auth";
 import { convertKeysToKebabCase } from "./querystring.ts/camelToKebab";
 
@@ -45,14 +44,13 @@ api.interceptors.response.use(
       try {
         store.dispatch(loading());
 
-        const response = await api.post<{
+        const response = await axios.post<{
           accessToken: string;
           memberId: number;
-        }>(`/member/reissue`);
+        }>(`${BASE_URL}/member/reissue`, null, { withCredentials: true });
         const { accessToken, memberId } = response.data;
 
-        store.dispatch(setAccessToken(accessToken));
-        store.dispatch(setMemberId(memberId));
+        store.dispatch(setAccessToken(accessToken, memberId));
 
         if (error.config?.headers) {
           error.config.headers.Authorization = `Bearer ${accessToken}`;
@@ -82,7 +80,6 @@ export const setTokenInterceptors = (token: string) => {
 
 export const clearTokenInterceptors = (interceptorId: number) => {
   api.interceptors.request.eject(interceptorId);
-  return null;
 };
 
 export default api;

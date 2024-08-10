@@ -2,7 +2,7 @@ import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
 import { RootState } from "../../modules";
-// import { refreshToken } from "../../apis/api/authorization";
+import { refreshToken } from "../../apis/api/authorization";
 
 const ProtectedRoute = () => {
   const { accessToken, loading } = useSelector(
@@ -15,7 +15,7 @@ const ProtectedRoute = () => {
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
-      // refreshToken().catch(() => navigate("/login"));
+      refreshToken().catch(() => navigate("/login"));
     }
   }, [isAuthenticated, loading, navigate]);
 
