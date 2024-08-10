@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -101,8 +102,8 @@ public class MemberService {
     }
 
     public void logout(String email) {
-        Auth auth = refreshTokenRedisRepository.findById(email).orElseThrow(AlreadyLogoutException::new);
-        refreshTokenRedisRepository.delete(auth);
+        Optional<Auth> auth = refreshTokenRedisRepository.findById(email);
+        auth.ifPresent(refreshTokenRedisRepository::delete);
     }
 
     public void changePassword(String email, String oldPassword, String newPassword) {

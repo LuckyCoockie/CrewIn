@@ -85,7 +85,9 @@ public class MemberController {
     @PostMapping("/logout")
     public ResponseEntity<BaseResponse<Void>> logout(@AuthenticationPrincipal CustomUser customUser) {
         memberService.logout(customUser.getEmail());
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "로그아웃 되었습니다."));
+        ResponseCookie responseCookie = ResponseCookie.from("refreshToken").path("/").maxAge(0).build();
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .body(BaseResponse.create(HttpStatus.OK.value(), "로그아웃 되었습니다."));
     }
 
     @PostMapping("/password")
