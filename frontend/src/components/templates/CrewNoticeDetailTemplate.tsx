@@ -67,7 +67,7 @@ const CrewNoticeDetailTemplate: React.FC = () => {
         <BackHeaderMediumOrganism text={noticeData.title} />
       </header>
       <div className="w-full">
-        <div className="flex items-center mb-3">
+        <div className="flex items-center">
           <UserProfileBarNoMenu
             profileImage={noticeData.profileImage}
             username={noticeData.authorName}

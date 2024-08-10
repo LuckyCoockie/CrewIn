@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import crewinlogo from "../../../assets/images/crewinlogo.png";
+import { ReactComponent as Attach } from "../../../assets/icons/attach.svg";
 
 type InputImage = {
   id: string;
@@ -43,7 +44,6 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
         <div className="flex flex-col items-center w-full">
           <label htmlFor={props.id} className="w-full">
             <div className="flex p-2 border border-gray-300 rounded-lg w-full text-end">
-              <p className="ml-1">🔗</p>
               {fileCount > 0 ? (
                 <p className="text-gray-500 font-semibold ml-1">
                   이미지가 선택되었습니다.
@@ -51,6 +51,9 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
               ) : (
                 <p className="text-gray-500 font-semibold ml-1">{props.text}</p>
               )}
+              <p className="ml-auto">
+                <Attach />
+              </p>
             </div>
           </label>
           <input
