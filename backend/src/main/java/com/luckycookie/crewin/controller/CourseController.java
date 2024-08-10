@@ -45,8 +45,8 @@ public class CourseController {
     }
 
     @GetMapping("/{courseId}")
-    public ResponseEntity<BaseResponse<CourseRequest.CourseDetailResponse>> getCourseDetail(@AuthenticationPrincipal CustomUser customUser, @PathVariable("courseId") Long courseId) {
-        CourseRequest.CourseDetailResponse courseDetailResponse = courseService.getCourseDetail(courseId, customUser);
+    public ResponseEntity<BaseResponse<CourseRequest.CourseDetailResponse>> getCourseDetail(@PathVariable("courseId") Long courseId) {
+        CourseRequest.CourseDetailResponse courseDetailResponse = courseService.getCourseDetail(courseId);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당 경로 상세정보를 조회하는데 성공했습니다.", courseDetailResponse));
     }
 }

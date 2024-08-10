@@ -65,7 +65,7 @@ public class CourseService {
             throw new NotMatchMemberCourseException();
         }
 
-        if(!course.getThumbnailImage().equals(updateCourseRequest.getThumbnailImage())) {
+        if (!course.getThumbnailImage().equals(updateCourseRequest.getThumbnailImage())) {
             s3Service.deleteImage(course.getThumbnailImage());
         }
 
@@ -87,17 +87,9 @@ public class CourseService {
         courseRepository.delete(course);
     }
 
-    public CourseRequest.CourseDetailResponse getCourseDetail(Long courseId, CustomUser customUser) {
-
-        Member member = memberRepository.findByEmail(customUser.getEmail())
-                .orElseThrow(NotFoundMemberException::new);
-
+    public CourseRequest.CourseDetailResponse getCourseDetail(Long courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(NotFoundCourseException::new);
-
-        if (!member.getId().equals(course.getCreator().getId())) {
-            throw new NotMatchMemberCourseException();
-        }
 
         return CourseRequest.CourseDetailResponse.builder()
                 .id(courseId)
