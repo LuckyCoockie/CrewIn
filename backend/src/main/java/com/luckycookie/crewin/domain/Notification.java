@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @DynamicInsert
-@Table(name="notification")
+@Table(name = "notification")
 public class Notification {
 
     @Id
@@ -45,4 +45,8 @@ public class Notification {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
+
+    public void readNotification() {
+        this.isChecked = true;
+    }
 }

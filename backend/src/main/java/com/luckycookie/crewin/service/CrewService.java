@@ -500,6 +500,7 @@ public class CrewService {
             } else {
                 if (!memberCrew.getIsJoined()) { // isInvited는 true 이고, isJoined는 false인 상태면 초대 미수락 상태
                     memberCrew.updateMemberCrewInvitation(crewReplyMemberRequest.getReplyStatus());
+                    notificationRepository.deleteById(crewReplyMemberRequest.getNoticeId());
                 }
             }
         } else {

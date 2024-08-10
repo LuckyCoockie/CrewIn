@@ -57,9 +57,16 @@ public class NotificationService {
         member.updateMemberNotification(false); // 알림들을 읽었다고 표시
 
         List<Notification> notificationList = notificationRepository.findByReceiver(member);
-        return notificationList.stream()
-                .map(this::convertToDto) // convertToDto 메서드를 사용하여 변환
-                .collect(Collectors.toList());
+
+        List<NotificationResponse> responseList = notificationList.stream()
+                .map(this::convertToDto)
+                .toList();
+
+        for (Notification notification : notificationList) {
+            notification.readNotification();
+        }
+
+        return responseList;
     }
 
     private NotificationResponse convertToDto(Notification notification) {
