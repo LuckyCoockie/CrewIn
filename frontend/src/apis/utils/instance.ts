@@ -4,14 +4,14 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 import ErrorResponseDto from "./errorCode/ErrorResponseDto";
-import Unauthorized from "./errorCode/Unauthorized";
-import store from "../../modules";
-import {
-  clearAccessToken,
-  loading,
-  setAccessToken,
-  setMemberId,
-} from "../../modules/reducers/auth";
+// import Unauthorized from "./errorCode/Unauthorized";
+// import store from "../../modules";
+// import {
+//   clearAccessToken,
+//   loading,
+//   setAccessToken,
+//   setMemberId,
+// } from "../../modules/reducers/auth";
 import { convertKeysToKebabCase } from "./querystring.ts/camelToKebab";
 
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
@@ -32,41 +32,41 @@ api.interceptors.response.use((response: AxiosResponse) => {
   return { ...response, data: response.data.data };
 });
 
-api.interceptors.response.use(
-  (response: AxiosResponse) => {
-    return response;
-  },
-  async (error: AxiosError<ErrorResponseDto>) => {
-    if (
-      error.response &&
-      error.response.status === 401 &&
-      error.response.data["errorCode"] !== Unauthorized.INVALID_LOGIN
-    ) {
-      try {
-        store.dispatch(loading());
+// api.interceptors.response.use(
+//   (response: AxiosResponse) => {
+//     return response;
+//   },
+//   async (error: AxiosError<ErrorResponseDto>) => {
+//     if (
+//       error.response &&
+//       error.response.status === 401 &&
+//       error.response.data["errorCode"] !== Unauthorized.INVALID_LOGIN
+//     ) {
+//       try {
+//         store.dispatch(loading());
 
-        const response = await api.post<{
-          accessToken: string;
-          memberId: number;
-        }>(`/member/reissue`);
-        const { accessToken, memberId } = response.data;
+//         const response = await api.post<{
+//           accessToken: string;
+//           memberId: number;
+//         }>(`/member/reissue`);
+//         const { accessToken, memberId } = response.data;
 
-        store.dispatch(setAccessToken(accessToken));
-        store.dispatch(setMemberId(memberId));
+//         store.dispatch(setAccessToken(accessToken));
+//         store.dispatch(setMemberId(memberId));
 
-        if (error.config?.headers) {
-          error.config.headers.Authorization = `Bearer ${accessToken}`;
-        }
+//         if (error.config?.headers) {
+//           error.config.headers.Authorization = `Bearer ${accessToken}`;
+//         }
 
-        return api(error.config ?? {});
-      } catch (refreshError) {
-        store.dispatch(clearAccessToken(error.response?.data.message));
-        return Promise.reject(refreshError);
-      }
-    }
-    return Promise.reject(error);
-  }
-);
+//         return api(error.config ?? {});
+//       } catch (refreshError) {
+//         store.dispatch(clearAccessToken(error.response?.data.message));
+//         return Promise.reject(refreshError);
+//       }
+//     }
+//     return Promise.reject(error);
+//   }
+// );
 
 export const setTokenInterceptors = (token: string) => {
   return api.interceptors.request.use(
