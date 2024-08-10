@@ -16,6 +16,7 @@ type OwnProps = {
   getMemberList: () => Promise<GetAttendanceMemberListResponseDto>;
   isSessionHost: boolean;
   startAt: string;
+  endAt: string;
   sessionId: number;
 };
 
@@ -26,6 +27,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
   getMemberList,
   isSessionHost,
   startAt,
+  endAt,
   sessionId,
 }) => {
   const isSessionStarted = useMemo(() => {
@@ -33,6 +35,12 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     const currentTime = new Date().getTime();
     return currentTime >= startTime;
   }, [startAt]);
+
+  const isSessionEnded = useMemo(() => {
+    const endTime = new Date(endAt).getTime();
+    const currentTime = new Date().getTime();
+    return currentTime >= endTime;
+  }, [endAt]);
 
   const [autoCheckStatus, setAutoCheckStatus] =
     useState<AutoCheckStatus>("BEFORE");
@@ -63,9 +71,9 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
 
   const handleStartAttendanceClick = useCallback(async () => {
     onStartAttendanceClick().then(() => {
-      setAutoCheckStatus("DURING");
+      fetchMemberList();
     });
-  }, [onStartAttendanceClick]);
+  }, [fetchMemberList, onStartAttendanceClick]);
 
   return (
     <>
@@ -79,10 +87,13 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
           onPostAttendanceClick={onHostAttendanceClick}
           sessionId={sessionId}
           autoCheckStatus={autoCheckStatus}
+          isSessionEnded={isSessionEnded}
         />
-        <div className="mx-auto w-full max-w-[550px] fixed bottom-0 left-0 right-0 flex justify-center items-center z-50 px-2 pb-20 pt-5 bg-white font-bold">
+        <div className="mx-auto w-full max-w-[550px] fixed bottom-0 left-0 right-0 text-center z-50 px-2 pb-20 pt-5 bg-white font-bold">
           {!isSessionStarted ? (
             "출석 시작은 세션 시작 후 할 수 있습니다."
+          ) : isSessionEnded ? (
+            "세션이 종료되어 출석을 수정할 수 없습니다."
           ) : (
             <>
               {isBeforeAutoCheck &&
@@ -97,7 +108,12 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
                     onClick={onGuestAttendanceClick}
                   />
                 ))}
-              {isDuringAutoCheck && <TimerOrganism initSeconds={leftTime} />}
+              {isDuringAutoCheck && (
+                <div className="w-full text-center">
+                  {"자동 출석 중에는 출석을 수정할 수 없습니다."}
+                  <TimerOrganism initSeconds={leftTime} />
+                </div>
+              )}
               {isAfterAutoCheck &&
                 "자동 출석이 종료되어 수동 출석만 가능합니다."}
             </>
