@@ -19,6 +19,7 @@ interface ImageEditSaveProps {
 }
 
 const ImageEditSave: React.FC<ImageEditSaveProps> = ({
+  crewId,
   postImages,
   onFinish,
 }) => {
@@ -34,35 +35,42 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
   const [crewImageUrl, setCrewImageUrl] = useState<string | null>(null);
 
   const captureRef = useRef<HTMLDivElement>(null);
+
   async function fetchImageAsFile(url: string): Promise<File> {
     const response = await fetch(url);
     const blob = await response.blob();
-    const fileName = url.split("/").pop() || "image.jpg"; // 파일 이름을 URL에서 추출
+    const fileName = url.split("/").pop() || "image.jpg";
     const file = new File([blob], fileName, { type: blob.type });
     return file;
   }
+
   useEffect(() => {
     const fetchCrewData = async () => {
       try {
         const response = await getMyCrews();
-        if (response.crews.length > 0) {
-          setCrewImageUrl(response.crews[0].subLogo);
-          const crewImageUrl = response.crews[0].subLogo;
-          fetchImageAsFile(crewImageUrl);
-          fetchImageAsFile(crewImageUrl).then((file) => {
-            console.log(file);
-            // url 재설정
-            const imageUrl = URL.createObjectURL(file);
-            setCrewImageUrl(imageUrl);
-          });
+        const selectedCrew = response.crews.find(
+          (crew) => crew.crewId === crewId
+        );
+
+        if (selectedCrew) {
+          setCrewImageUrl(selectedCrew.subLogo);
+          const crewImageUrl = selectedCrew.subLogo;
+
+          const file = await fetchImageAsFile(crewImageUrl);
+          console.log(file);
+
+          const imageUrl = URL.createObjectURL(file);
+          setCrewImageUrl(imageUrl);
         }
       } catch (error) {
         console.error("크루 데이터 로딩 오류:", error);
       }
     };
 
-    fetchCrewData();
-  }, []);
+    if (crewId) {
+      fetchCrewData();
+    }
+  }, [crewId]);
 
   useEffect(() => {
     if (isValidTime(totalTime) && isValidDistance(totalDistance)) {
@@ -253,7 +261,7 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
               value={totalTime}
               onChange={(e) => setTotalTime(e.target.value)}
               placeholder="00:00:00"
-              className="border border-gray-300 rounded px-3 py-2 w-24"
+              className="border border-gray-300 rounded px-3 py-2 w-24 h-8"
             />
           )}
           <ToggleButton
@@ -275,7 +283,7 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
               value={totalDistance}
               onChange={(e) => setTotalDistance(e.target.value)}
               placeholder="00.00"
-              className="border border-gray-300 rounded px-3 py-2 w-24"
+              className="border border-gray-300 rounded px-3 py-2 w-24 h-8"
             />
           )}
           <ToggleButton
@@ -297,7 +305,7 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
               value={pace}
               onChange={(e) => setPace(e.target.value)}
               placeholder="0'00''"
-              className="border border-gray-300 rounded px-3 py-2 w-24"
+              className="border border-gray-300 rounded px-3 py-2 w-24 h-8"
             />
           )}
           <ToggleButton

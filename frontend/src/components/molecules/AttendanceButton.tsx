@@ -15,8 +15,12 @@ const AttendanceButton: React.FC<OwnProps> = ({
   const [isPresent, setIsPresent] = useState(initPresent);
 
   const handleClick = useCallback(() => {
-    if (onClick && isAutoAttendanceEnded) onClick(!isPresent);
-    setIsPresent(!isPresent);
+    try {
+      if (onClick && isAutoAttendanceEnded) onClick(!isPresent);
+      setIsPresent(!isPresent);
+    } catch (e) {
+      alert("출석 정보가 반영되지 않았습니다.");
+    }
   }, [isAutoAttendanceEnded, isPresent, onClick]);
 
   return initPresent ? (

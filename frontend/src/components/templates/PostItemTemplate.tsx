@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { ko } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +13,7 @@ import { PostDto } from "../../apis/api/postlist";
 import { deletePost } from "../../apis/api/postdelete";
 import { registerPostHeart } from "../../apis/api/heart";
 import { deletePostHeart } from "../../apis/api/heartdelete";
+import { useMutation, useQueryClient } from "react-query";
 import { useSelector } from "react-redux";
 import { RootState } from "../../modules";
 
@@ -37,10 +38,16 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   console.log(data);
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const [likes, setLikes] = useState<number>(heartCount);
   const [isHeartedState, setIsHeartedState] = useState<boolean>(isHearted);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+
+  useEffect(() => {
+    setLikes(heartCount);
+    setIsHeartedState(isHearted);
+  }, [heartCount, isHearted]);
 
   const handleEdit = () => {
     console.log("edit");
@@ -64,20 +71,33 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     }
   };
 
-  const handleLike = async () => {
-    try {
-      if (isHeartedState) {
-        console.log(`Removing heart from post with ID: ${id}`);
-        await deletePostHeart(id);
-        setLikes((prevLikes) => prevLikes - 1);
-      } else {
-        console.log(`Adding heart to post with ID: ${id}`);
-        await registerPostHeart(id);
-        setLikes((prevLikes) => prevLikes + 1);
-      }
-      setIsHeartedState(!isHeartedState);
-    } catch (error) {
+  const likeMutation = useMutation(registerPostHeart, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("posts");
+      setLikes((prevLikes) => prevLikes + 1);
+      setIsHeartedState(true);
+    },
+    onError: (error) => {
       console.error("좋아요 처리 중 오류가 발생했습니다:", error);
+    },
+  });
+
+  const unlikeMutation = useMutation(deletePostHeart, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("posts");
+      setLikes((prevLikes) => prevLikes - 1);
+      setIsHeartedState(false);
+    },
+    onError: (error) => {
+      console.error("좋아요 취소 처리 중 오류가 발생했습니다:", error);
+    },
+  });
+
+  const handleLike = () => {
+    if (isHeartedState) {
+      unlikeMutation.mutate(id);
+    } else {
+      likeMutation.mutate(id);
     }
   };
 
@@ -90,7 +110,9 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   const timeAgo = formatDistanceToNow(parseISO(createdAt), {
     addSuffix: true,
     locale: ko,
-  }).replace("약 ", "");
+  })
+    .replace("약 ", "")
+    .replace(" 후", " 전");
 
   return (
     <div className="w-full mb-4 pb-3">
