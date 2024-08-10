@@ -33,11 +33,10 @@ type FormValues = {
   content: string;
 };
 
-const NoticeCreateTemplate: React.FC = () => {
-  // 크루 공지사항 생성 페이지로 이동할 경우
+const CrewNoticeCreateTemplate: React.FC = () => {
   const { crewId } = useParams<{ crewId: string }>();
   const navigate = useNavigate();
-  const queryClient = useQueryClient(); // useQueryClient 추가
+  const queryClient = useQueryClient();
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
@@ -74,9 +73,7 @@ const NoticeCreateTemplate: React.FC = () => {
       noticeImages: urls,
     };
 
-    console.log(submitData);
-    // 여기에 API 호출 코드를 추가
-    await createNotice(submitData); // createNotice 비동기 호출
+    await createNotice(submitData);
 
     // 쿼리 무효화
     queryClient.invalidateQueries(["crewNotice", { crewId }]);
@@ -158,6 +155,13 @@ const NoticeCreateTemplate: React.FC = () => {
     setIsCropped(!isCropped);
   };
 
+  const handleClearImages = () => {
+    setImagePaths([]);
+    setCroppedImages([]);
+    setCroppedFiles([]);
+    setIsCropped(false);
+  };
+
   return (
     <div className="mx-auto w-full max-w-[550px]">
       {isSubmitting && <SpinnerFullComponent />}
@@ -228,6 +232,12 @@ const NoticeCreateTemplate: React.FC = () => {
                 ))}
               </Carousel>
             </div>
+            <button
+              onClick={handleClearImages}
+              className="mt-2 button-color text-light p-2 rounded"
+            >
+              이미지 초기화
+            </button>
           </>
         )}
 
@@ -279,4 +289,4 @@ const NoticeCreateTemplate: React.FC = () => {
   );
 };
 
-export default NoticeCreateTemplate;
+export default CrewNoticeCreateTemplate;
