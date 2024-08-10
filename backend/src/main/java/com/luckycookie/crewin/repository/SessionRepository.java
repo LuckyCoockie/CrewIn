@@ -31,6 +31,4 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     @EntityGraph(attributePaths = {"host", "course", "crew"})
     Optional<Session> findById(@Nonnull Long id);
 
-    @Query("SELECT s FROM Session s JOIN FETCH s.host WHERE s.id = :id")
-    Optional<Session> findByIdWithHost(Long id);
 }

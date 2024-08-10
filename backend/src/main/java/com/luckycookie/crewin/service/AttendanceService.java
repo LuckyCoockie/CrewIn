@@ -56,15 +56,17 @@ public class AttendanceService {
 
     // SSE 구독
     public SseEmitter subscribeSSE(Long sessionId, String email) {
-        Session session = sessionRepository.findByIdWithHost(sessionId).orElseThrow(NotFoundSessionException::new);
-        if (!session.getHost().getEmail().equals(email)) {
-            throw new SessionAuthorizationException();
-        }
+        Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundSessionException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
+
+        // 해당 세션에 존재하지 않는 멤버는 SSE 요청 불가능
+        if (!memberSessionRepository.existsByMemberAndSession(member, session)) {
+            throw new NotFoundMemberSessionException();
+        }ㅇ
 
         if (session.getAttendanceStart() == null || LocalDateTime.now().isBefore(session.getAttendanceStart()) || LocalDateTime.now().isAfter(session.getEndAt()))
             throw new InvalidRequestTimeException();
 
-//      SseEmitter emitter = emitterRepository.save(sessionId, new SseEmitter(60 * 1000L * 10));
         SseEmitter emitter = emitterRepository.save(sessionId, new SseEmitter(60 * 1000L * 60));
         emitter.onCompletion(() -> {
             emitterRepository.deleteById(sessionId);
