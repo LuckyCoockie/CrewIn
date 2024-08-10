@@ -36,7 +36,7 @@ public class MemberService {
 
     public Token signIn(SignInRequest signInRequest) {
         validationService.validateEmailString(signInRequest.getEmail());
-        Member member = memberRepository.findByEmail(signInRequest.getEmail()).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findByEmail(signInRequest.getEmail()).orElseThrow(LoginFailException::new);
         if (passwordEncoder.matches(signInRequest.getPassword(), member.getPassword())) {
             return tokenUtil.generateToken(member);
         } else {
