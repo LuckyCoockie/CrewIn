@@ -4,14 +4,10 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 import ErrorResponseDto from "./errorCode/ErrorResponseDto";
-import Unauthorized from "./errorCode/Unauthorized";
 import store from "../../modules";
-import {
-  clearAccessToken,
-  loading,
-  setAccessToken,
-} from "../../modules/reducers/auth";
+import { loading } from "../../modules/reducers/auth";
 import { convertKeysToKebabCase } from "./querystring.ts/camelToKebab";
+import { clearAuth, setAuth } from "../../util/auth";
 
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -36,11 +32,7 @@ api.interceptors.response.use(
     return response;
   },
   async (error: AxiosError<ErrorResponseDto>) => {
-    if (
-      error.response &&
-      error.response.status === 401 &&
-      error.response.data["errorCode"] !== Unauthorized.INVALID_LOGIN
-    ) {
+    if (error.response && error.response.status === 401) {
       try {
         store.dispatch(loading());
 
@@ -50,9 +42,10 @@ api.interceptors.response.use(
             memberId: number;
           };
         }>(`${BASE_URL}/member/reissue`, null, { withCredentials: true });
-        const { accessToken, memberId } = response.data.data;
 
-        store.dispatch(setAccessToken(accessToken, memberId));
+        setAuth(response.data.data);
+
+        const { accessToken } = response.data.data;
 
         if (error.config?.headers) {
           error.config.headers.Authorization = `Bearer ${accessToken}`;
@@ -60,7 +53,7 @@ api.interceptors.response.use(
 
         return api(error.config ?? {});
       } catch (refreshError) {
-        store.dispatch(clearAccessToken(error.response?.data.message));
+        clearAuth();
         return Promise.reject(refreshError);
       }
     }
