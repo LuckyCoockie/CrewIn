@@ -28,6 +28,7 @@ const schema = yup.object({
   email: yup
     .string()
     .email("이메일 형식으로 입력해주세요")
+    .max(50, "이메일은 최대 50자입니다.")
     .required("이메일을 입력해주세요.")
     .test(
       "emailDuplicationCheck",
@@ -58,6 +59,7 @@ const schema = yup.object({
     .required("비밀번호를 확인해주세요."),
   nickname: yup
     .string()
+    .min(2, "최소 2자 입니다.")
     .max(10, "최대 10자 입니다.")
     .required("닉네임을 입력해주세요.")
     .test(
@@ -77,6 +79,7 @@ const schema = yup.object({
     ),
   name: yup
     .string()
+    .min(2, "이름은 최소 2자입니다.")
     .max(30, "이름은 최대 30자입니다.")
     .required("이름을 입력해주세요."),
 });
@@ -258,7 +261,10 @@ const LoginOrganism: React.FC = () => {
           이메일 인증
         </button>
       ) : !isCodeInput ? (
-        <button className="w-full bg-[#2b2f401a] py-2 text-center rounded-lg disable text-white font-bold">
+        <button
+          className="w-full bg-[#2b2f401a] py-2 text-center rounded-lg text-white font-bold"
+          disabled
+        >
           이메일 인증
         </button>
       ) : null}
