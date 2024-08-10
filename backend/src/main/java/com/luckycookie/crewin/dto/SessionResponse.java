@@ -56,6 +56,7 @@ public class SessionResponse {
         private Integer maxPeople;
         private Integer currentPeople; // 현재 참가 중인 사람
         private Boolean isJoined; // 현재 참가 중이지 않은지
+        private Double courseDistance; // 코스 길이 소수점 1자리까지 반환
 
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime startAt;

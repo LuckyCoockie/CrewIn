@@ -190,6 +190,7 @@ public class SessionService {
                 .endAt(session.getEndAt())
                 .sessionType(session.getSessionType())
                 .sessionPosters(session.getPosterImages().stream().map(SessionPoster::getImageUrl).toList())
+                .courseDistance(Math.round(course.getLength() / 1000.0 * 10.0) / 10.0)
                 .build();
     }
 
