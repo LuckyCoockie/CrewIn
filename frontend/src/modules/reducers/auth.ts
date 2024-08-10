@@ -37,7 +37,6 @@ export const loading = (): Loading => ({
 });
 
 export const setAccessToken = (accessToken: string, memberId: number) => {
-  console.log("set access token", accessToken);
   return async (dispatch: Dispatch<AuthActionTypes>) => {
     dispatch({
       type: SET_ACCESS_TOKEN,

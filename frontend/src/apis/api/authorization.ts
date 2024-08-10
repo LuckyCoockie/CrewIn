@@ -19,7 +19,7 @@ export const login = async (
 
 export const refreshToken = async (): Promise<LoginResponseDto> => {
   store.dispatch(loading());
-  const response = await axios.post<LoginResponseDto>(
+  const response = await axios.post<{ data: LoginResponseDto }>(
     `${import.meta.env.VITE_SERVER_URL}/member/reissue`,
     null,
     { withCredentials: true }
@@ -28,7 +28,7 @@ export const refreshToken = async (): Promise<LoginResponseDto> => {
   console.log("refresh success 1", response);
 
   store.dispatch(
-    setAccessToken(response.data.accessToken, response.data.memberId)
+    setAccessToken(response.data.data.accessToken, response.data.data.memberId)
   );
-  return response.data;
+  return response.data.data;
 };
