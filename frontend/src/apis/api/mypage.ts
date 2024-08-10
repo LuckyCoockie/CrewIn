@@ -119,7 +119,7 @@ export type PeopleGalleryResponseDto = {
 export const getPeopleGallery = async (
   pageNo: number,
   memberId: number
-): Promise<MyGalleryResponseDto> => {
+): Promise<PeopleGalleryResponseDto> => {
   const response = await api.get(
     `/post/member/gallery/${memberId}?page-no=${pageNo}`
   );
