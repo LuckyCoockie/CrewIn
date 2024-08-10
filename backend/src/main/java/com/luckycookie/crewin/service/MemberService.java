@@ -36,7 +36,7 @@ public class MemberService {
     public Token signIn(SignInRequest signInRequest) {
         Member member = memberRepository.findByEmail(signInRequest.getEmail()).orElseThrow(MemberNotFoundException::new);
         if (passwordEncoder.matches(signInRequest.getPassword(), member.getPassword())) {
-                return tokenUtil.generateToken(member);
+            return tokenUtil.generateToken(member);
         } else {
             throw new LoginFailException();
         }
@@ -78,8 +78,16 @@ public class MemberService {
             Auth auth = refreshTokenRedisRepository.findById(email).orElseThrow(InvalidTokenException::new);
             log.info("input refreshToken: {}", refreshToken);
             log.info("redis refreshToken: {}", auth.getRefreshToken());
+
+            // 임시
+            Member member = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
+
             if (auth.getRefreshToken().equals(refreshToken)) {
-                return tokenUtil.generateToken(Member.builder().email(email).build());
+                //임시
+                return tokenUtil.generateToken(member);
+
+
+//                return tokenUtil.generateToken(Member.builder().email(email).build());
             }
         }
         throw new InvalidTokenException();
