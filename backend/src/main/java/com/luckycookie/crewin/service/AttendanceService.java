@@ -80,7 +80,7 @@ public class AttendanceService {
             log.error("SSE emitter Error occurred: {}", ex.getMessage());
         });
 
-        // 503 에러 방지용, 최초 요청시 전체 멤버 데이터를 반환
+        // 503 에러 방지용
         sendNotification(emitter, "connect", "connect", sessionId, "connect complete");
 
         return emitter;
