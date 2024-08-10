@@ -18,3 +18,11 @@ export const login = async (
   store.dispatch(setMemberId(response.data.memberId));
   return response.data;
 };
+
+export const refreshToken = async (): Promise<LoginResponseDto> => {
+  store.dispatch(loading());
+  const response = await api.post<LoginResponseDto>("/member/reissue");
+  store.dispatch(setAccessToken(response.data.accessToken));
+  store.dispatch(setMemberId(response.data.memberId));
+  return response.data;
+};
