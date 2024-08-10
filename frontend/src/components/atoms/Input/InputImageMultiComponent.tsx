@@ -15,6 +15,10 @@ const InputImageMultiComponent = React.forwardRef<HTMLInputElement, InputImage>(
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const files = e.target.files;
+      if (files && files.length > 10) {
+        alert("최대 개수는 10개입니다.")
+        return;
+      }
       setFileCount(files ? files.length : 0);
       props.onChange(e); // 부모 컴포넌트로 이벤트 전달
     };
