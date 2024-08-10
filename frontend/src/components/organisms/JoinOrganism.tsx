@@ -160,6 +160,16 @@ const LoginOrganism: React.FC = () => {
     }
   };
 
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ ]/g, "");
+    e.target.value = value;
+  };
+
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ ]/g, "");
+    e.target.value = value;
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-wrap w-full">
@@ -174,6 +184,10 @@ const LoginOrganism: React.FC = () => {
                 title="이름"
                 placeholder="홍길동"
                 {...field}
+                onChange={(e) => {
+                  handleNameChange(e);
+                  field.onChange(e); // react-hook-form의 상태 업데이트
+                }}
                 error={errors.name?.message}
                 hasError={!!errors.name}
                 disabled={isCodeInput}
@@ -192,6 +206,10 @@ const LoginOrganism: React.FC = () => {
                 title="닉네임"
                 placeholder="ex) 달리는 동동"
                 {...field}
+                onChange={(e) => {
+                  handleNicknameChange(e);
+                  field.onChange(e); // react-hook-form의 상태 업데이트
+                }}
                 error={errors.nickname?.message}
                 hasError={!!errors.nickname}
                 disabled={isCodeInput}
