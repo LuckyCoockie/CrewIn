@@ -104,6 +104,7 @@ const CrewDetailTemplate: React.FC = () => {
           <CrewNoticeOrganism
             crewId={numericCrewId}
             isUserCrewMember={isUserCrewMember}
+            userPosition={userPosition}
           />
         );
       case "정보":

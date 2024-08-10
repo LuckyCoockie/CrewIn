@@ -10,11 +10,13 @@ import { getCrewNoticeList } from "../../apis/api/crewdetail";
 type CrewNoticeOrganismProps = {
   crewId: number;
   isUserCrewMember: boolean;
+  userPosition?: string;
 };
 
 const CrewNoticeOrganism: React.FC<CrewNoticeOrganismProps> = ({
   crewId,
   isUserCrewMember,
+  userPosition,
 }) => {
   const [page, setPage] = useState(1);
 
@@ -82,7 +84,7 @@ const CrewNoticeOrganism: React.FC<CrewNoticeOrganismProps> = ({
           />
         </>
       )}
-      {isUserCrewMember && (
+      {isUserCrewMember && userPosition !== "MEMBER" && (
         <FloatingActionButton onClick={handleRouter}>
           <Plus />
         </FloatingActionButton>
