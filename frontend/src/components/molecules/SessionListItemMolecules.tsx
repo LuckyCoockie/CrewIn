@@ -16,7 +16,6 @@ interface OwnProps {
 
 const SessionListItem = ({
   title,
-  // crewName,
   area,
   date,
   imageUrl,
@@ -60,43 +59,30 @@ const SessionListItem = ({
   }, [date]);
 
   return (
-    <div className="max-w-sm rounded-lg border-primary bg-primary tracking-tighter truncate">
-      <div className="flex justify-center items-center p-[6px] xs:p-2">
+    <div className="max-w-sm rounded-lg border-primary bg-primary tracking-tighter truncate relative">
+      <div className="flex justify-center items-center p-[6px] xs:p-2 relative">
         <div className="square relative">
-          {image ? (
-            <>
-              <img
-                alt="session image"
-                src={image}
-                className="border xs:border-2 w-full"
-              />
-              <div className="absolute top-1 right-1 border rounded-xl bg-white flex h-4 xs:h-5 px-1 justify-center items-center shadow-sm bg-opacity-85 border-opacity-85">
-                <div className="me-1">
-                  <Sessionpeople />
-                </div>
-                <div className="text-[10px] xs:text-sm font-bold ">
-                  {current} / {max}
-                </div>
+          <img
+            alt="session image"
+            src={image || sessionLogoImage}
+            className={`border xs:border-2 w-full ${
+              current! >= max! ? "grayscale" : ""
+            }`}
+          />
+          {current && max && (
+            <div className="absolute top-1 right-1 border rounded-xl bg-white flex h-4 xs:h-5 px-1 justify-center items-center shadow-sm bg-opacity-85 border-opacity-85">
+              <div className="me-1">
+                <Sessionpeople />
               </div>
-            </>
-          ) : (
-            <>
-              <img
-                alt="session image"
-                src={sessionLogoImage}
-                className="border xs:border-2 border-white w-full"
-              />
-              {current && max && (
-                <div className="absolute top-1 right-1 border rounded-xl bg-white flex h-4 xs:h-5 px-1 justify-center items-center shadow-sm bg-opacity-85 border-opacity-85">
-                  <div className="me-1">
-                    <Sessionpeople />
-                  </div>
-                  <div className="text-[10px] xs:text-sm font-bold ">
-                    {current} / {max}
-                  </div>
-                </div>
-              )}
-            </>
+              <div className="text-[10px] xs:text-sm font-bold ">
+                {current} / {max}
+              </div>
+            </div>
+          )}
+          {current! >= max! && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+              <p className="text-white text-xl font-bold">마감됨</p>
+            </div>
           )}
         </div>
       </div>

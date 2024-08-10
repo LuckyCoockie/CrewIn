@@ -76,13 +76,9 @@ const CrewInvitePage: React.FC = () => {
         crewId: Number(crewId),
       });
       console.log(response);
-      setMembers((prevMembers) =>
-        prevMembers.filter((member) => member.memberId !== memberId)
-      );
+      // 초대 성공 시 추가 작업이 필요하다면 여기에 작성
     } catch (error) {
       console.error("Invitation error:", error);
-    } finally {
-      setInvitingMemberId(null);
     }
   };
 
@@ -149,9 +145,7 @@ const CrewInvitePage: React.FC = () => {
                     onClick={() => handleInvite(data.memberId)}
                     disabled={invitingMemberId === data.memberId}
                   >
-                    {invitingMemberId === data.memberId
-                      ? "초대 중..."
-                      : "초대하기"}
+                    {invitingMemberId === data.memberId ? "요청됨" : "초대하기"}
                   </button>
                 </div>
               </li>

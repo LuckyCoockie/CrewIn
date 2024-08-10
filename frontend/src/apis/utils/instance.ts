@@ -44,12 +44,15 @@ api.interceptors.response.use(
       try {
         store.dispatch(loading());
 
-        const response = await api.post<{ accessToken: string }>(
-          `/member/reissue`
-        );
-        const { accessToken } = response.data;
+        const response = await axios.post<{
+          data: {
+            accessToken: string;
+            memberId: number;
+          };
+        }>(`${BASE_URL}/member/reissue`, null, { withCredentials: true });
+        const { accessToken, memberId } = response.data.data;
 
-        store.dispatch(setAccessToken(accessToken));
+        store.dispatch(setAccessToken(accessToken, memberId));
 
         if (error.config?.headers) {
           error.config.headers.Authorization = `Bearer ${accessToken}`;
@@ -79,11 +82,6 @@ export const setTokenInterceptors = (token: string) => {
 
 export const clearTokenInterceptors = (interceptorId: number) => {
   api.interceptors.request.eject(interceptorId);
-  return null;
 };
-
-setTokenInterceptors(
-  "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MTIzNEB0ZXN0LmNvbSIsImlhdCI6MTcyMjUyMDAxNywiZW1haWwiOiJ0ZXN0MTIzNEB0ZXN0LmNvbSIsImV4cCI6MTcyNTExMjAxN30.l5khomKGNT7AyWyxpWTL2Mc_8_DVSW0eSS07ofFu46jZyoyohx3jDMzhAvS2Hr4MEiyqEcHFRye_Ar2_QrR7Og"
-);
 
 export default api;

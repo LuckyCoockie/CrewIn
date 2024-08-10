@@ -37,6 +37,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
     isSessionHost,
     courseThumbnail,
     currentPeople,
+    courseDistance,
   } = detailData;
 
   const [isJoined, setIsJoined] = useState(detailData.isJoined);
@@ -54,7 +55,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
   };
 
   const formatKoreanDate = (dateString: string) => {
-    const date = new Date(dateString.replace(" ", "T")); // 문자열을 Date 객체로 변환
+    const date = new Date(dateString.replace(" ", "T"));
     const months = [
       "1월",
       "2월",
@@ -76,6 +77,20 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
     const period = hours < 12 ? "오전" : "오후";
     const adjustedHours = hours % 12 || 12; // 12시간 형식으로 변환
     return `${month} ${day}일 ${period} ${adjustedHours}시 ${minutes}분`;
+  };
+
+  const calculateDuration = (start: string, end: string) => {
+    const startDate = new Date(start.replace(" ", "T"));
+    const endDate = new Date(end.replace(" ", "T"));
+    const durationMs = endDate.getTime() - startDate.getTime();
+    const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
+    const durationMinutes = Math.floor(
+      (durationMs % (1000 * 60 * 60)) / (1000 * 60)
+    );
+    if (durationHours === 0) {
+      return `예정 소요시간 ${durationMinutes}분`;
+    }
+    return `${durationHours}시간 ${durationMinutes}분`;
   };
 
   const handleParticipate = async () => {
@@ -120,10 +135,18 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
           content={sessionTypeSubstitute(sessionType)}
         />
         <DetailInfoMolecule
-          title="일시"
-          content={`${formatKoreanDate(startAt)}\n${formatKoreanDate(endAt)}`}
+          title="집결시간"
+          content={`${formatKoreanDate(startAt)}`}
         />
-        <DetailInfoPaceMolecule title="페이스" content={pace} />
+        <DetailInfoMolecule
+          title="종료시간"
+          content={`${formatKoreanDate(endAt)} \n (${calculateDuration(
+            startAt,
+            endAt
+          )})`}
+        />
+        <DetailInfoPaceMolecule title="평균 페이스" content={pace} />
+        <DetailInfoMolecule title="거리" content={`${courseDistance}km`} />
         <DetailInfoMolecule title="제한인원" content={`${maxPeople}명`} />
         <DetailInfoMolecule title="집결지" content={spot} />
         <DetailInfoMolecule title="코스" content={area} />

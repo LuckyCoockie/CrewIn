@@ -14,7 +14,7 @@ interface UseSSEProps {
 
 export const useSSE = ({
   url,
-  events: onMessage,
+  events,
   onError,
   onOpen,
 }: UseSSEProps) => {
@@ -36,9 +36,9 @@ export const useSSE = ({
       if (onOpen) onOpen();
     };
 
-    onMessage?.forEach(({ event, onEvent }) => {
+    events?.forEach(({ event, onEvent }) => {
       eventSource.addEventListener(event, (event) => {
-        if (onMessage) onEvent(JSON.parse((event as MessageEvent).data));
+        if (events) onEvent(JSON.parse((event as MessageEvent).data));
       });
     });
 
@@ -47,7 +47,7 @@ export const useSSE = ({
     };
 
     eventSourceRef.current = eventSource;
-  }, [url, accessToken, onError, onOpen]);
+  }, [url, accessToken, events, onOpen, onError]);
 
   useEffect(() => {
     if (isActive) connect();

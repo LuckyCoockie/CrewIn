@@ -67,6 +67,7 @@ const AttendancePage: React.FC = () => {
       onHostAttendanceClick={onHostAttendanceClick}
       onGuestAttendanceClick={onGuestAttendanceClick}
       startAt={state.startAt}
+      endAt={state.endAt}
       sessionId={parseInt(sessionId)}
     />
   );

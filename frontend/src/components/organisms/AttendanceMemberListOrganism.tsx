@@ -12,14 +12,13 @@ import AttendanceButton from "../molecules/AttendanceButton";
 import { useCallback, useEffect, useState } from "react";
 import useSSE from "../../util/sse/useSSE";
 
-// 출석 시작 전, 출석 중, 출석 종료 후
-
 type OwnProps<T> = {
   fetchData: (props: T) => Promise<AttendanceMemberDto[]>;
   onPostAttendanceClick: (dto: ChangeAttendRequestDto) => Promise<void>;
   isSessionHost: boolean;
   sessionId: number;
   autoCheckStatus: AutoCheckStatus;
+  isSessionEnded: boolean;
 };
 
 const AttendanceMemberListOrganism = <T,>({
@@ -28,6 +27,7 @@ const AttendanceMemberListOrganism = <T,>({
   isSessionHost,
   sessionId,
   autoCheckStatus,
+  isSessionEnded,
 }: OwnProps<T>) => {
   const query = qs.parse(location.search) as T;
   const [attendanceStateMap, setAttendanceStateMap] = useState(
@@ -55,14 +55,25 @@ const AttendanceMemberListOrganism = <T,>({
     [attendanceStateMap]
   );
 
+  const handlePostAttendanceClick = useCallback(
+    async (memberSessionId: number, state: boolean) => {
+      if (!isSessionHost || isSessionEnded) return;
+      await onPostAttendanceClick({
+        attend: state,
+        memberSessionId: memberSessionId,
+      });
+    },
+    [isSessionEnded, isSessionHost, onPostAttendanceClick]
+  );
+
   const { setIsActive } = useSSE({
     url: `/attendance/connect/${sessionId}`,
     events: [{ event: "attendance", onEvent: handleAttendanceChange }],
   });
 
   useEffect(() => {
-    setIsActive(autoCheckStatus !== "BEFORE");
-  }, [autoCheckStatus, setIsActive]);
+    setIsActive(autoCheckStatus !== "BEFORE" && !isSessionEnded && isSessionHost);
+  }, [autoCheckStatus, isSessionEnded, isSessionHost, setIsActive]);
 
   if (isError || !memberList) return "데이터를 불러오지 못했습니다.";
 
@@ -75,15 +86,8 @@ const AttendanceMemberListOrganism = <T,>({
               attendanceStateMap.get(member.memberSessionId) ?? false
             }
             isAutoAttendanceEnded={autoCheckStatus === "AFTER"}
-            onClick={
-              isSessionHost
-                ? (state) => {
-                    onPostAttendanceClick({
-                      attend: state,
-                      memberSessionId: member.memberSessionId,
-                    });
-                  }
-                : undefined
+            onClick={(state) =>
+              handlePostAttendanceClick(member.memberSessionId, state)
             }
           />
         </MemberListItem>

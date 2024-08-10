@@ -9,7 +9,6 @@ const BASE_ACTION_TYPE = "api/auth";
 export const LOADING = `${BASE_ACTION_TYPE}/LOADING`;
 export const SET_ACCESS_TOKEN = `${BASE_ACTION_TYPE}/SET_ACCESS_TOKEN`;
 export const CLEAR_ACCESS_TOKEN = `${BASE_ACTION_TYPE}/CLEAR_ACCESS_TOKEN`;
-export const SET_MEMBER_ID = `${BASE_ACTION_TYPE}/SET_MEMBER_ID`;
 
 /* ----------------- 액션 ------------------ */
 type Loading = {
@@ -19,7 +18,7 @@ type Loading = {
 type SetAccessTokenAction = {
   type: typeof SET_ACCESS_TOKEN;
   accessToken: string;
-  interceptorId: number;
+  memberId: number;
 };
 
 type ClearAccessTokenAction = {
@@ -27,29 +26,22 @@ type ClearAccessTokenAction = {
   error?: string;
 };
 
-type SetMemberIdAction = {
-  type: typeof SET_MEMBER_ID;
-  memberId: number; // member id
-};
-
 export type AuthActionTypes =
   | Loading
   | SetAccessTokenAction
-  | ClearAccessTokenAction
-  | SetMemberIdAction;
+  | ClearAccessTokenAction;
 
 /* ----------------- 액션 함수 ------------------ */
 export const loading = (): Loading => ({
   type: LOADING,
 });
 
-export const setAccessToken = (accessToken: string) => {
+export const setAccessToken = (accessToken: string, memberId: number) => {
   return async (dispatch: Dispatch<AuthActionTypes>) => {
-    const interceptorId = setTokenInterceptors(accessToken);
     dispatch({
       type: SET_ACCESS_TOKEN,
       accessToken: accessToken,
-      interceptorId: interceptorId,
+      memberId: memberId,
     });
   };
 };
@@ -59,11 +51,6 @@ export const clearAccessToken = (error?: string) => {
     dispatch({ type: CLEAR_ACCESS_TOKEN, error: error });
   };
 };
-
-export const setMemberId = (memberId: number): SetMemberIdAction => ({
-  type: SET_MEMBER_ID,
-  memberId: memberId,
-});
 
 /* ----------------- 모듈 상태 타입 ------------------ */
 type AuthState = {
@@ -76,7 +63,7 @@ type AuthState = {
 
 /* ----------------- 모듈의 초기 상태 ------------------ */
 const initialState: AuthState = {
-  accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0MTIzNEB0ZXN0LmNvbSIsImlhdCI6MTcyMjUyMDAxNywiZW1haWwiOiJ0ZXN0MTIzNEB0ZXN0LmNvbSIsImV4cCI6MTcyNTExMjAxN30.l5khomKGNT7AyWyxpWTL2Mc_8_DVSW0eSS07ofFu46jZyoyohx3jDMzhAvS2Hr4MEiyqEcHFRye_Ar2_QrR7Og",
+  accessToken: null,
   interceptorId: null,
   memberId: null,
   loading: false,
@@ -91,19 +78,28 @@ const authReducer = (
     case LOADING:
       return { ...state, loading: true };
     case SET_ACCESS_TOKEN:
-      return { ...state, accessToken: action.accessToken, loading: false };
-    case CLEAR_ACCESS_TOKEN:
+      if (state.interceptorId) {
+        clearTokenInterceptors(state.interceptorId);
+      }
       return {
-        interceptorId: state.interceptorId
-          ? clearTokenInterceptors(state.interceptorId)
-          : null,
+        ...state,
+        accessToken: action.accessToken,
+        memberId: action.memberId,
+        interceptorId: setTokenInterceptors(action.accessToken),
+        loading: false,
+      };
+    case CLEAR_ACCESS_TOKEN: {
+      if (state.interceptorId) {
+        clearTokenInterceptors(state.interceptorId);
+      }
+      return {
+        interceptorId: null,
         memberId: null,
         accessToken: null,
         loading: false,
         error: action.error,
       };
-    case SET_MEMBER_ID:
-      return { ...state, memberId: action.memberId };
+    }
     default:
       return state;
   }
