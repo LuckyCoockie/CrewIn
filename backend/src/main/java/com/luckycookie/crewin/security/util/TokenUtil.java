@@ -39,7 +39,7 @@ public class TokenUtil {
 
     @Value("${security.secret-key}")
     private String secretKey;
-//    private final Long accessTokenExpireTime = 60 * 60L; // 1시간
+    //    private final Long accessTokenExpireTime = 60 * 60L; // 1시간
     private final Long accessTokenExpireTime = 60 * 60 * 24 * 30L; // 테스트용 한달
     private final Long refreshTokenExpireTime = 60 * 60 * 24 * 7L; // 일주일
     private SecretKey key;
@@ -86,7 +86,7 @@ public class TokenUtil {
     public Token generateToken(Member member) {
         String accessToken = Jwts.builder().subject(member.getEmail()).issuedAt(Timestamp.valueOf(LocalDateTime.now())).claim("email", member.getEmail()).expiration(Date.from(Instant.now().plus(accessTokenExpireTime, ChronoUnit.SECONDS))).signWith(key).compact();
 
-        String refreshToken = Jwts.builder().subject(member.getEmail()).issuedAt(Timestamp.valueOf(LocalDateTime.now())).expiration(Date.from(Instant.now().plus(refreshTokenExpireTime, ChronoUnit.SECONDS))).signWith(key).compact();
+        String refreshToken = Jwts.builder().subject(member.getEmail()).issuedAt(Timestamp.valueOf(LocalDateTime.now())).claim("id", member.getId()).expiration(Date.from(Instant.now().plus(refreshTokenExpireTime, ChronoUnit.SECONDS))).signWith(key).compact();
 
         // redis에 refresh Token 저장
         refreshTokenRedisRepository.save(Auth.builder().email(member.getEmail()).refreshToken(refreshToken).build());
@@ -102,5 +102,9 @@ public class TokenUtil {
 
     public String getSubject(String token) {
         return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().getSubject();
+    }
+
+    public Object getClaim(String token, String claimName, Class<?> classType) {
+        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().get(claimName, classType);
     }
 }

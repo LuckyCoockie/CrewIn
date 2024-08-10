@@ -82,20 +82,18 @@ public class MemberService {
 
     public Token reissue(String refreshToken, HttpServletRequest request) {
         if (tokenUtil.validateToken(refreshToken, request)) {
-            String email = tokenUtil.getSubject(refreshToken);
-            Auth auth = refreshTokenRedisRepository.findById(email).orElseThrow(InvalidTokenException::new);
-            log.info("input refreshToken: {}", refreshToken);
-            log.info("redis refreshToken: {}", auth.getRefreshToken());
+            try {
+                String email = tokenUtil.getSubject(refreshToken);
+                Auth auth = refreshTokenRedisRepository.findById(email).orElseThrow(InvalidTokenException::new);
+                log.info("input refreshToken: {}", refreshToken);
+                log.info("redis refreshToken: {}", auth.getRefreshToken());
 
-            // 임시
-            Member member = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
-
-            if (auth.getRefreshToken().equals(refreshToken)) {
-                //임시
-                return tokenUtil.generateToken(member);
-
-
-//                return tokenUtil.generateToken(Member.builder().email(email).build());
+                Long id = (Long) tokenUtil.getClaim(refreshToken, "id", Long.class);
+                if (auth.getRefreshToken().equals(refreshToken)) {
+                    return tokenUtil.generateToken(Member.builder().email(email).id(id).build());
+                }
+            } catch (Exception e) {
+                throw new InvalidTokenException();
             }
         }
         throw new InvalidTokenException();
