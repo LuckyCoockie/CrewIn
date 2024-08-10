@@ -144,17 +144,20 @@ public class PostService {
         List<PostItem> postItems = postList.stream().map(post -> {
             String authNickName;
             String authProfile;
+            Long authorId;
             if (PostType.NOTICE == post.getPostType()) {
                 authProfile = post.getCrew().getMainLogo();
                 authNickName = post.getCrew().getCrewName();
+                authorId = post.getCrew().getId();
             } else {
                 authProfile = post.getAuthor().getImageUrl();
                 authNickName = post.getAuthor().getNickname();
+                authorId = post.getAuthor().getId();
             }
             return PostItem.builder()
                     .id(post.getId())
                     .authorName(authNickName)
-                    .authorId(post.getAuthor().getId())
+                    .authorId(authorId)
                     .content(post.getContent())
                     .heartCount(post.getHearts().size())
                     .isHearted(heartRepository.existsByPostAndMember(post, viewer))

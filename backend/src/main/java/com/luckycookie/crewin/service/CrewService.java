@@ -266,6 +266,7 @@ public class CrewService {
         }
     }
 
+    // 크루 탈퇴
     public void quitCrew(Long crewId, CustomUser customUser) {
 
         Member member = memberRepository.findByEmail(customUser.getEmail())
@@ -282,6 +283,8 @@ public class CrewService {
 
         //크루 태그한 게시물들을 찾아서 null 처리
         postRepository.updateCrewIdToNull(member, crew);
+        // 해당 멤버가 크루에서 받은 알림 삭제
+        notificationRepository.deleteNotificationByCrewIdAndMemberId(List.of(NOTICE, INVITATION), crewId, member);
         memberCrewRepository.deleteByMemberAndCrew(member, crew);
 
     }
