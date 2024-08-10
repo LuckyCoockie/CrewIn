@@ -6,10 +6,10 @@ import SpinnerFullComponent from "../atoms/SpinnerFullComponent";
 import { quitCrew } from "../../apis/api/crewdetail";
 
 type CrewId = {
-    crewId: number
-}
+  crewId: number;
+};
 
-const QuitDropdownOrganism: React.FC<CrewId> = ({crewId}) => {
+const QuitDropdownOrganism: React.FC<CrewId> = ({ crewId }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoader, setIsLoader] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -22,9 +22,9 @@ const QuitDropdownOrganism: React.FC<CrewId> = ({crewId}) => {
   const handleQuit = async () => {
     setIsLoader(true);
     setIsDropdownOpen(false);
-    // 삭제 로직 구현
-        await quitCrew(crewId);
-        navigate(`/crew`);
+    // 탈퇴 로직
+    await quitCrew(crewId);
+    navigate(`/crew`);
   };
 
   useEffect(() => {
