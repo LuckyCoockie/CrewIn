@@ -1,17 +1,12 @@
 import React from "react";
 import { ReactComponent as MemberPlusIcon } from "../../../assets/icons/member-plus.svg";
-import { useNavigate } from "react-router";
+import { useParams, useNavigate } from "react-router";
 
-type MemberPlusButtonProps = {
-  idData: number;
-};
-
-const MemberPlusButton: React.FC<MemberPlusButtonProps> = ({
-  idData,
-}) => {
+const MemberPlusButton: React.FC = () => {
+  const { crewId } = useParams<{ crewId: string }>();
   const navigate = useNavigate();
   const handleNav = () => {
-    navigate(`/crew/${idData}/invite`);
+    navigate(`/crew/${crewId}/invite`);
   };
   return (
     <button onClick={handleNav}>

@@ -9,6 +9,8 @@ import CrewAlbumOrganism from "../organisms/CrewAlbumOrganism";
 import CrewHeaderBarOrganism from "../organisms/CrewHeaderBarOrganism";
 import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
 import GroupsButton from "../atoms/Button/GroupsButton";
+import MemberPlusButton from "../atoms/Button/MemberPlusButton";
+
 import {
   getCrewInfo,
   getCrewGalleryList,
@@ -160,10 +162,19 @@ const CrewDetailTemplate: React.FC = () => {
           text={infoData ? infoData.crewName : "Loading..."}
         />
         <div className="flex ms-auto">
-          {isUserCrewMember && <GroupsButton userPosition={userPosition!} />}
+          {isUserCrewMember && (
+            <div className="ms-1">
+              <GroupsButton userPosition={userPosition!} />
+            </div>
+          )}
+          {isUserCrewMember && userPosition === "CAPTAIN" && (
+            <div className="ms-1">
+              <MemberPlusButton />
+            </div>
+          )}
           {isUserCrewMember && userPosition === "CAPTAIN" && (
             <>
-              <div className="ms-2">
+              <div className="ms-1">
                 <EditDeleteDropdownOrganism
                   type="CREW"
                   idData={infoData?.crewId}
