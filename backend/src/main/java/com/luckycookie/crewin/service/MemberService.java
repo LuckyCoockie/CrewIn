@@ -32,8 +32,10 @@ public class MemberService {
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
     private final TokenUtil tokenUtil;
     private final MailService mailService;
+    private final ValidationService validationService;
 
     public Token signIn(SignInRequest signInRequest) {
+        validationService.validateEmailString(signInRequest.getEmail());
         Member member = memberRepository.findByEmail(signInRequest.getEmail()).orElseThrow(MemberNotFoundException::new);
         if (passwordEncoder.matches(signInRequest.getPassword(), member.getPassword())) {
             return tokenUtil.generateToken(member);
@@ -43,6 +45,9 @@ public class MemberService {
     }
 
     public void signUp(SignUpRequest signUpRequest) {
+        validationService.validateEmailString(signUpRequest.getEmail());
+        validationService.validateString(signUpRequest.getNickname());
+        validationService.validateString(signUpRequest.getName());
         if (memberRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new DuplicateEmailException();
         }
@@ -64,11 +69,13 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public boolean checkDuplicateEmail(String email) {
+        validationService.validateEmailString(email);
         return memberRepository.existsByEmail(email);
     }
 
     @Transactional(readOnly = true)
     public boolean checkDuplicateNickname(String nickname) {
+        validationService.validateString(nickname);
         return memberRepository.existsByNickname(nickname);
     }
 
