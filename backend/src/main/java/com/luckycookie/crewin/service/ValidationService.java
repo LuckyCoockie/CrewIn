@@ -19,8 +19,22 @@ public class ValidationService {
         }
     }
 
-    public void validateString(String input) {
+    public void validateNickName(String input) {
+        validateLength(input, 10);
         if (!input.matches(VALID_PATTERN)) {
+            throw new ValidationInputException();
+        }
+    }
+
+    public void validateName(String input) {
+        validateLength(input, 30);
+        if (!input.matches(VALID_PATTERN)) {
+            throw new ValidationInputException();
+        }
+    }
+
+    private void validateLength(String input, int maxLength) {
+        if (input.length() < 2 || input.length() > maxLength) {
             throw new ValidationInputException();
         }
     }

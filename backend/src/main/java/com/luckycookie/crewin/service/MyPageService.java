@@ -132,7 +132,7 @@ public class MyPageService {
 
     // 닉네임 변경
     public void changeNickname(CustomUser customUser, MyPageNicknameRequest myPageNicknameRequest) {
-        validationService.validateString(myPageNicknameRequest.getNickname());
+        validationService.validateNickName(myPageNicknameRequest.getNickname());
         Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(MemberNotFoundException::new);
 
         // 변경하고자 하는 nickname

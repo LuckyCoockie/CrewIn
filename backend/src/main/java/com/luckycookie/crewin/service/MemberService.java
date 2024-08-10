@@ -46,8 +46,8 @@ public class MemberService {
 
     public void signUp(SignUpRequest signUpRequest) {
         validationService.validateEmailString(signUpRequest.getEmail());
-        validationService.validateString(signUpRequest.getNickname());
-        validationService.validateString(signUpRequest.getName());
+        validationService.validateNickName(signUpRequest.getNickname());
+        validationService.validateName(signUpRequest.getName());
         if (memberRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new DuplicateEmailException();
         }
@@ -75,7 +75,7 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public boolean checkDuplicateNickname(String nickname) {
-        validationService.validateString(nickname);
+        validationService.validateNickName(nickname);
         return memberRepository.existsByNickname(nickname);
     }
 
