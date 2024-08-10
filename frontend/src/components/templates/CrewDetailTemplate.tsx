@@ -19,6 +19,7 @@ import {
 import { getMyCrews } from "../../apis/api/mycrew";
 import { useNavigate, useParams } from "react-router";
 import { createSearchParams } from "react-router-dom";
+import QuitDropdownOrganism from "../organisms/QuitDropdownOrganism";
 
 const CrewDetailTemplate: React.FC = () => {
   const navigate = useNavigate();
@@ -180,6 +181,13 @@ const CrewDetailTemplate: React.FC = () => {
                   idData={infoData?.crewId}
                   isCrew={true}
                 />
+              </div>
+            </>
+          )}
+          {isUserCrewMember && userPosition !== "CAPTAIN" && (
+            <>
+              <div className="ms-1">
+                <QuitDropdownOrganism crewId={Number(crewId)} />
               </div>
             </>
           )}
