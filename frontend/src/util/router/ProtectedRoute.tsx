@@ -14,12 +14,7 @@ const ProtectedRoute = () => {
 
   const isAuthenticated = useMemo(() => accessToken !== null, [accessToken]);
 
-  console.log(loading, isAuthenticated);
-
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      refreshToken().catch(() => navigate("/login"));
-    }
     if (!loading && !isAuthenticated) {
       refreshToken().catch(() => navigate("/login"));
     }

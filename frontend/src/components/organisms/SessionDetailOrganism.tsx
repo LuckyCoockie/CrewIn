@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import OneToOneImageMolecule from "../molecules/Image/OneToOneImageMolecule";
 import DetailInfoMolecule from "../molecules/Content/DetailInfoMolecule";
@@ -11,6 +11,7 @@ import {
   participateSession,
   cancelSession,
 } from "../../apis/api/sessiondetail";
+import { useNavigate } from "react-router";
 
 type SessionDetailOrganismProps = {
   detailData: SessionDetailDto;
@@ -38,9 +39,11 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
     courseThumbnail,
     currentPeople,
     courseDistance,
+    courseId,
   } = detailData;
 
   const [isJoined, setIsJoined] = useState(detailData.isJoined);
+  const navigate = useNavigate();
 
   const isSessionStarted = detailData ? new Date(startAt) < new Date() : false;
 
@@ -111,6 +114,10 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
     }
   };
 
+  const handelCourseClick = useCallback(() => {
+    navigate(`/course/${courseId}`);
+  }, [courseId, navigate]);
+
   return (
     <>
       <Carousel
@@ -151,7 +158,10 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
         <DetailInfoMolecule title="집결지" content={spot} />
         <DetailInfoMolecule title="코스" content={area} />
         <DetailInfoMolecule title="내용" content={content} />
-        <div className="flex justify-center items-center">
+        <div
+          className="flex justify-center items-center"
+          onClick={handelCourseClick}
+        >
           <img
             src={courseThumbnail}
             alt="courseThumbnail"

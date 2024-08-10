@@ -22,6 +22,7 @@ const AttendancePage: React.FC = () => {
         return {
           items: [],
           autoCheckStatus: "BEFORE",
+          memberSessionId: 0,
           leftTime: 0,
         };
       }

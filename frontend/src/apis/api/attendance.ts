@@ -16,6 +16,7 @@ export type AutoCheckStatus = "BEFORE" | "DURING" | "AFTER";
 
 export type GetAttendanceMemberListResponseDto = {
   items: AttendanceMemberDto[];
+  memberSessionId: number;
   autoCheckStatus: AutoCheckStatus;
   leftTime: number;
 };

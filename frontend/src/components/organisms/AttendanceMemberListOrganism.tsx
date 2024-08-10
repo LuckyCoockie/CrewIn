@@ -19,6 +19,10 @@ type OwnProps<T> = {
   sessionId: number;
   autoCheckStatus: AutoCheckStatus;
   isSessionEnded: boolean;
+  onAttendanceChange: (data: {
+    memberSessionId: number;
+    isAttend: boolean;
+  }) => void;
 };
 
 const AttendanceMemberListOrganism = <T,>({
@@ -28,6 +32,7 @@ const AttendanceMemberListOrganism = <T,>({
   sessionId,
   autoCheckStatus,
   isSessionEnded,
+  onAttendanceChange,
 }: OwnProps<T>) => {
   const query = qs.parse(location.search) as T;
   const [attendanceStateMap, setAttendanceStateMap] = useState(
@@ -49,10 +54,11 @@ const AttendanceMemberListOrganism = <T,>({
 
   const handleAttendanceChange = useCallback(
     (data: { memberSessionId: number; isAttend: boolean }) => {
+      onAttendanceChange(data);
       attendanceStateMap.set(data.memberSessionId, data.isAttend);
       setAttendanceStateMap(new Map(attendanceStateMap));
     },
-    [attendanceStateMap]
+    [attendanceStateMap, onAttendanceChange]
   );
 
   const handlePostAttendanceClick = useCallback(
@@ -69,11 +75,12 @@ const AttendanceMemberListOrganism = <T,>({
   const { setIsActive } = useSSE({
     url: `/attendance/connect/${sessionId}`,
     events: [{ event: "attendance", onEvent: handleAttendanceChange }],
+    onError: () => alert("서버와의 연결에 실패하였습니다."),
   });
 
   useEffect(() => {
-    setIsActive(autoCheckStatus !== "BEFORE" && !isSessionEnded && isSessionHost);
-  }, [autoCheckStatus, isSessionEnded, isSessionHost, setIsActive]);
+    setIsActive(autoCheckStatus !== "BEFORE" && !isSessionEnded);
+  }, [autoCheckStatus, isSessionEnded, setIsActive]);
 
   if (isError || !memberList) return "데이터를 불러오지 못했습니다.";
 
