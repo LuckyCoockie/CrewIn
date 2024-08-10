@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -10,6 +10,7 @@ import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import Timer from "../atoms/Timer";
 import SpinnerComponent from "../atoms/SpinnerComponent";
+import Modal from "../molecules/ModalMolecules";
 
 import {
   getEmailDuplicationCheck,
@@ -85,14 +86,28 @@ const LoginOrganism: React.FC = () => {
     mode: "onChange",
   });
 
+  // 모달을 제어할 상태 추가
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
+
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isCodeInput, setIsCodeInput] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [isCodeVerified, setIsCodeVerified] = useState(false);
-  const [timer, setTimer] = useState(false);
+  const [setimer, setTimer] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isEmailFormValid, setIsEmailFormValid] = useState(false);
   const [isNicknameFormValid, setIsNicknameFormValid] = useState(false);
+
+  // useEffect로 isValid 상태를 감시
+  useEffect(() => {
+    if (isLoading && !isValid) {
+      setModalTitle("잘못된 접근");
+      setModalMessage("비정상적인 접근입니다.");
+      setIsModalOpen(true);
+    }
+  }, [isLoading, isValid, navigate]);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const submitData: JoinMemberInfoDto = {
@@ -102,10 +117,14 @@ const LoginOrganism: React.FC = () => {
       // 회원가입 API 호출
       await joinMember(submitData);
       console.log("회원가입 성공");
-      navigate(`/login`);
+      setModalTitle("회원가입 성공");
+      setModalMessage("회원가입에 성공했습니다. 로그인해주세요.");
+      setIsModalOpen(true);
     } catch (error) {
       console.error("회원가입 실패:", error);
-      window.alert("회원가입에 실패했습니다.");
+      setModalTitle("회원가입 실패");
+      setModalMessage("회원가입에 실패했습니다.");
+      setIsModalOpen(true);
     }
   };
 
@@ -119,30 +138,43 @@ const LoginOrganism: React.FC = () => {
         setIsCodeInput(true);
         setIsEmailValid(true);
         setIsLoading(false);
-      } else return;
+      } else {
+        setModalTitle("이메일 오류");
+        setModalMessage("유효한 이메일을 입력해주세요.");
+        setIsModalOpen(true);
+      }
     } catch (error) {
       console.error("이메일 인증 실패:", error);
+      setModalTitle("이메일 인증 실패");
+      setModalMessage("이메일 인증에 실패했습니다.");
+      setIsModalOpen(true);
     }
   };
 
   const handleCodeVerification = async () => {
-    const email = getValues("email"); // 이메일 값 가져오기
+    const email = getValues("email");
     if (!email) {
-      console.error("이메일이 유효하지 않습니다.");
+      setModalTitle("이메일 오류");
+      setModalMessage("유효한 이메일을 입력해주세요.");
+      setIsModalOpen(true);
       return;
     }
     try {
-      const response = await getCodeCheck({ email, code: verificationCode }); // getCodeCheck 함수 호출
+      const response = await getCodeCheck({ email, code: verificationCode });
       if (response.verified) {
         console.log("인증번호 일치");
         setIsCodeVerified(true);
+        setTimer(false);
       } else {
-        console.log("인증번호 미일치");
-        setIsCodeVerified(false);
+        setModalTitle("인증번호 오류");
+        setModalMessage("인증번호가 일치하지 않습니다.");
+        setIsModalOpen(true);
       }
     } catch (error) {
-      console.log("인증번호 검증 중 오류 발생:", error);
-      setIsCodeVerified(false);
+      console.error("인증번호 검증 중 오류 발생:", error);
+      setModalTitle("인증번호 오류");
+      setModalMessage("인증번호 검증 중 오류가 발생했습니다.");
+      setIsModalOpen(true);
     }
   };
 
@@ -154,7 +186,7 @@ const LoginOrganism: React.FC = () => {
         if (duplicated) {
           setError("email", {
             type: "manual",
-            message: "이미 사용 중인 이메일입니다.",
+            message: "사용 중인 이메일입니다.",
           });
           setIsEmailFormValid(false);
         } else {
@@ -164,11 +196,13 @@ const LoginOrganism: React.FC = () => {
       } catch (error) {
         setError("email", {
           type: "manual",
-          message: "이메일 확인 중 오류가 발생했습니다.",
+          message: "유효하지 않는 이메일입니다.",
         });
+        setIsEmailFormValid(false);
       }
     }
   };
+
   const handleNicknameBlur = async () => {
     const nickname = getValues("nickname");
     if (nickname) {
@@ -177,7 +211,7 @@ const LoginOrganism: React.FC = () => {
         if (duplicated) {
           setError("nickname", {
             type: "manual",
-            message: "이미 사용 중인 닉네임입니다.",
+            message: "사용 중인 닉네임입니다.",
           });
           setIsNicknameFormValid(false);
         } else {
@@ -187,9 +221,17 @@ const LoginOrganism: React.FC = () => {
       } catch (error) {
         setError("nickname", {
           type: "manual",
-          message: "닉네임 확인 중 오류가 발생했습니다.",
+          message: "유효하지 않는 닉네임입니다.",
         });
+        setIsNicknameFormValid(false);
       }
+    }
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    if (modalTitle === "회원가입 성공") {
+      navigate("/login");
     }
   };
 
@@ -304,7 +346,7 @@ const LoginOrganism: React.FC = () => {
         </button>
       ) : null}
       {/* 제출폼이 모두 완료 되었을때 인증번호 ipnut 생성 */}
-      {isEmailValid && (
+      {isValid && isEmailValid && (
         <>
           <div className="flex">
             <div className="w-9/12 mb-4 relative">
@@ -314,8 +356,9 @@ const LoginOrganism: React.FC = () => {
                 placeholder="인증번호"
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value)}
+                disabled={isCodeVerified}
               />
-              {timer && (
+              {setimer && (
                 <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
                   <Timer />
                 </div>
@@ -326,6 +369,7 @@ const LoginOrganism: React.FC = () => {
                 type="button"
                 className="button-color w-full border-transparent"
                 onClick={handleCodeVerification}
+                disabled={isCodeVerified}
               >
                 확인
               </button>
@@ -337,6 +381,13 @@ const LoginOrganism: React.FC = () => {
             <LargeDisableButton text="회원가입" />
           )}
         </>
+      )}
+
+      {/* Modal 컴포넌트 */}
+      {isModalOpen && (
+        <Modal title={modalTitle} onClose={handleModalClose}>
+          <p>{modalMessage}</p>
+        </Modal>
       )}
     </form>
   );

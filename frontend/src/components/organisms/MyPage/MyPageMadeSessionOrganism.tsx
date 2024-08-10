@@ -52,8 +52,10 @@ const MyPageMadeSessionOrganism: React.FC<MyPageMadeSessionOrganismProps> = ({
 
   return (
     <>
-      <div className="flex items-center cursor-pointer" onClick={clickRouter}>
-        <MediumTitleMolecule text="최근 생성한 세션" />
+      <div className="flex items-center">
+        <div className="cursor-pointer">
+          <MediumTitleMolecule text="최근 생성한 세션" onClick={clickRouter} />
+        </div>
         <IntoArrowButton router={`/mypage/session/${MySessionType.CREATED}`} />
       </div>
       {!isMadeSessionsError ? (
