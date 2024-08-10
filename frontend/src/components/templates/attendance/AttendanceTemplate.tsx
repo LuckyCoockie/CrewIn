@@ -42,6 +42,9 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     return currentTime >= endTime;
   }, [endAt]);
 
+  const [memberSessionId, setMemberSessionId] = useState<number>();
+  const [isAttend, setIsAttend] = useState<boolean>(false);
+
   const [autoCheckStatus, setAutoCheckStatus] =
     useState<AutoCheckStatus>("BEFORE");
 
@@ -66,6 +69,12 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     const response = await getMemberList();
     setAutoCheckStatus(response.autoCheckStatus);
     setLeftTime(response.leftTime);
+    setMemberSessionId(response.memberSessionId);
+    response.items.forEach((data) => {
+      if (data.memberSessionId === response.memberSessionId) {
+        setIsAttend(data.isAttend);
+      }
+    });
     return response.items;
   }, [getMemberList]);
 
@@ -74,6 +83,13 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
       fetchMemberList();
     });
   }, [fetchMemberList, onStartAttendanceClick]);
+
+  const handleAttendanceChange = useCallback(
+    (data: { memberSessionId: number; isAttend: boolean }) => {
+      if (data.memberSessionId === memberSessionId) setIsAttend(data.isAttend);
+    },
+    [memberSessionId]
+  );
 
   return (
     <>
@@ -88,6 +104,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
           sessionId={sessionId}
           autoCheckStatus={autoCheckStatus}
           isSessionEnded={isSessionEnded}
+          onAttendanceChange={handleAttendanceChange}
         />
         <div className="mx-auto w-full max-w-[550px] fixed bottom-0 left-0 right-0 text-center z-50 px-2 pb-20 pt-5 bg-white font-bold">
           {!isSessionStarted ? (
@@ -108,6 +125,8 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
                     {"자동 출석 중에는 출석을 수정할 수 없습니다."}
                     <TimerOrganism initSeconds={leftTime} />
                   </div>
+                ) : isAttend ? (
+                  <>{"출석 완료"}</>
                 ) : (
                   <LargeAbleButton
                     text="출석하기"
