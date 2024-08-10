@@ -52,7 +52,7 @@ public class AttendanceService {
     private final EmitterRepository emitterRepository;
 
     // 자동 출석 시간 인터벌
-    private final int AUTO_CHECK_TIME = 30;
+    private final int AUTO_CHECK_TIME = 10;
 
     // SSE 구독
     public SseEmitter subscribeSSE(Long sessionId, String email) {
@@ -65,7 +65,7 @@ public class AttendanceService {
             throw new InvalidRequestTimeException();
 
 //      SseEmitter emitter = emitterRepository.save(sessionId, new SseEmitter(60 * 1000L * 10));
-        SseEmitter emitter = emitterRepository.save(sessionId, new SseEmitter(10 * 1000L));
+        SseEmitter emitter = emitterRepository.save(sessionId, new SseEmitter(60 * 1000L * 60));
         emitter.onCompletion(() -> {
             emitterRepository.deleteById(sessionId);
             log.info("SSE emitter onCompletion");
