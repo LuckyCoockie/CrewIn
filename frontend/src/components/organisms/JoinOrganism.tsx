@@ -9,6 +9,7 @@ import InputPasswordTypeMolecule from "../molecules/Input/InputPasswordTypeMolec
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import Timer from "../atoms/Timer";
+import SpinnerComponent from "../atoms/SpinnerComponent";
 
 import {
   getEmailDuplicationCheck,
@@ -89,6 +90,9 @@ const LoginOrganism: React.FC = () => {
   const [verificationCode, setVerificationCode] = useState("");
   const [isCodeVerified, setIsCodeVerified] = useState(false);
   const [timer, setTimer] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isEmailFormValid, setIsEmailFormValid] = useState(false);
+  const [isNicknameFormValid, setIsNicknameFormValid] = useState(false);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const submitData: JoinMemberInfoDto = {
@@ -107,12 +111,14 @@ const LoginOrganism: React.FC = () => {
 
   const handleEmailVerification = async () => {
     const email = getValues("email");
+    setIsLoading(true);
     try {
       if (email) {
         await postMemberCheck({ email });
         setTimer(true);
         setIsCodeInput(true);
         setIsEmailValid(true);
+        setIsLoading(false);
       } else return;
     } catch (error) {
       console.error("이메일 인증 실패:", error);
@@ -150,8 +156,10 @@ const LoginOrganism: React.FC = () => {
             type: "manual",
             message: "이미 사용 중인 이메일입니다.",
           });
+          setIsEmailFormValid(false);
         } else {
           clearErrors("email");
+          setIsEmailFormValid(true);
         }
       } catch (error) {
         setError("email", {
@@ -171,8 +179,10 @@ const LoginOrganism: React.FC = () => {
             type: "manual",
             message: "이미 사용 중인 닉네임입니다.",
           });
+          setIsNicknameFormValid(false);
         } else {
           clearErrors("nickname");
+          setIsNicknameFormValid(true);
         }
       } catch (error) {
         setError("nickname", {
@@ -276,14 +286,14 @@ const LoginOrganism: React.FC = () => {
         />
       </div>
       {/* 버튼 영역 */}
-      {isValid && !isCodeInput ? (
+      {isEmailFormValid && isNicknameFormValid && isValid && !isCodeInput ? (
         <button
           type="button"
           className="button-color w-full mb-4"
           onClick={handleEmailVerification}
-          disabled={!isValid}
+          disabled={isLoading}
         >
-          이메일 인증
+          {isLoading ? <SpinnerComponent /> : <>이메일 인증</>}
         </button>
       ) : !isCodeInput ? (
         <button
@@ -293,7 +303,7 @@ const LoginOrganism: React.FC = () => {
           이메일 인증
         </button>
       ) : null}
-
+      {/* 제출폼이 모두 완료 되었을때 인증번호 ipnut 생성 */}
       {isEmailValid && (
         <>
           <div className="flex">
