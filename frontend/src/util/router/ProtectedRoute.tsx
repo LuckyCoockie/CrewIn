@@ -20,6 +20,9 @@ const ProtectedRoute = () => {
     if (!loading && !isAuthenticated) {
       refreshToken().catch(() => navigate("/login"));
     }
+    if (!loading && !isAuthenticated) {
+      refreshToken().catch(() => navigate("/login"));
+    }
   }, [isAuthenticated, loading, navigate]);
 
   if (loading || !isAuthenticated) return <SplashPage />;

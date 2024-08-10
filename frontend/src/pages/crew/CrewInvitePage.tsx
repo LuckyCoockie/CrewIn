@@ -76,7 +76,6 @@ const CrewInvitePage: React.FC = () => {
         crewId: Number(crewId),
       });
       console.log(response);
-      // 초대 성공 시 추가 작업이 필요하다면 여기에 작성
     } catch (error) {
       console.error("Invitation error:", error);
     }

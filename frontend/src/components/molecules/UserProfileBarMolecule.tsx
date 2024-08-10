@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import menuicon from "../../assets/images/menu-vertical-icon.png";
+import { ReactComponent as MoreVerticalIcon } from "../../assets/icons/more_vertical.svg";
 import BarTitle from "../atoms/Title/BarTitle";
 import BarContent from "../atoms/Content/BarContent";
 import ProfileImageComponent from "../atoms/ImageSize/ProfileImageComponent";
@@ -54,7 +54,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   }, [isDropdownOpen]);
 
   return (
-    <div className="flex items-center w-full mb-4">
+    <div className="flex items-center w-full mb-3">
       <div className="cursor-pointer" onClick={onClick}>
         <ProfileImageComponent src={profileImage} />
       </div>
@@ -65,7 +65,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       {authorId === memberId && (
         <div className="ml-auto mr-2 relative" ref={dropdownRef}>
           <button onClick={toggleDropdown}>
-            <img src={menuicon} alt="menu-icon" />
+            <MoreVerticalIcon className="w-6 h-6" />
           </button>
           {isDropdownOpen && (
             <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-400 rounded-sm z-10">
