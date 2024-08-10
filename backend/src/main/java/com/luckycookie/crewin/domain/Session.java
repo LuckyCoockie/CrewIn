@@ -89,6 +89,7 @@ public class Session {
         this.startAt = updateSessionRequest.getStartAt();
         this.endAt = updateSessionRequest.getEndAt();
         this.content = updateSessionRequest.getContent();
+        this.maxPeople = updateSessionRequest.getMaxPeople();
         this.posterImages.clear();
         if (updateSessionRequest.getImages() != null) {
             for (String imageUrl : updateSessionRequest.getImages()) {
