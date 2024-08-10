@@ -95,6 +95,10 @@ const CrewNoticeCreateTemplate: React.FC = () => {
       allowedTypes.includes(file.type)
     );
 
+    if (imagePaths.length + filteredFiles.length > 10) {
+      alert("사진은 최대 10개까지 첨부할 수 있습니다.");
+      return;
+    }
     const tempImagePaths: string[] = [];
     const tempCroppedImages: string[] = [];
 
