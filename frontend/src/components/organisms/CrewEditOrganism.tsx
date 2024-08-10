@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { useForm, Controller, SubmitHandler, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useQuery, useMutation, useQueryClient } from "react-query";
@@ -66,7 +66,6 @@ const CrewEditOrganism: React.FC = () => {
     ["getCrewInfo", crewId],
     () => getCrewInfo({ crewId: Number(crewId) })
   );
-  console.log(crewData);
 
   const mutation = useMutation(editCrew, {
     onSuccess: () => {
@@ -80,13 +79,20 @@ const CrewEditOrganism: React.FC = () => {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isDirty },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onChange",
-    defaultValues: {
-      crewcreatedat: new Date(),
-    },
+    defaultValues: crewData
+      ? {
+          crew_name: crewData.crewName,
+          slogan: crewData.slogan,
+          introduction: crewData.introduction,
+          city: crewData.area.split(" ")[0],
+          district: crewData.area.split(" ")[1],
+          crewcreatedat: new Date(crewData.crewBirth),
+        }
+      : undefined,
   });
 
   const [mainLogoPreview, setMainLogoPreview] = useState<string | undefined>(
@@ -98,6 +104,10 @@ const CrewEditOrganism: React.FC = () => {
   const [bannerPreview, setBannerPreview] = useState<string | undefined>(
     undefined
   );
+
+  // 추가: 파일이 변경되었는지 감지하는 상태
+  const [isFilesChanged, setIsFilesChanged] = useState(false);
+  console.log(isFilesChanged);
 
   useEffect(() => {
     if (crewData) {
@@ -112,9 +122,19 @@ const CrewEditOrganism: React.FC = () => {
       setMainLogoPreview(crewData.mainLogo);
       setSubLogoPreview(crewData.subLogo);
       setBannerPreview(crewData.banner);
-      console.log(crewData);
     }
   }, [crewData, setValue]);
+
+  // 파일 변경을 감지하기 위해 watch 사용
+  const watchedMainLogo = useWatch({ control, name: "mainLogo" });
+  const watchedSubLogo = useWatch({ control, name: "subLogo" });
+  const watchedBanner = useWatch({ control, name: "banner" });
+
+  useEffect(() => {
+    if (watchedMainLogo || watchedSubLogo || watchedBanner) {
+      setIsFilesChanged(true); // 파일이 변경되었음을 표시
+    }
+  }, [watchedMainLogo, watchedSubLogo, watchedBanner]);
 
   const checkUndefined = async (file?: File) => {
     if (file) {
@@ -348,8 +368,11 @@ const CrewEditOrganism: React.FC = () => {
           </div>
         </div>
         <div>
-          {isValid ? (
-            <LargeAbleButton text="수정 완료" />
+          {(isValid && isDirty) || isFilesChanged ? (
+            <LargeAbleButton
+              text="수정 완료"
+              onClick={handleSubmit(onSubmit)}
+            />
           ) : (
             <LargeDisableButton text="수정 완료" />
           )}

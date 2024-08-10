@@ -1,18 +1,18 @@
 import React from "react";
 
 type Props = {
-  onClick: () => void;
+  onQuit: () => void;
 };
 
-const MemberPlusDropdownMolecule: React.FC<Props> = ({ onClick }) => {
+const QuitDropdownMolecule: React.FC<Props> = ({ onQuit }) => {
   return (
     <button
-      onClick={onClick}
+      onClick={onQuit}
       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
     >
-      멤버 초대
+      탈퇴
     </button>
   );
 };
 
-export default MemberPlusDropdownMolecule;
+export default QuitDropdownMolecule;

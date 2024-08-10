@@ -28,6 +28,7 @@ const schema = yup.object({
   email: yup
     .string()
     .email("이메일 형식으로 입력해주세요")
+    .max(50, "이메일은 최대 50자입니다.")
     .required("이메일을 입력해주세요.")
     .test(
       "emailDuplicationCheck",
@@ -58,6 +59,7 @@ const schema = yup.object({
     .required("비밀번호를 확인해주세요."),
   nickname: yup
     .string()
+    .min(2, "최소 2자 입니다.")
     .max(10, "최대 10자 입니다.")
     .required("닉네임을 입력해주세요.")
     .test(
@@ -77,6 +79,7 @@ const schema = yup.object({
     ),
   name: yup
     .string()
+    .min(2, "이름은 최소 2자입니다.")
     .max(30, "이름은 최대 30자입니다.")
     .required("이름을 입력해주세요."),
 });
@@ -157,6 +160,16 @@ const LoginOrganism: React.FC = () => {
     }
   };
 
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ ]/g, "");
+    e.target.value = value;
+  };
+
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ ]/g, "");
+    e.target.value = value;
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-wrap w-full">
@@ -171,6 +184,10 @@ const LoginOrganism: React.FC = () => {
                 title="이름"
                 placeholder="홍길동"
                 {...field}
+                onChange={(e) => {
+                  handleNameChange(e);
+                  field.onChange(e); // react-hook-form의 상태 업데이트
+                }}
                 error={errors.name?.message}
                 hasError={!!errors.name}
                 disabled={isCodeInput}
@@ -189,6 +206,10 @@ const LoginOrganism: React.FC = () => {
                 title="닉네임"
                 placeholder="ex) 달리는 동동"
                 {...field}
+                onChange={(e) => {
+                  handleNicknameChange(e);
+                  field.onChange(e); // react-hook-form의 상태 업데이트
+                }}
                 error={errors.nickname?.message}
                 hasError={!!errors.nickname}
                 disabled={isCodeInput}
@@ -258,7 +279,10 @@ const LoginOrganism: React.FC = () => {
           이메일 인증
         </button>
       ) : !isCodeInput ? (
-        <button className="w-full bg-[#2b2f401a] py-2 text-center rounded-lg disable text-white font-bold">
+        <button
+          className="w-full bg-[#2b2f401a] py-2 text-center rounded-lg text-white font-bold"
+          disabled
+        >
           이메일 인증
         </button>
       ) : null}

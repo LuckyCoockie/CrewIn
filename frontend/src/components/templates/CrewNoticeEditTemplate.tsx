@@ -28,8 +28,8 @@ import SpinnerFullComponent from "../atoms/SpinnerFullComponent";
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({
-  title: yup.string().required(),
-  content: yup.string().required(),
+  title: yup.string().required("제목을 입력해주세요."),
+  content: yup.string().required("내용을 입력해주세요."),
 });
 
 type FormValues = {
@@ -67,11 +67,10 @@ const CrewNoticeEditTemplate: React.FC = () => {
     control,
     handleSubmit,
     setValue,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isDirty },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onChange",
-    defaultValues: {},
   });
 
   const [imagePaths, setImagePaths] = useState<string[]>([]);
@@ -81,6 +80,9 @@ const CrewNoticeEditTemplate: React.FC = () => {
   const [isCropped, setIsCropped] = useState<boolean>(false);
 
   const cropperRefs = useRef<(ReactCropperElement | null)[]>([]);
+
+  // 파일이 변경되었는지 감지하는 상태 추가
+  const [isFilesChanged, setIsFilesChanged] = useState(false);
 
   useEffect(() => {
     if (noticeData) {
@@ -113,6 +115,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
     setImagePaths(tempImagePaths);
     setCroppedImages(tempCroppedImages);
     setIsCropped(false);
+    setIsFilesChanged(true); // 파일 변경되었음을 표시
   };
 
   const handleCrop = (index: number) => {
@@ -167,6 +170,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
     setCroppedImages([]);
     setCroppedFiles([]);
     setIsCropped(false);
+    setIsFilesChanged(false); // 파일 초기화 시 변경 상태를 해제
   };
 
   const checkUndefined = async (files: File[]) => {
@@ -182,10 +186,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    if (!isValid) {
-      console.log(isValid);
-      console.log("막음");
-
+    if (!isValid && !isFilesChanged) {
       return;
     }
     setIsSubmitting(true);
@@ -316,7 +317,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
               />
             </div>
             <div>
-              {isValid ? (
+              {(isValid && isDirty) || isFilesChanged ? (
                 <LargeAbleButton text="수정" />
               ) : (
                 <LargeDisableButton text="수정" />

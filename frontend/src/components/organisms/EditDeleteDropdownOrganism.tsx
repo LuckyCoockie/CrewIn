@@ -4,7 +4,6 @@ import { useQueryClient } from "react-query";
 import MoreVerticalButton from "../atoms/Button/MoreVerticalButton";
 import EditDropdownMolecule from "../molecules/EditDropdownMolecule";
 import DeleteDropdownMolecule from "../molecules/DeleteDropdownMolecule";
-import MemberPlusDropdownMolecule from "../molecules/MemberPlusDropdownMolecule";
 import SpinnerFullComponent from "../atoms/SpinnerFullComponent";
 
 // crew
@@ -25,7 +24,6 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({
   type,
   idData,
   idData2,
-  isCrew,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoader, setIsLoader] = useState(false);
@@ -70,10 +68,6 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({
     }
   };
 
-  const handleRouter = () => {
-    navigate(`/crew/${idData}/invite`);
-  };
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -99,7 +93,6 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({
           <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-300 rounded-md z-10">
             <EditDropdownMolecule onEdit={handleEdit} />
             <DeleteDropdownMolecule onDelete={handleDelete} />
-            {isCrew && <MemberPlusDropdownMolecule onClick={handleRouter} />}
           </div>
         )}
       </div>
