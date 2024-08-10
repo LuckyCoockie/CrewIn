@@ -72,8 +72,8 @@ const AttendanceMemberListOrganism = <T,>({
   });
 
   useEffect(() => {
-    setIsActive(autoCheckStatus !== "BEFORE" && !isSessionEnded);
-  }, [autoCheckStatus, isSessionEnded, setIsActive]);
+    setIsActive(autoCheckStatus !== "BEFORE" && !isSessionEnded && isSessionHost);
+  }, [autoCheckStatus, isSessionEnded, isSessionHost, setIsActive]);
 
   if (isError || !memberList) return "데이터를 불러오지 못했습니다.";
 

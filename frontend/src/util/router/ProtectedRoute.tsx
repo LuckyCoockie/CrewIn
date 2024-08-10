@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
 import { RootState } from "../../modules";
+import { refreshToken } from "../../apis/api/authorization";
 
 const ProtectedRoute = () => {
   const { accessToken, loading } = useSelector(
@@ -10,11 +11,12 @@ const ProtectedRoute = () => {
 
   const navigate = useNavigate();
 
-  const isAuthenticated =
-    useMemo(() => accessToken !== null, [accessToken]);
+  const isAuthenticated = useMemo(() => accessToken !== null, [accessToken]);
 
   useEffect(() => {
-    if (!loading && !isAuthenticated) navigate("/login");
+    if (!loading && !isAuthenticated) {
+      refreshToken().catch(() => navigate("/login"));
+    }
   }, [isAuthenticated, loading, navigate]);
 
   return <Outlet />;

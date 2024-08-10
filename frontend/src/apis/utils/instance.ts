@@ -10,6 +10,7 @@ import {
   clearAccessToken,
   loading,
   setAccessToken,
+  setMemberId,
 } from "../../modules/reducers/auth";
 import { convertKeysToKebabCase } from "./querystring.ts/camelToKebab";
 
@@ -44,12 +45,14 @@ api.interceptors.response.use(
       try {
         store.dispatch(loading());
 
-        const response = await api.post<{ accessToken: string }>(
-          `/member/reissue`
-        );
-        const { accessToken } = response.data;
+        const response = await api.post<{
+          accessToken: string;
+          memberId: number;
+        }>(`/member/reissue`);
+        const { accessToken, memberId } = response.data;
 
         store.dispatch(setAccessToken(accessToken));
+        store.dispatch(setMemberId(memberId));
 
         if (error.config?.headers) {
           error.config.headers.Authorization = `Bearer ${accessToken}`;
