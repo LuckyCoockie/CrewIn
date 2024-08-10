@@ -11,10 +11,14 @@ interface ProfileHeaderProps {
   onEdit: () => void;
   onDelete: () => void;
   onClick?: () => void;
+  authorId?: number;
+  memberId?: number;
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   profileImage,
+  memberId,
+  authorId,
   username,
   timeAgo,
   onEdit,
@@ -58,33 +62,35 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         <BarTitle title={username} />
         <BarContent content={timeAgo} />
       </div>
-      <div className="ml-auto mr-2 relative" ref={dropdownRef}>
-        <button onClick={toggleDropdown}>
-          <img src={menuicon} alt="menu-icon" />
-        </button>
-        {isDropdownOpen && (
-          <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-400 rounded-sm z-10">
-            <button
-              onClick={() => {
-                onEdit();
-                setIsDropdownOpen(false);
-              }}
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-            >
-              수정
-            </button>
-            <button
-              onClick={() => {
-                onDelete();
-                setIsDropdownOpen(false);
-              }}
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-sm w-full text-left"
-            >
-              삭제
-            </button>
-          </div>
-        )}
-      </div>
+      {authorId === memberId && (
+        <div className="ml-auto mr-2 relative" ref={dropdownRef}>
+          <button onClick={toggleDropdown}>
+            <img src={menuicon} alt="menu-icon" />
+          </button>
+          {isDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-400 rounded-sm z-10">
+              <button
+                onClick={() => {
+                  onEdit();
+                  setIsDropdownOpen(false);
+                }}
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+              >
+                수정
+              </button>
+              <button
+                onClick={() => {
+                  onDelete();
+                  setIsDropdownOpen(false);
+                }}
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-sm w-full text-left"
+              >
+                삭제
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

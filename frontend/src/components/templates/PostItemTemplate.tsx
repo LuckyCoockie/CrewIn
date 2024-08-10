@@ -13,6 +13,8 @@ import { PostDto } from "../../apis/api/postlist";
 import { deletePost } from "../../apis/api/postdelete";
 import { registerPostHeart } from "../../apis/api/heart";
 import { deletePostHeart } from "../../apis/api/heartdelete";
+import { useSelector } from "react-redux";
+import { RootState } from "../../modules";
 
 export interface ItemComponentProps<T> {
   data: T;
@@ -31,6 +33,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     postType,
     authorId,
   } = data;
+  const memberId = useSelector((state: RootState) => state.auth.memberId);
   console.log(data);
 
   const navigate = useNavigate();
@@ -105,6 +108,8 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           timeAgo={timeAgo}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          authorId={authorId}
+          memberId={memberId!}
           onClick={() => handleUserProfile(authorId)}
         />
       )}
