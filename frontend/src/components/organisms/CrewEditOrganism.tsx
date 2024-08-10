@@ -280,7 +280,7 @@ const CrewEditOrganism: React.FC = () => {
                   id="mainLogo"
                   title="메인로고"
                   placeholder="프로필 사진에 노출됩니다."
-                  text="1:1 비율이 가장 적합합니다."
+                  text="1:1 비율을 권장합니다."
                   previewUrl={mainLogoPreview}
                   {...field}
                   onChange={(e) => {
@@ -300,7 +300,7 @@ const CrewEditOrganism: React.FC = () => {
                   id="subLogo"
                   title="서브로고"
                   placeholder="게시글 생성 시 사용됩니다."
-                  text="1:1 비율이 가장 적합합니다."
+                  text="1:1 비율을 권장합니다."
                   previewUrl={subLogoPreview}
                   {...field}
                   onChange={(e) => {

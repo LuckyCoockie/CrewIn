@@ -1,26 +1,30 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Carousel } from "react-responsive-carousel";
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
-import cropButton from "../../../assets/images/cropbutton.png";
-import checkButton from "../../../assets/images/checkbutton.png";
-import InputTextAreaNoLimitTypeMolecule from "../../molecules/Input/InputTextAreaNoLimitTypeMolecule";
-import InputTextTypeMolecule from "../../molecules/Input/InputTextTypeMolecule";
-import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
-import ImageUploadDropzone from "../../molecules/Input/ImageUploadDropzone";
-import LargeAbleButton from "../../atoms/Button/LargeAbleButton";
-import LargeDisableButton from "../../atoms/Button/LargeDisableButton";
+import InputTextAreaNoLimitTypeMolecule from "../molecules/Input/InputTextAreaNoLimitTypeMolecule";
+import InputTextTypeMolecule from "../molecules/Input/InputTextTypeMolecule";
+import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
+import ImageUploadDropzone from "../molecules/Input/ImageUploadDropzone";
+import LargeAbleButton from "../atoms/Button/LargeAbleButton";
+import LargeDisableButton from "../atoms/Button/LargeDisableButton";
+import cropButton from "../../assets/images/cropbutton.png";
+import checkButton from "../../assets/images/checkbutton.png";
 
-import { uploadImage } from "../../../apis/api/presigned";
-import { createNotice } from "../../../apis/api/crewdetail";
+import { uploadImage } from "../../apis/api/presigned";
+import {
+  CrewNoticeDetailResponseDto,
+  editNotice,
+  getCrewNoticeDetail,
+} from "../../apis/api/crewdetail";
 
 import { useNavigate, useParams } from "react-router-dom";
 
-import SpinnerFullComponent from "../../atoms/SpinnerFullComponent";
+import SpinnerFullComponent from "../atoms/SpinnerFullComponent";
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({
@@ -33,56 +37,42 @@ type FormValues = {
   content: string;
 };
 
-const NoticeCreateTemplate: React.FC = () => {
-  // 크루 공지사항 생성 페이지로 이동할 경우
-  const { crewId } = useParams<{ crewId: string }>();
+const CrewNoticeEditTemplate: React.FC = () => {
+  const { crewId, noticeId } = useParams<{
+    crewId: string;
+    noticeId: string;
+  }>();
   const navigate = useNavigate();
-  const queryClient = useQueryClient(); // useQueryClient 추가
+  const queryClient = useQueryClient();
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  const { data: noticeData } = useQuery<CrewNoticeDetailResponseDto, Error>(
+    ["getNoticeInfo", crewId, noticeId],
+    () =>
+      getCrewNoticeDetail({
+        crewId: Number(crewId),
+        noticeId: Number(noticeId),
+      })
+  );
+
+  const mutation = useMutation(editNotice, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["getNoticeInfo", crewId, noticeId]);
+      navigate(`/crew/detail/${crewId}/notice/${noticeId}`);
+    },
+  });
 
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors, isValid },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onChange",
     defaultValues: {},
   });
-
-  const checkUndefined = async (files: File[]) => {
-    if (files) {
-      const uploadPromises = files.map(async (file) => {
-        const result = await uploadImage(file);
-        return result;
-      });
-      return Promise.all(uploadPromises);
-    } else {
-      return [];
-    }
-  };
-
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    setIsSubmitting(true); // 로딩 상태 시작
-    const urls = await checkUndefined(croppedFiles);
-
-    const submitData = {
-      crewId: Number(crewId),
-      title: data.title,
-      content: data.content,
-      noticeImages: urls,
-    };
-
-    console.log(submitData);
-    // 여기에 API 호출 코드를 추가
-    await createNotice(submitData); // createNotice 비동기 호출
-
-    // 쿼리 무효화
-    queryClient.invalidateQueries(["crewNotice", { crewId }]);
-
-    navigate(`/crew/detail/${crewId}`);
-  };
 
   const [imagePaths, setImagePaths] = useState<string[]>([]);
   const [cropAspectRatio] = useState<number>(1);
@@ -92,12 +82,25 @@ const NoticeCreateTemplate: React.FC = () => {
 
   const cropperRefs = useRef<(ReactCropperElement | null)[]>([]);
 
+  useEffect(() => {
+    if (noticeData) {
+      setValue("title", noticeData.title);
+      setValue("content", noticeData.content);
+      setImagePaths(noticeData.postImages); // 기존 이미지를 설정
+      setCroppedImages(noticeData.postImages); // 기본 이미지로 크롭 이미지를 설정
+    }
+  }, [noticeData, setValue]);
+
   const handleDrop = (acceptedFiles: File[]) => {
     const allowedTypes = ["image/png", "image/jpeg"];
     const filteredFiles = acceptedFiles.filter((file) =>
       allowedTypes.includes(file.type)
     );
 
+    if (imagePaths.length + filteredFiles.length > 10) {
+      alert("사진은 최대 10개까지 첨부할 수 있습니다.");
+      return;
+    }
     const tempImagePaths: string[] = [];
     const tempCroppedImages: string[] = [];
 
@@ -158,12 +161,53 @@ const NoticeCreateTemplate: React.FC = () => {
     setIsCropped(!isCropped);
   };
 
+  // 가져온 데이터 초기화 함수
+  const handleClearImages = () => {
+    setImagePaths([]);
+    setCroppedImages([]);
+    setCroppedFiles([]);
+    setIsCropped(false);
+  };
+
+  const checkUndefined = async (files: File[]) => {
+    if (files.length > 0) {
+      const uploadPromises = files.map(async (file) => {
+        const result = await uploadImage(file);
+        return result;
+      });
+      return Promise.all(uploadPromises);
+    } else {
+      return imagePaths; // 새로 업로드한 파일이 없다면 기존 이미지 경로를 반환
+    }
+  };
+
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    if (!isValid) {
+      console.log(isValid);
+      console.log("막음");
+
+      return;
+    }
+    setIsSubmitting(true);
+    const urls = await checkUndefined(croppedFiles);
+
+    const submitData = {
+      noticeId: Number(noticeId),
+      crewId: Number(crewId),
+      title: data.title,
+      content: data.content,
+      noticeImages: urls,
+    };
+
+    await mutation.mutateAsync(submitData);
+  };
+
   return (
     <div className="mx-auto w-full max-w-[550px]">
       {isSubmitting && <SpinnerFullComponent />}
       <div className="flex flex-col items-center justify-center">
         <header>
-          <BackHeaderMediumOrganism text="공지글 작성" />
+          <BackHeaderMediumOrganism text="공지글 수정" />
         </header>
         {imagePaths.length === 0 ? (
           <ImageUploadDropzone onDrop={handleDrop} />
@@ -228,6 +272,12 @@ const NoticeCreateTemplate: React.FC = () => {
                 ))}
               </Carousel>
             </div>
+            <button
+              onClick={handleClearImages}
+              className="mt-2 button-color text-light p-2 rounded"
+            >
+              이미지 초기화
+            </button>
           </>
         )}
 
@@ -267,9 +317,9 @@ const NoticeCreateTemplate: React.FC = () => {
             </div>
             <div>
               {isValid ? (
-                <LargeAbleButton text="작성" />
+                <LargeAbleButton text="수정" />
               ) : (
-                <LargeDisableButton text="작성" />
+                <LargeDisableButton text="수정" />
               )}
             </div>
           </form>
@@ -279,4 +329,4 @@ const NoticeCreateTemplate: React.FC = () => {
   );
 };
 
-export default NoticeCreateTemplate;
+export default CrewNoticeEditTemplate;

@@ -372,7 +372,7 @@ const SessionCreateOrganism: React.FC = () => {
               <ImageMultiTypeMolecule
                 id="sessionposter"
                 title="포스터"
-                text="가장 처음에 선택한 사진이 메인에 노출됩니다."
+                text="처음에 선택한 사진이 메인에 노출됩니다."
                 placeholder=""
                 {...field}
                 onChange={(e) => {

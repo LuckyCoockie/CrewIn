@@ -63,9 +63,38 @@ export type CreateNoticeDto = {
 };
 
 export const createNotice = async (dto: CreateNoticeDto): Promise<void> => {
-  // return console.log("공지사항 등록 완료");
-
   const response = await api.post(`/crew/notice`, dto);
+  return response.data;
+};
+
+// 크루 공지사항 디테일
+export type CrewNoticeDetailRequestDto = {
+  crewId: number;
+  noticeId: number;
+};
+
+export type CrewNoticeDetailResponseDto = {
+  id: number;
+  authorName: string;
+  authorId: number;
+  content: string;
+  heartCount: number;
+  isHearted: boolean;
+  isPublic: boolean;
+  postType: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  postImages: string[];
+  profileImage: string;
+};
+
+export const getCrewNoticeDetail = async (
+  dto: CrewNoticeDetailRequestDto
+): Promise<CrewNoticeDetailResponseDto> => {
+  const response = await api.get(
+    `/crew/notice?crew-id=${dto.crewId}&notice-id=${dto.noticeId}`
+  );
   return response.data;
 };
 
@@ -79,8 +108,6 @@ export type EditNoticeRequestDto = {
 };
 
 export const editNotice = async (dto: EditNoticeRequestDto): Promise<void> => {
-  // return console.log("공지상 수정 완료", dto);
-
   const { noticeId, ...body } = dto;
   const response = await api.put(`/crew/notice/${noticeId}`, body);
   return response.data;
@@ -88,8 +115,6 @@ export const editNotice = async (dto: EditNoticeRequestDto): Promise<void> => {
 
 // 크루 공지사항 삭제 (상세페이지에서 요청보내야할듯?)
 export const deleteNotice = async (noticeId: number): Promise<void> => {
-  // return console.log("공지사항 삭제 요청 ID: ", noticeId);
-
   const response = await api.delete(`/crew/notice/${noticeId}`);
   return response.data;
 };
@@ -145,33 +170,3 @@ export const deleteCrew = async (crewId: number): Promise<void> => {
   return response.data;
 };
 
-// 크루 공지사항 디테일
-export type CrewNoticeDetailRequestDto = {
-  crewId: number;
-  noticeId: number;
-};
-
-export type CrewNoticeDetailResponseDto = {
-  id: number;
-  authorName: string;
-  authorId: number;
-  content: string;
-  heartCount: number;
-  isHearted: boolean;
-  isPublic: boolean;
-  postType: string;
-  title: string;
-  createdAt: string;
-  updatedAt: string;
-  postImages: string[];
-  profileImage: string;
-};
-
-export const getCrewNoticeDetail = async (
-  dto: CrewNoticeDetailRequestDto
-): Promise<CrewNoticeDetailResponseDto> => {
-  const response = await api.get(
-    `/crew/notice?crew-id=${dto.crewId}&notice-id=${dto.noticeId}`
-  );
-  return response.data;
-};

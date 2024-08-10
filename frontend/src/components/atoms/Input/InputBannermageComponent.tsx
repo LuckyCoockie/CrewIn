@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import crewinbanner from "../../../assets/images/crewinbanner.png";
+import { ReactComponent as Attach } from "../../../assets/icons/attach.svg";
 
 type InputImage = {
   id: string;
   name: string;
   placeholder: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  previewUrl?: string; 
+  previewUrl?: string;
 };
 
 const InputBannermageComponent = React.forwardRef<HTMLInputElement, InputImage>(
@@ -43,16 +44,18 @@ const InputBannermageComponent = React.forwardRef<HTMLInputElement, InputImage>(
         <div className="w-full text-center mb-3">
           <label htmlFor={props.id} className="w-full">
             <div className="flex p-2 border border-gray-300 rounded-lg w-full">
-              <p className="ml-1">🔗</p>
               {fileCount > 0 ? (
                 <p className="text-gray-500 font-semibold ml-1">
                   이미지가 선택되었습니다.
                 </p>
               ) : (
                 <p className="text-gray-500 font-semibold ml-1">
-                  3:2 비율이 가장 적합합니다.
+                  3:2 비율을 권장합니다.
                 </p>
               )}
+              <p className="ml-auto">
+                <Attach />
+              </p>
             </div>
           </label>
           <input
