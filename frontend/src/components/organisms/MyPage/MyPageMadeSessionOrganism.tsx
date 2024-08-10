@@ -38,6 +38,18 @@ const MyPageMadeSessionOrganism: React.FC<MyPageMadeSessionOrganismProps> = ({
     }
   };
 
+  const sortedSessions = sessions?.sort((a, b) => {
+    const aStatus = convertText(a.startAt, a.endAt);
+    const bStatus = convertText(b.startAt, b.endAt);
+    const statusOrder = {
+      "진행 예정": 1,
+      진행중: 2,
+      종료: 3,
+    };
+
+    return statusOrder[aStatus] - statusOrder[bStatus];
+  });
+
   return (
     <>
       <div className="flex items-center cursor-pointer" onClick={clickRouter}>
@@ -47,7 +59,7 @@ const MyPageMadeSessionOrganism: React.FC<MyPageMadeSessionOrganismProps> = ({
       {!isMadeSessionsError ? (
         !isMadeSessionsLoading && (
           <GaroScrollMolecule
-            propsData={sessions}
+            propsData={sortedSessions}
             replaceText="최근 생성한 세션이 없습니다."
             renderItem={(data, index) => (
               <ListButtonMolecule
