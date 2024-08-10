@@ -8,7 +8,7 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import filledFire from "../../assets/images/filledfire.png";
 import emptyFire from "../../assets/images/emptyfire.png";
-import shareIcon from "../../assets/images/shareicon.png";
+import { ReactComponent as ShareIcon } from "../../assets/icons/shareicon.svg";
 import { PostDto } from "../../apis/api/postlist";
 import { deletePost } from "../../apis/api/postdelete";
 import { registerPostHeart } from "../../apis/api/heart";
@@ -16,6 +16,7 @@ import { deletePostHeart } from "../../apis/api/heartdelete";
 import { useMutation, useQueryClient } from "react-query";
 import { useSelector } from "react-redux";
 import { RootState } from "../../modules";
+import { motion } from "framer-motion"; // Import motion from Framer Motion
 
 export interface ItemComponentProps<T> {
   data: T;
@@ -35,7 +36,6 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     authorId,
   } = data;
   const memberId = useSelector((state: RootState) => state.auth.memberId);
-  console.log(data);
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -43,14 +43,21 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   const [likes, setLikes] = useState<number>(heartCount);
   const [isHeartedState, setIsHeartedState] = useState<boolean>(isHearted);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [showFire, setShowFire] = useState<boolean>(false); // State to handle fire icon visibility
 
   useEffect(() => {
     setLikes(heartCount);
     setIsHeartedState(isHearted);
   }, [heartCount, isHearted]);
 
+  useEffect(() => {
+    if (showFire) {
+      const timer = setTimeout(() => setShowFire(false), 1000); // Hide fire icon after 1 second
+      return () => clearTimeout(timer);
+    }
+  }, [showFire]);
+
   const handleEdit = () => {
-    console.log("edit");
     navigate(`/post/${id}/edit`, { state: { data } });
   };
 
@@ -76,6 +83,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
       queryClient.invalidateQueries("posts");
       setLikes((prevLikes) => prevLikes + 1);
       setIsHeartedState(true);
+      setShowFire(true); // Show fire icon when liked
     },
     onError: (error) => {
       console.error("좋아요 처리 중 오류가 발생했습니다:", error);
@@ -136,35 +144,52 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
         />
       )}
       {croppedImages && croppedImages.length > 0 && (
-        <Carousel
-          showThumbs={false}
-          showIndicators={true}
-          showStatus={false}
-          infiniteLoop={false}
-          autoPlay={false}
-        >
-          {croppedImages.map((image, index) => (
-            <div key={image}>
-              <img
-                src={image}
-                alt={`Cropped ${index}`}
-                style={{ width: "100%", height: "auto" }}
-              />
-            </div>
-          ))}
-        </Carousel>
+        <div className="relative">
+          <Carousel
+            showThumbs={false}
+            showIndicators={true}
+            showStatus={false}
+            infiniteLoop={false}
+            autoPlay={false}
+          >
+            {croppedImages.map((image, index) => (
+              <div key={image} className="relative">
+                <img
+                  src={image}
+                  alt={`Cropped ${index}`}
+                  style={{ width: "100%", height: "auto" }}
+                />
+                {showFire && (
+                  <motion.div
+                    className="absolute inset-0 flex items-center justify-center"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 30 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <img
+                      src={filledFire}
+                      alt="fire-icon"
+                      className="object-contain w-40 h-40"
+                    />
+                  </motion.div>
+                )}
+              </div>
+            ))}
+          </Carousel>
+        </div>
       )}
       <div className="flex items-center mt-2">
         <button onClick={handleLike} className="flex items-center ml-3">
           <img
             src={isHeartedState ? filledFire : emptyFire}
             alt="fire-icon"
-            className="w-7"
+            className="w-7 h-7 object-contain"
           />
         </button>
         <span className="text-md ml-1">{likes}명이 공감했어요!</span>
         <button onClick={handleShare} className="flex ml-auto mr-3">
-          <img src={shareIcon} alt="share-icon" className="w-4" />
+          <ShareIcon className="w-5" />
         </button>
       </div>
       <div className="border-t border-gray-300 my-2"></div>
