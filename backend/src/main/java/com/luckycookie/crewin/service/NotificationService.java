@@ -17,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,7 +55,6 @@ public class NotificationService {
                 .orElseThrow(NotFoundMemberException::new);
 
         member.updateMemberNotification(false); // 알림들을 읽었다고 표시
-        memberRepository.save(member);
 
         List<Notification> notificationList = notificationRepository.findByReceiver(member);
         return notificationList.stream()
@@ -65,23 +66,22 @@ public class NotificationService {
         String senderName;
         String senderThumbnail;
         switch (notification.getNotificationType()) {
-            case NOTICE:
-            case INVITATION:
+            case NOTICE, INVITATION -> {
                 Crew crew = crewRepository.findById(notification.getSenderId())
                         .orElseThrow(NotFoundCrewException::new);
                 senderName = crew.getCrewName();
                 senderThumbnail = crew.getMainLogo();
-                break;
-            case LIKE:
+            }
+            case LIKE -> {
                 Member member = memberRepository.findById(notification.getSenderId())
                         .orElseThrow(NotFoundMemberException::new);
                 senderName = member.getName();
                 senderThumbnail = member.getImageUrl();
-                break;
-            default:
+            }
+            default -> {
                 senderName = "";
                 senderThumbnail = "";
-
+            }
         }
 
         return NotificationResponse.builder()

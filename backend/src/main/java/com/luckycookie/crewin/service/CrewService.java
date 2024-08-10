@@ -26,6 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.luckycookie.crewin.domain.enums.NotificationType.INVITATION;
+import static com.luckycookie.crewin.domain.enums.NotificationType.NOTICE;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -39,6 +42,7 @@ public class CrewService {
     private final PostImageRepository postImageRepository;
     private final NotificationService notificationService;
     private final HeartRepository heartRepository;
+    private final NotificationRepository notificationRepository;
     private final S3Service s3Service;
 
     @Value("${image.default.crew-main-logo}")
@@ -157,7 +161,7 @@ public class CrewService {
                 Member crewMember = memberCrew.getMember();
                 // 작성자 자신은 제외하고 크루원에게 알림을 생성
                 if (!crewMember.equals(member)) {
-                    notificationService.createNotification(NotificationType.NOTICE, crew.getId(), crewMember.getId(), post.getId());
+                    notificationService.createNotification(NOTICE, crew.getId(), crewMember.getId(), post.getId());
                 }
             }
 
@@ -251,6 +255,9 @@ public class CrewService {
             s3Service.deleteImage(crew.getMainLogo());
             s3Service.deleteImage(crew.getSubLogo());
             s3Service.deleteImage(crew.getBanner());
+
+            // 초대, 공지 알림 삭제
+            notificationRepository.deleteNoticeAndInvitationByCrewId(List.of(NOTICE, INVITATION), crew.getId());
 
             // Crew 삭제
             crewRepository.delete(crew);
@@ -353,7 +360,7 @@ public class CrewService {
     }
 
     public void deleteNotice(Long noticeId) {
-        Post post = postRepository.findById(noticeId)
+        Post post = postRepository.findByIdWithCrew(noticeId)
                 .orElseThrow(NotFoundPostException::new);
 
         // 기존 이미지 URL 리스트 가져오기
@@ -365,6 +372,9 @@ public class CrewService {
         for (String imageUrl : postImageUrls) {
             s3Service.deleteImage(imageUrl);
         }
+
+        // 공지 알림 삭제
+        notificationRepository.deleteByNotificationTypeAndSenderId(NOTICE, post.getCrew().getId());
 
         // 게시물 삭제
         postRepository.delete(post);

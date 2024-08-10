@@ -13,9 +13,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
+
+    @Query("select p from Post p join fetch p.crew where p.id = :id")
+    Optional<Post> findByIdWithCrew(Long id);
 
     @Query("SELECT p from Post p JOIN FETCH p.author WHERE (p.isPublic = true) OR (p.crew.id IN :crews) ORDER BY p.createdAt DESC, p.id DESC")
     Page<Post> findPublicPostsSortedByCreatedAt(List<Long> crews, Pageable pageable);

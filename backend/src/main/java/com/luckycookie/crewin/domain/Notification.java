@@ -33,15 +33,12 @@ public class Notification {
     @Enumerated(EnumType.STRING)
     private NotificationType notificationType;
 
-
     private Long senderId;
     private Long postId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id")
     private Member receiver;
-
-
 
     @CreatedDate
     @Column(updatable = false)
