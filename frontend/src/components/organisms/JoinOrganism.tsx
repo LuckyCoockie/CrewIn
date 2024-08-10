@@ -9,6 +9,7 @@ import InputPasswordTypeMolecule from "../molecules/Input/InputPasswordTypeMolec
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import Timer from "../atoms/Timer";
+import SpinnerComponent from "../atoms/SpinnerComponent";
 
 import {
   getEmailDuplicationCheck,
@@ -29,22 +30,7 @@ const schema = yup.object({
     .string()
     .email("이메일 형식으로 입력해주세요")
     .max(50, "이메일은 최대 50자입니다.")
-    .required("이메일을 입력해주세요.")
-    .test(
-      "emailDuplicationCheck",
-      "이미 사용 중인 이메일입니다.",
-      async (value) => {
-        if (!value) return true;
-        try {
-          const { duplicated } = await getEmailDuplicationCheck({
-            email: value,
-          });
-          return !duplicated;
-        } catch (error) {
-          return false;
-        }
-      }
-    ),
+    .required("이메일을 입력해주세요."),
   password: yup
     .string()
     .required("비밀번호를 입력해주세요.")
@@ -61,26 +47,19 @@ const schema = yup.object({
     .string()
     .min(2, "최소 2자 입니다.")
     .max(10, "최대 10자 입니다.")
-    .required("닉네임을 입력해주세요.")
-    .test(
-      "nicknameDuplicationCheck",
-      "이미 사용 중인 닉네임입니다.",
-      async (value) => {
-        if (!value) return true;
-        try {
-          const { duplicated } = await getNicknameDuplicationCheck({
-            nickname: value,
-          });
-          return !duplicated;
-        } catch (error) {
-          return false;
-        }
-      }
-    ),
+    .matches(
+      /^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ ]*$/,
+      "특수 문자는 사용할 수 없습니다."
+    )
+    .required("닉네임을 입력해주세요."),
   name: yup
     .string()
     .min(2, "이름은 최소 2자입니다.")
     .max(30, "이름은 최대 30자입니다.")
+    .matches(
+      /^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ ]*$/,
+      "특수 문자는 사용할 수 없습니다."
+    )
     .required("이름을 입력해주세요."),
 });
 
@@ -99,6 +78,8 @@ const LoginOrganism: React.FC = () => {
     handleSubmit,
     formState: { errors, isValid },
     getValues,
+    setError,
+    clearErrors,
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onChange",
@@ -108,6 +89,10 @@ const LoginOrganism: React.FC = () => {
   const [isCodeInput, setIsCodeInput] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [isCodeVerified, setIsCodeVerified] = useState(false);
+  const [timer, setTimer] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isEmailFormValid, setIsEmailFormValid] = useState(false);
+  const [isNicknameFormValid, setIsNicknameFormValid] = useState(false);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const submitData: JoinMemberInfoDto = {
@@ -123,16 +108,17 @@ const LoginOrganism: React.FC = () => {
       window.alert("회원가입에 실패했습니다.");
     }
   };
-  const [timer, setTimer] = useState(false);
 
   const handleEmailVerification = async () => {
     const email = getValues("email");
+    setIsLoading(true);
     try {
       if (email) {
         await postMemberCheck({ email });
         setTimer(true);
         setIsCodeInput(true);
         setIsEmailValid(true);
+        setIsLoading(false);
       } else return;
     } catch (error) {
       console.error("이메일 인증 실패:", error);
@@ -160,14 +146,51 @@ const LoginOrganism: React.FC = () => {
     }
   };
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ ]/g, "");
-    e.target.value = value;
+  const handleEmailBlur = async () => {
+    const email = getValues("email");
+    if (email) {
+      try {
+        const { duplicated } = await getEmailDuplicationCheck({ email });
+        if (duplicated) {
+          setError("email", {
+            type: "manual",
+            message: "이미 사용 중인 이메일입니다.",
+          });
+          setIsEmailFormValid(false);
+        } else {
+          clearErrors("email");
+          setIsEmailFormValid(true);
+        }
+      } catch (error) {
+        setError("email", {
+          type: "manual",
+          message: "이메일 확인 중 오류가 발생했습니다.",
+        });
+      }
+    }
   };
-
-  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ ]/g, "");
-    e.target.value = value;
+  const handleNicknameBlur = async () => {
+    const nickname = getValues("nickname");
+    if (nickname) {
+      try {
+        const { duplicated } = await getNicknameDuplicationCheck({ nickname });
+        if (duplicated) {
+          setError("nickname", {
+            type: "manual",
+            message: "이미 사용 중인 닉네임입니다.",
+          });
+          setIsNicknameFormValid(false);
+        } else {
+          clearErrors("nickname");
+          setIsNicknameFormValid(true);
+        }
+      } catch (error) {
+        setError("nickname", {
+          type: "manual",
+          message: "닉네임 확인 중 오류가 발생했습니다.",
+        });
+      }
+    }
   };
 
   return (
@@ -184,10 +207,6 @@ const LoginOrganism: React.FC = () => {
                 title="이름"
                 placeholder="홍길동"
                 {...field}
-                onChange={(e) => {
-                  handleNameChange(e);
-                  field.onChange(e); // react-hook-form의 상태 업데이트
-                }}
                 error={errors.name?.message}
                 hasError={!!errors.name}
                 disabled={isCodeInput}
@@ -206,13 +225,10 @@ const LoginOrganism: React.FC = () => {
                 title="닉네임"
                 placeholder="ex) 달리는 동동"
                 {...field}
-                onChange={(e) => {
-                  handleNicknameChange(e);
-                  field.onChange(e); // react-hook-form의 상태 업데이트
-                }}
                 error={errors.nickname?.message}
                 hasError={!!errors.nickname}
                 disabled={isCodeInput}
+                onBlur={handleNicknameBlur}
               />
             )}
           />
@@ -231,6 +247,7 @@ const LoginOrganism: React.FC = () => {
                 error={errors.email?.message}
                 hasError={!!errors.email}
                 disabled={isCodeInput}
+                onBlur={handleEmailBlur}
               />
             )}
           />
@@ -269,14 +286,14 @@ const LoginOrganism: React.FC = () => {
         />
       </div>
       {/* 버튼 영역 */}
-      {isValid && !isCodeInput ? (
+      {isEmailFormValid && isNicknameFormValid && isValid && !isCodeInput ? (
         <button
           type="button"
           className="button-color w-full mb-4"
           onClick={handleEmailVerification}
-          disabled={!isValid}
+          disabled={isLoading}
         >
-          이메일 인증
+          {isLoading ? <SpinnerComponent /> : <>이메일 인증</>}
         </button>
       ) : !isCodeInput ? (
         <button
@@ -286,7 +303,7 @@ const LoginOrganism: React.FC = () => {
           이메일 인증
         </button>
       ) : null}
-
+      {/* 제출폼이 모두 완료 되었을때 인증번호 ipnut 생성 */}
       {isEmailValid && (
         <>
           <div className="flex">
