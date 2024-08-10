@@ -86,14 +86,16 @@ const SessionListItem = ({
                 src={sessionLogoImage}
                 className="border xs:border-2 border-white w-full"
               />
-              <div className="absolute top-1 right-1 border rounded-xl bg-white flex h-4 xs:h-5 px-1 justify-center items-center shadow-sm bg-opacity-85 border-opacity-85">
-                <div className="me-1">
-                  <Sessionpeople />
+              {current && max && (
+                <div className="absolute top-1 right-1 border rounded-xl bg-white flex h-4 xs:h-5 px-1 justify-center items-center shadow-sm bg-opacity-85 border-opacity-85">
+                  <div className="me-1">
+                    <Sessionpeople />
+                  </div>
+                  <div className="text-[10px] xs:text-sm font-bold ">
+                    {current} / {max}
+                  </div>
                 </div>
-                <div className="text-[10px] xs:text-sm font-bold ">
-                  {current} / {max}
-                </div>
-              </div>
+              )}
             </>
           )}
         </div>
