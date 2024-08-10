@@ -140,17 +140,17 @@ public class AttendanceService {
         // 현재 로그인한 사용자
         Member currentMember = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
 
-        // 현재 로그인한 사용자가 memberSession 에 있어야 함
-        memberSessionRepository.findByMemberAndSession(currentMember, session).orElseThrow(NotFoundMemberSessionException::new);
+        // 현재 로그인한 사용자가 memberSession 에 있어야 함 - 내가 속하지 않은 크루의 출석부는 조회 불가!!
+        MemberSession memberSession = memberSessionRepository.findByMemberAndSession(currentMember, session).orElseThrow(NotFoundMemberSessionException::new);
 
-        List<AttendanceMemberItem> attendanceMemberItems = memberSessionList.stream().map(memberSession -> {
-            Member member = memberSession.getMember();
+        List<AttendanceMemberItem> attendanceMemberItems = memberSessionList.stream().map(ms -> {
+            Member member = ms.getMember();
 
             return AttendanceMemberItem
                     .builder()
-                    .memberSessionId(memberSession.getId())
+                    .memberSessionId(ms.getId())
                     .name(member.getName())
-                    .isAttend(memberSession.getIsAttend())
+                    .isAttend(ms.getIsAttend())
                     .profileUrl(member.getImageUrl())
                     .nickname(member.getNickname())
                     .build();
@@ -174,6 +174,7 @@ public class AttendanceService {
                 .items(attendanceMemberItems)
                 .AutoCheckStatus(status.name())
                 .leftTime(leftTime)
+                .memberSessionId(memberSession.getId())
                 .build();
     }
 

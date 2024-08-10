@@ -17,6 +17,7 @@ public class AttendanceResponse {
         List<AttendanceMemberItem> items;
         String AutoCheckStatus;
         Integer leftTime;
+        Long memberSessionId;
     }
 
     @Getter
