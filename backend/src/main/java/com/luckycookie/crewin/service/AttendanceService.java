@@ -62,7 +62,7 @@ public class AttendanceService {
         // 해당 세션에 존재하지 않는 멤버는 SSE 요청 불가능
         if (!memberSessionRepository.existsByMemberAndSession(member, session)) {
             throw new NotFoundMemberSessionException();
-        }ㅇ
+        }
 
         if (session.getAttendanceStart() == null || LocalDateTime.now().isBefore(session.getAttendanceStart()) || LocalDateTime.now().isAfter(session.getEndAt()))
             throw new InvalidRequestTimeException();
