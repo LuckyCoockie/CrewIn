@@ -81,10 +81,14 @@ const authReducer = (
     case LOADING:
       return { ...state, loading: true };
     case SET_ACCESS_TOKEN:
+      if (state.interceptorId) {
+        clearTokenInterceptors(state.interceptorId);
+      }
       return {
         ...state,
         accessToken: action.accessToken,
         memberId: action.memberId,
+        interceptorId: action.interceptorId,
         loading: false,
       };
     case CLEAR_ACCESS_TOKEN: {

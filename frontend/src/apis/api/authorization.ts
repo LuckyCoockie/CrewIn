@@ -25,7 +25,7 @@ export const refreshToken = async (): Promise<LoginResponseDto> => {
     { withCredentials: true }
   );
 
-  console.log("refresh success", response);
+  console.log("refresh success 1", response);
 
   store.dispatch(
     setAccessToken(response.data.accessToken, response.data.memberId)
