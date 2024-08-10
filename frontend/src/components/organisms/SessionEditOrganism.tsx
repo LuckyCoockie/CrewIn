@@ -71,10 +71,8 @@ type FormValues = {
 };
 
 const SessionEditOrganism: React.FC = () => {
-  // 내 크루 및 지도 정보를 가져오는 쿼리
   const { sessionId } = useParams<{ sessionId: string }>();
   const { data: mapData } = useQuery("myMaps", getMapList);
-  // 세션 상세 정보를 가져오는 쿼리
   const { data: sessionData } = useQuery<SessionDetailDto, Error>(
     ["getSessionDetail", sessionId],
     () => getSessionDetail({ sessionId: Number(sessionId) })
@@ -94,16 +92,12 @@ const SessionEditOrganism: React.FC = () => {
     resolver: yupResolver(schema),
     mode: "onChange",
     defaultValues: {
-      sessionmembers: sessionData ? sessionData.maxPeople : 1,
       sessionstart: new Date(),
       sessionend: new Date(),
     },
   });
-  console.log(isValid);
 
   useEffect(() => {
-    console.log(sessionData?.maxPeople);
-
     if (sessionData) {
       setValue("sessiontype", sessionData.sessionType);
       setValue("sessiontitle", sessionData.sessionName);
@@ -294,7 +288,7 @@ const SessionEditOrganism: React.FC = () => {
                 <InputNumberTypeMolecule
                   id="sessionmembers"
                   title="참가 인원"
-                  placeholder="인원 수"
+                  placeholder={String(sessionData.maxPeople)}
                   {...field}
                   error={errors.sessionmembers?.message}
                   hasError={!!errors.sessionmembers}
@@ -388,9 +382,9 @@ const SessionEditOrganism: React.FC = () => {
         </div>
         <div>
           {isValid ? (
-            <LargeAbleButton text="생성" />
+            <LargeAbleButton text="수정" />
           ) : (
-            <LargeDisableButton text="생성" />
+            <LargeDisableButton text="수정" />
           )}
         </div>
       </form>

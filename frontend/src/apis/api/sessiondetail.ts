@@ -21,6 +21,7 @@ export type SessionDetailDto = {
   sessionPosters: string[];
   isJoined: boolean;
   currentPeople: number;
+  courseDistance: number;
 };
 
 export type GetSessionInfoRequestDto = {
