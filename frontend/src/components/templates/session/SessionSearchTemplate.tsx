@@ -90,12 +90,14 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({
           fetchData={handleFetchData}
           initPage={parseInt(query.pageNo ?? "0")}
           ItemComponent={({ data }) => (
-            <div onClick={() => onSessionItemClick(data.sessionId)}>
+            <div
+              key={data.sessionId}
+              onClick={() => onSessionItemClick(data.sessionId)}
+            >
               <SessionListItemMolecules
                 title={data.sessionName}
                 max={data.maxPeople}
                 current={data.currentPeople}
-                key={data.sessionId}
                 crewName={data.crewName}
                 area={data.area}
                 date={data.startAt}

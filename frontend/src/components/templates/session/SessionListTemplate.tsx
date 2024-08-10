@@ -80,9 +80,11 @@ const SessionListTemplate: React.FC<OwnProps> = ({
             fetchData={handleFetchData}
             initPage={parseInt(query.pageNo ?? "0")}
             ItemComponent={({ data }) => (
-              <div onClick={() => onSessionItemClick(data.sessionId)}>
+              <div
+                key={data.sessionId}
+                onClick={() => onSessionItemClick(data.sessionId)}
+              >
                 <SessionListItemMolecules
-                  key={data.sessionId}
                   crewName={data.crewName ?? data.sessionName}
                   area={data.area}
                   date={data.startAt}
