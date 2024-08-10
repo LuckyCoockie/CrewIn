@@ -1,8 +1,9 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { ReactComponent as CrewinLogo } from "../assets/icons/crewinlogo.svg";
 import { ReactComponent as Alarmicon } from "../assets/icons/alarm_deactivated.svg";
+import { ReactComponent as AlarmOnicon } from "../assets/icons/alarm_activated.svg";
 import { ReactComponent as Searchicon } from "../assets/icons/searchicon.svg";
 import { ReactComponent as Plus } from "../assets/icons/plus.svg";
 import FloatingActionButton from "../components/atoms/Button/FloatingActionButton";
@@ -17,9 +18,27 @@ import {
 } from "../apis/api/postlist";
 import { PWAInstallPrompt } from "../components/templates/pwa/PWAInstallPrompt";
 import { PWAOpenAppPrompt } from "../components/templates/pwa/PWAOpenAppPrompt";
+import { fetchNotifications } from "../apis/api/alarm";
 
 const PostMainPage: React.FC = () => {
   const navigate = useNavigate();
+  const [hasCheckedNotifications, setHasCheckedNotifications] = useState(false);
+
+  useEffect(() => {
+    const checkNotifications = async () => {
+      try {
+        const notifications = await fetchNotifications();
+        const anyChecked = notifications.some(
+          (notification) => notification.isChecked === false
+        );
+        setHasCheckedNotifications(anyChecked);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    checkNotifications();
+  }, []);
 
   const fetchPostData = useCallback(
     async (page: number): Promise<GetPostListResponseDto> => {
@@ -27,7 +46,7 @@ const PostMainPage: React.FC = () => {
         console.log(getPostList(page));
         return getPostList(page);
       } catch (error) {
-        console.error("게시글 데이터를 가져오는 중 오류 발생:", error);
+        console.error("Error fetching post data:", error);
         return { pageNo: 0, lastPageNo: 0, items: [] };
       }
     },
@@ -54,7 +73,11 @@ const PostMainPage: React.FC = () => {
         </div>
         <div className="flex items-center flex-grow justify-end mr-2">
           <Searchicon className="w-6 h-6 mr-4" onClick={handleSearch} />
-          <Alarmicon className="w-6 h-6" onClick={handleAlarm} />
+          {hasCheckedNotifications ? (
+            <AlarmOnicon className="w-6 h-6" onClick={handleAlarm} />
+          ) : (
+            <Alarmicon className="w-6 h-6" onClick={handleAlarm} />
+          )}
         </div>
       </div>
       <div className="w-full">
