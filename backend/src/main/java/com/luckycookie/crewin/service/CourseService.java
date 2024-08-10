@@ -114,6 +114,7 @@ public class CourseService {
                 .id(course.getId())
                 .name(course.getName())
                 .thumbnailImage(course.getThumbnailImage())
+                .courseDistance(Math.round(course.getLength() / 1000.0 * 10.0) / 10.0)
                 .build();
     }
 }
