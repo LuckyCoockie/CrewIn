@@ -13,9 +13,13 @@ import { uploadImage } from "../../apis/api/presigned";
 
 type PropsData = {
   sessionId: number;
+  onSelectImage: (imageUrl: string) => void; // 이미지 선택 핸들러 props
 };
 
-const SessionAlbumOrganism: React.FC<PropsData> = ({ sessionId }) => {
+const SessionAlbumOrganism: React.FC<PropsData> = ({
+  sessionId,
+  onSelectImage,
+}) => {
   const [images, setImages] = useState<GetSessionAlbumDto[]>([]); // 이미지 데이터 상태 추가
   const [fetchKey, setFetchKey] = useState(0); // fetchKey 상태 추가
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -83,7 +87,8 @@ const SessionAlbumOrganism: React.FC<PropsData> = ({ sessionId }) => {
   }, [sessionId]);
 
   return (
-    <>
+    <div className="h-[500px] overflow-y-auto">
+      {/* 스크롤 가능한 영역 */}
       <input
         type="file"
         accept="image/*"
@@ -105,8 +110,10 @@ const SessionAlbumOrganism: React.FC<PropsData> = ({ sessionId }) => {
           fetchData={fetchGallery}
           ItemComponent={({ data }) => (
             <div
+              key={data.sessionImageId}
               className="w-full h-full"
               style={{ position: "relative", paddingBottom: "100%" }}
+              onClick={() => onSelectImage(data.imageUrl)}
             >
               <img
                 src={data.imageUrl}
@@ -118,7 +125,7 @@ const SessionAlbumOrganism: React.FC<PropsData> = ({ sessionId }) => {
                   left: 0,
                   width: "100%",
                   height: "100%",
-                  objectFit: "cover", // 또는 contain으로 변경 가능
+                  objectFit: "cover",
                   border: "1px solid rgba(255, 0, 0, 0)",
                 }}
               />
@@ -127,7 +134,7 @@ const SessionAlbumOrganism: React.FC<PropsData> = ({ sessionId }) => {
           className="grid grid-cols-3"
         />
       )}
-    </>
+    </div>
   );
 };
 

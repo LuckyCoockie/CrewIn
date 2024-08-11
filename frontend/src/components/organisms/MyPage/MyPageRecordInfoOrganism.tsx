@@ -53,7 +53,7 @@ const MyPageRecordInfoOrganism: React.FC<FetchDataProps> = ({
               {totalAttendance}
               <span className="text-xs font-bold">회</span>
             </span>
-            <span className="text-xs font-bold">참가 횟수</span>
+            <span className="text-xs font-normal text-gray-400">참가 횟수</span>
           </div>
           {/* 누적 시간 */}
           <div className="flex flex-col items-center w-1/4">
@@ -61,7 +61,7 @@ const MyPageRecordInfoOrganism: React.FC<FetchDataProps> = ({
               {totalTime}
               <span className="text-xs font-bold">h</span>
             </span>
-            <span className="text-xs font-bold">누적 시간</span>
+            <span className="text-xs font-normal text-gray-400">누적 시간</span>
           </div>
           {/* 누적 km */}
           <div className="flex flex-col items-center w-1/4">
@@ -69,7 +69,7 @@ const MyPageRecordInfoOrganism: React.FC<FetchDataProps> = ({
               {totalDistance}
               <span className="text-xs font-bold">km</span>
             </span>
-            <span className="text-xs font-bold">누적 거리</span>
+            <span className="text-xs font-normal text-gray-400">누적 거리</span>
           </div>
         </div>
       </div>
