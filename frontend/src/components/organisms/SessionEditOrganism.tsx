@@ -223,7 +223,7 @@ const SessionEditOrganism: React.FC = () => {
   return (
     <>
       {errorMessage && (
-        <Modal title="오류" onClose={closeModal}>
+        <Modal title="알림" onClose={closeModal}>
           <p>{errorMessage}</p>
         </Modal>
       )}
