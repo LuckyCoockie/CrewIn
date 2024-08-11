@@ -60,16 +60,14 @@ public class AttendanceService {
         Member member = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
 
         // 해당 세션에 존재하지 않는 멤버는 SSE 요청 불가능
-        if (!memberSessionRepository.existsByMemberAndSession(member, session)) {
-            throw new NotFoundMemberSessionException();
-        }
+        MemberSession memberSession = memberSessionRepository.findByMemberAndSession(member, session).orElseThrow(NotFoundMemberSessionException::new);
 
         if (session.getAttendanceStart() == null || LocalDateTime.now().isBefore(session.getAttendanceStart()) || LocalDateTime.now().isAfter(session.getEndAt()))
             throw new InvalidRequestTimeException();
 
-        SseEmitter emitter = emitterRepository.save(sessionId, new SseEmitter(60 * 1000L * 60));
+        SseEmitter emitter = emitterRepository.save(session.getId(), memberSession.getId(), new SseEmitter(60 * 1000L * 60));
         emitter.onCompletion(() -> {
-            emitterRepository.deleteById(sessionId);
+            emitterRepository.deleteById(session.getId(), memberSession.getId());
             log.info("SSE emitter onCompletion");
         });
         emitter.onTimeout(() -> {
@@ -81,12 +79,12 @@ public class AttendanceService {
         });
 
         // 503 에러 방지용
-        sendNotification(emitter, "connect", "connect", sessionId, "connect complete");
+        sendNotification(emitter, "connect", "connect", sessionId, memberSession.getId(), "connect complete");
 
         return emitter;
     }
 
-    private void sendNotification(SseEmitter emitter, String eventId, String eventName, Long emitterId, Object data) {
+    private void sendNotification(SseEmitter emitter, String eventId, String eventName, Long sessionId, Long memberSessionId, Object data) {
         try {
             emitter.send(SseEmitter.event()
                     .id(eventId)
@@ -95,7 +93,7 @@ public class AttendanceService {
             );
         } catch (IOException exception) {
             log.error("SSE Exception occurred!!! : {}", exception.getMessage());
-            emitterRepository.deleteById(emitterId);
+            emitterRepository.deleteById(sessionId, memberSessionId);
         }
     }
 
@@ -201,8 +199,12 @@ public class AttendanceService {
         // 멤버-세션에 출석여부 반영
         memberSession.changeAttend(true);
 
-        // 호스트에게 sse 전송
-        sendNotification(emitterRepository.findById(sessionId), "attendance", "attendance", sessionId, AttendanceInfo.builder().memberSessionId(memberSession.getId()).isAttend(true).build());
+        // 세션 회원들에게 SSE 메세지 발송
+        List<SseEmitter> emitters = emitterRepository.findEmittersBySessionId(sessionId);
+        for (SseEmitter sseEmitter : emitters) {
+            sendNotification(sseEmitter, "attendance", "attendance", sessionId, memberSession.getId(), AttendanceInfo.builder().memberSessionId(memberSession.getId()).isAttend(true).build());
+        }
+
     }
 
     // 두 좌표 간의 거리를 계산하는 메소드
@@ -250,10 +252,11 @@ public class AttendanceService {
         // 출석 수정
         memberSession.changeAttend(attendValue);
 
-        // 호스트에게 sse 전송
-        Long sessionId = memberSession.getSession().getId();
-        sendNotification(emitterRepository.findById(sessionId), "attendance", "attendance",
-                sessionId, AttendanceInfo.builder().memberSessionId(memberSession.getId()).isAttend(attendValue).build());
+        // 세션 회원들에게 SSE 메세지 발송
+        List<SseEmitter> emitters = emitterRepository.findEmittersBySessionId(session.getId());
+        for (SseEmitter sseEmitter : emitters) {
+            sendNotification(sseEmitter, "attendance", "attendance", session.getId(), memberSession.getId(), AttendanceInfo.builder().memberSessionId(memberSession.getId()).isAttend(attendValue).build());
+        }
     }
 
     enum AutoCheckStatus {
