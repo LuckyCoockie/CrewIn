@@ -2,9 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type OwnProps = {
   initSeconds: number;
+  onEnd?: () => void;
 };
 
-const TimerOrganism: React.FC<OwnProps> = ({ initSeconds }) => {
+const TimerOrganism: React.FC<OwnProps> = ({ initSeconds, onEnd }) => {
   const [seconds, setSeconds] = useState<number>(initSeconds);
 
   const timerRef = useRef<number | null>(null);
@@ -18,6 +19,7 @@ const TimerOrganism: React.FC<OwnProps> = ({ initSeconds }) => {
       setSeconds((prevSeconds) => {
         if (prevSeconds <= 1) {
           clearInterval(timerRef.current!);
+          if (onEnd) onEnd();
           return 0;
         }
         return prevSeconds - 1;
