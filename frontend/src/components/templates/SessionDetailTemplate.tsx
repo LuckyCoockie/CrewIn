@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useQuery } from "react-query";
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import SessionDetailOrganism from "../organisms/SessionDetailOrganism";
 import {
   SessionDetailDto,
   GetSessionInfoRequestDto,
+  deleteSessionImage,
 } from "../../apis/api/sessiondetail";
 import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
 import NavTabMolecule from "../molecules/Tab/NavTabMolecule";
@@ -14,6 +15,7 @@ import AttendanceButton from "../atoms/Button/AttendanceButton";
 import { Carousel } from "react-responsive-carousel";
 import OneToOneImageMolecule from "../molecules/Image/OneToOneImageMolecule";
 import { ReactComponent as DownloadIcon } from "../../assets/icons/download.svg";
+import { ReactComponent as TrashIcon } from "../../assets/icons/trash.svg";
 
 type OwnDetailProps = {
   fetchDetailData: (dto: GetSessionInfoRequestDto) => Promise<SessionDetailDto>;
@@ -25,6 +27,9 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
   const { sessionId } = useParams<{ sessionId: string }>();
   const [currentTab, setCurrentTab] = useState<string>("세션정보");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImageId, setSelectedImageId] = useState<number | null>(null);
+
+  const albumRef = useRef<{ refreshGallery: () => void } | null>(null);
 
   const { data: detailData, error: detailError } = useQuery(
     ["detailData", { sessionId }],
@@ -41,7 +46,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
   // 사진첩 탭이 활성화될 때 첫 번째 이미지를 기본 선택
   useEffect(() => {
     if (currentTab === "사진첩" && !selectedImage) {
-      const firstImage = detailData?.sessionPosters[0] || null;
+      const firstImage = null;
       if (firstImage) setSelectedImage(firstImage);
     }
   }, [currentTab, detailData, selectedImage]);
@@ -69,6 +74,20 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
         console.error("Error downloading the image:", error);
       }
     }
+  };
+
+  const handleDelete = async (imageId: number) => {
+    await deleteSessionImage(imageId)
+      .then((r) => {
+        setCurrentTab("");
+        setTimeout(() => setCurrentTab("사진첩"), 0);
+        setSelectedImage(null);
+        setSelectedImageId(null);
+        console.log(r);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   if (!sessionId) return null;
@@ -122,11 +141,18 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
                 className="object-contain w-full h-full"
               />
               <button
+                className="absolute ms-auto mb-auto right-2 top-2 rounded-full bg-white bg-opacity-70 flex items-center justify-center"
+                onClick={() => handleDelete(selectedImageId!)}
+                style={{ width: "40px", height: "40px" }} // 크기를 작게 조정
+              >
+                <TrashIcon />
+              </button>
+              <button
                 className="absolute ms-auto mt-auto right-2 bottom-2 rounded-full bg-white bg-opacity-70 flex items-center justify-center"
                 onClick={handleDownload}
                 style={{ width: "40px", height: "40px" }} // 크기를 작게 조정
               >
-                <DownloadIcon /> {/* 아이콘 크기를 작게 조정 */}
+                <DownloadIcon />
               </button>
             </>
           ) : (
@@ -153,8 +179,12 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
         )}
         {currentTab === "사진첩" && detailData && (
           <SessionAlbumOrganism
+            ref={albumRef}
             sessionId={detailData.sessionId}
-            onSelectImage={setSelectedImage}
+            onSelectImage={(imageUrl, imageId) => {
+              setSelectedImage(imageUrl);
+              setSelectedImageId(imageId);
+            }}
           />
         )}
       </>
