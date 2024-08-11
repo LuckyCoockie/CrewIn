@@ -57,7 +57,6 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
           const crewImageUrl = selectedCrew.subLogo;
 
           const file = await fetchImageAsFile(crewImageUrl);
-          console.log(file);
 
           const imageUrl = URL.createObjectURL(file);
           setCrewImageUrl(imageUrl);

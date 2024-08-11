@@ -91,6 +91,14 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     [memberSessionId]
   );
 
+  const handleGuestAttendanceClick = useCallback(() => {
+    onGuestAttendanceClick().catch(() => {
+      alert(
+        "출석에 실패하였습니다. 현재 위치가 주최자와 가까운지 확인해주세요."
+      );
+    });
+  }, [onGuestAttendanceClick]);
+
   return (
     <>
       <header>
@@ -122,15 +130,18 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
               {isDuringAutoCheck &&
                 (isSessionHost ? (
                   <div className="w-full text-center">
-                    {"자동 출석 중에는 출석을 수정할 수 없습니다."}
-                    <TimerOrganism initSeconds={leftTime} />
+                    {"자동 출석 종료 후 출석을 수정할 수 있습니다."}
+                    <TimerOrganism
+                      initSeconds={leftTime}
+                      onEnd={() => setAutoCheckStatus("AFTER")}
+                    />
                   </div>
                 ) : isAttend ? (
                   <>{"출석 완료"}</>
                 ) : (
                   <LargeAbleButton
                     text="출석하기"
-                    onClick={onGuestAttendanceClick}
+                    onClick={handleGuestAttendanceClick}
                   />
                 ))}
               {isAfterAutoCheck &&

@@ -22,7 +22,6 @@ const AlarmTemplate: React.FC = () => {
         const data = await fetchNotifications();
 
         if (data) {
-          console.log(data);
           setAlarms(data);
         }
       } catch (error) {

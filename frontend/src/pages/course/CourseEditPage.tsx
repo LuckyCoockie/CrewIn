@@ -11,6 +11,7 @@ import { Point } from "../../util/maps/tmap/apis/api/directionApi.ts";
 import { reversGeocodingApi } from "../../util/maps/tmap/apis/api/geocodeApi.ts";
 import { useParams } from "react-router";
 import BackHeaderMediumOrganism from "../../components/organisms/BackHeaderMediumOrganism.tsx";
+import EditDeleteDropdownOrganism from "../../components/organisms/EditDeleteDropdownOrganism.tsx";
 
 const CourseEditPage: React.FC = () => {
   const { courseId } = useParams();
@@ -80,8 +81,12 @@ const CourseEditPage: React.FC = () => {
 
   return (
     <NaverMapProvider>
-      <header>
+      <header className="justify-between items-center">
         <BackHeaderMediumOrganism text="경로 수정하기" />
+        <EditDeleteDropdownOrganism
+          type="COURSE"
+          idData={parseInt(courseId)}
+        />
       </header>
       <CourseCreateTemplate
         initValue={parseInitValue(initValue)}
