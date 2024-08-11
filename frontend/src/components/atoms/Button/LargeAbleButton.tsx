@@ -1,4 +1,5 @@
 import React from "react";
+import SpinnerComponent from "../SpinnerComponent";
 
 type Text = {
   onClick?: () => void;
@@ -6,14 +7,14 @@ type Text = {
   isLoading?: boolean;
 };
 
-const LargeAbleButton: React.FC<Text> = (props) => {
+const LargeAbleButton: React.FC<Text> = ({ onClick, text, isLoading }) => {
   return (
     <button
-      className="w-full bg-[#2B2F40] py-4 px-8 text-center rounded-lg text-white font-bold"
-      onClick={props.onClick}
-      disabled={props.isLoading}
+      className="w-full bg-[#2B2F40] py-4 px-8 text-center rounded-lg text-white font-bold flex items-center justify-center"
+      onClick={onClick}
+      disabled={isLoading}
     >
-      {props.text}
+      {isLoading ? <SpinnerComponent /> : text}
     </button>
   );
 };
