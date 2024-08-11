@@ -75,8 +75,6 @@ const AttendanceMemberListOrganism = <T,>({
   const { setIsActive } = useSSE({
     url: `/attendance/connect/${sessionId}`,
     events: [{ event: "attendance", onEvent: handleAttendanceChange }],
-    onOpen: () => alert("서버와 연결되었습니다."),
-    onError: () => alert("서버와의 연결이 끊어졌습니다."),
   });
 
   useEffect(() => {
