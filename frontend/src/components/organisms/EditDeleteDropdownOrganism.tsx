@@ -19,14 +19,12 @@ type PropsData = {
   type: "CREW" | "SESSION" | "NOTICE";
   idData?: number;
   idData2?: number;
-  deleteMessage?: string;
 };
 
 const EditDeleteDropdownOrganism: React.FC<PropsData> = ({
   type,
   idData,
   idData2,
-  deleteMessage = "이 항목을 정말로 삭제하시겠습니까?", // 기본 삭제 메시지
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoader, setIsLoader] = useState(false);
@@ -35,6 +33,20 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  // type에 따라 deleteMessage 설정
+  const deleteMessage = (() => {
+    switch (type) {
+      case "CREW":
+        return "크루를 정말로 삭제하시겠습니까?";
+      case "SESSION":
+        return "세션을 정말로 삭제하시겠습니까?";
+      case "NOTICE":
+        return "공지사항을 정말로 삭제하시겠습니까?";
+      default:
+        return "항목을 정말로 삭제하시겠습니까?";
+    }
+  })();
 
   const toggleDropdownClick = () => {
     setIsDropdownOpen((prev) => !prev);
@@ -117,9 +129,10 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({
       </div>
       {isModalOpen && (
         <ModalConfirm
-          title="확인"
+          title="알림"
           onClose={handleCancelDelete}
           onConfirm={handleConfirmDelete}
+          type="delete"
         >
           <p>{deleteMessage}</p>
         </ModalConfirm>

@@ -6,7 +6,8 @@ interface ModalProps {
   title?: string;
   children: React.ReactNode;
   onClose: () => void;
-  onConfirm?: () => void; // 확인 버튼을 위한 핸들러 추가
+  onConfirm?: () => void; 
+  type?: "delete" | "default";
 }
 
 const ModalConfirm: React.FC<ModalProps> = ({
@@ -14,12 +15,17 @@ const ModalConfirm: React.FC<ModalProps> = ({
   children,
   onClose,
   onConfirm,
+  type = "default", // 기본값은 "default"
 }) => {
   return ReactDOM.createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 overflow-auto">
       <div className="relative bg-white p-2 rounded-lg shadow-lg max-w-sm w-5/6 max-h-full overflow-y-auto items-center">
         <div className="flex top-3 p-3 pb-0 justify-between items-center">
-          <label className="block min-h-[1.5rem] tracking-tighter text-lg">
+          <label
+            className={`block min-h-[1.5rem] tracking-tighter text-lg ${
+              type === "delete" ? "text-red-600" : ""
+            }`}
+          >
             {title}
           </label>
           <button
