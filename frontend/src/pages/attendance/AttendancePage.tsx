@@ -60,6 +60,8 @@ const AttendancePage: React.FC = () => {
 
   if (!sessionId) return "sessionId가 필요합니다.";
 
+  if (!location) return "위치 정보가 필요합니다.";
+
   return (
     <AttendanceTemplate
       getMemberList={getMemberList}
@@ -70,6 +72,7 @@ const AttendancePage: React.FC = () => {
       startAt={state.startAt}
       endAt={state.endAt}
       sessionId={parseInt(sessionId)}
+      location={location}
     />
   );
 };

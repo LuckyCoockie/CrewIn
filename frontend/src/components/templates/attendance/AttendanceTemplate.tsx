@@ -8,6 +8,11 @@ import LargeAbleButton from "../../atoms/Button/LargeAbleButton";
 import AttendanceMemberListOrganism from "../../organisms/AttendanceMemberListOrganism";
 import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
 import TimerOrganism from "../../organisms/TimerOrganism";
+import ModalConfirm from "../../molecules/ModalConfirmMolecules";
+import { reversGeocodingApi } from "../../../util/maps/tmap/apis/api/geocodeApi";
+import { Point } from "../../../util/maps/tmap/apis/api/directionApi";
+import locationImage from "../../../assets/icons/location.png";
+import { IconTextComponent } from "../../atoms/text/IconText";
 
 type OwnProps = {
   onStartAttendanceClick: () => Promise<void>;
@@ -18,6 +23,7 @@ type OwnProps = {
   startAt: string;
   endAt: string;
   sessionId: number;
+  location: Point;
 };
 
 const AttendanceTemplate: React.FC<OwnProps> = ({
@@ -29,6 +35,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
   startAt,
   endAt,
   sessionId,
+  location,
 }) => {
   const isSessionStarted = useMemo(() => {
     const startTime = new Date(startAt).getTime();
@@ -42,8 +49,12 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     return currentTime >= endTime;
   }, [endAt]);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [memberSessionId, setMemberSessionId] = useState<number>();
   const [isAttend, setIsAttend] = useState<boolean>(false);
+
+  const [spot, setSpot] = useState<string>();
 
   const [autoCheckStatus, setAutoCheckStatus] =
     useState<AutoCheckStatus>("BEFORE");
@@ -79,10 +90,17 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
   }, [getMemberList]);
 
   const handleStartAttendanceClick = useCallback(async () => {
-    onStartAttendanceClick().then(() => {
-      fetchMemberList();
+    const address = await reversGeocodingApi({
+      lat: location.latitude,
+      lon: location.longitude,
+      addressType: "A10",
+      newAddressExtend: "Y",
     });
-  }, [fetchMemberList, onStartAttendanceClick]);
+    setSpot(
+      `${address.addressInfo.city_do} ${address.addressInfo.gu_gun} ${address.addressInfo.legalDong}`
+    );
+    setIsModalOpen(true);
+  }, [location.latitude, location.longitude]);
 
   const handleAttendanceChange = useCallback(
     (data: { memberSessionId: number; isAttend: boolean }) => {
@@ -91,13 +109,43 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     [memberSessionId]
   );
 
-  const handleGuestAttendanceClick = useCallback(() => {
-    onGuestAttendanceClick().catch(() => {
-      alert(
-        "출석에 실패하였습니다. 현재 위치가 주최자와 가까운지 확인해주세요."
-      );
+  const handleGuestAttendanceClick = useCallback(async () => {
+    const address = await reversGeocodingApi({
+      lat: location.latitude,
+      lon: location.longitude,
+      addressType: "A10",
+      newAddressExtend: "Y",
     });
-  }, [onGuestAttendanceClick]);
+    setSpot(
+      `${address.addressInfo.city_do} ${address.addressInfo.gu_gun} ${address.addressInfo.legalDong}`
+    );
+    setIsModalOpen(true);
+  }, [location.latitude, location.longitude]);
+
+  const handleClickModalConfirm = useCallback(() => {
+    if (isSessionHost) {
+      onStartAttendanceClick().then(() => {
+        fetchMemberList();
+        setIsModalOpen(false);
+      });
+    } else {
+      onGuestAttendanceClick()
+        .then(() => {
+          fetchMemberList();
+          setIsModalOpen(false);
+        })
+        .catch(() => {
+          alert(
+            "출석에 실패하였습니다. 주최자의 거리가 100m 미만이여야 출석이 가능합니다."
+          );
+        });
+    }
+  }, [
+    fetchMemberList,
+    isSessionHost,
+    onGuestAttendanceClick,
+    onStartAttendanceClick,
+  ]);
 
   return (
     <>
@@ -150,6 +198,22 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
           )}
         </div>
       </div>
+      {isModalOpen && (
+        <ModalConfirm
+          title={
+            isSessionHost ? "출석을 시작하시겠습니까?" : "출석 하시겠습니까?"
+          }
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={handleClickModalConfirm}
+          type="default"
+        >
+          <p>{`현재 위치를 확인해주세요.`}</p>
+          <IconTextComponent
+            icon={locationImage}
+            text={spot ?? "새로고침 해주세요."}
+          />
+        </ModalConfirm>
+      )}
     </>
   );
 };
