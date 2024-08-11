@@ -39,8 +39,8 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
 
   // 사진첩 탭이 활성화될 때 첫 번째 이미지를 기본 선택
   useEffect(() => {
-    if (currentTab === "사진첩" && !selectedImage && detailData) {
-      const firstImage = detailData.sessionPosters?.[0] || null;
+    if (currentTab === "사진첩" && !selectedImage) {
+      const firstImage = null;
       if (firstImage) setSelectedImage(firstImage);
     }
   }, [currentTab, detailData, selectedImage]);
@@ -88,7 +88,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
         )}
 
       {currentTab === "사진첩" && (
-        <div className="w-full aspect-w-1 aspect-h-1 flex justify-center items-center bg-black ">
+        <div className="w-full aspect-w-1 aspect-h-1 flex justify-center items-center bg-gray-100 ">
           {selectedImage ? (
             <img
               src={selectedImage}
@@ -96,8 +96,8 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
               className="object-contain w-full h-full"
             />
           ) : (
-            <div className="flex justify-center items-center text-gray-300 text-lg">
-              선택된 사진이 없습니다.
+            <div className="object-contain w-full h-full flex justify-center items-center text-gray-600 text-lg sm:text-xl">
+              사진을 선택해보세요.
             </div>
           )}
         </div>

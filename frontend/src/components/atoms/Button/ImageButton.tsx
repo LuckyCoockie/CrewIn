@@ -42,6 +42,7 @@ const ImageButton: React.FC<Image> = ({ src, alt, router, routerId }) => {
           borderRadius: "10px",
           objectFit: "cover",
         }}
+        className="border shadow-sm"
       />
     </button>
   );
