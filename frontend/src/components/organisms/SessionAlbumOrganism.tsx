@@ -88,7 +88,6 @@ const SessionAlbumOrganism: React.FC<PropsData> = ({
 
   return (
     <div className="h-[500px] overflow-y-auto">
-      {" "}
       {/* 스크롤 가능한 영역 */}
       <input
         type="file"
@@ -111,6 +110,7 @@ const SessionAlbumOrganism: React.FC<PropsData> = ({
           fetchData={fetchGallery}
           ItemComponent={({ data }) => (
             <div
+              key={data.sessionImageId}
               className="w-full h-full"
               style={{ position: "relative", paddingBottom: "100%" }}
               onClick={() => onSelectImage(data.imageUrl)}
