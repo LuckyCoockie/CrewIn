@@ -12,7 +12,7 @@ import InputDropdonwTypeMolecule from "../molecules/Input/InputDropdonwTypeMolec
 import { regions } from "../../regions";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
-import Modal from "../molecules/ModalMolecules"; // 모달 컴포넌트 추가
+import Modal from "../molecules/ModalMolecules";
 
 import { CrewCreateDto, postCreateCrew } from "../../apis/api/crewcreate";
 import { uploadImage } from "../../apis/api/presigned";
@@ -134,7 +134,7 @@ const CrewCreateOrganism: React.FC = () => {
   return (
     <>
       {errorMessage && (
-        <Modal title="오류" onClose={closeModal}>
+        <Modal title="알림" onClose={closeModal}>
           <p>{errorMessage}</p>
         </Modal>
       )}
