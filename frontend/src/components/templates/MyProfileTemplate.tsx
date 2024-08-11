@@ -17,8 +17,14 @@ import {
   MyMadeSessionDto,
   MyParticipatedSessionDto,
 } from "../../apis/api/mypage";
+import { useNavigate } from "react-router";
+import { createSearchParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../../modules";
 
 const MyProfileTemplate: React.FC = () => {
+  const navigate = useNavigate();
+
   console.log("여기는 내페이지");
   const [currentTab, setCurrentTab] = useState<string>("러닝 정보");
   const handleTabClick = (tab: string) => {
@@ -27,6 +33,7 @@ const MyProfileTemplate: React.FC = () => {
 
   const texts = ["러닝 정보", "사진첩"];
   const numericMemberId = null;
+  const memberId = useSelector((state: RootState) => state.auth.memberId);
 
   // React Query를 사용하여 데이터를 한 번에 가져옴
   const {
@@ -93,7 +100,16 @@ const MyProfileTemplate: React.FC = () => {
           </div>
         </>
       ) : (
-        <MyPageAlbumOrganism />
+        <MyPageAlbumOrganism
+          onItemClicked={async (pageNo, postId) =>
+            navigate(
+              `/profile/${memberId}/gallery?${createSearchParams({
+                pageNo: pageNo.toString(),
+                postId: postId.toString(),
+              })}`
+            )
+          }
+        />
       )}
     </>
   );

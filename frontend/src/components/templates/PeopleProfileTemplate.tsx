@@ -4,13 +4,15 @@ import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import PeopleRecordInfoOrganism from "../organisms/people/PeopleRecordInfoOrganism";
 import PeopleAlbumOrganism from "../organisms/people/PeopleAlbumOrganism";
 import { getPeopleProfileInfo, ProfileDto } from "../../apis/api/mypage";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import { createSearchParams } from "react-router-dom";
 
 const PeopleProfileTemplate: React.FC = () => {
   console.log("여기는 남의 페이지");
   const { memberId } = useParams<{ memberId: string }>();
   console.log(memberId);
 
+  const navigate = useNavigate();
   const numericMemberId = Number(memberId);
   // React Query를 사용하여 데이터를 가져옴
   const {
@@ -42,7 +44,16 @@ const PeopleProfileTemplate: React.FC = () => {
       </header>
       <PeopleRecordInfoOrganism profileData={profileData} />
       <div>
-        <PeopleAlbumOrganism />
+        <PeopleAlbumOrganism
+          onItemClicked={async (pageNo, postId) =>
+            navigate(
+              `/profile/${memberId}/gallery?${createSearchParams({
+                pageNo: pageNo.toString(),
+                postId: postId.toString(),
+              })}`
+            )
+          }
+        />
       </div>
     </>
   );

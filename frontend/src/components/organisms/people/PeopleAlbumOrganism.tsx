@@ -4,7 +4,11 @@ import { useParams } from "react-router";
 import InfiniteScrollComponent from "../../../util/paging/component/InfinityScrollComponent";
 import { PageNationData } from "../../../util/paging/type";
 
-const PeopleAlbumOrganism: React.FC = () => {
+type OwnProps = {
+  onItemClicked: (pageNo: number, postId: number) => void;
+};
+
+const PeopleAlbumOrganism: React.FC<OwnProps> = ({ onItemClicked }) => {
   const { memberId } = useParams<{ memberId: string }>();
   const [hasData, setHasData] = useState(true);
 
@@ -25,13 +29,16 @@ const PeopleAlbumOrganism: React.FC = () => {
         <InfiniteScrollComponent
           fetchKey="peopleGallery"
           fetchData={fetchGallery}
-          ItemComponent={({ data }) => (
+          ItemComponent={({ pageNo, data }) => (
             <img
               src={data.thumbnailImage}
               alt={`gallery-item-${data.postId}`}
               key={`gallery-${data.postId}`}
               className="w-full h-full"
               style={{ border: "1px solid rgba(255, 0, 0, 0)" }}
+              onClick={() => {
+                if (onItemClicked) onItemClicked(pageNo, data.postId);
+              }}
             />
           )}
           className="grid grid-cols-3"
