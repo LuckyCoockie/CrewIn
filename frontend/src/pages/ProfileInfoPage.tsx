@@ -20,7 +20,7 @@ export const ProfileInfoPage = () => {
         const imageDto = { profileImageUrl: imageUrl };
         await editProfileImage(imageDto);
         onClose(); // 성공적으로 변경 후 모달 닫기
-        navigate(`/profile`);
+        navigate(`/profile`, { replace: true });
       }
     } catch (error) {
       console.error("프로필 이미지 업로드 에러:", error);
@@ -35,7 +35,7 @@ export const ProfileInfoPage = () => {
       const nicknameDto = { nickname };
       await editNickname(nicknameDto);
       onClose(); // 성공적으로 변경 후 모달 닫기
-      navigate(`/profile`);
+      navigate(`/profile`, { replace: true });
     } catch (error) {
       console.error(error);
     }
@@ -49,7 +49,7 @@ export const ProfileInfoPage = () => {
     try {
       await editPassword(submitData);
       onClose(); // 성공적으로 변경 후 모달 닫기
-      navigate(`/profile`);
+      navigate(`/profile`, { replace: true });
     } catch (error) {
       console.error("비밀번호 변경 에러", error);
       window.alert("이전 비밀번호를 확인하세요.");
