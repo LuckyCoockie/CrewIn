@@ -6,33 +6,38 @@ import { getPostList, PostDto } from "../apis/api/postlist";
 import { getMyCrews, CrewDto } from "../apis/api/mycrew";
 import BackHeaderMediumOrganism from "../components/organisms/BackHeaderMediumOrganism";
 
-const fetchAllPosts = async () => {
+const fetchPostById = async (postId: number) => {
   let allPosts: PostDto[] = [];
   let pageNo = 0;
   let lastPageNo = 0;
+  let foundPost: PostDto | undefined;
 
   try {
-    const firstPageData = await getPostList(pageNo);
-    allPosts = firstPageData.items;
-    lastPageNo = firstPageData.lastPageNo;
-
-    while (pageNo < lastPageNo) {
+    while (true) {
+      const pageData = await getPostList(pageNo);
+      allPosts = pageData.items;
+      lastPageNo = pageData.lastPageNo;
+      foundPost = allPosts.find((post) => post.id === postId);
+      if (foundPost) {
+        break;
+      }
+      if (pageNo >= lastPageNo) {
+        break;
+      }
       pageNo += 1;
-      const nextPageData = await getPostList(pageNo);
-      allPosts = allPosts.concat(nextPageData.items);
     }
   } catch (error) {
     console.error(`Error fetching posts:`, error);
   }
 
-  return allPosts;
+  return foundPost;
 };
 
 const PostEditPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
   const navigate = useNavigate();
   const [content, setContent] = useState<string>("");
-  const [title] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
   const [isPublic, setIsPublic] = useState<boolean>(true);
   const [postImages, setPostImages] = useState<string[]>([]);
   const [, setCrews] = useState<CrewDto[]>([]);
@@ -41,29 +46,31 @@ const PostEditPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const posts = await fetchAllPosts();
-        const post = posts.find((p) => p.id === Number(postId));
-        if (post) {
-          setPostImages(post.postImages);
-          setContent(post.content);
-          setIsPublic(post.isPublic);
-        } else {
-          setError("게시글을 찾을 수 없습니다.");
-        }
+    if (postId) {
+      (async () => {
+        try {
+          const post = await fetchPostById(Number(postId));
+          if (post) {
+            setPostImages(post.postImages);
+            setContent(post.content);
+            setTitle(post.title);
+            setIsPublic(post.isPublic);
 
-        const response = await getMyCrews();
-        setCrews(response.crews);
-        if (response.crews.length > 0) {
-          setCrewId(response.crews[0].crewId);
+            const response = await getMyCrews();
+            setCrews(response.crews);
+            if (response.crews.length > 0) {
+              setCrewId(response.crews[0].crewId);
+            }
+          } else {
+            setError("게시글을 찾을 수 없습니다.");
+          }
+        } catch (error) {
+          setError("데이터 조회 오류");
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        setError("데이터 조회 오류");
-      } finally {
-        setLoading(false);
-      }
-    })();
+      })();
+    }
   }, [postId]);
 
   const handleUpdatePost = async () => {
