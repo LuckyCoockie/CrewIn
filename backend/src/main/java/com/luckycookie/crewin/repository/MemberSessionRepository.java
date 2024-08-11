@@ -14,8 +14,8 @@ import java.util.Optional;
 
 public interface MemberSessionRepository extends JpaRepository<MemberSession, Long> {
 
-    // 내가 참가한 세션 조회
-    @Query("SELECT ms.session FROM MemberSession ms WHERE ms.member = :member and ms.isAttend = true and ms.session.sessionType = :sessionType order by ms.id desc")
+    // 내가 신청한 세션 조회
+    @Query("SELECT ms.session FROM MemberSession ms WHERE ms.member = :member and ms.session.sessionType = :sessionType order by ms.id desc")
     Page<Session> findByMemberAndIsAttendAndSessionType(Pageable pageable, Member member, SessionType sessionType);
 
     @Query("SELECT ms.session FROM MemberSession ms WHERE ms.member = :member and ms.isAttend = true order by ms.id desc")

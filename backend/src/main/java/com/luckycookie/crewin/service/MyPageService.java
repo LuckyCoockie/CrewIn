@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.luckycookie.crewin.domain.enums.SessionType.THUNDER;
+import static com.luckycookie.crewin.domain.enums.SessionType.*;
 
 @Service
 @Transactional
@@ -44,7 +44,7 @@ public class MyPageService {
     @Value("${image.default.member-profile}")
     private String defaultProfileImage;
 
-    // 내가 만든, 참가한 세션 조회 (전체)
+    // 내가 만든, 신청한 세션 조회 (전체)
     @Transactional(readOnly = true)
     public PagingItemsResponse<MyPageSessionItem> getCreatedMySession(CustomUser customUser, int pageNo, String type, String sessionType) {
         // 현재 로그인한 사용자 조회
@@ -67,19 +67,19 @@ public class MyPageService {
         if (type.equals("created")) { // 내가 만든 세션
             // session 에서 hostId가 member.getId 랑 같으면 내가 만든 세션
             sessionPage = switch (sessionType) {
-                case "OPEN" -> sessionRepository.findByHostAndSessionType(pageable, member, SessionType.OPEN);
-                case "STANDARD" -> sessionRepository.findByHostAndSessionType(pageable, member, SessionType.STANDARD);
+                case "OPEN" -> sessionRepository.findByHostAndSessionType(pageable, member, OPEN);
+                case "STANDARD" -> sessionRepository.findByHostAndSessionType(pageable, member, STANDARD);
                 case "THUNDER" -> sessionRepository.findByHostAndSessionType(pageable, member, THUNDER);
                 default -> sessionRepository.findAllByHost(pageable, member);
             };
             System.out.println("@@@@@@@@@@@@@@" + sessionType);
         } else if (type.equals("joined")) {
-            // 내가 참가한 세션
+            // 내가 신청한 세션
             sessionPage = switch (sessionType) {
                 case "OPEN" ->
-                        memberSessionRepository.findByMemberAndIsAttendAndSessionType(pageable, member, SessionType.OPEN);
+                        memberSessionRepository.findByMemberAndIsAttendAndSessionType(pageable, member, OPEN);
                 case "STANDARD" ->
-                        memberSessionRepository.findByMemberAndIsAttendAndSessionType(pageable, member, SessionType.STANDARD);
+                        memberSessionRepository.findByMemberAndIsAttendAndSessionType(pageable, member, STANDARD);
                 case "THUNDER" ->
                         memberSessionRepository.findByMemberAndIsAttendAndSessionType(pageable, member, THUNDER);
                 default -> memberSessionRepository.findByMember(pageable, member);

@@ -27,13 +27,13 @@ public class MyPageController {
     private final MyPageService myPageService;
     private final PostService postService;
 
-    // 내가 만든, 내가 참가한 세션 조회
+    // 내가 만든, 내가 신청한 세션 조회
     @GetMapping("/session")
     public ResponseEntity<BaseResponse<PagingItemsResponse<MyPageSessionItem>>> getCreatedMySession(@AuthenticationPrincipal CustomUser customUser, @RequestParam("page-no") int pageNo, @RequestParam(value = "type", required = false) String type, @RequestParam(value = "session-type", required = false) String sessionType) {
         if(type.equals("created")) {
             return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "내가 만든 세션 조회를 성공했습니다.", myPageService.getCreatedMySession(customUser, pageNo, type, sessionType)));
         }else {
-            return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "내가 참가한 세션 조회를 성공했습니다.", myPageService.getCreatedMySession(customUser, pageNo, type, sessionType)));
+            return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "내가 신청한 세션 조회를 성공했습니다.", myPageService.getCreatedMySession(customUser, pageNo, type, sessionType)));
         }
     }
 
