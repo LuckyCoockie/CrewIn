@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MoreVerticalButton from "../atoms/Button/MoreVerticalButton";
 import QuitDropdownMolecule from "../molecules/QuitDropdownMolecule";
-import SpinnerFullComponent from "../atoms/SpinnerFullComponent";
+import SpinnerOverlayComponent from "../atoms/SpinnerOverlayComponent";
 import { quitCrew } from "../../apis/api/crewdetail";
 import ModalConfirm from "../molecules/ModalConfirmMolecules";
 
@@ -56,7 +56,7 @@ const QuitDropdownOrganism: React.FC<CrewId> = ({ crewId }) => {
 
   return (
     <>
-      {isLoader && <SpinnerFullComponent />}
+      {isLoader && <SpinnerOverlayComponent />}
       <div className=" relative" ref={dropdownRef}>
         <MoreVerticalButton onDropdownClick={toggleDropdownClick} />
         {isDropdownOpen && (

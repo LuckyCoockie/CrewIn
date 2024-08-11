@@ -19,7 +19,7 @@ import {
 import { PWAInstallPrompt } from "../components/templates/pwa/PWAInstallPrompt";
 import { PWAOpenAppPrompt } from "../components/templates/pwa/PWAOpenAppPrompt";
 import { fetchNotifications } from "../apis/api/alarm";
-import SpinnerFullComponent from "../components/atoms/SpinnerFullComponent";
+import SpinnerComponent from "../components/atoms/SpinnerComponent";
 import Modal from "../components/molecules/ModalMolecules";
 
 const PostMainPage: React.FC = () => {
@@ -83,7 +83,6 @@ const PostMainPage: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20 relative">
-      {isLoading && <SpinnerFullComponent />}
       <div className="flex items-center w-full mb-5 xs:mb-10">
         <div className="flex items-center ms-3">
           <CrewinLogo />
@@ -97,6 +96,7 @@ const PostMainPage: React.FC = () => {
           )}
         </div>
       </div>
+      {isLoading && <SpinnerComponent />}
       <div className="w-full">
         <InfiniteScrollComponent
           fetchKey="postData"

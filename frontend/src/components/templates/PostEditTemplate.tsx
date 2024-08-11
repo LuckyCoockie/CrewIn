@@ -1,6 +1,7 @@
 import React from "react";
 import InputTextAreaNoLimitTypeMolecule from "../molecules/Input/InputTextAreaNoLimitTypeMolecule";
 import InputRadioTypeMolecule from "../molecules/Input/InputRadioTypeMolecule";
+import SpinnerComponent from "../atoms/SpinnerComponent";
 
 interface PostEditTemplateProps {
   content: string;
@@ -10,6 +11,7 @@ interface PostEditTemplateProps {
   onContentChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onVisibilityChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onUpdatePost: () => void;
+  isSubmit?: boolean;
 }
 
 const PostEditTemplate: React.FC<PostEditTemplateProps> = ({
@@ -18,6 +20,7 @@ const PostEditTemplate: React.FC<PostEditTemplateProps> = ({
   onContentChange,
   onVisibilityChange,
   onUpdatePost,
+  isSubmit,
 }) => {
   return (
     <div className="flex flex-col items-center justify-center">
@@ -54,7 +57,7 @@ const PostEditTemplate: React.FC<PostEditTemplateProps> = ({
           onClick={onUpdatePost}
           className="w-full bg-[#2b2f40e6] py-4 px-8 text-center rounded-lg text-white font-bold"
         >
-          수정
+          {isSubmit ? <SpinnerComponent /> : "수정"}
         </button>
       </main>
     </div>
