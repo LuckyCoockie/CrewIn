@@ -13,7 +13,7 @@ import { useParams } from "react-router";
 import AttendanceButton from "../atoms/Button/AttendanceButton";
 import { Carousel } from "react-responsive-carousel";
 import OneToOneImageMolecule from "../molecules/Image/OneToOneImageMolecule";
-import { FaDownload } from "react-icons/fa"; // 다운로드 아이콘을 위해 react-icons 사용
+import { ReactComponent as DownloadIcon } from "../../assets/icons/download.svg";
 
 type OwnDetailProps = {
   fetchDetailData: (dto: GetSessionInfoRequestDto) => Promise<SessionDetailDto>;
@@ -41,36 +41,28 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
   // 사진첩 탭이 활성화될 때 첫 번째 이미지를 기본 선택
   useEffect(() => {
     if (currentTab === "사진첩" && !selectedImage) {
-      const firstImage = null;
+      const firstImage = detailData?.sessionPosters[0] || null;
       if (firstImage) setSelectedImage(firstImage);
     }
   }, [currentTab, detailData, selectedImage]);
 
   const handleDownload = async () => {
-    console.log(selectedImage);
-
     if (selectedImage) {
       try {
-        // 이미지 URL에서 Blob 데이터를 가져옴
         const response = await fetch(selectedImage);
         const blob = await response.blob();
         const fileName = selectedImage.split("/").pop() || "image.jpg";
         const file = new File([blob], fileName, { type: blob.type });
-        console.log(file);
 
-        // Blob URL 생성
-        const url = window.URL.createObjectURL(blob);
+        const url = window.URL.createObjectURL(file);
 
-        // 가상의 링크 생성
         const link = document.createElement("a");
         link.href = url;
-        link.download = "downloaded-image.jpg"; // 파일 이름 지정
+        link.download = file.name; // 파일 이름 지정
         document.body.appendChild(link);
 
-        // 링크 클릭 시 파일 다운로드
         link.click();
 
-        // 사용한 링크와 URL 객체 제거
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
       } catch (error) {
@@ -78,6 +70,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
       }
     }
   };
+
   if (!sessionId) return null;
 
   return (
@@ -129,10 +122,11 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
                 className="object-contain w-full h-full"
               />
               <button
-                className="absolute bottom-4 right-4 bg-blue-500 text-white p-2 rounded-full"
+                className="absolute ms-auto mt-auto right-2 bottom-2 rounded-full bg-white bg-opacity-70 flex items-center justify-center"
                 onClick={handleDownload}
+                style={{ width: "40px", height: "40px" }} // 크기를 작게 조정
               >
-                <FaDownload size={24} />
+                <DownloadIcon /> {/* 아이콘 크기를 작게 조정 */}
               </button>
             </>
           ) : (
