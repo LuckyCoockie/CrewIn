@@ -339,7 +339,7 @@ const LoginOrganism: React.FC = () => {
         </button>
       ) : !isCodeInput ? (
         <button
-          className="w-full bg-[#2b2f401a] py-2 text-center rounded-lg text-white font-bold"
+          className="w-full bg-[#2b2f401a] py-4 text-center rounded-lg text-white font-bold"
           disabled
         >
           이메일 인증
