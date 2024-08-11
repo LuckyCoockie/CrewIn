@@ -24,7 +24,6 @@ import {
 
 import { useNavigate, useParams } from "react-router-dom";
 
-import SpinnerOverlayComponent from "../atoms/SpinnerOverlayComponent";
 import Modal from "../molecules/ModalMolecules";
 
 // 유효성 검사 스키마 정의
@@ -224,7 +223,6 @@ const CrewNoticeEditTemplate: React.FC = () => {
 
   return (
     <div className="mx-auto w-full max-w-[550px]">
-      {isSubmitting && <SpinnerOverlayComponent />}
       <div className="flex flex-col items-center justify-center">
         <header>
           <BackHeaderMediumOrganism text="공지글 수정" />
