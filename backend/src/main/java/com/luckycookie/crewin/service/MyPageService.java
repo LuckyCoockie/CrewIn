@@ -72,7 +72,6 @@ public class MyPageService {
                 case "THUNDER" -> sessionRepository.findByHostAndSessionType(pageable, member, THUNDER);
                 default -> sessionRepository.findAllByHost(pageable, member);
             };
-            System.out.println("@@@@@@@@@@@@@@" + sessionType);
         } else if (type.equals("joined")) {
             // 내가 신청한 세션
             sessionPage = switch (sessionType) {

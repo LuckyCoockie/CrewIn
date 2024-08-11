@@ -18,7 +18,7 @@ public interface MemberSessionRepository extends JpaRepository<MemberSession, Lo
     @Query("SELECT ms.session FROM MemberSession ms WHERE ms.member = :member and ms.session.sessionType = :sessionType order by ms.id desc")
     Page<Session> findByMemberAndIsAttendAndSessionType(Pageable pageable, Member member, SessionType sessionType);
 
-    @Query("SELECT ms.session FROM MemberSession ms WHERE ms.member = :member and ms.isAttend = true order by ms.id desc")
+    @Query("SELECT ms.session FROM MemberSession ms WHERE ms.member = :member order by ms.id desc")
     Page<Session> findByMember(Pageable pageable, Member member);
 
     // 특정 member와 session에 해당하는 MemberSession 조회
