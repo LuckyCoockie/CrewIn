@@ -5,7 +5,7 @@ import {
   GetAttendanceMemberListResponseDto,
 } from "../../../apis/api/attendance";
 import LargeAbleButton from "../../atoms/Button/LargeAbleButton";
-import AttendanceMemberListOrganism from "../../organisms/AttendanceMemberListOrganism";
+import AttendanceMemberListOrganism from "../../organisms/attendance/AttendanceMemberListOrganism";
 import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
 import TimerOrganism from "../../organisms/TimerOrganism";
 import ModalConfirm from "../../molecules/ModalConfirmMolecules";
@@ -13,6 +13,8 @@ import { reversGeocodingApi } from "../../../util/maps/tmap/apis/api/geocodeApi"
 import { Point } from "../../../util/maps/tmap/apis/api/directionApi";
 import locationImage from "../../../assets/icons/location.png";
 import { IconTextComponent } from "../../atoms/text/IconText";
+import { ReactComponent as InfoIcon } from "../../../assets/icons/info_icon.svg";
+import Modal from "../../molecules/ModalMolecules";
 
 type OwnProps = {
   onStartAttendanceClick: () => Promise<void>;
@@ -49,7 +51,8 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     return currentTime >= endTime;
   }, [endAt]);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
   const [memberSessionId, setMemberSessionId] = useState<number>();
   const [isAttend, setIsAttend] = useState<boolean>(false);
@@ -99,7 +102,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     setSpot(
       `${address.addressInfo.city_do} ${address.addressInfo.gu_gun} ${address.addressInfo.legalDong}`
     );
-    setIsModalOpen(true);
+    setIsAttendanceModalOpen(true);
   }, [location.latitude, location.longitude]);
 
   const handleAttendanceChange = useCallback(
@@ -119,20 +122,20 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     setSpot(
       `${address.addressInfo.city_do} ${address.addressInfo.gu_gun} ${address.addressInfo.legalDong}`
     );
-    setIsModalOpen(true);
+    setIsAttendanceModalOpen(true);
   }, [location.latitude, location.longitude]);
 
-  const handleClickModalConfirm = useCallback(() => {
+  const handleClickAttendanceModalConfirm = useCallback(() => {
     if (isSessionHost) {
       onStartAttendanceClick().then(() => {
         fetchMemberList();
-        setIsModalOpen(false);
+        setIsAttendanceModalOpen(false);
       });
     } else {
       onGuestAttendanceClick()
         .then(() => {
           fetchMemberList();
-          setIsModalOpen(false);
+          setIsAttendanceModalOpen(false);
         })
         .catch(() => {
           alert(
@@ -147,10 +150,15 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     onStartAttendanceClick,
   ]);
 
+  const handleClickInfoModalConfirm = useCallback(() => {
+    setIsInfoModalOpen(true);
+  }, []);
+
   return (
     <>
       <header>
         <BackHeaderMediumOrganism text={"출석부"} />
+        <InfoIcon className="ml-2" onClick={handleClickInfoModalConfirm} />
       </header>
       <div className="pb-20">
         <AttendanceMemberListOrganism
@@ -198,13 +206,13 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
           )}
         </div>
       </div>
-      {isModalOpen && (
+      {isAttendanceModalOpen && (
         <ModalConfirm
           title={
             isSessionHost ? "출석을 시작하시겠습니까?" : "출석 하시겠습니까?"
           }
-          onClose={() => setIsModalOpen(false)}
-          onConfirm={handleClickModalConfirm}
+          onClose={() => setIsAttendanceModalOpen(false)}
+          onConfirm={handleClickAttendanceModalConfirm}
           type="default"
         >
           <p>{`현재 위치를 확인해주세요.`}</p>
@@ -213,6 +221,25 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
             text={spot ?? "새로고침 해주세요."}
           />
         </ModalConfirm>
+      )}
+      {isInfoModalOpen && (
+        <Modal title={"출석부"} onClose={() => setIsInfoModalOpen(false)} titleSize="text-xl">
+          <div className="pb-4">
+            <label className="block min-h-[2rem] tracking-tighter text-gray-900 min-h-[2rem] text-lg">
+              {"자동 출석"}
+            </label>
+            <p>{"· 세션 시작 시각 이후 시작할 수 있습니다."}</p>
+            <p>{"· 개최자 기준 100m 내에서 가능합니다."}</p>
+            <p>{"· 중간에 출석 정보를 수정할 수 없습니다."}</p>
+          </div>
+          <div>
+            <label className="block min-h-[2rem] tracking-tighter text-gray-900 min-h-[2rem] text-lg">
+              {"수동 출석"}
+            </label>
+            <p>{"· 자동 출석 종료 후 출석 정보를 수정할 수 있습니다."}</p>
+            <p>{"· 세션 종료 시각 이후에는 수정할 수 없습니다."}</p>
+          </div>
+        </Modal>
       )}
     </>
   );
