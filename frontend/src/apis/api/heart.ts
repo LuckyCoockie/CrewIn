@@ -4,7 +4,6 @@ export const registerPostHeart = async (postId: number): Promise<void> => {
   try {
     const response = await api.get(`/post/heart/${postId}`);
     if (response.status === 200) {
-      console.log("좋아요 등록 성공");
     } else {
       throw new Error(`Error registering post heart: ${response.statusText}`);
     }

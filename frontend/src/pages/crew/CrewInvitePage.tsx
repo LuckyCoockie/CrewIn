@@ -75,7 +75,6 @@ const CrewInvitePage: React.FC = () => {
         memberId,
         crewId: Number(crewId),
       });
-      console.log(response);
     } catch (error) {
       console.error("Invitation error:", error);
     }
