@@ -16,6 +16,5 @@ export type FetchNotificationsResponseDto = NotificationDto[];
 export const fetchNotifications =
   async (): Promise<FetchNotificationsResponseDto> => {
     const response = await api.get("/notification");
-    console.log(response);
     return response.data;
   };

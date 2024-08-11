@@ -42,6 +42,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   const [likes, setLikes] = useState<number>(heartCount);
   const [isHeartedState, setIsHeartedState] = useState<boolean>(isHearted);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
   useEffect(() => {
     setLikes(heartCount);
@@ -55,7 +56,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   }, []);
 
   const handleEdit = () => {
-    navigate(`/post/${id}/edit`, { state: { data } });
+    navigate(`/post/${id}/edit`);
   };
 
   const handleUserProfile = (authorId: number) => {
@@ -103,6 +104,9 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     } else {
       likeMutation.mutate(id);
     }
+
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 200);
   };
 
   const handleShare = () => {
@@ -193,7 +197,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           <img
             src={isHeartedState ? filledFire : emptyFire}
             alt="fire-icon"
-            className="w-7 h-7 object-contain"
+            className={`w-7 h-7 object-contain fire-icon ${isAnimating ? 'animate' : ''}`}
           />
         </button>
         <span className="text-md ml-1">{likes}명이 공감했어요!</span>
