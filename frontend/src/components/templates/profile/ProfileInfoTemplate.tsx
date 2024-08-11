@@ -9,13 +9,22 @@ import ErrorResponseDto from "../../../apis/utils/errorCode/ErrorResponseDto";
 import DetailInfoMolecule from "../../molecules/Content/DetailInfoMolecule";
 import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
 import EditableDetailInfoMolecule from "../../molecules/Content/EditableDetailInfoMolecule";
-import cameraButton from "../../../assets/images/camerabutton.png";
+import MyPageProfileImageComponent from "../../atoms/ImageSize/MyPageProfileImageComponent";
 
 type OwnProps = {
   fetchData: () => Promise<ProfileDto>;
-  onProfileImageEdit: ({ image }: { image?: File }, onClose: () => void) => Promise<void>;
-  onNicknameEdit: ({ nickname }: { nickname: string }, onClose: () => void) => Promise<void>;
-  onPasswordEdit: ({ oldPassword, newPassword }: { oldPassword: string, newPassword: string }, onClose: () => void) => Promise<void>;
+  onProfileImageEdit: (
+    { image }: { image?: File },
+    onClose: () => void
+  ) => Promise<void>;
+  onNicknameEdit: (
+    { nickname }: { nickname: string },
+    onClose: () => void
+  ) => Promise<void>;
+  onPasswordEdit: (
+    { oldPassword, newPassword }: { oldPassword: string; newPassword: string },
+    onClose: () => void
+  ) => Promise<void>;
 };
 
 export const ProfileInfoTemplate = ({
@@ -29,7 +38,8 @@ export const ProfileInfoTemplate = ({
     queryFn: () => fetchData(),
   });
 
-  const [isEditProfileImageModalOpen, setIsEditProfileImageModalOpen] = useState(false);
+  const [isEditProfileImageModalOpen, setIsEditProfileImageModalOpen] =
+    useState(false);
   const [isEditNicknameModalOpen, setIsEditNicknameModalOpen] = useState(false);
   const [isEditPasswordModalOpen, setIsEditPasswordModalOpen] = useState(false);
 
@@ -60,23 +70,14 @@ export const ProfileInfoTemplate = ({
   return (
     <>
       <header>
-        <BackHeaderMediumOrganism text={"내정보 변경"} />
+        <BackHeaderMediumOrganism text={"내 정보 변경"} />
       </header>
       <main>
         <div className="w-full flex justify-center py-10">
-          <div className="flex relative w-40 h-40 ">
-            <img
-              src={data?.imageUrl}
-              alt="Preview"
-              className="mx-auto border-2 rounded-full object-cover"
-            />
-            <div
-              className="absolute bottom-2 right-2"
-              onClick={handleOpenEditProfileImageModal}
-            >
-              <img src={cameraButton} alt="check Button" className="w-8 h-8" />
-            </div>
-          </div>
+          <MyPageProfileImageComponent
+            src={data?.imageUrl}
+            onClick={handleOpenEditProfileImageModal}
+          />
         </div>
         <DetailInfoMolecule title="이메일" content={data?.email} />
         <DetailInfoMolecule title="이름" content={data?.name} />
@@ -93,20 +94,26 @@ export const ProfileInfoTemplate = ({
         {isEditProfileImageModalOpen && (
           <EditProfileImageOrganism
             onClose={handleCloseEditProfileImageModal}
-            onEdit={(image) => onProfileImageEdit(image, handleCloseEditProfileImageModal)}
+            onEdit={(image) =>
+              onProfileImageEdit(image, handleCloseEditProfileImageModal)
+            }
           />
         )}
         {isEditNicknameModalOpen && (
           <EditNicknameOrganism
             init={data}
             onClose={handleCloseEditNicknameModal}
-            onEdit={(nickname) => onNicknameEdit(nickname, handleCloseEditNicknameModal)}
+            onEdit={(nickname) =>
+              onNicknameEdit(nickname, handleCloseEditNicknameModal)
+            }
           />
         )}
         {isEditPasswordModalOpen && (
           <EditPasswordOrganism
             onClose={handleCloseEditPasswordModal}
-            onEdit={(password) => onPasswordEdit(password, handleCloseEditPasswordModal)}
+            onEdit={(password) =>
+              onPasswordEdit(password, handleCloseEditPasswordModal)
+            }
           />
         )}
       </main>

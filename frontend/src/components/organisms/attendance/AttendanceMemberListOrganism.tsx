@@ -1,16 +1,16 @@
 import { useQuery } from "react-query";
 import { AxiosError } from "axios";
-import ErrorResponseDto from "../../apis/utils/errorCode/ErrorResponseDto";
+import ErrorResponseDto from "../../../apis/utils/errorCode/ErrorResponseDto";
 import qs from "query-string";
 import {
   AttendanceMemberDto,
   AutoCheckStatus,
   ChangeAttendRequestDto,
-} from "../../apis/api/attendance";
-import MemberListItem from "../molecules/List/MemberListMolecule";
-import AttendanceButton from "../molecules/AttendanceButton";
+} from "../../../apis/api/attendance";
+import MemberListItem from "../../molecules/List/MemberListMolecule";
+import AttendanceButton from "../../molecules/AttendanceButton";
 import { useCallback, useEffect, useState } from "react";
-import useSSE from "../../util/sse/useSSE";
+import useSSE from "../../../util/sse/useSSE";
 
 type OwnProps<T> = {
   fetchData: (props: T) => Promise<AttendanceMemberDto[]>;

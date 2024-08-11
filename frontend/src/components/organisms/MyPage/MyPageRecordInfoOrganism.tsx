@@ -1,15 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import MyPageProfileImage from "../../atoms/ImageSize/MyPageProfileImageComponent";
 import BarTitle from "../../atoms/Title/BarTitle";
 import BarContent from "../../atoms/Content/BarContent";
 import { ProfileDto } from "../../../apis/api/mypage";
+import { EditProfileImageOrganism } from "../profile/EditProfileImageOrganism";
 
 type FetchDataProps = {
   profileData: ProfileDto;
+  onProfileImageEdit: (
+    { image }: { image?: File },
+    onClose: () => void
+  ) => Promise<void>;
 };
 
 const MyPageRecordInfoOrganism: React.FC<FetchDataProps> = ({
   profileData,
+  onProfileImageEdit,
 }) => {
   const {
     nickname,
@@ -20,10 +26,24 @@ const MyPageRecordInfoOrganism: React.FC<FetchDataProps> = ({
     name,
   } = profileData;
 
+  const [isEditProfileImageModalOpen, setIsEditProfileImageModalOpen] =
+    useState(false);
+
+  const handleOpenEditProfileImageModal = () => {
+    setIsEditProfileImageModalOpen(true);
+  };
+
+  const handleCloseEditProfileImageModal = () => {
+    setIsEditProfileImageModalOpen(false);
+  };
+
   return (
     <>
       <div className="flex items-center flex-col w-full my-4">
-        <MyPageProfileImage src={imageUrl} />
+        <MyPageProfileImage
+          src={imageUrl}
+          onClick={handleOpenEditProfileImageModal}
+        />
         <BarTitle title={nickname} />
         <BarContent content={name} />
         <div className="flex w-full justify-evenly py-2">
@@ -53,6 +73,14 @@ const MyPageRecordInfoOrganism: React.FC<FetchDataProps> = ({
           </div>
         </div>
       </div>
+      {isEditProfileImageModalOpen && (
+        <EditProfileImageOrganism
+          onClose={handleCloseEditProfileImageModal}
+          onEdit={(image) =>
+            onProfileImageEdit(image, handleCloseEditProfileImageModal)
+          }
+        />
+      )}
     </>
   );
 };

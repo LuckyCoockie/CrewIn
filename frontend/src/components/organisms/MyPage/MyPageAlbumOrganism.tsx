@@ -5,7 +5,11 @@ import { PageNationData } from "../../../util/paging/type";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../modules";
 
-const MyPageAlbumOrganism: React.FC = () => {
+type OwnProps = {
+  onItemClicked: (pageNo: number, postId: number) => void;
+};
+
+const MyPageAlbumOrganism: React.FC<OwnProps> = ({ onItemClicked }) => {
   const memberId = useSelector((state: RootState) => state.auth.memberId);
   const [hasData, setHasData] = useState(true); // 데이터 유무를 추적하기 위한 상태
 
@@ -27,13 +31,16 @@ const MyPageAlbumOrganism: React.FC = () => {
         <InfiniteScrollComponent
           fetchKey="myGallery"
           fetchData={fetchGallery}
-          ItemComponent={({ data }) => (
+          ItemComponent={({ pageNo, data }) => (
             <img
               src={data.thumbnailImage}
               alt={`gallery-item-${data.postId}`}
               key={`gallery-${data.postId}`}
               className="w-full h-full"
               style={{ border: "1px solid rgba(255, 0, 0, 0)" }}
+              onClick={() => {
+                if (onItemClicked) onItemClicked(pageNo, data.postId);
+              }}
             />
           )}
           className="grid grid-cols-3"

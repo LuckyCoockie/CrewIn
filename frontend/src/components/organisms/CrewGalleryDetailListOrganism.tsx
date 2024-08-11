@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import PostItemComponent from "./PostItemOrganism";
-import { GetCrewGalleryListDetailResponseDto } from "../../apis/api/crewGallaryList";
+import { PostDto } from "../../apis/api/crewGallaryList";
 import InfiniteScrollComponent from "../../util/paging/component/InfinityScrollComponent";
+import { PageNationData } from "../../util/paging/type";
 
 type OwnProps = {
   initPage?: number;
   initPostId?: number;
-  fetchData: (pageNo: number) => Promise<GetCrewGalleryListDetailResponseDto>;
+  fetchData: (pageNo: number) => Promise<PageNationData<PostDto>>;
 };
 
-const CrewGalleryListDetailComponent: React.FC<OwnProps> = ({
+const PostListComponent: React.FC<OwnProps> = ({
   initPage,
   initPostId,
   fetchData,
@@ -25,7 +26,7 @@ const CrewGalleryListDetailComponent: React.FC<OwnProps> = ({
   }, []);
 
   useEffect(() => {
-    ref.current?.scrollIntoView({ behavior: "instant", block: "center" });
+    ref.current?.scrollIntoView({ behavior: "instant", block: "nearest" });
   }, [ref, isComponentLoaded]);
 
   return (
@@ -44,4 +45,4 @@ const CrewGalleryListDetailComponent: React.FC<OwnProps> = ({
   );
 };
 
-export default CrewGalleryListDetailComponent;
+export default PostListComponent;

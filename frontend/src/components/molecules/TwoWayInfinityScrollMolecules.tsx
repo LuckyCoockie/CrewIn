@@ -100,7 +100,7 @@ const TwoWayInfiniteScrollComponent = <T extends { id: number }>({
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    ref.current?.scrollIntoView({ behavior: "instant", block: "center" });
+    ref.current?.scrollIntoView({ behavior: "instant", block: "nearest" });
   }, [ref]);
 
   return (

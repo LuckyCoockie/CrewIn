@@ -5,15 +5,23 @@ import closeButton from "../../assets/images/closebutton.png";
 interface ModalProps {
   title?: string;
   children: React.ReactNode;
+  titleSize?: string;
   onClose: () => void;
 }
 
-const Modal: React.FC<ModalProps> = ({ title, children, onClose }) => {
+const Modal: React.FC<ModalProps> = ({
+  title,
+  children,
+  onClose,
+  titleSize,
+}) => {
   return ReactDOM.createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 overflow-auto">
       <div className="relative bg-white p-2 rounded-lg shadow-lg max-w-sm w-5/6 max-h-full overflow-y-auto items-center">
         <div className="flex top-3 p-3 pb-0 justify-between items-center">
-          <label className="block min-h-[1.5rem] tracking-tighter text-lg">
+          <label
+            className={`block min-h-[1.5rem] tracking-tighter text-lg ${titleSize}`}
+          >
             {title}
           </label>
           <button
