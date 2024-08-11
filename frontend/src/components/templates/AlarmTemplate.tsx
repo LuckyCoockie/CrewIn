@@ -8,9 +8,11 @@ import { deleteNotification } from "../../apis/api/alarmdelete";
 import { replyToCrewInvitation } from "../../apis/api/crewallowreject";
 import { useSelector } from "react-redux";
 import { RootState } from "../../modules";
+import Modal from "../molecules/ModalMolecules";
 
 const AlarmTemplate: React.FC = () => {
   const [alarms, setAlarms] = useState<NotificationDto[]>([]);
+  const [modalMessage, setModalMessage] = useState<string | null>(null);
   const navigate = useNavigate();
   const memberId = useSelector((state: RootState) => state.auth.memberId);
 
@@ -24,6 +26,7 @@ const AlarmTemplate: React.FC = () => {
         }
       } catch (error) {
         console.error("알림 목록을 가져오는 중 오류가 발생했습니다.", error);
+        setModalMessage("알림 목록을 가져오는 중 오류가 발생했습니다.");
       }
     };
 
@@ -39,11 +42,11 @@ const AlarmTemplate: React.FC = () => {
         );
       } else {
         console.error("Failed to delete notification:", response);
-        alert("Failed to delete notification");
+        setModalMessage("알림 삭제에 실패했습니다.");
       }
     } catch (error) {
       console.error("알림 삭제 요청 중 오류가 발생했습니다:", error);
-      alert("알림 삭제 요청 중 오류가 발생했습니다.");
+      setModalMessage("알림 삭제 요청 중 오류가 발생했습니다.");
     }
   };
 
@@ -54,10 +57,11 @@ const AlarmTemplate: React.FC = () => {
         noticeId: notification.notificationId,
         replyStatus: true,
       });
+      setModalMessage("크루 초대를 수락했습니다.");
       navigate(0);
     } catch (error) {
       console.error("크루 초대 수락 중 오류가 발생했습니다:", error);
-      alert("크루 수락 중 오류 발생");
+      setModalMessage("크루 초대 수락 중 오류가 발생했습니다.");
     }
   };
 
@@ -70,9 +74,10 @@ const AlarmTemplate: React.FC = () => {
       });
 
       await handleDelete(notification.notificationId);
+      setModalMessage("크루 초대를 거절했습니다.");
     } catch (error) {
       console.error("크루 초대 거절 중 오류가 발생했습니다:", error);
-      alert("크루 초대 거절 중 오류가 발생했습니다.");
+      setModalMessage("크루 초대 거절 중 오류가 발생했습니다.");
     }
   };
 
@@ -220,6 +225,11 @@ const AlarmTemplate: React.FC = () => {
           <div className="p-4 text-gray-500">알림이 없습니다.</div>
         )}
       </div>
+      {modalMessage && (
+        <Modal title="알림" onClose={() => setModalMessage(null)}>
+          <p>{modalMessage}</p>
+        </Modal>
+      )}
     </div>
   );
 };

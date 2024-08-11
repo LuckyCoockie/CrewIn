@@ -14,9 +14,11 @@ import { deleteCrew } from "../../apis/api/crewdetail";
 import { deleteSession } from "../../apis/api/sessiondetail";
 // notice
 import { deleteNotice } from "../../apis/api/crewdetail";
+// cousre
+import { deleteCourse } from "../../apis/api/course";
 
 type PropsData = {
-  type: "CREW" | "SESSION" | "NOTICE";
+  type: "CREW" | "SESSION" | "NOTICE" | "COURSE";
   idData?: number;
   idData2?: number;
 };
@@ -43,6 +45,8 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({
         return "세션을 정말로 삭제하시겠습니까?";
       case "NOTICE":
         return "공지사항을 정말로 삭제하시겠습니까?";
+      case "COURSE":
+        return "경로를 정말로 삭제하시겠습니다?";
       default:
         return "항목을 정말로 삭제하시겠습니까?";
     }
@@ -81,6 +85,9 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({
       } else if (type === "NOTICE") {
         await deleteNotice(idData!);
         navigate(`/crew/detail/${idData2}`);
+      } else if (type === "COURSE") {
+        await deleteCourse(idData!);
+        navigate(`/profile`);
       }
       queryClient.invalidateQueries("crewNotice");
     } catch (error) {
@@ -122,7 +129,7 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({
         <MoreVerticalButton onDropdownClick={toggleDropdownClick} />
         {isDropdownOpen && (
           <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-300 rounded-md z-10">
-            <EditDropdownMolecule onEdit={handleEdit} />
+            {type !== "COURSE" && <EditDropdownMolecule onEdit={handleEdit} />}
             <DeleteDropdownMolecule onDelete={handleDeleteClick} />
           </div>
         )}

@@ -23,8 +23,8 @@ import {
 } from "../../apis/api/sessiondetail";
 import { uploadImage } from "../../apis/api/presigned";
 import { getMapList } from "../../apis/api/mycourse";
+import Modal from "../molecules/ModalMolecules";
 
-// 유효성 검사 스키마 정의
 const schema = yup.object({
   sessiontype: yup.string().required("세션 종류를 선택해주세요."),
   sessiontitle: yup
@@ -82,6 +82,9 @@ const SessionEditOrganism: React.FC = () => {
   const [selectedMinutes, setSelectedMinutes] = useState<number>();
   const [mapId, setMapId] = useState<number>(0);
   const [currentImages, setCurrentImages] = useState<string[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // 오류 메시지 상태 추가
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const {
     control,
     handleSubmit,
@@ -106,7 +109,6 @@ const SessionEditOrganism: React.FC = () => {
       : undefined,
   });
 
-  // 파일이 변경되었는지 감지하는 상태 추가
   const [isFilesChanged, setIsFilesChanged] = useState(false);
 
   useEffect(() => {
@@ -127,17 +129,16 @@ const SessionEditOrganism: React.FC = () => {
 
   useEffect(() => {
     if (mapData && mapData.length === 0) {
-      window.alert("지도를 생성해주세요");
-      return navigate(`/profile`);
+      setErrorMessage("지도를 생성해주세요");
+      return;
     }
-  }, [mapData, navigate]);
+  }, [mapData]);
 
-  // 파일 변경 감지를 위한 useWatch 사용
   const watchedPoster = useWatch({ control, name: "sessionposter" });
 
   useEffect(() => {
     if (watchedPoster) {
-      setIsFilesChanged(true); // 파일이 변경되었음을 표시
+      setIsFilesChanged(true);
     }
   }, [watchedPoster]);
 
@@ -156,45 +157,42 @@ const SessionEditOrganism: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    console.log(isValid);
-    console.log(isDirty);
-
+    setIsSubmitting(true);
     if (isValid === false && isDirty === false) {
       return;
     }
-    const uploadedUrls = await checkUndefined(data.sessionposter!);
-    const images = uploadedUrls.length > 0 ? uploadedUrls : currentImages;
-    const formatDate = (date: Date): string => {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      const hours = String(date.getHours()).padStart(2, "0");
-      const minutes = String(date.getMinutes()).padStart(2, "0");
-      const seconds = String(date.getSeconds()).padStart(2, "0");
-      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    };
+    try {
+      const uploadedUrls = await checkUndefined(data.sessionposter!);
+      const images = uploadedUrls.length > 0 ? uploadedUrls : currentImages;
+      const formatDate = (date: Date): string => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        const seconds = String(date.getSeconds()).padStart(2, "0");
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+      };
 
-    const submitData: EditSessionRequestDto = {
-      sessionId: Number(sessionId),
-      courseId: mapId,
-      sessionType: data.sessiontype,
-      name: data.sessiontitle,
-      images: images!,
-      pace: data.sessionpaceminutes * 60 + data.sessionpaceseconds,
-      spot: data.sessionspot,
-      startAt: formatDate(data.sessionstart!),
-      endAt: formatDate(data.sessionend!),
-      content: data.sessioninfo,
-      maxPeople: data.sessionmembers,
-    };
-    console.log(submitData);
-    return editSession(submitData)
-      .then(() => {
-        navigate(`/session/${sessionId}`);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      const submitData: EditSessionRequestDto = {
+        sessionId: Number(sessionId),
+        courseId: mapId,
+        sessionType: data.sessiontype,
+        name: data.sessiontitle,
+        images: images!,
+        pace: data.sessionpaceminutes * 60 + data.sessionpaceseconds,
+        spot: data.sessionspot,
+        startAt: formatDate(data.sessionstart!),
+        endAt: formatDate(data.sessionend!),
+        content: data.sessioninfo,
+        maxPeople: data.sessionmembers,
+      };
+      await editSession(submitData);
+      navigate(`/session/${sessionId}`);
+    } catch (error) {
+      setErrorMessage("세션 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
+      console.error(error);
+    }
   };
 
   const handleMinutesChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -214,12 +212,21 @@ const SessionEditOrganism: React.FC = () => {
     }
   }, [watchedSessionStart, setValue]);
 
+  const closeModal = () => {
+    setErrorMessage(null); // 모달 닫기
+  };
+
   if (!sessionData) {
     return <div>Loading...</div>;
   }
 
   return (
     <>
+      {errorMessage && (
+        <Modal title="알림" onClose={closeModal}>
+          <p>{errorMessage}</p>
+        </Modal>
+      )}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-wrap w-full">
           {mapData && (
@@ -409,6 +416,7 @@ const SessionEditOrganism: React.FC = () => {
             <LargeAbleButton
               text="수정 완료"
               onClick={handleSubmit(onSubmit)}
+              isLoading={isSubmitting}
             />
           ) : (
             <LargeDisableButton text="수정 완료" />

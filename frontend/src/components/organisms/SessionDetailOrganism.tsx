@@ -5,6 +5,8 @@ import DetailInfoMolecule from "../molecules/Content/DetailInfoMolecule";
 import DetailInfoPaceMolecule from "../molecules/Content/DetailInfoPaceMolecule";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
+import Modal from "../molecules/ModalMolecules";
+import ModalConfirm from "../molecules/ModalConfirmMolecules";
 
 import {
   SessionDetailDto,
@@ -43,6 +45,11 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
   } = detailData;
 
   const [isJoined, setIsJoined] = useState(detailData.isJoined);
+  const [showModal, setShowModal] = useState(false); // 참가 완료 모달 상태
+  const [showConfirmModal, setShowConfirmModal] = useState(false); // 참가 취소 확인 모달 상태
+  const [isJoinSubmit, setIsJoinSubmit] = useState(false);
+  const [isOutSubmit, setIsOutSubmit] = useState(false);
+
   const navigate = useNavigate();
 
   const isSessionStarted = detailData ? new Date(startAt) < new Date() : false;
@@ -97,21 +104,33 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
   };
 
   const handleParticipate = async () => {
+    setIsJoinSubmit(true);
     try {
       await participateSession(sessionId);
       setIsJoined(true);
+      setShowModal(true); // 참가 완료 모달 표시
+      setIsJoinSubmit(false);
     } catch (error) {
       console.error("참가 신청 실패:", error);
+      setIsJoinSubmit(false);
     }
   };
 
   const handleCancel = async () => {
+    setIsOutSubmit(true);
     try {
       await cancelSession(sessionId);
       setIsJoined(false);
+      setShowConfirmModal(false); // 참가 취소 확인 모달 닫기
+      setIsOutSubmit(false);
     } catch (error) {
       console.error("참가 취소 실패:", error);
+      setIsOutSubmit(false);
     }
+  };
+
+  const handleConfirmCancel = () => {
+    setShowConfirmModal(true); // 참가 취소 확인 모달 표시
   };
 
   const handelCourseClick = useCallback(() => {
@@ -120,6 +139,20 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
 
   return (
     <>
+      {showModal && (
+        <Modal title="참가 완료" onClose={() => setShowModal(false)}>
+          <p>참가 신청이 완료되었습니다!</p>
+        </Modal>
+      )}
+      {showConfirmModal && (
+        <ModalConfirm
+          title="참가 취소"
+          onClose={() => setShowConfirmModal(false)}
+          onConfirm={handleCancel}
+        >
+          <p>정말로 참가를 취소하시겠습니까?</p>
+        </ModalConfirm>
+      )}
       <Carousel
         showThumbs={false}
         showIndicators={true}
@@ -172,7 +205,11 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
           !isSessionStarted &&
           !isJoined &&
           currentPeople < maxPeople && (
-            <LargeAbleButton onClick={handleParticipate} text="참가 신청" />
+            <LargeAbleButton
+              onClick={handleParticipate}
+              text="참가 신청"
+              isLoading={isJoinSubmit}
+            />
           )}
         {!isSessionHost &&
           !isSessionStarted &&
@@ -182,7 +219,11 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
           !isSessionStarted &&
           isJoined &&
           currentPeople < maxPeople && (
-            <LargeAbleButton onClick={handleCancel} text="참가 취소" />
+            <LargeAbleButton
+              onClick={handleConfirmCancel}
+              text="참가 취소"
+              isLoading={isOutSubmit}
+            />
           )}
         {isSessionStarted && <LargeDisableButton text="종료된 세션" />}
       </main>

@@ -34,3 +34,7 @@ export const getCourseDetail = async (dto: {
   const response = await api.get<CreateCourseRequestDto>(`/course/${dto.id}`);
   return response.data;
 };
+
+export const deleteCourse = async (id: number) => {
+  await api.delete(`/course/${id}`);
+};
