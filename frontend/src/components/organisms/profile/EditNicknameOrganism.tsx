@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import LargeAbleButton from "../../atoms/Button/LargeAbleButton";
@@ -7,6 +7,7 @@ import LargeDisableButton from "../../atoms/Button/LargeDisableButton";
 import ModalMolecules from "../../molecules/ModalMolecules";
 import InputTextTypeMolecule from "../../molecules/Input/InputTextTypeMolecule";
 import { getNicknameDuplicationCheck } from "../../../apis/api/signup";
+import ModalConfirm from "../../molecules/ModalConfirmMolecules";
 
 type FormValues = {
   nickname: string;
@@ -22,30 +23,31 @@ const schema = yup.object({
   nickname: yup
     .string()
     .max(10, "최대 10자 입니다.")
-    .required("닉네임을 입력해주세요.")
-    .test(
-      "nicknameDuplicationCheck",
-      "이미 사용 중인 닉네임입니다.",
-      async (value) => {
-        if (!value) return true;
-        try {
-          const { duplicated } = await getNicknameDuplicationCheck({
-            nickname: value,
-          });
-          return !duplicated;
-        } catch (error) {
-          return false;
-        }
-      }
-    ),
+    .required("닉네임을 입력해주세요."),
 });
 
 export const EditNicknameOrganism = ({ init, onClose, onEdit }: OwnProps) => {
-  const onSubmit: SubmitHandler<FormValues> = useCallback(onEdit, [onEdit]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
+  const onSubmit: SubmitHandler<FormValues> = useCallback(
+    async (data) => {
+      try {
+        await onEdit(data);
+      } catch (error) {
+        setModalMessage("닉네임 변경에 실패했습니다. 다시 시도해주세요.");
+        setIsModalOpen(true);
+      }
+    },
+    [onEdit]
+  );
 
   const {
     control,
     handleSubmit,
+    getValues,
+    setError,
+    clearErrors,
     formState: { errors, isValid },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
@@ -53,33 +55,68 @@ export const EditNicknameOrganism = ({ init, onClose, onEdit }: OwnProps) => {
     defaultValues: init,
   });
 
+  const handleNicknameBlur = async () => {
+    const nickname = getValues("nickname");
+    if (nickname) {
+      try {
+        const { duplicated } = await getNicknameDuplicationCheck({ nickname });
+        if (duplicated) {
+          setError("nickname", {
+            type: "manual",
+            message: "사용 중인 닉네임입니다.",
+          });
+        } else {
+          clearErrors("nickname");
+        }
+      } catch (error) {
+        setError("nickname", {
+          type: "manual",
+          message: "유효하지 않는 닉네임입니다.",
+        });
+      }
+    }
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
   return (
-    <ModalMolecules title="닉네임 변경" onClose={onClose}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="w-full">
-          <Controller
-            name="nickname"
-            control={control}
-            render={({ field }) => (
-              <InputTextTypeMolecule
-                id="nickname"
-                title="닉네임"
-                placeholder="ex) 달리는 동동"
-                error={errors.nickname?.message}
-                {...field}
-              />
+    <>
+      <ModalMolecules title="닉네임 변경" onClose={onClose}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="w-full">
+            <Controller
+              name="nickname"
+              control={control}
+              render={({ field }) => (
+                <InputTextTypeMolecule
+                  id="nickname"
+                  title="닉네임"
+                  placeholder="ex) 달리는동동"
+                  error={errors.nickname?.message}
+                  {...field}
+                  onBlur={handleNicknameBlur}
+                />
+              )}
+            />
+          </div>
+          <div>
+            {/* 유효성 검사 통과 여부에 따라 버튼 교체 */}
+            {isValid ? (
+              <LargeAbleButton text="수정" />
+            ) : (
+              <LargeDisableButton text="수정" />
             )}
-          />
-        </div>
-        <div>
-          {/* 유효성 검사 통과 여부에 따라 버튼 교체 */}
-          {isValid ? (
-            <LargeAbleButton text="수정" />
-          ) : (
-            <LargeDisableButton text="수정" />
-          )}
-        </div>
-      </form>
-    </ModalMolecules>
+          </div>
+        </form>
+      </ModalMolecules>
+
+      {isModalOpen && (
+        <ModalConfirm title="오류" onClose={handleModalClose}>
+          <p>{modalMessage}</p>
+        </ModalConfirm>
+      )}
+    </>
   );
 };

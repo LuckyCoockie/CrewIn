@@ -265,7 +265,7 @@ const LoginOrganism: React.FC = () => {
               <InputTextTypeMolecule
                 id="nickname"
                 title="닉네임"
-                placeholder="ex) 달리는 동동"
+                placeholder="ex) 달리는동동"
                 {...field}
                 error={errors.nickname?.message}
                 hasError={!!errors.nickname}

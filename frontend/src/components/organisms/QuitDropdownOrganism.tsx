@@ -4,6 +4,7 @@ import MoreVerticalButton from "../atoms/Button/MoreVerticalButton";
 import QuitDropdownMolecule from "../molecules/QuitDropdownMolecule";
 import SpinnerFullComponent from "../atoms/SpinnerFullComponent";
 import { quitCrew } from "../../apis/api/crewdetail";
+import ModalConfirm from "../molecules/ModalConfirmMolecules";
 
 type CrewId = {
   crewId: number;
@@ -12,6 +13,7 @@ type CrewId = {
 const QuitDropdownOrganism: React.FC<CrewId> = ({ crewId }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoader, setIsLoader] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -21,10 +23,19 @@ const QuitDropdownOrganism: React.FC<CrewId> = ({ crewId }) => {
 
   const handleQuit = async () => {
     setIsLoader(true);
-    setIsDropdownOpen(false);
+    setIsModalOpen(false);
     // 탈퇴 로직
     await quitCrew(crewId);
     navigate(`/crew`);
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+    setIsDropdownOpen(false);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   useEffect(() => {
@@ -50,10 +61,21 @@ const QuitDropdownOrganism: React.FC<CrewId> = ({ crewId }) => {
         <MoreVerticalButton onDropdownClick={toggleDropdownClick} />
         {isDropdownOpen && (
           <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-300 rounded-md z-10">
-            <QuitDropdownMolecule onQuit={handleQuit} />
+            <QuitDropdownMolecule onQuit={openModal} />
           </div>
         )}
       </div>
+
+      {isModalOpen && (
+        <ModalConfirm
+          title="탈퇴"
+          onClose={closeModal}
+          onConfirm={handleQuit}
+          type="delete"
+        >
+          <p>정말로 크루를 탈퇴하시겠습니까?</p>
+        </ModalConfirm>
+      )}
     </>
   );
 };

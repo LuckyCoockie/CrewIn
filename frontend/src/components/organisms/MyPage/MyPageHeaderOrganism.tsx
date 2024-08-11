@@ -31,7 +31,9 @@ const MyPageHeaderOrganism: React.FC = () => {
       </div>
       <div className="flex justify-end">
         <LogoutButton logout={handleLogout} />
-        <SettingIcon setting={handleSetting} />
+        <div className="ms-1.5">
+          <SettingIcon setting={handleSetting} />
+        </div>
       </div>
     </div>
   );
