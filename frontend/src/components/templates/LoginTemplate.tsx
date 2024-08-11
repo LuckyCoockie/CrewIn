@@ -7,7 +7,7 @@ const LoginTemplate: React.FC = () => {
   return (
     <>
       <div className="mx-auto w-full max-w-[550px] pb-10">
-        <div className="pt-12 pb-12">
+        <div className="pt-16 pb-12">
           <LoginTitleOrganism />
         </div>
         <div className="flex items-center justify-center">
