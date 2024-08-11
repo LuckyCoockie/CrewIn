@@ -12,12 +12,7 @@ interface UseSSEProps {
   onOpen?: () => void;
 }
 
-export const useSSE = ({
-  url,
-  events,
-  onError,
-  onOpen,
-}: UseSSEProps) => {
+export const useSSE = ({ url, events, onError, onOpen }: UseSSEProps) => {
   const [isActive, setIsActive] = useState<boolean>(false);
   const eventSourceRef = useRef<EventSource | null>(null);
 
@@ -30,6 +25,7 @@ export const useSSE = ({
 
     const eventSource = new EventSourcePolyfill(`${BASE_URL}${url}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
+      heartbeatTimeout: 1000 * 60 * 60,
     });
 
     eventSource.onopen = () => {
