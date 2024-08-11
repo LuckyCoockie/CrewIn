@@ -14,8 +14,8 @@ public class EmitterRepository {
     private final Map<Long, Map<Long, SseEmitter>> emitters = new ConcurrentHashMap<>();
 
     public SseEmitter save(Long sessionId, Long memberSessionId, SseEmitter sseEmitter) {
-        return emitters.computeIfAbsent(sessionId, k -> new ConcurrentHashMap<>())
-                .put(memberSessionId, sseEmitter);
+        emitters.computeIfAbsent(sessionId, k -> new ConcurrentHashMap<>()).put(memberSessionId, sseEmitter);
+        return sseEmitter;
     }
 
     public void deleteById(Long sessionId, Long memberSessionId) { // emitter를 지움
