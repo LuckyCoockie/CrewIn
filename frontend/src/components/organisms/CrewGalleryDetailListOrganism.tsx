@@ -26,7 +26,7 @@ const PostListComponent: React.FC<OwnProps> = ({
   }, []);
 
   useEffect(() => {
-    ref.current?.scrollIntoView({ behavior: "instant", block: "center" });
+    ref.current?.scrollIntoView({ behavior: "instant", block: "nearest" });
   }, [ref, isComponentLoaded]);
 
   return (
