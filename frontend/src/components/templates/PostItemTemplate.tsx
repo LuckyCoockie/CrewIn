@@ -16,7 +16,6 @@ import { deletePostHeart } from "../../apis/api/heartdelete";
 import { useMutation, useQueryClient } from "react-query";
 import { useSelector } from "react-redux";
 import { RootState } from "../../modules";
-import { motion } from "framer-motion"; // Import motion from Framer Motion
 
 export interface ItemComponentProps<T> {
   data: T;
@@ -43,7 +42,6 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   const [likes, setLikes] = useState<number>(heartCount);
   const [isHeartedState, setIsHeartedState] = useState<boolean>(isHearted);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [showFire, setShowFire] = useState<boolean>(false); // State to handle fire icon visibility
 
   useEffect(() => {
     setLikes(heartCount);
@@ -51,11 +49,10 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   }, [heartCount, isHearted]);
 
   useEffect(() => {
-    if (showFire) {
-      const timer = setTimeout(() => setShowFire(false), 1000); // Hide fire icon after 1 second
-      return () => clearTimeout(timer);
+    if (!(window as any).Kakao.isInitialized()) {
+      (window as any).Kakao.init("16a9019862d8945c0a1082f314f6cef0");
     }
-  }, [showFire]);
+  }, []);
 
   const handleEdit = () => {
     navigate(`/post/${id}/edit`, { state: { data } });
@@ -83,7 +80,6 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
       queryClient.invalidateQueries("posts");
       setLikes((prevLikes) => prevLikes + 1);
       setIsHeartedState(true);
-      setShowFire(true); // Show fire icon when liked
     },
     onError: (error) => {
       console.error("좋아요 처리 중 오류가 발생했습니다:", error);
@@ -109,7 +105,35 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     }
   };
 
-  const handleShare = () => {};
+  const handleShare = () => {
+    const kakao = (window as any).Kakao;
+    if (!kakao) {
+      console.error("Kakao SDK not loaded");
+      return;
+    }
+
+    kakao.Link.sendDefault({
+      objectType: "feed",
+      content: {
+        title: authorName,
+        description: content.substring(0, 100) + "...",
+        imageUrl: croppedImages.length > 0 ? croppedImages[0] : "",
+        link: {
+          mobileWebUrl: window.location.href,
+          webUrl: window.location.href,
+        },
+      },
+      buttons: [
+        {
+          title: "View Post",
+          link: {
+            mobileWebUrl: window.location.href,
+            webUrl: window.location.href,
+          },
+        },
+      ],
+    });
+  };
 
   const toggleContent = () => {
     setIsExpanded(!isExpanded);
@@ -159,21 +183,6 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
                   alt={`Cropped ${index}`}
                   style={{ width: "100%", height: "auto" }}
                 />
-                {showFire && (
-                  <motion.div
-                    className="absolute inset-0 flex items-center justify-center"
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 30 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <img
-                      src={filledFire}
-                      alt="fire-icon"
-                      className="object-contain w-40 h-40"
-                    />
-                  </motion.div>
-                )}
               </div>
             ))}
           </Carousel>

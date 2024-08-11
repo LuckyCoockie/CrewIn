@@ -65,7 +65,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
   }, [isPublic, crews]);
 
   const handleDrop = (acceptedFiles: File[]) => {
-    const allowedTypes = ["image/png", "image/jpeg"];
+    const allowedTypes = ["image/png", "image/jpeg", "image/webp"];
     const filteredFiles = acceptedFiles.filter((file) =>
       allowedTypes.includes(file.type)
     );
