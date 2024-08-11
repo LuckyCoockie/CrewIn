@@ -36,7 +36,7 @@ const ImageUploadDropzone: React.FC<ImageUploadDropzoneProps> = ({
                 marginTop: "0.5rem",
               }}
             >
-              * 이미지 파일(.png .jpg .jpeg)만 업로드 가능합니다.
+              * 이미지 파일(.png .jpg .jpeg .webp)만 업로드 가능합니다.
             </p>
           </div>
         </section>
