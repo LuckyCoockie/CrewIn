@@ -165,8 +165,8 @@ public class MemberService {
         return MemberProfileResponse
                 .builder()
                 .totalAttendance(member.getTotalAttendance())
-                .totalDistance(Math.round(member.getTotalDistance() / 1000f * 10) / 10f) // meter -> km, 소수 둘째 자리 반올림
-                .totalTime(Math.round(member.getTotalTime() / 3600f * 10) / 10f) // second -> hour, 소수 둘째 자리 반올림
+                .totalDistance(Math.round(member.getTotalDistance() / 1000f * 10) / 10.0) // meter -> km, 소수 둘째 자리 반올림
+                .totalTime(Math.round(member.getTotalTime() / 3600f * 10) / 10.0) // second -> hour, 소수 둘째 자리 반올림
                 .imageUrl(member.getImageUrl())
                 .email(email)
                 .nickname(member.getNickname())
