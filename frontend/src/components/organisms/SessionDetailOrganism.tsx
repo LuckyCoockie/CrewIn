@@ -1,13 +1,10 @@
 import React, { useCallback, useState } from "react";
-import { Carousel } from "react-responsive-carousel";
-import OneToOneImageMolecule from "../molecules/Image/OneToOneImageMolecule";
 import DetailInfoMolecule from "../molecules/Content/DetailInfoMolecule";
 import DetailInfoPaceMolecule from "../molecules/Content/DetailInfoPaceMolecule";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import Modal from "../molecules/ModalMolecules";
 import ModalConfirm from "../molecules/ModalConfirmMolecules";
-
 import {
   SessionDetailDto,
   participateSession,
@@ -36,7 +33,6 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
     spot,
     area,
     content,
-    sessionPosters,
     isSessionHost,
     courseThumbnail,
     currentPeople,
@@ -153,17 +149,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
           <p>정말로 참가를 취소하시겠습니까?</p>
         </ModalConfirm>
       )}
-      <Carousel
-        showThumbs={false}
-        showIndicators={true}
-        showStatus={true}
-        infiniteLoop={false}
-        swipeable={true}
-      >
-        {sessionPosters.map((poster, index) => (
-          <OneToOneImageMolecule key={index} src={poster} alt="poster" />
-        ))}
-      </Carousel>
+
       <main>
         {crewName && <DetailInfoMolecule title="크루명" content={crewName} />}
         <DetailInfoMolecule
