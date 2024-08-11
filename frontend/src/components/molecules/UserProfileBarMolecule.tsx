@@ -3,6 +3,7 @@ import { ReactComponent as MoreVerticalIcon } from "../../assets/icons/more_vert
 import BarTitle from "../atoms/Title/BarTitle";
 import BarContent from "../atoms/Content/BarContent";
 import ProfileImageComponent from "../atoms/ImageSize/ProfileImageComponent";
+import ModalConfirm from "../molecules/ModalConfirmMolecules";
 
 interface ProfileHeaderProps {
   profileImage: string;
@@ -26,6 +27,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   onClick,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false); // 모달 상태 관리
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => {
@@ -52,6 +54,15 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isDropdownOpen]);
+
+  const handleDelete = () => {
+    setIsConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    onDelete();
+    setIsConfirmOpen(false); // 모달 닫기
+  };
 
   return (
     <div className="flex items-center w-full mb-3">
@@ -80,7 +91,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               </button>
               <button
                 onClick={() => {
-                  onDelete();
+                  handleDelete(); // 삭제 핸들러로 모달 열기
                   setIsDropdownOpen(false);
                 }}
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-sm w-full text-left"
@@ -90,6 +101,17 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             </div>
           )}
         </div>
+      )}
+
+      {isConfirmOpen && (
+        <ModalConfirm
+          title="알림"
+          onClose={() => setIsConfirmOpen(false)}
+          onConfirm={handleConfirmDelete}
+          type="delete"
+        >
+          <p>게시글을 삭제하시겠습니까?</p>
+        </ModalConfirm>
       )}
     </div>
   );
