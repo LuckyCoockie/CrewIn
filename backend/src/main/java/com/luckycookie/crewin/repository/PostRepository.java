@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +29,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // 1. isPublic이 true인 글 (isPublic은 tinyInt형임) or
     // 2. 크루가 태그되었다면 해당 크루에 targetMember와 Member가 속해있는 글들 (tagetMember와 Member가 같은 크루에 있을 때만)
     @Query("SELECT p FROM Post p " +
-            "WHERE (p.isPublic = true) AND p.postType ='STANDARD'" +
+            "WHERE ((p.isPublic = true) AND p.postType ='STANDARD' AND p.crew IS NULL)" +
             "OR (p.crew IS NOT NULL AND " +
             "     EXISTS (SELECT mc FROM MemberCrew mc WHERE mc.crew = p.crew AND mc.member = :targetMember) AND " +
             "     EXISTS (SELECT mc FROM MemberCrew mc WHERE mc.crew = p.crew AND mc.member = :member)) " +
@@ -44,8 +43,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // 크루
     Page<Post> findByCrewAndPostTypeOrderByIdDesc(Crew crew, PostType postType, Pageable pageable);
 
-    // 멤버
-    Page<Post> findByAuthorAndPostTypeOrderByIdDesc(Member author, PostType postType, Pageable pageable);
 
     // 크루 탈퇴 시 크루 태그된 게시글에서 태그 제거
     @Modifying
