@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useQuery } from "react-query";
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import SessionDetailOrganism from "../organisms/SessionDetailOrganism";
 import {
   SessionDetailDto,
   GetSessionInfoRequestDto,
+  deleteSessionImage,
 } from "../../apis/api/sessiondetail";
 import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
 import NavTabMolecule from "../molecules/Tab/NavTabMolecule";
@@ -13,7 +14,8 @@ import { useParams } from "react-router";
 import AttendanceButton from "../atoms/Button/AttendanceButton";
 import { Carousel } from "react-responsive-carousel";
 import OneToOneImageMolecule from "../molecules/Image/OneToOneImageMolecule";
-import { FaDownload } from "react-icons/fa"; // 다운로드 아이콘을 위해 react-icons 사용
+import { ReactComponent as DownloadIcon } from "../../assets/icons/download.svg";
+import { ReactComponent as TrashIcon } from "../../assets/icons/trash.svg";
 
 type OwnDetailProps = {
   fetchDetailData: (dto: GetSessionInfoRequestDto) => Promise<SessionDetailDto>;
@@ -25,6 +27,9 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
   const { sessionId } = useParams<{ sessionId: string }>();
   const [currentTab, setCurrentTab] = useState<string>("세션정보");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImageId, setSelectedImageId] = useState<number | null>(null);
+
+  const albumRef = useRef<{ refreshGallery: () => void } | null>(null);
 
   const { data: detailData, error: detailError } = useQuery(
     ["detailData", { sessionId }],
@@ -47,30 +52,22 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
   }, [currentTab, detailData, selectedImage]);
 
   const handleDownload = async () => {
-    console.log(selectedImage);
-
     if (selectedImage) {
       try {
-        // 이미지 URL에서 Blob 데이터를 가져옴
         const response = await fetch(selectedImage);
         const blob = await response.blob();
         const fileName = selectedImage.split("/").pop() || "image.jpg";
         const file = new File([blob], fileName, { type: blob.type });
-        console.log(file);
 
-        // Blob URL 생성
-        const url = window.URL.createObjectURL(blob);
+        const url = window.URL.createObjectURL(file);
 
-        // 가상의 링크 생성
         const link = document.createElement("a");
         link.href = url;
-        link.download = "downloaded-image.jpg"; // 파일 이름 지정
+        link.download = file.name; // 파일 이름 지정
         document.body.appendChild(link);
 
-        // 링크 클릭 시 파일 다운로드
         link.click();
 
-        // 사용한 링크와 URL 객체 제거
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
       } catch (error) {
@@ -78,6 +75,21 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
       }
     }
   };
+
+  const handleDelete = async (imageId: number) => {
+    await deleteSessionImage(imageId)
+      .then((r) => {
+        setCurrentTab("");
+        setTimeout(() => setCurrentTab("사진첩"), 0);
+        setSelectedImage(null);
+        setSelectedImageId(null);
+        console.log(r);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
   if (!sessionId) return null;
 
   return (
@@ -129,10 +141,18 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
                 className="object-contain w-full h-full"
               />
               <button
-                className="absolute bottom-4 right-4 bg-blue-500 text-white p-2 rounded-full"
-                onClick={handleDownload}
+                className="absolute ms-auto mb-auto right-2 top-2 rounded-full bg-white bg-opacity-70 flex items-center justify-center"
+                onClick={() => handleDelete(selectedImageId!)}
+                style={{ width: "40px", height: "40px" }} // 크기를 작게 조정
               >
-                <FaDownload size={24} />
+                <TrashIcon />
+              </button>
+              <button
+                className="absolute ms-auto mt-auto right-2 bottom-2 rounded-full bg-white bg-opacity-70 flex items-center justify-center"
+                onClick={handleDownload}
+                style={{ width: "40px", height: "40px" }} // 크기를 작게 조정
+              >
+                <DownloadIcon />
               </button>
             </>
           ) : (
@@ -159,8 +179,12 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
         )}
         {currentTab === "사진첩" && detailData && (
           <SessionAlbumOrganism
+            ref={albumRef}
             sessionId={detailData.sessionId}
-            onSelectImage={setSelectedImage}
+            onSelectImage={(imageUrl, imageId) => {
+              setSelectedImage(imageUrl);
+              setSelectedImageId(imageId);
+            }}
           />
         )}
       </>
