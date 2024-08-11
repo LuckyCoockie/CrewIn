@@ -24,7 +24,8 @@ import {
 
 import { useNavigate, useParams } from "react-router-dom";
 
-import SpinnerFullComponent from "../atoms/SpinnerFullComponent";
+import SpinnerOverlayComponent from "../atoms/SpinnerOverlayComponent";
+import Modal from "../molecules/ModalMolecules";
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({
@@ -46,6 +47,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
   const queryClient = useQueryClient();
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // 오류 메시지 상태 추가
 
   const { data: noticeData } = useQuery<CrewNoticeDetailResponseDto, Error>(
     ["getNoticeInfo", crewId, noticeId],
@@ -53,13 +55,22 @@ const CrewNoticeEditTemplate: React.FC = () => {
       getCrewNoticeDetail({
         crewId: Number(crewId),
         noticeId: Number(noticeId),
-      })
+      }),
+    {
+      onError: () => {
+        setErrorMessage("공지 정보를 불러오는 중 오류가 발생했습니다.");
+      },
+    }
   );
 
   const mutation = useMutation(editNotice, {
     onSuccess: () => {
       queryClient.invalidateQueries(["getNoticeInfo", crewId, noticeId]);
-      navigate(`/crew/detail/${crewId}/notice/${noticeId}`);
+      navigate(`/crew/detail/${crewId}/notice/${noticeId}`, { replace: true });
+    },
+    onError: () => {
+      setErrorMessage("공지 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
+      setIsSubmitting(false); // 로딩 상태 종료
     },
   });
 
@@ -81,15 +92,14 @@ const CrewNoticeEditTemplate: React.FC = () => {
 
   const cropperRefs = useRef<(ReactCropperElement | null)[]>([]);
 
-  // 파일이 변경되었는지 감지하는 상태 추가
   const [isFilesChanged, setIsFilesChanged] = useState(false);
 
   useEffect(() => {
     if (noticeData) {
       setValue("title", noticeData.title);
       setValue("content", noticeData.content);
-      setImagePaths(noticeData.postImages); // 기존 이미지를 설정
-      setCroppedImages(noticeData.postImages); // 기본 이미지로 크롭 이미지를 설정
+      setImagePaths(noticeData.postImages);
+      setCroppedImages(noticeData.postImages);
     }
   }, [noticeData, setValue]);
 
@@ -100,7 +110,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
     );
 
     if (imagePaths.length + filteredFiles.length > 10) {
-      alert("사진은 최대 10개까지 첨부할 수 있습니다.");
+      setErrorMessage("사진은 최대 10개까지 첨부할 수 있습니다.");
       return;
     }
     const tempImagePaths: string[] = [];
@@ -115,7 +125,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
     setImagePaths(tempImagePaths);
     setCroppedImages(tempCroppedImages);
     setIsCropped(false);
-    setIsFilesChanged(true); // 파일 변경되었음을 표시
+    setIsFilesChanged(true);
   };
 
   const handleCrop = (index: number) => {
@@ -164,13 +174,12 @@ const CrewNoticeEditTemplate: React.FC = () => {
     setIsCropped(!isCropped);
   };
 
-  // 가져온 데이터 초기화 함수
   const handleClearImages = () => {
     setImagePaths([]);
     setCroppedImages([]);
     setCroppedFiles([]);
     setIsCropped(false);
-    setIsFilesChanged(false); // 파일 초기화 시 변경 상태를 해제
+    setIsFilesChanged(false);
   };
 
   const checkUndefined = async (files: File[]) => {
@@ -181,7 +190,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
       });
       return Promise.all(uploadPromises);
     } else {
-      return imagePaths; // 새로 업로드한 파일이 없다면 기존 이미지 경로를 반환
+      return imagePaths;
     }
   };
 
@@ -190,22 +199,32 @@ const CrewNoticeEditTemplate: React.FC = () => {
       return;
     }
     setIsSubmitting(true);
-    const urls = await checkUndefined(croppedFiles);
+    try {
+      const urls = await checkUndefined(croppedFiles);
 
-    const submitData = {
-      noticeId: Number(noticeId),
-      crewId: Number(crewId),
-      title: data.title,
-      content: data.content,
-      noticeImages: urls,
-    };
+      const submitData = {
+        noticeId: Number(noticeId),
+        crewId: Number(crewId),
+        title: data.title,
+        content: data.content,
+        noticeImages: urls,
+      };
 
-    await mutation.mutateAsync(submitData);
+      await mutation.mutateAsync(submitData);
+    } catch (error) {
+      setErrorMessage("공지 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const closeModal = () => {
+    setErrorMessage(null);
   };
 
   return (
     <div className="mx-auto w-full max-w-[550px]">
-      {isSubmitting && <SpinnerFullComponent />}
+      {isSubmitting && <SpinnerOverlayComponent />}
       <div className="flex flex-col items-center justify-center">
         <header>
           <BackHeaderMediumOrganism text="공지글 수정" />
@@ -284,7 +303,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
 
         <main className="w-full">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-6">
+            <div className="mb-6 mt-2">
               <Controller
                 name="title"
                 control={control}
@@ -318,7 +337,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
             </div>
             <div>
               {(isValid && isDirty) || isFilesChanged ? (
-                <LargeAbleButton text="수정" />
+                <LargeAbleButton text="수정" isLoading={isSubmitting} />
               ) : (
                 <LargeDisableButton text="수정" />
               )}
@@ -326,6 +345,11 @@ const CrewNoticeEditTemplate: React.FC = () => {
           </form>
         </main>
       </div>
+      {errorMessage && (
+        <Modal title="알림" onClose={closeModal}>
+          <p>{errorMessage}</p>
+        </Modal>
+      )}
     </div>
   );
 };

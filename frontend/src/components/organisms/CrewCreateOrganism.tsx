@@ -12,9 +12,9 @@ import InputDropdonwTypeMolecule from "../molecules/Input/InputDropdonwTypeMolec
 import { regions } from "../../regions";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
+import Modal from "../molecules/ModalMolecules";
 
 import { CrewCreateDto, postCreateCrew } from "../../apis/api/crewcreate";
-
 import { uploadImage } from "../../apis/api/presigned";
 import { useNavigate } from "react-router";
 
@@ -39,6 +39,7 @@ const schema = yup.object({
   city: yup.string().required("도시를 선택해주세요."),
   district: yup.string().required("시/군/구를 선택해주세요."),
 });
+
 type FormValues = {
   crew_name: string;
   slogan: string;
@@ -54,6 +55,8 @@ type FormValues = {
 const CrewCreateOrganism: React.FC = () => {
   const navigate = useNavigate();
   const [selectedCity, setSelectedCity] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // 오류 메시지 상태 추가
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     control,
@@ -63,7 +66,6 @@ const CrewCreateOrganism: React.FC = () => {
     formState: { errors, isValid },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
-    // 유효성 검사 mode
     mode: "onChange",
     defaultValues: {
       crewcreatedat: new Date(),
@@ -77,6 +79,7 @@ const CrewCreateOrganism: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
+    setIsSubmitting(true); // 로딩 상태 시작
     Promise.all([
       checkUndefined(data.main_logo),
       checkUndefined(data.sub_logo),
@@ -101,35 +104,40 @@ const CrewCreateOrganism: React.FC = () => {
         };
 
         console.log(submitData);
-        // 제출 API
-        return postCreateCrew(submitData); // 제출 API 호출
+        return postCreateCrew(submitData);
       })
       .then((response) => {
         console.log("Crew created successfully");
         console.log(response.crewId);
-
-        // 성공 시 크루 Detail페이지로 이동
-        navigate(`/crew/detail/${response.crewId}`);
+        navigate(`/crew/detail/${response.crewId}`, { replace: true });
       })
       .catch((error) => {
         console.error("Crew created fail:", error);
+        setErrorMessage("크루 생성 중 오류가 발생했습니다. 다시 시도해주세요.");
+        setIsSubmitting(false); // 로딩 상태 종료
       });
   };
 
-  // 도시 선택 이후 시/군/구 함수
   const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const city = event.target.value;
     setSelectedCity(city);
     setValue("city", city);
-    setValue("district", ""); // 도시가 변경되면 구/군/구 필드를 초기화
+    setValue("district", "");
   };
 
-  // watch 함수를 사용하여 실시간으로 city 필드 값 모니터링
   const watchedCity = watch("city", selectedCity);
+
+  const closeModal = () => {
+    setErrorMessage(null);
+  };
 
   return (
     <>
-      {/* 본문 파트 */}
+      {errorMessage && (
+        <Modal title="알림" onClose={closeModal}>
+          <p>{errorMessage}</p>
+        </Modal>
+      )}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-wrap">
           <div className="w-full">
@@ -164,7 +172,6 @@ const CrewCreateOrganism: React.FC = () => {
               )}
             />
           </div>
-          {/* 도시 */}
           <div className="w-2/5 me-auto">
             <Controller
               name="city"
@@ -189,7 +196,6 @@ const CrewCreateOrganism: React.FC = () => {
               )}
             />
           </div>
-          {/* 시/군/구 */}
           <div className="w-2/5">
             <Controller
               name="district"
@@ -300,9 +306,8 @@ const CrewCreateOrganism: React.FC = () => {
           </div>
         </div>
         <div>
-          {/* 유효성 검사 통과 여부에 따라 버튼 교체 */}
           {isValid ? (
-            <LargeAbleButton text="생성" />
+            <LargeAbleButton text="생성" isLoading={isSubmitting} />
           ) : (
             <LargeDisableButton text="생성" />
           )}

@@ -20,7 +20,7 @@ import { createNotice } from "../../../apis/api/crewdetail";
 
 import { useNavigate, useParams } from "react-router-dom";
 
-import SpinnerFullComponent from "../../atoms/SpinnerFullComponent";
+import Modal from "../../molecules/ModalMolecules";
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({
@@ -39,6 +39,7 @@ const CrewNoticeCreateTemplate: React.FC = () => {
   const queryClient = useQueryClient();
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // 오류 메시지 상태 추가
 
   const {
     control,
@@ -64,21 +65,27 @@ const CrewNoticeCreateTemplate: React.FC = () => {
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setIsSubmitting(true); // 로딩 상태 시작
-    const urls = await checkUndefined(croppedFiles);
+    try {
+      const urls = await checkUndefined(croppedFiles);
 
-    const submitData = {
-      crewId: Number(crewId),
-      title: data.title,
-      content: data.content,
-      noticeImages: urls,
-    };
+      const submitData = {
+        crewId: Number(crewId),
+        title: data.title,
+        content: data.content,
+        noticeImages: urls,
+      };
 
-    await createNotice(submitData);
+      await createNotice(submitData);
 
-    // 쿼리 무효화
-    queryClient.invalidateQueries(["crewNotice", { crewId }]);
+      // 쿼리 무효화
+      queryClient.invalidateQueries(["crewNotice", { crewId }]);
 
-    navigate(`/crew/detail/${crewId}`);
+      navigate(`/crew/detail/${crewId}`, { replace: true });
+    } catch (error) {
+      setErrorMessage("공지 작성 중 오류가 발생했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsSubmitting(false); // 로딩 상태 종료
+    }
   };
 
   const [imagePaths, setImagePaths] = useState<string[]>([]);
@@ -96,7 +103,7 @@ const CrewNoticeCreateTemplate: React.FC = () => {
     );
 
     if (imagePaths.length + filteredFiles.length > 10) {
-      alert("사진은 최대 10개까지 첨부할 수 있습니다.");
+      setErrorMessage("사진은 최대 10개까지 첨부할 수 있습니다.");
       return;
     }
     const tempImagePaths: string[] = [];
@@ -166,9 +173,12 @@ const CrewNoticeCreateTemplate: React.FC = () => {
     setIsCropped(false);
   };
 
+  const closeModal = () => {
+    setErrorMessage(null);
+  };
+
   return (
     <div className="mx-auto w-full max-w-[550px]">
-      {isSubmitting && <SpinnerFullComponent />}
       <div className="flex flex-col items-center justify-center">
         <header>
           <BackHeaderMediumOrganism text="공지글 작성" />
@@ -247,7 +257,7 @@ const CrewNoticeCreateTemplate: React.FC = () => {
 
         <main className="w-full">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-6">
+            <div className="mb-6 mt-2">
               <Controller
                 name="title"
                 control={control}
@@ -281,7 +291,7 @@ const CrewNoticeCreateTemplate: React.FC = () => {
             </div>
             <div>
               {isValid ? (
-                <LargeAbleButton text="작성" />
+                <LargeAbleButton text="작성" isLoading={isSubmitting} />
               ) : (
                 <LargeDisableButton text="작성" />
               )}
@@ -289,6 +299,11 @@ const CrewNoticeCreateTemplate: React.FC = () => {
           </form>
         </main>
       </div>
+      {errorMessage && (
+        <Modal title="알림" onClose={closeModal}>
+          <p>{errorMessage}</p>
+        </Modal>
+      )}
     </div>
   );
 };

@@ -19,10 +19,15 @@ import {
 import { PWAInstallPrompt } from "../components/templates/pwa/PWAInstallPrompt";
 import { PWAOpenAppPrompt } from "../components/templates/pwa/PWAOpenAppPrompt";
 import { fetchNotifications } from "../apis/api/alarm";
+import SpinnerFullComponent from "../components/atoms/SpinnerFullComponent";
+import Modal from "../components/molecules/ModalMolecules";
 
 const PostMainPage: React.FC = () => {
   const navigate = useNavigate();
   const [hasCheckedNotifications, setHasCheckedNotifications] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   useEffect(() => {
     const checkNotifications = async () => {
@@ -42,11 +47,18 @@ const PostMainPage: React.FC = () => {
 
   const fetchPostData = useCallback(
     async (page: number): Promise<GetPostListResponseDto> => {
+      setIsLoading(true);
       try {
-        console.log(getPostList(page));
-        return getPostList(page);
+        const postData = await getPostList(page);
+        setIsLoading(false);
+        return postData;
       } catch (error) {
         console.error("Error fetching post data:", error);
+        setIsModalOpen(true);
+        setModalMessage(
+          "포스트를 불러오는 중 오류가 발생했습니다. 다시 시도해주세요."
+        );
+        setIsLoading(false);
         return { pageNo: 0, lastPageNo: 0, items: [] };
       }
     },
@@ -65,8 +77,13 @@ const PostMainPage: React.FC = () => {
     navigate("/alarm");
   }, [navigate]);
 
+  const handleModalClose = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
+
   return (
     <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20 relative">
+      {isLoading && <SpinnerFullComponent />}
       <div className="flex items-center w-full mb-5 xs:mb-10">
         <div className="flex items-center ms-3">
           <CrewinLogo />
@@ -95,6 +112,12 @@ const PostMainPage: React.FC = () => {
       </FloatingActionButton>
       <PWAInstallPrompt />
       <PWAOpenAppPrompt />
+      {/* Modal 컴포넌트 추가 */}
+      {isModalOpen && (
+        <Modal title="오류 발생" onClose={handleModalClose}>
+          <p>{modalMessage}</p>
+        </Modal>
+      )}
     </div>
   );
 };
