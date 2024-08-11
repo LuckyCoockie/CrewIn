@@ -178,14 +178,17 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
         <DetailInfoMolecule title="코스" content={area} />
         <DetailInfoMolecule title="내용" content={content} />
         <div
-          className="flex justify-center items-center"
+          className="flex flex-col justify-center items-center"
           onClick={handelCourseClick}
         >
           <img
             src={courseThumbnail}
             alt="courseThumbnail"
-            className="m-4 w-2/3"
+            className="mt-4 w-2/3"
           />
+          <div className="text-gray-400 mb-6">
+            지도를 클릭하면 상세보기가 가능합니다.
+          </div>
         </div>
         {!isSessionHost &&
           !isSessionStarted &&
