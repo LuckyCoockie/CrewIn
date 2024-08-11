@@ -180,7 +180,6 @@ const CrewDetailTemplate: React.FC = () => {
                 <EditDeleteDropdownOrganism
                   type="CREW"
                   idData={infoData?.crewId}
-                  isCrew={true}
                 />
               </div>
             </>
