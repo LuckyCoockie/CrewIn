@@ -43,8 +43,8 @@ public class MemberResponse {
         private String nickname;
         private String email;
         private String name; // 사용자 이름
-        private int totalDistance;
-        private int totalTime;
+        private double totalDistance;
+        private double totalTime;
         private int totalAttendance;
     }
 
