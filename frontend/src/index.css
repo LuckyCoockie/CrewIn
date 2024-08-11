@@ -211,3 +211,11 @@ input[type="number"]::-webkit-inner-spin-button {
 .disabled {
   pointer-events: none;
 }
+
+.fire-icon {
+  transition: transform 0.2s ease;
+}
+
+.fire-icon.animate {
+  transform: scale(1.2);
+}

@@ -12,8 +12,6 @@ export const inviteCrewMember = async (
 ): Promise<CrewInviteResponseDto> => {
   try {
     const response = await api.post("/crew/member/invitation", dto);
-    console.log(response);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("API 호출 오류:", error);

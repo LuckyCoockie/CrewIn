@@ -5,68 +5,75 @@ import { updatePost, UpdatePostRequestDto } from "../apis/api/postupdate";
 import { getPostList, PostDto } from "../apis/api/postlist";
 import { getMyCrews, CrewDto } from "../apis/api/mycrew";
 import BackHeaderMediumOrganism from "../components/organisms/BackHeaderMediumOrganism";
-import Modal from "../components/molecules/ModalMolecules";
 
-const fetchAllPosts = async () => {
+const fetchPostById = async (postId: number) => {
   let allPosts: PostDto[] = [];
   let pageNo = 0;
   let lastPageNo = 0;
-  try {
-    const firstPageData = await getPostList(pageNo);
-    allPosts = firstPageData.items;
-    lastPageNo = firstPageData.lastPageNo;
+  let foundPost: PostDto | undefined;
 
-    while (pageNo < lastPageNo) {
+  try {
+    while (true) {
+      const pageData = await getPostList(pageNo);
+      allPosts = pageData.items;
+      lastPageNo = pageData.lastPageNo;
+      foundPost = allPosts.find((post) => post.id === postId);
+      if (foundPost) {
+        break;
+      }
+      if (pageNo >= lastPageNo) {
+        break;
+      }
       pageNo += 1;
-      const nextPageData = await getPostList(pageNo);
-      allPosts = allPosts.concat(nextPageData.items);
     }
   } catch (error) {
     console.error(`Error fetching posts:`, error);
   }
 
-  return allPosts;
+  return foundPost;
 };
 
 const PostEditPage: React.FC = () => {
-  const navigate = useNavigate();
   const { postId } = useParams<{ postId: string }>();
+  const navigate = useNavigate();
   const [content, setContent] = useState<string>("");
-  const [title] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
   const [isPublic, setIsPublic] = useState<boolean>(true);
   const [postImages, setPostImages] = useState<string[]>([]);
   const [, setCrews] = useState<CrewDto[]>([]);
   const [crewId, setCrewId] = useState<number>(0);
-  const [isSubmit, setIsSubmit] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const posts = await fetchAllPosts();
-        const post = posts.find((p) => p.id === Number(postId));
-        if (post) {
-          setPostImages(post.postImages);
-          setContent(post.content);
-          setIsPublic(post.isPublic);
-        } else {
-          setIsModalOpen(true);
-        }
+    if (postId) {
+      (async () => {
+        try {
+          const post = await fetchPostById(Number(postId));
+          if (post) {
+            setPostImages(post.postImages);
+            setContent(post.content);
+            setTitle(post.title);
+            setIsPublic(post.isPublic);
 
-        const response = await getMyCrews();
-        setCrews(response.crews);
-        if (response.crews.length > 0) {
-          setCrewId(response.crews[0].crewId);
+            const response = await getMyCrews();
+            setCrews(response.crews);
+            if (response.crews.length > 0) {
+              setCrewId(response.crews[0].crewId);
+            }
+          } else {
+            setError("게시글을 찾을 수 없습니다.");
+          }
+        } catch (error) {
+          setError("데이터 조회 오류");
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        setIsModalOpen(true);
-      }
-    })();
+      })();
+    }
   }, [postId]);
 
   const handleUpdatePost = async () => {
-    setIsSubmit(true);
     try {
       const updateData: UpdatePostRequestDto = {
         title,
@@ -75,15 +82,10 @@ const PostEditPage: React.FC = () => {
         postImages,
       };
       await updatePost(Number(postId), updateData);
-      setModalMessage("게시글이 성공적으로 수정되었습니다.");
-      setIsModalOpen(true);
-      setIsSubmit(false);
-      navigate(`/home`);
+      navigate("/home");
     } catch (error) {
       console.error(error);
-      setModalMessage("게시글 수정 중 오류가 발생했습니다.");
-      setIsSubmit(false);
-      setIsModalOpen(true);
+      alert("수정 실패");
     }
   };
 
@@ -96,17 +98,16 @@ const PostEditPage: React.FC = () => {
     }
   };
 
-  const closeModalAndNavigate = () => {
-    setIsModalOpen(false);
-  };
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <>
-      {isModalOpen && (
-        <Modal title="알림" onClose={closeModalAndNavigate}>
-          <p>{modalMessage}</p>
-        </Modal>
-      )}
       <header className="mb-10">
         <BackHeaderMediumOrganism text="게시글 수정" />
       </header>
@@ -119,7 +120,6 @@ const PostEditPage: React.FC = () => {
           onContentChange={(e) => setContent(e.target.value)}
           onVisibilityChange={handleVisibilityChange}
           onUpdatePost={handleUpdatePost}
-          isSubmit={isSubmit}
         />
       </div>
     </>

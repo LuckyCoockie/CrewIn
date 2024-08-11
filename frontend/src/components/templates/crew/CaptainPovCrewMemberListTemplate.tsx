@@ -64,7 +64,6 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
     );
 
     if (member) {
-      console.log("Changing position for:", member);
       try {
         if (newPosition === "CAPTAIN" && currentCaptain) {
           await changeCaptain({
@@ -72,7 +71,6 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
             memberId: member.memberId,
             position: "PACER",
           });
-          console.log("Captain changed successfully");
           setMembers((prevMembers) =>
             prevMembers
               .map((m) =>
