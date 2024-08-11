@@ -73,11 +73,13 @@ const CrewNoticeDetailTemplate: React.FC = () => {
             username={noticeData.authorName}
             timeAgo={timeAgo}
           />
-          <EditDeleteDropdownOrganism
-            type="NOTICE"
-            idData={Number(noticeId)}
-            idData2={Number(crewId)}
-          />
+          <div className="me-4">
+            <EditDeleteDropdownOrganism
+              type="NOTICE"
+              idData={Number(noticeId)}
+              idData2={Number(crewId)}
+            />
+          </div>
         </div>
         <Carousel
           showThumbs={false}
