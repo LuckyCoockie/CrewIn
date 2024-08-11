@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,8 +43,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // 크루
     Page<Post> findByCrewAndPostTypeOrderByIdDesc(Crew crew, PostType postType, Pageable pageable);
 
-    // 멤버
-    Page<Post> findByAuthorAndPostTypeOrderByIdDesc(Member author, PostType postType, Pageable pageable);
 
     // 크루 탈퇴 시 크루 태그된 게시글에서 태그 제거
     @Modifying
