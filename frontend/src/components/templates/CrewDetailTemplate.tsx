@@ -9,6 +9,8 @@ import CrewAlbumOrganism from "../organisms/CrewAlbumOrganism";
 import CrewHeaderBarOrganism from "../organisms/CrewHeaderBarOrganism";
 import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
 import GroupsButton from "../atoms/Button/GroupsButton";
+import MemberPlusButton from "../atoms/Button/MemberPlusButton";
+
 import {
   getCrewInfo,
   getCrewGalleryList,
@@ -17,6 +19,7 @@ import {
 import { getMyCrews } from "../../apis/api/mycrew";
 import { useNavigate, useParams } from "react-router";
 import { createSearchParams } from "react-router-dom";
+import QuitDropdownOrganism from "../organisms/QuitDropdownOrganism";
 
 const CrewDetailTemplate: React.FC = () => {
   const navigate = useNavigate();
@@ -101,6 +104,7 @@ const CrewDetailTemplate: React.FC = () => {
           <CrewNoticeOrganism
             crewId={numericCrewId}
             isUserCrewMember={isUserCrewMember}
+            userPosition={userPosition}
           />
         );
       case "정보":
@@ -160,15 +164,30 @@ const CrewDetailTemplate: React.FC = () => {
           text={infoData ? infoData.crewName : "Loading..."}
         />
         <div className="flex ms-auto">
-          {isUserCrewMember && <GroupsButton userPosition={userPosition!} />}
+          {isUserCrewMember && (
+            <div className="ms-1">
+              <GroupsButton userPosition={userPosition!} />
+            </div>
+          )}
+          {isUserCrewMember && userPosition === "CAPTAIN" && (
+            <div className="ms-1">
+              <MemberPlusButton />
+            </div>
+          )}
           {isUserCrewMember && userPosition === "CAPTAIN" && (
             <>
-              <div className="ms-2">
+              <div className="ms-1">
                 <EditDeleteDropdownOrganism
                   type="CREW"
                   idData={infoData?.crewId}
-                  isCrew={true}
                 />
+              </div>
+            </>
+          )}
+          {isUserCrewMember && userPosition !== "CAPTAIN" && (
+            <>
+              <div className="ms-1">
+                <QuitDropdownOrganism crewId={Number(crewId)} />
               </div>
             </>
           )}

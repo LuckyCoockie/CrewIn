@@ -10,6 +10,8 @@ import {
   useNaverMapState,
 } from "../../util/maps/naver_map/context";
 import { ReactComponent as MarkerIcon } from "../../assets/icons/custom_marker.svg";
+import { ReactComponent as StartMarkerIcon } from "../../assets/icons/custom_marker_start.svg";
+import { ReactComponent as EndMarkerIcon } from "../../assets/icons/custom_marker_end.svg";
 
 type OwnProps = {
   editable?: boolean;
@@ -35,10 +37,18 @@ const MarkerList: React.FC<OwnProps> = ({ editable = true }) => {
       items={markers}
       editable={editable}
     >
-      {({ index, item }) => (
+      {({ item, index }) => (
         <MarkerListItem
           title={item.getTitle()}
-          marker={<MarkerIcon className="object-contain" />}
+          marker={
+            index === 0 ? (
+              <StartMarkerIcon className="object-contain" />
+            ) : index === markers.length - 1 ? (
+              <EndMarkerIcon className="object-contain" />
+            ) : (
+              <MarkerIcon className="object-contain" />
+            )
+          }
           first={index === 0}
           last={index === markers.length - 1}
           onClick={() => onListItemClick(index)}

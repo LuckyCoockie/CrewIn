@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { useForm, Controller, SubmitHandler, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useParams, useNavigate } from "react-router-dom";
@@ -87,15 +87,27 @@ const SessionEditOrganism: React.FC = () => {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isDirty },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onChange",
-    defaultValues: {
-      sessionstart: new Date(),
-      sessionend: new Date(),
-    },
+    defaultValues: sessionData
+      ? {
+          sessiontype: sessionData.sessionType,
+          sessiontitle: sessionData.sessionName,
+          sessionmembers: sessionData.maxPeople,
+          sessionspot: sessionData.spot,
+          sessionstart: new Date(sessionData.startAt),
+          sessionend: new Date(sessionData.endAt),
+          sessionpaceminutes: Math.floor(sessionData.pace / 60),
+          sessionpaceseconds: sessionData.pace % 60,
+          sessioninfo: sessionData.content,
+        }
+      : undefined,
   });
+
+  // 파일이 변경되었는지 감지하는 상태 추가
+  const [isFilesChanged, setIsFilesChanged] = useState(false);
 
   useEffect(() => {
     if (sessionData) {
@@ -120,6 +132,15 @@ const SessionEditOrganism: React.FC = () => {
     }
   }, [mapData, navigate]);
 
+  // 파일 변경 감지를 위한 useWatch 사용
+  const watchedPoster = useWatch({ control, name: "sessionposter" });
+
+  useEffect(() => {
+    if (watchedPoster) {
+      setIsFilesChanged(true); // 파일이 변경되었음을 표시
+    }
+  }, [watchedPoster]);
+
   const checkUndefined = async (files: FileList) => {
     if (files) {
       const uploadPromises = Array.from(files)
@@ -135,7 +156,10 @@ const SessionEditOrganism: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    if (isValid === false) {
+    console.log(isValid);
+    console.log(isDirty);
+
+    if (isValid === false && isDirty === false) {
       return;
     }
     const uploadedUrls = await checkUndefined(data.sessionposter!);
@@ -381,10 +405,13 @@ const SessionEditOrganism: React.FC = () => {
           )}
         </div>
         <div>
-          {isValid ? (
-            <LargeAbleButton text="수정" />
+          {(isValid && isDirty) || isFilesChanged ? (
+            <LargeAbleButton
+              text="수정 완료"
+              onClick={handleSubmit(onSubmit)}
+            />
           ) : (
-            <LargeDisableButton text="수정" />
+            <LargeDisableButton text="수정 완료" />
           )}
         </div>
       </form>

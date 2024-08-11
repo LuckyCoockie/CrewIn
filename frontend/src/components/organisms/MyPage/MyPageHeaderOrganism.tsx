@@ -5,14 +5,15 @@ import LogoutButton from "../../atoms/Button/LogoutButton";
 import { logout } from "../../../apis/api/logout";
 import { useNavigate } from "react-router-dom";
 import store from "../../../modules";
-import { clearAccessToken, loading } from "../../../modules/reducers/auth";
+import { loading } from "../../../modules/reducers/auth";
+import { clearAuth } from "../../../util/auth";
 
 const MyPageHeaderOrganism: React.FC = () => {
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
       store.dispatch(loading());
-      logout().then(() => store.dispatch(clearAccessToken()));
+      logout().then(() => clearAuth());
     } catch (error) {
       console.error("로그아웃 실패:", error);
     }
@@ -30,7 +31,9 @@ const MyPageHeaderOrganism: React.FC = () => {
       </div>
       <div className="flex justify-end">
         <LogoutButton logout={handleLogout} />
-        <SettingIcon setting={handleSetting} />
+        <div className="ms-1.5">
+          <SettingIcon setting={handleSetting} />
+        </div>
       </div>
     </div>
   );

@@ -1,7 +1,6 @@
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-
 import InputEmailTypeMolecule from "../molecules/Input/InputEmailTypeMolecule";
 import InputPasswordTypeMolecule from "../molecules/Input/InputPasswordTypeMolecule";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
@@ -9,6 +8,8 @@ import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import { useSelector } from "react-redux";
 import { RootState } from "../../modules";
 import { login } from "../../apis/api/authorization";
+import Modal from "../molecules/ModalMolecules";
+import { useState } from "react";
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({
@@ -18,6 +19,7 @@ const schema = yup.object({
     .required("이메일을 입력해주세요."),
   password: yup.string().required("비밀번호를 입력해주세요."),
 });
+
 type FormValues = {
   email: string;
   password: string;
@@ -30,14 +32,30 @@ const LoginOrganism = () => {
     formState: { errors, isValid },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
-    // 유효성 검사 mode
     mode: "onChange",
     defaultValues: {},
   });
 
   const { error } = useSelector((state: RootState) => state.auth);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    login(data);
+    try {
+      await login(data);
+    } catch (err) {
+      console.log(err);
+      // 서버 오류 또는 네트워크 오류 등
+      setModalTitle("로그인 오류");
+      setModalMessage("이메일과 비밀번호를 확인해주세요.");
+      setIsModalOpen(true);
+    }
   };
 
   return (
@@ -86,6 +104,13 @@ const LoginOrganism = () => {
           )}
         </div>
       </form>
+
+      {/* Modal 컴포넌트 */}
+      {isModalOpen && (
+        <Modal title={modalTitle} onClose={handleModalClose}>
+          <p>{modalMessage}</p>
+        </Modal>
+      )}
     </div>
   );
 };

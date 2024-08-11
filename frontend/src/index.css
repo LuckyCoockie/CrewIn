@@ -99,7 +99,7 @@ header {
   width: 100%;
   padding-top: 12px;
   padding-bottom: 6px;
-  padding-left: 16px;
+  padding-left: 12px;
   padding-right: 16px;
   display: flex;
   align-items: center;
@@ -205,4 +205,9 @@ input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+/* className에서 사용할 disabled 속성 추가 */
+.disabled {
+  pointer-events: none;
 }

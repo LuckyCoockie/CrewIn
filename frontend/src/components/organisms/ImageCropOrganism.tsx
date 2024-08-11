@@ -15,6 +15,8 @@ import ImageUploadDropzone from "../molecules/Input/ImageUploadDropzone";
 import { createPost } from "../../apis/api/postcreate";
 import { getMyCrews, CrewDto } from "../../apis/api/mycrew";
 import { uploadImage } from "../../apis/api/presigned";
+import Modal from "../molecules/ModalMolecules";
+import SpinnerComponent from "../atoms/SpinnerComponent";
 
 interface ImageCropProps {
   onComplete: (
@@ -39,12 +41,16 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
   const [isCropped, setIsCropped] = useState<boolean>(false);
   const [currentEditIndex, setCurrentEditIndex] = useState<number | null>(null);
   const [crews, setCrews] = useState<CrewDto[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const cropperRefs = useRef<(ReactCropperElement | null)[]>([]);
 
   useEffect(() => {
     (async () => {
       try {
+        setIsLoading(true);
         const response = await getMyCrews();
         setCrews(response.crews);
         if (response.crews.length > 0) {
@@ -52,6 +58,10 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
         }
       } catch (error) {
         console.error("내가 속한 크루 조회 오류:", error);
+        setModalMessage("크루 정보를 불러오는 중 오류가 발생했습니다.");
+        setIsModalOpen(true);
+      } finally {
+        setIsLoading(false);
       }
     })();
   }, []);
@@ -71,7 +81,8 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
     );
 
     if (imagePaths.length + filteredFiles.length > 10) {
-      alert("사진은 최대 10개까지 첨부할 수 있습니다.");
+      setModalMessage("사진은 최대 10개까지 첨부할 수 있습니다.");
+      setIsModalOpen(true);
       return;
     }
 
@@ -98,8 +109,6 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
     if (cropperRef && cropperRef.cropper) {
       const cropper = cropperRef.cropper;
       const croppedCanvas = cropper.getCroppedCanvas({
-        // width: 360,
-        // height: 360,
         fillColor: "#fff",
         imageSmoothingEnabled: true,
         imageSmoothingQuality: "high",
@@ -148,6 +157,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
   };
 
   const handlePost = async () => {
+    setIsLoading(true);
     try {
       const uploadedImages = await Promise.all(
         croppedImages.map(async (imageUrl) => {
@@ -170,9 +180,13 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
       const response = await createPost(postData);
       console.log("서버 응답:", response);
       onComplete(uploadedImages, crewId, isPublic, content);
-      navigate("/home", { state: postData });
+      navigate("/home", { replace: true });
     } catch (error) {
       console.error("게시글 작성 오류:", error);
+      setModalMessage("게시글 작성 중 오류가 발생했습니다.");
+      setIsModalOpen(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -181,6 +195,10 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
     setCroppedImages([]);
     setOriginalCroppedImages([]);
     setIsCropped(false);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -315,9 +333,9 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
               ? "opacity-50 cursor-not-allowed"
               : "cursor-pointer"
           } text-white font-bold`}
-          disabled={!isCropped || (!isPublic && crewId === 0)}
+          disabled={!isCropped || (!isPublic && crewId === 0) || isLoading}
         >
-          작성
+          {isLoading ? <SpinnerComponent /> : "작성"}
         </button>
 
         {currentEditIndex !== null && (
@@ -333,6 +351,12 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
               onFinish={handleFinishEdit}
             />
           </ModalMolecules>
+        )}
+
+        {isModalOpen && (
+          <Modal title="알림" onClose={handleModalClose}>
+            <p>{modalMessage}</p>
+          </Modal>
         )}
       </main>
     </div>

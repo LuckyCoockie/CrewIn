@@ -236,7 +236,9 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
             />
           </div>
           <div className="absolute bottom-0 right-4 p-4">
-            <MapToggleButton />
+            <MapToggleButton
+              style={{ background: "#FFFFFF", borderRadius: 9999 }}
+            />
           </div>
         </div>
         <div className="p-4">

@@ -24,12 +24,13 @@ import {
 
 import { useNavigate, useParams } from "react-router-dom";
 
-import SpinnerFullComponent from "../atoms/SpinnerFullComponent";
+import SpinnerOverlayComponent from "../atoms/SpinnerOverlayComponent";
+import Modal from "../molecules/ModalMolecules";
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({
-  title: yup.string().required(),
-  content: yup.string().required(),
+  title: yup.string().required("제목을 입력해주세요."),
+  content: yup.string().required("내용을 입력해주세요."),
 });
 
 type FormValues = {
@@ -46,6 +47,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
   const queryClient = useQueryClient();
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // 오류 메시지 상태 추가
 
   const { data: noticeData } = useQuery<CrewNoticeDetailResponseDto, Error>(
     ["getNoticeInfo", crewId, noticeId],
@@ -53,13 +55,22 @@ const CrewNoticeEditTemplate: React.FC = () => {
       getCrewNoticeDetail({
         crewId: Number(crewId),
         noticeId: Number(noticeId),
-      })
+      }),
+    {
+      onError: () => {
+        setErrorMessage("공지 정보를 불러오는 중 오류가 발생했습니다.");
+      },
+    }
   );
 
   const mutation = useMutation(editNotice, {
     onSuccess: () => {
       queryClient.invalidateQueries(["getNoticeInfo", crewId, noticeId]);
-      navigate(`/crew/detail/${crewId}/notice/${noticeId}`);
+      navigate(`/crew/detail/${crewId}/notice/${noticeId}`, { replace: true });
+    },
+    onError: () => {
+      setErrorMessage("공지 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
+      setIsSubmitting(false); // 로딩 상태 종료
     },
   });
 
@@ -67,11 +78,10 @@ const CrewNoticeEditTemplate: React.FC = () => {
     control,
     handleSubmit,
     setValue,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isDirty },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onChange",
-    defaultValues: {},
   });
 
   const [imagePaths, setImagePaths] = useState<string[]>([]);
@@ -82,12 +92,14 @@ const CrewNoticeEditTemplate: React.FC = () => {
 
   const cropperRefs = useRef<(ReactCropperElement | null)[]>([]);
 
+  const [isFilesChanged, setIsFilesChanged] = useState(false);
+
   useEffect(() => {
     if (noticeData) {
       setValue("title", noticeData.title);
       setValue("content", noticeData.content);
-      setImagePaths(noticeData.postImages); // 기존 이미지를 설정
-      setCroppedImages(noticeData.postImages); // 기본 이미지로 크롭 이미지를 설정
+      setImagePaths(noticeData.postImages);
+      setCroppedImages(noticeData.postImages);
     }
   }, [noticeData, setValue]);
 
@@ -98,7 +110,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
     );
 
     if (imagePaths.length + filteredFiles.length > 10) {
-      alert("사진은 최대 10개까지 첨부할 수 있습니다.");
+      setErrorMessage("사진은 최대 10개까지 첨부할 수 있습니다.");
       return;
     }
     const tempImagePaths: string[] = [];
@@ -113,6 +125,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
     setImagePaths(tempImagePaths);
     setCroppedImages(tempCroppedImages);
     setIsCropped(false);
+    setIsFilesChanged(true);
   };
 
   const handleCrop = (index: number) => {
@@ -161,12 +174,12 @@ const CrewNoticeEditTemplate: React.FC = () => {
     setIsCropped(!isCropped);
   };
 
-  // 가져온 데이터 초기화 함수
   const handleClearImages = () => {
     setImagePaths([]);
     setCroppedImages([]);
     setCroppedFiles([]);
     setIsCropped(false);
+    setIsFilesChanged(false);
   };
 
   const checkUndefined = async (files: File[]) => {
@@ -177,34 +190,41 @@ const CrewNoticeEditTemplate: React.FC = () => {
       });
       return Promise.all(uploadPromises);
     } else {
-      return imagePaths; // 새로 업로드한 파일이 없다면 기존 이미지 경로를 반환
+      return imagePaths;
     }
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    if (!isValid) {
-      console.log(isValid);
-      console.log("막음");
-
+    if (!isValid && !isFilesChanged) {
       return;
     }
     setIsSubmitting(true);
-    const urls = await checkUndefined(croppedFiles);
+    try {
+      const urls = await checkUndefined(croppedFiles);
 
-    const submitData = {
-      noticeId: Number(noticeId),
-      crewId: Number(crewId),
-      title: data.title,
-      content: data.content,
-      noticeImages: urls,
-    };
+      const submitData = {
+        noticeId: Number(noticeId),
+        crewId: Number(crewId),
+        title: data.title,
+        content: data.content,
+        noticeImages: urls,
+      };
 
-    await mutation.mutateAsync(submitData);
+      await mutation.mutateAsync(submitData);
+    } catch (error) {
+      setErrorMessage("공지 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const closeModal = () => {
+    setErrorMessage(null);
   };
 
   return (
     <div className="mx-auto w-full max-w-[550px]">
-      {isSubmitting && <SpinnerFullComponent />}
+      {isSubmitting && <SpinnerOverlayComponent />}
       <div className="flex flex-col items-center justify-center">
         <header>
           <BackHeaderMediumOrganism text="공지글 수정" />
@@ -283,7 +303,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
 
         <main className="w-full">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-6">
+            <div className="mb-6 mt-2">
               <Controller
                 name="title"
                 control={control}
@@ -316,8 +336,8 @@ const CrewNoticeEditTemplate: React.FC = () => {
               />
             </div>
             <div>
-              {isValid ? (
-                <LargeAbleButton text="수정" />
+              {(isValid && isDirty) || isFilesChanged ? (
+                <LargeAbleButton text="수정" isLoading={isSubmitting} />
               ) : (
                 <LargeDisableButton text="수정" />
               )}
@@ -325,6 +345,11 @@ const CrewNoticeEditTemplate: React.FC = () => {
           </form>
         </main>
       </div>
+      {errorMessage && (
+        <Modal title="알림" onClose={closeModal}>
+          <p>{errorMessage}</p>
+        </Modal>
+      )}
     </div>
   );
 };

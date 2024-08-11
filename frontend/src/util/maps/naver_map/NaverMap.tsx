@@ -8,6 +8,9 @@ import {
   useNaverMapDispatch,
   useNaverMapState,
 } from "./context";
+import startMarkerImage from "./assetes/custom_marker_start.svg";
+import endtMarkerImage from "./assetes/custom_marker_end.svg";
+import markerImage from "./assetes/custom_marker.svg";
 
 type props = {
   initPosition?: { lat: number; lng: number };
@@ -70,6 +73,27 @@ const NaverMap: React.FC<props> = ({
       });
       if (onChange) onChange(markerList);
     }
+  }, [dispatch, markers]);
+
+  useEffect(() => {
+    markers.forEach((marker, index) => {
+      if (index === 0) {
+        marker.setIcon({
+          url: startMarkerImage,
+          scaledSize: new naver.maps.Size(44, 66),
+        });
+      } else if (index === markers.length - 1) {
+        marker.setIcon({
+          url: endtMarkerImage,
+          scaledSize: new naver.maps.Size(44, 66),
+        });
+      } else {
+        marker.setIcon({
+          url: markerImage,
+          scaledSize: new naver.maps.Size(44, 66),
+        });
+      }
+    });
   }, [dispatch, markers]);
 
   useEffect(initMap, [initMap]);

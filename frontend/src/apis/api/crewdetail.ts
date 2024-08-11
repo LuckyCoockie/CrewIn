@@ -164,9 +164,13 @@ export const editCrew = async (dto: EditCrewRequestDto): Promise<void> => {
 
 // 크루 삭제
 export const deleteCrew = async (crewId: number): Promise<void> => {
-  // return console.log("크루 삭제 요청 ID: ", crewId);
-
   const response = await api.delete(`/crew/${crewId}`);
   return response.data;
 };
 
+// 크루 탈퇴
+
+export const quitCrew = async (crewId: number): Promise<void> => {
+  const response = await api.delete(`/crew/${crewId}/leave`);
+  return response.data;
+};

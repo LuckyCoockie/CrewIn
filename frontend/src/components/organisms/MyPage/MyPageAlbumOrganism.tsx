@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { MyGalleryDto, getMyGallery } from "../../../apis/api/mypage";
 import InfiniteScrollComponent from "../../../util/paging/component/InfinityScrollComponent";
 import { PageNationData } from "../../../util/paging/type";
@@ -7,29 +7,43 @@ import { RootState } from "../../../modules";
 
 const MyPageAlbumOrganism: React.FC = () => {
   const memberId = useSelector((state: RootState) => state.auth.memberId);
-  console.log(memberId);
+  const [hasData, setHasData] = useState(true); // 데이터 유무를 추적하기 위한 상태
 
   const fetchGallery = async (
     pageNo: number
   ): Promise<PageNationData<MyGalleryDto>> => {
-    return getMyGallery(pageNo, memberId!);
+    const result = await getMyGallery(pageNo, memberId!);
+    console.log(result);
+
+    if (result.items.length === 0 && pageNo === 0) {
+      setHasData(false); // 데이터가 없을 경우 상태를 false로 설정
+    }
+    return result;
   };
 
   return (
-    <InfiniteScrollComponent
-      fetchKey="myGallery"
-      fetchData={fetchGallery}
-      ItemComponent={({ data }) => (
-        <img
-          src={data.thumbnailImage}
-          alt={`gallery-item-${data.postId}`}
-          key={`gallery-${data.postId}`}
-          className="w-full h-full"
-          style={{ border: "1px solid rgba(255, 0, 0, 0)" }}
+    <>
+      {hasData ? (
+        <InfiniteScrollComponent
+          fetchKey="myGallery"
+          fetchData={fetchGallery}
+          ItemComponent={({ data }) => (
+            <img
+              src={data.thumbnailImage}
+              alt={`gallery-item-${data.postId}`}
+              key={`gallery-${data.postId}`}
+              className="w-full h-full"
+              style={{ border: "1px solid rgba(255, 0, 0, 0)" }}
+            />
+          )}
+          className="grid grid-cols-3"
         />
+      ) : (
+        <div className="text-center w-full text-gray-300 mt-3">
+          저장된 앨범이 없습니다.
+        </div>
       )}
-      className="grid grid-cols-3"
-    />
+    </>
   );
 };
 

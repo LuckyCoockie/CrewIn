@@ -1,12 +1,12 @@
 import React from "react";
 
-const SpinnerComponent: React.FC = () => {
+const SpinnerOverlayComponent: React.FC = () => {
   return (
-    <div className="flex justify-center items-center disabled w-full h-full">
+    <div className="absolute inset-0 bg-gray-100 bg-opacity-75 flex justify-center items-center z-10">
       <div role="status">
         <svg
           aria-hidden="true"
-          className="inline w-5 h-5 text-gray-200 animate-spin dark:text-gray-600 fill-gray-600 dark:fill-gray-300"
+          className="inline w-10 h-10 text-gray-300 animate-spin dark:text-gray-600 fill-gray-700 dark:fill-gray-400"
           viewBox="0 0 100 101"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -25,4 +25,4 @@ const SpinnerComponent: React.FC = () => {
   );
 };
 
-export default SpinnerComponent;
+export default SpinnerOverlayComponent;

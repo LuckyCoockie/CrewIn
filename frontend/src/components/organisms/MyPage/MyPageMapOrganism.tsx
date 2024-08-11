@@ -28,7 +28,7 @@ const MyPageMapOrganism: React.FC<FetchDataProps> = ({
             router="course"
             routerId="create"
             plusbutton={true}
-            replaceText="저장된 지도가 없습니다."
+            replaceText=""
             propsData={mapsData}
             renderItem={(data: MyMapsDto, index: number) => (
               <ListButtonMolecule
@@ -36,7 +36,7 @@ const MyPageMapOrganism: React.FC<FetchDataProps> = ({
                 src={data.thumbnailImage}
                 alt={data.name}
                 text={data.name}
-                router="course"
+                router="course/edit"
                 routerId={data.id}
               />
             )}
