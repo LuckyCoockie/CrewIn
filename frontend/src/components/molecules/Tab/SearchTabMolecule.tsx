@@ -1,6 +1,6 @@
 import React from "react";
-import HomeSelected from "../../atoms/Bottombar/HomeSelected";
-import HomeDeselected from "../../atoms/Bottombar/HomeDeselected";
+import { ReactComponent as Searchicon } from "../../../assets/icons/searchicon.svg";
+import { ReactComponent as SearchDeselected } from "../../../assets/icons/search_deselected.svg";
 
 type Name = {
   name: string;
@@ -8,7 +8,7 @@ type Name = {
   onClick: () => void;
 };
 
-const HomeTabMolecule: React.FC<Name> = (props) => {
+const SearchTabMolecule: React.FC<Name> = (props) => {
   return (
     <>
       <div
@@ -18,14 +18,14 @@ const HomeTabMolecule: React.FC<Name> = (props) => {
       >
         {props.tab ? (
           <>
-            <HomeSelected />
+            <Searchicon />
             <p className="text-center text-xs font-bold lg:pl-2">
               {props.name}
             </p>
           </>
         ) : (
           <>
-            <HomeDeselected />
+            <SearchDeselected />
             <p className="text-center text-xs text-gray-500 lg:pl-2">
               {props.name}
             </p>
@@ -36,4 +36,4 @@ const HomeTabMolecule: React.FC<Name> = (props) => {
   );
 };
 
-export default HomeTabMolecule;
+export default SearchTabMolecule;

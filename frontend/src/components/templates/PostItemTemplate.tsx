@@ -177,7 +177,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
         />
       )}
       {croppedImages && croppedImages.length > 0 && (
-        <div className="relative cursor-pointer mx-1" onClick={handleImageClick}>
+        <div className="relative cursor-pointer sm:mx-1" onClick={handleImageClick}>
           <Carousel
             showThumbs={false}
             showIndicators={true}
