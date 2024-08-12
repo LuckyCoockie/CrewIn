@@ -13,9 +13,9 @@ const UnprotectedRoute = () => {
 
   useEffect(() => {
     if (isAuthenticated || checkAuth()) {
-      navigate(location.state.navigateFrom ?? "/");
+      navigate(location.state?.navigateFrom ?? "/");
     }
-  }, [isAuthenticated, location.state.navigateFrom, navigate]);
+  }, [isAuthenticated, location.state?.navigateFrom, navigate]);
 
   return <Outlet />;
 };
