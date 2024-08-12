@@ -41,6 +41,7 @@ import CrewEditPage from "./pages/CrewEditPage.tsx";
 import SessionEditPage from "./pages/SessionEditPage.tsx";
 import CrewNoticeEditPage from "./pages/CrewNoticeEditPage.tsx";
 import PostDetailPage from "./pages/PostDetailPage.tsx";
+import PeopleGalleryListDetailPage from "./pages/PeopleGalleryListDetailPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -120,6 +121,10 @@ export const router = createBrowserRouter([
             children: [
               { path: "", element: <MyProfilePage /> },
               { path: ":memberId", element: <PeopleProfilePage /> },
+              {
+                path: ":memberId/gallery",
+                element: <PeopleGalleryListDetailPage />,
+              },
             ],
           },
           { path: "info", element: <ProfileInfoPage /> },

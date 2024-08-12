@@ -16,6 +16,7 @@ import { useNavigate } from "react-router";
 import InfiniteScrollComponent from "../../../util/paging/component/InfinityScrollComponent";
 import { PageNationData } from "../../../util/paging/type";
 import SessionListItemMolecules from "../../molecules/SessionListItemMolecules";
+import Modal from "../../molecules/ModalMolecules";
 
 type OwnProps = {
   onSearch: (dto: GetSessionListRequestDto) => Promise<void>;
@@ -37,6 +38,8 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({
   const [status, setStatus] = useState<SessionStatusType>(
     query.status ?? "active"
   );
+
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
   const handleSearch = useCallback(
     (data: GetSessionListRequestDto) => onSearch({ status: status, ...data }),
@@ -63,6 +66,10 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({
     [fetchData, query]
   );
 
+  const handleClickInfoModalConfirm = useCallback(() => {
+    setIsInfoModalOpen(true);
+  }, []);
+
   return (
     <main>
       <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20 relative">
@@ -79,9 +86,7 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({
               className="text-xl font-black tracking-tighter p-0 text-left"
             ></DropdownTypeComponent>
           </p>
-          <div className="flex items-center">
-            <InfoIcon />
-          </div>
+          <InfoIcon onClick={handleClickInfoModalConfirm} />
         </div>
         <SessionSearchOrganism onSearch={handleSearch} />
         <InfiniteScrollComponent
@@ -110,6 +115,36 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({
           <Plus />
         </FloatingActionButton>
       </div>
+      {isInfoModalOpen && (
+        <Modal title={"세션"} onClose={() => setIsInfoModalOpen(false)} titleSize="text-xl">
+          <div className="pb-4">
+            <label className="block min-h-[2rem] tracking-tighter text-gray-900 text-lg">
+              {"번개런"}
+            </label>
+            <p>
+              {
+                "크루에서 정기적으로 진행되는 세션입니다. 크루원들만을 위한 세션입니다."
+              }
+            </p>
+          </div>
+          <div className="pb-4">
+            <label className="block min-h-[2rem] tracking-tighter text-gray-900 text-lg">
+              {"정규런"}
+            </label>
+            <p>
+              {
+                "크루에서 개최하는 세션이며 비 크루원도 자유롭게 참가 할 수 있는 이벤트 세션입니다."
+              }
+            </p>
+          </div>
+          <div>
+            <label className="block min-h-[2rem] tracking-tighter text-gray-900 text-lg">
+              {"오픈런"}
+            </label>
+            <p>{"누구나 자유롭게 생성하고 참가할 수 있는 세션입니다."}</p>
+          </div>
+        </Modal>
+      )}
     </main>
   );
 };

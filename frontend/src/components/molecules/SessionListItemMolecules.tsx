@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import "../../styles/square.css";
 import React from "react";
 import sessionLogoImage from "../../assets/images/sessionLogo.png";
@@ -22,26 +22,6 @@ const SessionListItem = ({
   current,
   max,
 }: OwnProps) => {
-  const [image, setImage] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetch(imageUrl)
-      .then((response) => response.blob())
-      .then((blob) => {
-        const url = URL.createObjectURL(blob);
-        setImage(url);
-      })
-      .catch(() => {
-        setImage(null);
-      });
-
-    return () => {
-      if (imageUrl) {
-        URL.revokeObjectURL(imageUrl);
-      }
-    };
-  }, [imageUrl]);
-
   const parsedDate = useMemo(() => {
     const temp = new Date(Date.parse(date));
     const year = temp.getFullYear();
@@ -64,7 +44,7 @@ const SessionListItem = ({
         <div className="square relative">
           <img
             alt="session image"
-            src={image || sessionLogoImage}
+            src={imageUrl || sessionLogoImage}
             className={`border xs:border-2 w-full ${
               current! >= max! ? "grayscale" : ""
             }`}

@@ -1,5 +1,6 @@
 import { PageNationData } from "../../util/paging/type";
 import api from "../utils/instance";
+import { PostDto } from "./postlist";
 
 // 프로필 상단 정보
 export type ProfileDto = {
@@ -48,7 +49,7 @@ export const getMyMadeSessions = async (
   return response.data;
 };
 
-// 내가 참가한 세션
+// 내가 신청한 세션
 export type MyParticipatedSessionDto = {
   startAt: string;
   endAt: string;
@@ -125,5 +126,19 @@ export const getPeopleGallery = async (
   );
   console.log(response.data);
 
+  return response.data;
+};
+
+export type PeopleGalleryDetailRequestDto = {
+  pageNo: number;
+  memberId: number;
+};
+export type PeopleGalleryDetailResponseDto = PageNationData<PostDto>;
+export const getPeopleGalleryDetail = async (
+  dto: PeopleGalleryDetailRequestDto
+): Promise<PeopleGalleryDetailResponseDto> => {
+  const response = await api.get(
+    `/post/member/gallery/detail/${dto.memberId}?page-no=${dto.pageNo}`
+  );
   return response.data;
 };

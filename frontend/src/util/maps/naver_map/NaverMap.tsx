@@ -55,6 +55,7 @@ const NaverMap: React.FC<props> = ({
 
   // update polyline on markers update
   useEffect(() => {
+    if (!editable) return;
     dispatch(clearPolyline());
     if (markers.length > 1) {
       const polyline = markers.map((marker) => {

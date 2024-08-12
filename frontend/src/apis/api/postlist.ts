@@ -9,7 +9,7 @@ export type PostDto = {
   heartCount: number;
   isHearted: boolean;
   isPublic: boolean;
-  postType: string;
+  postType: "STANDARD" | "NOTICE";
   title: string;
   createdAt: string;
   updatedAt: string;

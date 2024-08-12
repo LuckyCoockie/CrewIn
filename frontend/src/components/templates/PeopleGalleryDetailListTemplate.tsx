@@ -1,14 +1,14 @@
-import { GetCrewGalleryListDetailResponseDto } from "../../apis/api/crewGallaryList";
+import { PeopleGalleryDetailResponseDto } from "../../apis/api/mypage";
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import PostListComponent from "../organisms/CrewGalleryDetailListOrganism";
 
 type OwnProps = {
   initPage?: number;
   initPostId?: number;
-  fetchData: (pageNo: number) => Promise<GetCrewGalleryListDetailResponseDto>;
+  fetchData: (pageNo: number) => Promise<PeopleGalleryDetailResponseDto>;
 };
 
-const CrewGalleryListDetailTemplate: React.FC<OwnProps> = ({
+const PeopleGalleryDetailListTemplate: React.FC<OwnProps> = ({
   initPage,
   initPostId,
   fetchData,
@@ -27,4 +27,4 @@ const CrewGalleryListDetailTemplate: React.FC<OwnProps> = ({
   );
 };
 
-export default CrewGalleryListDetailTemplate;
+export default PeopleGalleryDetailListTemplate;

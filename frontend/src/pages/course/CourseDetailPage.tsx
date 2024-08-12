@@ -9,7 +9,7 @@ import CourseCreateTemplate from "../../components/templates/CourseCreateTemplat
 import { NaverMapProvider } from "../../util/maps/naver_map/context.tsx";
 import { Point } from "../../util/maps/tmap/apis/api/directionApi.ts";
 import { reversGeocodingApi } from "../../util/maps/tmap/apis/api/geocodeApi.ts";
-import { useParams } from "react-router";
+import { Navigate, useParams } from "react-router";
 import BackHeaderMediumOrganism from "../../components/organisms/BackHeaderMediumOrganism.tsx";
 
 const CourseDetailPage: React.FC = () => {
@@ -17,10 +17,10 @@ const CourseDetailPage: React.FC = () => {
   const [initValue, setInitValue] = useState<CreateCourseRequestDto>();
 
   useEffect(() => {
-    if (!courseId) return;
-    getCourseDetail({ id: parseInt(courseId) }).then((data) =>
-      setInitValue(data)
-    );
+    if (!courseId || !parseInt(courseId)) return;
+    getCourseDetail({ id: parseInt(courseId) }).then((data) => {
+      setInitValue(data);
+    });
   }, [courseId]);
 
   const encodeInfo = async (
@@ -44,7 +44,7 @@ const CourseDetailPage: React.FC = () => {
     if (!info) return;
     const data: {
       markers: { title: string; point: number[] }[];
-      polylines: Point[][];
+      polylines: number[][][];
     } = JSON.parse(info);
     return {
       markers: data.markers.map((marker) => {
@@ -53,6 +53,11 @@ const CourseDetailPage: React.FC = () => {
           point: { latitude: marker.point[0], longitude: marker.point[1] },
         };
       }),
+      polylines: data.polylines.map((polyline) =>
+        polyline.map((point) => {
+          return { latitude: point[0], longitude: point[1] };
+        })
+      ),
     };
   };
 
@@ -62,6 +67,8 @@ const CourseDetailPage: React.FC = () => {
     return {
       title: value.name,
       markers: info?.markers ?? [],
+      polylines: info?.polylines,
+      length: value.length,
     };
   };
 
@@ -76,7 +83,9 @@ const CourseDetailPage: React.FC = () => {
     return `${address.addressInfo.city_do} ${address.addressInfo.gu_gun} ${address.addressInfo.legalDong}`;
   };
 
-  if (!courseId) return "course id가 필요합니다";
+  if (!courseId || !parseInt(courseId)) {
+    return <Navigate to={"/profile"} replace />;
+  }
 
   return (
     <>

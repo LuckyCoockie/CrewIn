@@ -1,16 +1,30 @@
 import React from "react";
+import cameraButton from "../../../assets/images/camerabutton.png";
 
 type Image = {
-  src: string;
+  src?: string;
+  onClick?: () => void;
+  editable?: boolean;
 };
 
-const MyPageProfileImageComponent: React.FC<Image> = ({ src }) => {
+const MyPageProfileImageComponent: React.FC<Image> = ({
+  src,
+  onClick,
+  editable = true,
+}) => {
   return (
-    <img
-      src={src}
-      alt="profile"
-      className="border w-20 h-20 rounded-full mx-3 mr-3"
-    />
+    <div className="flex relative w-40 h-40" onClick={onClick}>
+      <img
+        src={src}
+        alt="Preview"
+        className="mx-auto border-2 rounded-full object-cover square"
+      />
+      {editable && (
+        <div className="absolute bottom-2 right-2">
+          <img src={cameraButton} alt="check Button" className="w-8 h-8" />
+        </div>
+      )}
+    </div>
   );
 };
 

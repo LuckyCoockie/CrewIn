@@ -1,13 +1,10 @@
 import React, { useCallback, useState } from "react";
-import { Carousel } from "react-responsive-carousel";
-import OneToOneImageMolecule from "../molecules/Image/OneToOneImageMolecule";
 import DetailInfoMolecule from "../molecules/Content/DetailInfoMolecule";
 import DetailInfoPaceMolecule from "../molecules/Content/DetailInfoPaceMolecule";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
 import Modal from "../molecules/ModalMolecules";
 import ModalConfirm from "../molecules/ModalConfirmMolecules";
-
 import {
   SessionDetailDto,
   participateSession,
@@ -36,7 +33,6 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
     spot,
     area,
     content,
-    sessionPosters,
     isSessionHost,
     courseThumbnail,
     currentPeople,
@@ -153,17 +149,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
           <p>정말로 참가를 취소하시겠습니까?</p>
         </ModalConfirm>
       )}
-      <Carousel
-        showThumbs={false}
-        showIndicators={true}
-        showStatus={true}
-        infiniteLoop={false}
-        swipeable={true}
-      >
-        {sessionPosters.map((poster, index) => (
-          <OneToOneImageMolecule key={index} src={poster} alt="poster" />
-        ))}
-      </Carousel>
+
       <main>
         {crewName && <DetailInfoMolecule title="크루명" content={crewName} />}
         <DetailInfoMolecule
@@ -192,14 +178,17 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
         <DetailInfoMolecule title="코스" content={area} />
         <DetailInfoMolecule title="내용" content={content} />
         <div
-          className="flex justify-center items-center"
+          className="flex flex-col justify-center items-center"
           onClick={handelCourseClick}
         >
           <img
             src={courseThumbnail}
             alt="courseThumbnail"
-            className="m-4 w-2/3"
+            className="mt-4 w-2/3"
           />
+          <div className="text-gray-400 mb-6">
+            지도를 클릭하면 상세보기가 가능합니다.
+          </div>
         </div>
         {!isSessionHost &&
           !isSessionStarted &&

@@ -99,6 +99,12 @@ export const uploadSessionImages = async (
   return response.data;
 };
 
+// 세션 앨범 삭제
+export const deleteSessionImage = async (imageId: number): Promise<void> => {
+  const response = await api.delete(`/session/detail/gallery/${imageId}`);
+  return response.data;
+};
+
 // 세션 참가
 
 export const participateSession = async (sessionId: number): Promise<void> => {

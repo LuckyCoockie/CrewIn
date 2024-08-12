@@ -10,6 +10,7 @@ import {
   startAttendance,
 } from "../../apis/api/attendance";
 import useGeolocation from "../../util/geolocation/gelocation";
+import SpinnerComponent from "../../components/atoms/SpinnerComponent";
 
 const AttendancePage: React.FC = () => {
   const { sessionId } = useParams();
@@ -60,6 +61,14 @@ const AttendancePage: React.FC = () => {
 
   if (!sessionId) return "sessionId가 필요합니다.";
 
+  if (!location) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <SpinnerComponent />
+      </div>
+    );
+  }
+
   return (
     <AttendanceTemplate
       getMemberList={getMemberList}
@@ -70,6 +79,7 @@ const AttendancePage: React.FC = () => {
       startAt={state.startAt}
       endAt={state.endAt}
       sessionId={parseInt(sessionId)}
+      location={location}
     />
   );
 };
