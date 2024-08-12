@@ -11,15 +11,26 @@ const App: React.FC = () => {
   const location = useLocation();
 
   // 제외할 페이지
-  const hideBottomBarRoutes = [
-    /^\/login$/,
-    /^\/join$/,
-    /^\/find-password$/,
-    /^\/info$/,
-    /^\/course\/create$/,
-    /^\/profile\/[^/]+$/, // /profile/:userId 만 포함하도록 설정
+  // const hideBottomBarRoutes = [
+  //   /^\/login$/,
+  //   /^\/join$/,
+  //   /^\/find-password$/,
+  //   /^\/info$/,
+  //   /^\/course\/create$/,
+  //   /^\/profile\/[^/]+$/, // /profile/:userId 만 포함하도록 설정
+  // ];
+  // const shouldHideBottomBar = hideBottomBarRoutes.some((pattern) =>
+  //   pattern.test(location.pathname)
+  // );
+
+  // 바텀바를 그릴 페이지
+  const showBottomBarRoutes = [
+    /^\/home$/,
+    /^\/session\??[^/]*$/,
+    /^\/crew(\/(search(\?)?|detail\/(?![^/]+\/notice).*)?)?$/,
+    /^\/profile$/,
   ];
-  const shouldHideBottomBar = hideBottomBarRoutes.some((pattern) =>
+  const shouldShowBottomBar = showBottomBarRoutes.some((pattern) =>
     pattern.test(location.pathname)
   );
 
@@ -32,7 +43,7 @@ const App: React.FC = () => {
     <div className="mx-auto w-full max-w-[550px]" ref={ref}>
       {standalone && isIOS && <PullToRefresh el={ref} onRefresh={onRefresh} />}
       <Outlet />
-      {!shouldHideBottomBar && (
+      {shouldShowBottomBar && (
         <BottomBarOrganism current={location.pathname} />
       )}
     </div>

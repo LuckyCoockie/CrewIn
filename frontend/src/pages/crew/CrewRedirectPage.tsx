@@ -7,7 +7,7 @@ const CrewRedirectPage = () => {
   useEffect(() => {
     getMyCrews().then((response) => {
       if (response.crews.length > 0) {
-        navigate(`/crew/detail/${response.crews[0].crewId}`, { replace: true });
+        navigate(`/crew/detail/${response.crews[0].crewId}`);
       }
     });
   }, [navigate]);
