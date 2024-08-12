@@ -37,7 +37,7 @@ public class MemberService {
 
     public Token signIn(SignInRequest signInRequest) {
         validationService.validateEmailString(signInRequest.getEmail());
-        Member member = memberRepository.findByEmail(signInRequest.getEmail()).orElseThrow(LoginFailException::new);
+        Member member = memberRepository.findFirstByEmail(signInRequest.getEmail()).orElseThrow(LoginFailException::new);
         if (passwordEncoder.matches(signInRequest.getPassword(), member.getPassword())) {
             return tokenUtil.generateToken(member);
         } else {
@@ -105,7 +105,7 @@ public class MemberService {
     }
 
     public void changePassword(String email, String oldPassword, String newPassword) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findFirstByEmail(email).orElseThrow(MemberNotFoundException::new);
         if (!passwordEncoder.matches(oldPassword, member.getPassword())) {
             throw new InvalidCredentialException();
         }
@@ -113,7 +113,7 @@ public class MemberService {
     }
 
     public void issueTemporaryPassword(String email, String name) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findFirstByEmail(email).orElseThrow(MemberNotFoundException::new);
         if (!member.getName().toLowerCase().equals(name.toLowerCase().trim())) {
             throw new InvalidCredentialException();
         }
@@ -152,7 +152,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberProfileResponse getMemberProfile(CustomUser customUser, Long memberId) {
         // 현재 로그인한 사용자 조회
-        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
 
         // 입력받은 memberId 랑 같으면 현재 로그인한 사용자 (내 프로필 조회)
         if (memberId != null) {

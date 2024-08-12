@@ -3,7 +3,6 @@ package com.luckycookie.crewin.service;
 import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.domain.Session;
 import com.luckycookie.crewin.domain.SessionPoster;
-import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.MyPageRequest.UpdateProfileRequest;
 import com.luckycookie.crewin.dto.MyPageRequest.MyPageNicknameRequest;
 import com.luckycookie.crewin.dto.MyPageResponse.MyPageSessionItem;
@@ -48,7 +47,7 @@ public class MyPageService {
     @Transactional(readOnly = true)
     public PagingItemsResponse<MyPageSessionItem> getCreatedMySession(CustomUser customUser, int pageNo, String type, String sessionType) {
         // 현재 로그인한 사용자 조회
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         Pageable pageable = PageRequest.of(pageNo, 10); // pageNo 페이지 번호, 10 : 페이지 크기
@@ -115,7 +114,7 @@ public class MyPageService {
     }
 
     public void updateProfileImage(CustomUser customUser, UpdateProfileRequest updateProfileRequest) {
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         if (updateProfileRequest.getProfileImageUrl() != null) {
@@ -132,7 +131,7 @@ public class MyPageService {
     // 닉네임 변경
     public void changeNickname(CustomUser customUser, MyPageNicknameRequest myPageNicknameRequest) {
         validationService.validateNickName(myPageNicknameRequest.getNickname());
-        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail()).orElseThrow(MemberNotFoundException::new);
 
         // 변경하고자 하는 nickname
         String nickname = myPageNicknameRequest.getNickname();

@@ -17,10 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +48,7 @@ public class NotificationService {
     }
 
     public List<NotificationResponse> getMemberNotifications(CustomUser customUser) {
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         member.updateMemberNotification(false); // 알림들을 읽었다고 표시
@@ -104,7 +101,7 @@ public class NotificationService {
     }
 
     public void deleteNotification(CustomUser customUser, Long notificationId) {
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
         Notification notification = notificationRepository.findById(notificationId)
                 .orElseThrow(NotFoundNotificationException::new);

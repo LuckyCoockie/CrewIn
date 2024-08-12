@@ -57,7 +57,7 @@ public class AttendanceService {
     // SSE 구독
     public SseEmitter subscribeSSE(Long sessionId, String email) {
         Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundSessionException::new);
-        Member member = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
+        Member member = memberRepository.findFirstByEmail(email).orElseThrow(NotFoundMemberException::new);
 
         // 해당 세션에 존재하지 않는 멤버는 SSE 요청 불가능
         MemberSession memberSession = memberSessionRepository.findByMemberAndSession(member, session).orElseThrow(NotFoundMemberSessionException::new);
@@ -102,7 +102,7 @@ public class AttendanceService {
         Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundSessionException::new);
 
         // 요청자가 주최자인지 체크
-        Member host = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
+        Member host = memberRepository.findFirstByEmail(email).orElseThrow(NotFoundMemberException::new);
         if (!session.getHost().getId().equals(host.getId())) {
             throw new SessionAuthorizationException();
         }
@@ -138,7 +138,7 @@ public class AttendanceService {
             memberSessionList = memberSessionRepository.findBySessionWithMember(session);
 
         // 현재 로그인한 사용자
-        Member currentMember = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+        Member currentMember = memberRepository.findFirstByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
 
         // 현재 로그인한 사용자가 memberSession 에 있어야 함 - 내가 속하지 않은 크루의 출석부는 조회 불가!!
         MemberSession memberSession = memberSessionRepository.findByMemberAndSession(currentMember, session).orElseThrow(NotFoundMemberSessionException::new);
@@ -180,7 +180,7 @@ public class AttendanceService {
 
     // 출석체크
     public void attend(Long sessionId, String email, AttendanceInfoRequest attendanceInfoRequest) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
+        Member member = memberRepository.findFirstByEmail(email).orElseThrow(NotFoundMemberException::new);
         Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundSessionException::new);
         MemberSession memberSession = memberSessionRepository.findByMemberAndSession(member, session)
                 .orElseThrow(NotFoundMemberSessionException::new);
@@ -234,7 +234,7 @@ public class AttendanceService {
 
     public void updateAttendance(Long memberSessionId, boolean attendValue, String email) {
         MemberSession memberSession = memberSessionRepository.findByIdWithSessionHost(memberSessionId).orElseThrow(NotFoundMemberSessionException::new);
-        Member client = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
+        Member client = memberRepository.findFirstByEmail(email).orElseThrow(NotFoundMemberException::new);
 
         // 수정 요청자가 호스트인지 체크
         if (!memberSession.getSession().getHost().getId().equals(client.getId())) {

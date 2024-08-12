@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.luckycookie.crewin.domain.QCrew.crew;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -49,7 +47,7 @@ public class PostService {
     private final S3Service s3Service;
 
     public void writePost(WritePostRequest writePostRequest, CustomUser customUser) {
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         Crew crew = null;
@@ -130,7 +128,7 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostItem getPostDetail(Long postId, CustomUser customUser){
-        Member viewer = memberRepository.findByEmail(customUser.getEmail())
+        Member viewer = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
         Post post = postRepository.findById(postId)
                 .orElseThrow(NotFoundPostException::new);
@@ -192,7 +190,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public PagingItemsResponse<PostItem> getAllPostsSortedByCreatedAt(String email, int pageNo) {
         PageRequest pageRequest = PageRequest.of(pageNo, 10);
-        Member viewer = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+        Member viewer = memberRepository.findFirstByEmail(email).orElseThrow(MemberNotFoundException::new);
         List<MemberCrew> crews = memberCrewRepository.findJoinedMemberCrewsByMember(viewer);
         Page<Post> postListPage = postRepository.findPublicPostsSortedByCreatedAt(
                 crews.stream().map(mc -> mc.getCrew().getId()).collect(Collectors.toList()), pageRequest
@@ -246,7 +244,7 @@ public class PostService {
     // 사진첩 조회
     public PagingItemsResponse<PostGalleryItem> getCrewPostGallery(int pageNo, long crewId, CustomUser customUser) {
         PageRequest pageRequest = PageRequest.of(pageNo, 12);
-        Member viewer = memberRepository.findByEmail(customUser.getEmail())
+        Member viewer = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
         Crew crew = crewRepository.findById(crewId)
                 .orElseThrow(NotFoundCrewException::new);
@@ -261,7 +259,7 @@ public class PostService {
         PageRequest pageRequest = PageRequest.of(pageNo, 12);
         Member targetMember = memberRepository.findById(targetMemgerId)
                 .orElseThrow(NotFoundMemberException::new);
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
 
         Page<Post> postListPage = null;
@@ -298,7 +296,7 @@ public class PostService {
     // 크루
     public PagingItemsResponse<PostItem> getCrewPostGalleryDetailResponse(Long crewId, int pageNo, CustomUser customUser) {
         // 현재 로그인한 사용자
-        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
         Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
 
         // 현재 로그인한 사용자가 해당 crew 에 포함되어 있는지 확인
@@ -313,7 +311,7 @@ public class PostService {
     // 멤버
     public PagingItemsResponse<PostItem> getMemberPostGalleryDetailResponse(Long memberId, int pageNo, CustomUser customUser) {
         // 현재 로그인한 사용자
-        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
 
         Page<Post> postListPage = null;
         PageRequest pageRequest = PageRequest.of(pageNo, 12);
@@ -337,7 +335,7 @@ public class PostService {
          * 2. 하트 테이블에서 isHearted
          * */
 
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         List<PostItem> postList = postListPage.getContent()
@@ -368,7 +366,7 @@ public class PostService {
     }
 
     public void registHeart(Long postId, CustomUser customUser) {
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
         Post post = postRepository.findById(postId)
                 .orElseThrow(NotFoundPostException::new);
@@ -385,7 +383,7 @@ public class PostService {
 
     public void deleteHeart(Long postId, CustomUser customUser) {
 
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
         Post post = postRepository.findById(postId)
                 .orElseThrow(NotFoundPostException::new);

@@ -62,7 +62,7 @@ public class SessionService {
     public SessionCreateResponse createSession(CreateSessionRequest createSessionRequest, CustomUser customUser) {
 
         // 현재 로그인한 사용자
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         // 번개런 -> crewId 가 null 이어야 함
@@ -150,7 +150,7 @@ public class SessionService {
         Member host = memberRepository.findById(session.getHost().getId())
                 .orElseThrow(NotFoundMemberException::new);
 
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         boolean userSessionCompare;
@@ -191,13 +191,14 @@ public class SessionService {
                 .sessionType(session.getSessionType())
                 .sessionPosters(session.getPosterImages().stream().map(SessionPoster::getImageUrl).toList())
                 .courseDistance(Math.round(course.getLength() / 1000.0 * 10.0) / 10.0)
+                .isMyCrew(memberCrewRepository.existsByMemberAndCrew(member, session.getCrew()))
                 .build();
     }
 
 
     public void updateSession(Long sessionId, UpdateSessionRequest updateSessionRequest, CustomUser customUser) {
 
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(NotFoundSessionException::new);
@@ -248,7 +249,7 @@ public class SessionService {
     }
 
     public void deleteSession(Long sessionId, CustomUser customUser) {
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(NotFoundSessionException::new);
@@ -310,7 +311,7 @@ public class SessionService {
 
     public PagingItemsResponse<SessionGalleryItem> getSessionGallery(int pageNo, Long sessionId, CustomUser customUser) {
         PageRequest pageRequest = PageRequest.of(pageNo, 27);
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(NotFoundSessionException::new);
@@ -348,7 +349,7 @@ public class SessionService {
                 .orElseThrow(NotFoundSessionException::new);
 
         // 내가 그 세션에 참여 했는지 안했는지 검증
-        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
         MemberSession memberSession = memberSessionRepository.findByMemberAndSession(member, session).orElseThrow(NotFoundMemberSessionException::new);
 
         if (memberSession.getIsAttend()) { // 참석 했음`
@@ -372,8 +373,12 @@ public class SessionService {
     // 세션 사진 삭제
     public void deleteSessionImage(Long sessionImageId, CustomUser customUser) {
 
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
         SessionImage sessionImage = sessionImageRepository.findById(sessionImageId).orElseThrow(SessionImageUploadException::new);
-
+        if (memberSessionRepository.existsByMemberAndSession(member, sessionImage.getSession())) {
+            throw new NotFoundMemberSessionException();
+        }
         s3Service.deleteImage(sessionImage.getImageUrl());
 
         sessionImageRepository.delete(sessionImage);
@@ -381,7 +386,7 @@ public class SessionService {
 
     // 세션 참가 신청
     public void applySession(Long sessionId, String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
+        Member member = memberRepository.findFirstByEmail(email).orElseThrow(NotFoundMemberException::new);
         Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundSessionException::new);
 
         // 호스트가 신청하거나, 신청시간이 세션 시작 이후면 안 받음
@@ -418,7 +423,7 @@ public class SessionService {
     }
 
     public void cancelSessionRequest(Long sessionId, String email) {
-        Member member = memberRepository.findByEmail(email)
+        Member member = memberRepository.findFirstByEmail(email)
                 .orElseThrow(NotFoundMemberException::new);
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(NotFoundSessionException::new);

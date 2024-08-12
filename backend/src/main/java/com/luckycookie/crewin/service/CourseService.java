@@ -30,7 +30,7 @@ public class CourseService {
 
     public void createCourse(CourseRequest.CreateCourseRequest createCourseRequest, CustomUser customUser) {
 
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         Course course = Course
@@ -48,7 +48,7 @@ public class CourseService {
 
     public List<CourseResponse> getAllCourse(CustomUser customUser) {
 
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         // id 기준 역순 정렬
@@ -58,7 +58,7 @@ public class CourseService {
 
     public void updateCourse(UpdateCourseRequest updateCourseRequest, Long courseId, CustomUser customUser) {
 
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(NotFoundCourseException::new);
@@ -75,7 +75,7 @@ public class CourseService {
     }
 
     public void deleteCourse(Long courseId, CustomUser customUser) {
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(NotFoundCourseException::new);

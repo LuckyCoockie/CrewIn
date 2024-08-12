@@ -54,7 +54,7 @@ public class CrewService {
 
     public Crew createCrew(CrewInfoRequest crewInfoRequest, CustomUser customUser) {
 
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         Crew crew = Crew
@@ -91,7 +91,7 @@ public class CrewService {
     @Transactional(readOnly = true)
     public MyCrewItemResponse getMyCrewList(CustomUser customUser) {
         // 사용자 정보 가져오기
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         List<MemberCrew> crews = memberCrewRepository.findCrewByMemberAndIsJoined(member);
@@ -123,7 +123,7 @@ public class CrewService {
 
     public void createCrewNotice(CreateCrewNoticeRequest createCrewNoticeRequest, CustomUser customUser) {
 
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
         Crew crew = crewRepository.findById(createCrewNoticeRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
 
@@ -202,7 +202,7 @@ public class CrewService {
     public void updateCrewInfo(Long crewId, CrewInfoRequest crewInfoRequest, CustomUser customUser) {
         Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
 
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         Position position = memberCrewRepository.findPositionByMemberAndCrew(member, crew).orElseThrow(CrewPositionMismatchException::new);
@@ -241,7 +241,7 @@ public class CrewService {
     public void deleteCrewInfo(Long crewId, CustomUser customUser) {
         Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
 
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         Position position = memberCrewRepository.findPositionByMemberAndCrew(member, crew).orElseThrow(CrewPositionMismatchException::new);
@@ -269,7 +269,7 @@ public class CrewService {
     // 크루 탈퇴
     public void quitCrew(Long crewId, CustomUser customUser) {
 
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
         Crew crew = crewRepository.findById(crewId)
                 .orElseThrow(NotFoundCrewException::new);
@@ -295,7 +295,7 @@ public class CrewService {
         Pageable pageable = PageRequest.of(pageNo, 10); // pageNo 페이지 번호, 10 : 페이지 크기
 
         // 현재 사용자 정보 가져오기
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
@@ -388,7 +388,7 @@ public class CrewService {
         // 현재 사용자가 CAPTAIN 일때만 가능함 (Exception 처리 해주기)
 
         // 현재 사용자 정보 가져오기
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         Crew crew = crewRepository.findById(updateCrewPositionRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
@@ -449,7 +449,7 @@ public class CrewService {
     public void inviteCrewMember(CustomUser customUser, CrewMemberRequest crewMemberRequest) {
 
         // 요청자 (crewId)
-        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
 
         Crew crew = crewRepository.findById(crewMemberRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
         Position position = memberCrewRepository.findPositionByMemberAndCrew(member, crew).orElseThrow(NotFoundCrewException::new);
@@ -492,7 +492,7 @@ public class CrewService {
         Crew crew = crewRepository.findById(crewReplyMemberRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
 
         // 초대된 사람 (memberId)
-        Member member = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
 
         MemberCrew memberCrew = memberCrewRepository.findByMemberAndCrew(member, crew).orElseThrow(NotFoundMemberCrewException::new);
 
@@ -516,7 +516,7 @@ public class CrewService {
     public void updateCrewCaptain(UpdateCrewPositionRequest updateCrewPositionRequest, CustomUser customUser) {
 
         // 내가 CAPTAIN 이어야 승계 가능
-        Member admin = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+        Member admin = memberRepository.findFirstByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
         Crew crew = crewRepository.findById(updateCrewPositionRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
         MemberCrew adminMemberCrew = memberCrewRepository.findByMemberAndCrew(admin, crew).orElseThrow(NotFoundMemberCrewException::new);
 
@@ -542,7 +542,7 @@ public class CrewService {
     // 크루 강퇴
     public void deleteCrewMember(CustomUser customUser, CrewMemberRequest crewMemberRequest) {
         // 강퇴 시키는 사람 (CAPTAIN)
-        Member admin = memberRepository.findByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
+        Member admin = memberRepository.findFirstByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
         Crew adminCrew = crewRepository.findById(crewMemberRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
         Position adminPosition = memberCrewRepository.findPositionByMemberAndCrew(admin, adminCrew).orElseThrow();
 
@@ -571,7 +571,7 @@ public class CrewService {
 
     //크루 공지 디테일
     public PostResponse.PostItem getNoticeDetail(CustomUser customUser, Long crewId, Long noticeId) {
-        Member member = memberRepository.findByEmail(customUser.getEmail())
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
         Crew crew = crewRepository.findById(crewId)
                 .orElseThrow(NotFoundCrewException::new);

@@ -36,7 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
         // 만약 validateToken() 과정에서 예외 발생시 Authentication이 만들어지지 않아 AuthenticationEntryPoint 호출됨
         if (StringUtils.hasText(token) && tokenUtil.validateToken(token, request)) {
             String userEmail = tokenUtil.getSubject(token);
-            Member member = memberRepository.findByEmail(userEmail).orElseThrow(NotFoundMemberException::new);
+            Member member = memberRepository.findFirstByEmail(userEmail).orElseThrow(NotFoundMemberException::new);
             tokenUtil.makeAuthentication(member);
         }
 

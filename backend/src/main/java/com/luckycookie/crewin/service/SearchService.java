@@ -33,7 +33,7 @@ public class SearchService {
     @Transactional(readOnly = true)
     public PagingItemsResponse<MemberItem> searchMember(String query, int pageNo, CustomUser customUser) {
         //CustomUser 검증
-        memberRepository.findByEmail(customUser.getEmail())
+        memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         Pageable pageable = PageRequest.of(pageNo, 10); // pageNo 페이지 번호, 10 : 페이지 크기
@@ -66,7 +66,7 @@ public class SearchService {
     @Transactional(readOnly = true)
     public PagingItemsResponse<CrewItem> searchCrew(String query, int pageNo, CustomUser customUser) {
         // CustomUser 검증
-        memberRepository.findByEmail(customUser.getEmail())
+        memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         Pageable pageable = PageRequest.of(pageNo, 10); // pageNo 페이지 번호, 10 : 페이지 크기
@@ -109,7 +109,7 @@ public class SearchService {
     }
 
     public PagingItemsResponse<SearchResponse.MemberInvitationResponse> getMemberForCrewInvitation(Long crewId, String query, CustomUser customUser, int page) {
-        memberRepository.findByEmail(customUser.getEmail())
+        memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
         crewRepository.findById(crewId)
                 .orElseThrow(NotFoundCrewException::new);
