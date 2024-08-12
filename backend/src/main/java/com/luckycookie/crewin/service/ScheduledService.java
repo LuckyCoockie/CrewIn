@@ -44,7 +44,9 @@ public class ScheduledService {
 
             // 만약 오픈런이면 멤버크루에 없으면 올려주기(false, false)
             if (session.getSessionType() == SessionType.OPEN && !memberCrewRepository.existsByMemberAndCrew(memberSession.getMember(), session.getCrew())) {
-                memberCrewRepository.save(MemberCrew.builder().member(memberSession.getMember()).crew(session.getCrew()).build());
+                MemberCrew memberCrew = memberCrewRepository.save(MemberCrew.builder().member(memberSession.getMember()).crew(session.getCrew()).build());
+                log.info("@@@invited {}", memberCrew.getIsInvited());
+                log.info("@@@joined {}", memberCrew.getIsJoined());
             }
 
             // 회원테이블에 참여횟수, 누적거리, 누적시간 반영
@@ -54,7 +56,6 @@ public class ScheduledService {
             // 정규런, 오픈런인 경우 멤버크루에 참가 횟수 반영
             if (session.getSessionType() != THUNDER) {
                 MemberCrew memberCrew = memberCrewRepository.findByMemberAndCrew(member, session.getCrew()).orElseThrow(NotFoundMemberSessionException::new);
-                log.info("crew exist@@ : {}", session.getCrew());
                 memberCrew.plusAttendance();
             }
         }
