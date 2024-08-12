@@ -64,6 +64,9 @@ dependencies {
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+    // restAssured
+    testImplementation 'io.rest-assured:spring-web-test-client:5.5.0'
 }
 
 // Querydsl 설정부
