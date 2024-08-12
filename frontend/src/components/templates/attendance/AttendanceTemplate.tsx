@@ -223,7 +223,11 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
         </ModalConfirm>
       )}
       {isInfoModalOpen && (
-        <Modal title={"출석부"} onClose={() => setIsInfoModalOpen(false)} titleSize="text-xl">
+        <Modal
+          title={"출석부"}
+          onClose={() => setIsInfoModalOpen(false)}
+          titleSize="text-xl"
+        >
           <div className="pb-4">
             <label className="block min-h-[2rem] tracking-tighter text-gray-900 min-h-[2rem] text-lg">
               {"자동 출석"}
