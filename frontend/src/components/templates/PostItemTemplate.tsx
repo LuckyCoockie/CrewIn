@@ -180,7 +180,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
       </div>
       {croppedImages && croppedImages.length > 0 && (
         <div
-          className="relative cursor-pointer mx-1"
+          className="relative cursor-pointer sm:mx-1"
           onClick={handleImageClick}
         >
           <Carousel

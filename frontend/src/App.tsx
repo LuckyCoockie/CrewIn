@@ -41,8 +41,8 @@ const App: React.FC = () => {
       {shouldNotShowLeftBar && !isMobile && (
         <LeftBarOrganism current={location.pathname} />
       )}
-      <div className="md:ml-[108.89px] lg:ml-[176px]">
-        <div className="mx-auto w-full max-w-[550px]" ref={ref}>
+      <div className="md:ml-[97.93px] lg:ml-[176px]">
+        <div className="mx-auto w-full max-w-[500px]" ref={ref}>
           {standalone && isIOS && (
             <PullToRefresh el={ref} onRefresh={onRefresh} />
           )}

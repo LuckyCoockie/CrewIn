@@ -67,7 +67,7 @@ const AttendancePage: React.FC = () => {
     return (
       <div className="flex justify-center items-center h-screen p-10">
         {error ? (
-          <div className="text-center items-center w-[550px]">
+          <div className="text-center items-center w-[500px]">
             <img src={crewinIcon} className="w-[125px]" />
             <div className="text-xl pt-10 font-bold text-[#A7A7A7] text-center">
               사용자 위치 권한이 필요합니다.

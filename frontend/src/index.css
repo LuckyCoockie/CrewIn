@@ -188,9 +188,9 @@ header {
   padding: 1px;
 }
 
-@media (min-width: 550px) {
+@media (min-width: 500px) {
   .photo-item {
-    height: 180px; /* 화면 너비가 550px 이상일 때 높이 설정 */
+    height: 180px; /* 화면 너비가 500px 이상일 때 높이 설정 */
   }
 }
 

@@ -33,7 +33,7 @@ const PostCreateTemplate: React.FC<PostCreateTemplateProps> = ({
       <header>
         <BackHeaderMediumOrganism text="게시글 작성" />
       </header>
-      <div className="mx-auto w-full max-w-[550px]">
+      <div className="mx-auto w-full max-w-[500px]">
         {currentStep === 1 && (
           <ImageCropOrganism onComplete={onImageCropComplete} />
         )}
