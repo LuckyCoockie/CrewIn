@@ -35,7 +35,6 @@ public class ScheduledService {
     @Async
     public void closeAttendance(Session session) {
         log.info("Session{}: attendance check start", session.getId());
-
         // 멤버 세션 테이블에서 모두 가져와서 한명씩 출석 반영 수행
         List<MemberSession> attendanceList = memberSessionRepository.findBySession(session);
 
