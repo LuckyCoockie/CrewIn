@@ -170,6 +170,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
           isSessionHost={isSessionHost}
           onPostAttendanceClick={onHostAttendanceClick}
           sessionId={sessionId}
+          memberSessionId={memberSessionId}
           autoCheckStatus={autoCheckStatus}
           isSessionEnded={isSessionEnded}
           onAttendanceChange={handleAttendanceChange}
