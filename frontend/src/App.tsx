@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import BottomBarOrganism from "./components/organisms/BottomBarOrganism";
+import BottomBarOrganism from "./components/organisms/BottomBarOrganism.tsx";
 import PullToRefresh from "./util/ptr/PullToRefersh.tsx";
 import LeftBarOrganism from "./components/organisms/LeftBarOrganism.tsx";
 import useIsMobile from "./util/windowSize/useIsMobile.ts";
@@ -41,14 +41,16 @@ const App: React.FC = () => {
       {shouldNotShowLeftBar && !isMobile && (
         <LeftBarOrganism current={location.pathname} />
       )}
-      <div className="mx-auto w-full max-w-[550px]" ref={ref}>
-        {standalone && isIOS && (
-          <PullToRefresh el={ref} onRefresh={onRefresh} />
-        )}
-        <Outlet />
-        {shouldShowBottomBar && isMobile && (
-          <BottomBarOrganism current={location.pathname} />
-        )}
+      <div className="md:ml-[108.89px] lg:ml-[176px]">
+        <div className="mx-auto w-full max-w-[550px]" ref={ref}>
+          {standalone && isIOS && (
+            <PullToRefresh el={ref} onRefresh={onRefresh} />
+          )}
+          <Outlet />
+          {shouldShowBottomBar && isMobile && (
+            <BottomBarOrganism current={location.pathname} />
+          )}
+        </div>
       </div>
     </div>
   );
