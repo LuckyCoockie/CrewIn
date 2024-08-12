@@ -1,29 +1,38 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import BottomBarOrganism from "./components/organisms/BottomBarOrganism";
+import PullToRefresh from "./util/ptr/PullToRefersh.tsx";
+
+const standalone = window.matchMedia("(display-mode: standalone)").matches;
+const isIOS = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
 
 const App: React.FC = () => {
   // 현 위치 파악 함수
   const location = useLocation();
 
-  // 제외할 페이지
-  const hideBottomBarRoutes = [
-    /^\/login$/,
-    /^\/join$/,
-    /^\/find-password$/,
-    /^\/info$/,
-    /^\/course\/create$/,
-    /^\/profile\/[^/]+$/, // /profile/:userId 만 포함하도록 설정
+  // 바텀바를 그릴 페이지
+  const showBottomBarRoutes = [
+    /^\/home$/,
+    /^\/session\??[^/]*$/,
+    /^\/crew(\/(search(\?)?|detail\/(?![^/]+\/notice).*)?)?$/,
+    /^\/profile$/,
   ];
-  const shouldHideBottomBar = hideBottomBarRoutes.some((pattern) =>
+  const shouldShowBottomBar = showBottomBarRoutes.some((pattern) =>
     pattern.test(location.pathname)
   );
+
+  const ref = useRef<HTMLDivElement>(null);
+  const onRefresh = async () => {
+    if (standalone && isIOS) window.location.reload();
+  };
+
   return (
-    <div className="mx-auto w-full max-w-[550px]">
+    <div className="mx-auto w-full max-w-[550px]" ref={ref}>
+      {standalone && isIOS && <PullToRefresh el={ref} onRefresh={onRefresh} />}
       <Outlet />
-      {!shouldHideBottomBar && (
+      {shouldShowBottomBar && (
         <BottomBarOrganism current={location.pathname} />
-      )}{" "}
+      )}
     </div>
   );
 };

@@ -74,7 +74,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         <BarContent content={timeAgo} />
       </div>
       {authorId === memberId && (
-        <div className="ml-auto mr-2 relative" ref={dropdownRef}>
+        <div className="ml-auto mr-1 relative" ref={dropdownRef}>
           <button onClick={toggleDropdown}>
             <MoreVerticalIcon className="w-6 h-6" />
           </button>

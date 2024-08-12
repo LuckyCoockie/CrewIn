@@ -92,8 +92,8 @@ const SessionCreateOrganism: React.FC = () => {
     mode: "onChange",
     defaultValues: {
       sessiontype: "번개런",
-      sessionstart: new Date(),
-      sessionend: new Date(),
+      sessionstart: new Date(new Date().setSeconds(0)),
+      sessionend: new Date(new Date().setSeconds(0)),
     },
   });
 
@@ -112,7 +112,7 @@ const SessionCreateOrganism: React.FC = () => {
 
   useEffect(() => {
     if (!crewLoading && !mapLoading) {
-      const currentDate = new Date();
+      const currentDate = new Date(new Date().setSeconds(0));
       currentDate.setMinutes(currentDate.getMinutes() + 30);
       setValue("sessionstart", currentDate);
 
@@ -210,7 +210,10 @@ const SessionCreateOrganism: React.FC = () => {
 
   useEffect(() => {
     if (watchedSessionStart) {
-      setValue("sessionend", watchedSessionStart);
+      setValue(
+        "sessionend",
+        new Date(watchedSessionStart.getTime() + 1000 * 60 * 10)
+      );
     }
   }, [watchedSessionStart, setValue]);
 
@@ -427,7 +430,7 @@ const SessionCreateOrganism: React.FC = () => {
                 <InputDateStartTypeMolecule
                   id="sessionstart"
                   title="세션 시작"
-                  selected={field.value ?? new Date()}
+                  selected={field.value ?? new Date(new Date().setSeconds(0))}
                   onChange={field.onChange}
                 />
               )}
@@ -441,7 +444,7 @@ const SessionCreateOrganism: React.FC = () => {
                 <InputDateEndTypeMolecule
                   id="sessionend"
                   title="세션 종료"
-                  selected={field.value ?? new Date()}
+                  selected={field.value ?? new Date(new Date().setSeconds(0))}
                   onChange={field.onChange}
                   minDate={watchedSessionStart}
                 />
@@ -451,7 +454,7 @@ const SessionCreateOrganism: React.FC = () => {
           {errors.sessionend &&
           watchedSessionStart &&
           watchedSessionEnd &&
-          watchedSessionEnd < watchedSessionStart ? (
+          watchedSessionEnd <= watchedSessionStart ? (
             <p className="ps-4 mb-3 text-sm font-light text-red-500">
               종료시간은 시작시간보다 늦어야 합니다.
             </p>

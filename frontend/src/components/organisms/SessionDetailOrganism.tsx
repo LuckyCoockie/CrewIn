@@ -15,11 +15,13 @@ import { useNavigate } from "react-router";
 type SessionDetailOrganismProps = {
   detailData: SessionDetailDto;
   sessionId: number;
+  onJoinChange: () => void;
 };
 
 const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
   detailData,
   sessionId,
+  onJoinChange,
 }) => {
   const {
     hostname,
@@ -38,9 +40,9 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
     currentPeople,
     courseDistance,
     courseId,
+    isJoined,
   } = detailData;
 
-  const [isJoined, setIsJoined] = useState(detailData.isJoined);
   const [showModal, setShowModal] = useState(false); // 참가 완료 모달 상태
   const [showConfirmModal, setShowConfirmModal] = useState(false); // 참가 취소 확인 모달 상태
   const [isJoinSubmit, setIsJoinSubmit] = useState(false);
@@ -49,6 +51,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
   const navigate = useNavigate();
 
   const isSessionStarted = detailData ? new Date(startAt) < new Date() : false;
+  const isSessionEnded = detailData ? new Date(endAt) < new Date() : false;
 
   const sessionTypeSubstitute = (type: string) => {
     if (type === "OPEN") {
@@ -103,9 +106,9 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
     setIsJoinSubmit(true);
     try {
       await participateSession(sessionId);
-      setIsJoined(true);
       setShowModal(true); // 참가 완료 모달 표시
       setIsJoinSubmit(false);
+      onJoinChange();
     } catch (error) {
       console.error("참가 신청 실패:", error);
       setIsJoinSubmit(false);
@@ -116,9 +119,9 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
     setIsOutSubmit(true);
     try {
       await cancelSession(sessionId);
-      setIsJoined(false);
       setShowConfirmModal(false); // 참가 취소 확인 모달 닫기
       setIsOutSubmit(false);
+      onJoinChange();
     } catch (error) {
       console.error("참가 취소 실패:", error);
       setIsOutSubmit(false);
@@ -214,7 +217,10 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
               isLoading={isOutSubmit}
             />
           )}
-        {isSessionStarted && <LargeDisableButton text="종료된 세션" />}
+        {isSessionStarted && !isSessionEnded && (
+          <LargeDisableButton text="진행 중인 세션" />
+        )}
+        {isSessionEnded && <LargeDisableButton text="종료된 세션" />}
       </main>
     </>
   );

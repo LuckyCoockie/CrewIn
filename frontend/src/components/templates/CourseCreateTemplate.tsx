@@ -8,9 +8,8 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
-import LargeDisableButton from "../atoms/Button/LargeAbleButton";
 
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import canvg from "canvg";
 
@@ -88,29 +87,35 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
   });
 
   const dispatch = useNaverMapDispatch();
+  const [isSubmit, setIsSubmit] = useState(false);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    setIsSubmit(true);
     const mapDim = captureRef.current!.getBoundingClientRect().width;
     dispatch(moveToCenter(mapDim));
     dispatch(clearPolyline());
-    const directions = await directionApiWithWayPoints(
+    directionApiWithWayPoints(
       data.markers.map((marker) => marker.point),
       (direction) => {
         dispatch(addPolyline(direction.polyline));
       }
-    );
-    setPolylines(directions.map((directoin) => directoin.polyline));
-    setLength(
-      directions.reduce((sum, direction) => sum + direction.distance, 0)
-    );
-    handleSave(data);
+    ).then((directions) => {
+      handleSave({
+        ...data,
+        polylines: directions.map((directoin) => directoin.polyline),
+        length: directions.reduce(
+          (sum, direction) => sum + direction.distance,
+          0
+        ),
+      });
+    });
   };
 
   const {
     control,
     setValue,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onChange",
@@ -180,7 +185,7 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
             onSave({
               ...data,
               image: new File([blob], "image.png", { type: "image/png" }),
-            });
+            }).then(() => setIsSubmit(false));
           }
         },
         "image/png",
@@ -260,7 +265,7 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
             />
           </div>
           <div className="absolute bottom-0 right-4 p-4">
-            {editable && (
+            {editable && !isSubmit && (
               <MapToggleButton
                 style={{ background: "#FFFFFF", borderRadius: 9999 }}
                 onToggle={handleToogle}
@@ -328,12 +333,9 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
               />
             </div>
             <div>
-              {editable &&
-                (isValid ? (
-                  <LargeAbleButton text="저장하기" />
-                ) : (
-                  <LargeDisableButton text="저장하기" />
-                ))}
+              {editable && (
+                <LargeAbleButton text="저장하기" isLoading={isSubmit} />
+              )}
             </div>
           </form>
         </div>

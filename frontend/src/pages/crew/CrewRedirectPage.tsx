@@ -11,7 +11,7 @@ const CrewRedirectPage = () => {
       }
     });
   }, [navigate]);
-  return <Navigate to={"/crew/search"} />;
+  return <Navigate to={"/crew/search"} replace />;
 };
 
 export default CrewRedirectPage;

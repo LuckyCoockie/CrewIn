@@ -14,7 +14,7 @@ import BackHeaderMediumOrganism from "../../components/organisms/BackHeaderMediu
 import EditDeleteDropdownOrganism from "../../components/organisms/EditDeleteDropdownOrganism.tsx";
 import { useSelector } from "react-redux";
 import { RootState } from "../../modules/index.ts";
-import UnauthorizedPage from "../UnauthorizedPage.tsx";
+import UnauthorizedPage from "../util/UnauthorizedPage.tsx";
 
 const CourseEditPage: React.FC = () => {
   const { courseId } = useParams();

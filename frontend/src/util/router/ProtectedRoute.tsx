@@ -17,7 +17,7 @@ const ProtectedRoute = () => {
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       refreshToken().catch(() =>
-        navigate("/login", { state: { navigateFrom: location } })
+        navigate("/login", { state: { navigateFrom: location }, replace: true })
       );
     }
   }, [isAuthenticated, loading, location, navigate]);

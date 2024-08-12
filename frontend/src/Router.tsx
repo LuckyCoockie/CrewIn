@@ -38,6 +38,7 @@ import SessionEditPage from "./pages/SessionEditPage.tsx";
 import CrewNoticeEditPage from "./pages/CrewNoticeEditPage.tsx";
 import PostDetailPage from "./pages/PostDetailPage.tsx";
 import PeopleGalleryListDetailPage from "./pages/PeopleGalleryListDetailPage.tsx";
+import NotFoundPage from "./pages/util/NotFoundPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -152,6 +153,7 @@ export const router = createBrowserRouter([
           { path: "find-password", element: <FindPasswordPage /> },
         ],
       },
+      { path: "*", element: <NotFoundPage /> },
     ],
   },
 ]);

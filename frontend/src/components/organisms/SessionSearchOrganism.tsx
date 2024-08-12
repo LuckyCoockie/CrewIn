@@ -106,7 +106,6 @@ const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
               calendarClassName="custom-calendar" // Calendar에 적용할 클래스
               wrapperClassName="custom-wrapper" // DatePicker wrapper에 적용할 클래스
               popperClassName="custom-popper" // Popper에 적용할 클래스
-              minDate={addDays(new Date(), 0)}
               maxDate={addDays(new Date(), 30)}
               withPortal
               portalId="root-portal"

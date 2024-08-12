@@ -17,7 +17,7 @@ const BottomBarOrganism: React.FC<Current> = (props) => {
   const currentTab = props.current.split(/[?/]/)[1];
 
   const selectedTab = (tab: string) => {
-    navigate(`/${tab}`);
+    if (tab != currentTab) navigate(`/${tab}`);
   };
 
   useEffect(() => {
