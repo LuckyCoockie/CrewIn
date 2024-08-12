@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import "../../styles/square.css";
 import { IconTextComponent } from "../atoms/text/IconText";
 import React from "react";
