@@ -5,11 +5,13 @@ import { useNavigate } from "react-router-dom";
 const BackButton: React.FC = () => {
   const navigate = useNavigate();
   const handleBack = () => {
-    navigate(-1);
+    console.log(navigate.length);
+    if (navigate.length === 1) navigate("/");
+    else navigate(-1);
   };
   return (
     <>
-      <button onClick={handleBack} >
+      <button onClick={handleBack}>
         <BackArrow />
       </button>
     </>

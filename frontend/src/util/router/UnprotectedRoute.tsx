@@ -13,7 +13,7 @@ const UnprotectedRoute = () => {
 
   useEffect(() => {
     if (isAuthenticated || checkAuth()) {
-      navigate(location.state?.navigateFrom ?? "/");
+      navigate(location.state?.navigateFrom ?? "/", { replace: true });
     }
   }, [isAuthenticated, location.state?.navigateFrom, navigate]);
 
