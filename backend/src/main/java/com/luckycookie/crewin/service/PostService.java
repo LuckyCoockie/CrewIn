@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.luckycookie.crewin.domain.QCrew.crew;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -43,7 +45,6 @@ public class PostService {
     private final HeartRepository heartRepository;
     private final PostImageRepository postImageRepository;
     private final MemberCrewRepository memberCrewRepository;
-
     private final NotificationService notificationService;
     private final S3Service s3Service;
 
@@ -124,6 +125,67 @@ public class PostService {
         }
 
         postRepository.delete(post);
+
+    }
+
+    @Transactional(readOnly = true)
+    public PostItem getPostDetail(Long postId, CustomUser customUser){
+        Member viewer = memberRepository.findByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(NotFoundPostException::new);
+
+        //크루 공지글인 경우
+        if (post.getPostType().equals(PostType.NOTICE)) {
+            Crew crew = crewRepository.findById(post.getCrew().getId())
+                    .orElseThrow(NotFoundCrewException::new);
+            if (!memberCrewRepository.existsByMemberAndCrew(viewer, crew)) {
+                throw new NotFoundMemberCrewException();
+            }
+            return PostItem.builder()
+                    .id(postId)
+                    .authorId(post.getCrew().getId())
+                    .authorName(post.getCrew().getCrewName())
+                    .content(post.getContent())
+                    .heartCount(post.getHearts().size())
+                    .isHearted(heartRepository.existsByPostAndMember(post, viewer))
+                    .isPublic(post.getIsPublic())
+                    .postType(post.getPostType())
+                    .profileImage(post.getCrew().getMainLogo())
+                    .postImages(post.getPostImages().stream().map(PostImage::getImageUrl).toList())
+                    .title(post.getTitle())
+                    .createdAt(post.getCreatedAt())
+                    .updatedAt(post.getUpdatedAt())
+                    .build();
+        }
+        if (!post.getIsPublic()) {
+            if (post.getCrew() == null) {
+                throw new InvalidPostException();
+            }
+            Crew crew = crewRepository.findById(post.getCrew().getId())
+                    .orElseThrow(NotFoundCrewException::new);
+            if (!memberCrewRepository.existsByMemberAndCrew(viewer, crew)) {
+                throw new NotFoundMemberCrewException();
+            }
+        }
+        //일반 게시글인 경우
+        return PostItem.builder()
+                .id(postId)
+                .authorId(post.getAuthor().getId())
+                .authorName(post.getAuthor().getNickname())
+                .content(post.getContent())
+                .heartCount(post.getHearts().size())
+                .isHearted(heartRepository.existsByPostAndMember(post, viewer))
+                .isPublic(post.getIsPublic())
+                .postType(post.getPostType())
+                .profileImage(post.getAuthor().getImageUrl())
+                .postImages(post.getPostImages().stream().map(PostImage::getImageUrl).toList())
+                .title(post.getTitle())
+                .createdAt(post.getCreatedAt())
+                .updatedAt(post.getUpdatedAt())
+                .build();
+
+
 
     }
 
