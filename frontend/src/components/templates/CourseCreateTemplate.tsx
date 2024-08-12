@@ -15,6 +15,7 @@ import html2canvas from "html2canvas";
 import canvg from "canvg";
 
 import {
+  DirectionDto,
   Point,
   directionApiWithWayPoints,
 } from "../../util/maps/tmap/apis/api/directionApi";
@@ -26,7 +27,6 @@ import {
   moveToCenter,
   useNaverMapDispatch,
   clearMarker,
-  focusMarker,
 } from "../../util/maps/naver_map/context";
 import { debounce } from "lodash";
 
@@ -128,16 +128,12 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
   );
 
   const setPolylines = useCallback(
-    (polylines: Point[][]) => {
-      setValue("polylines", polylines);
-    },
+    (polylines?: Point[][]) => setValue("polylines", polylines),
     [setValue]
   );
 
   const setLength = useCallback(
-    (length: number) => {
-      setValue("length", length);
-    },
+    (length?: number) => setValue("length", length),
     [setValue]
   );
 
@@ -202,7 +198,7 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
     dispatch(clearPolyline());
     if (!initValue) return;
     setValue("title", initValue.title);
-    initValue.markers.forEach(({ title, point }) => {
+    initValue?.markers?.forEach(({ title, point }) => {
       dispatch(
         addMarker({
           longitude: point.longitude,
@@ -211,9 +207,20 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
           ondragend: editable ? () => dispatch(updateMarkerList()) : undefined,
         })
       );
+
+      const mapDim = captureRef.current!.getBoundingClientRect().width;
+      dispatch(moveToCenter(mapDim));
     });
-    dispatch(focusMarker(0));
-  }, [dispatch, editable, initValue, setValue]);
+
+    if (initValue?.polylines) {
+      dispatch(clearPolyline());
+      initValue.polylines.forEach((polyline) => {
+        dispatch(addPolyline(polyline));
+      });
+    }
+
+    setLength(initValue.length);
+  }, [dispatch, editable, initValue, setLength, setValue]);
 
   const position = useMemo(
     () =>
@@ -222,6 +229,23 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
         lng: initPosition!.longitude,
       },
     [initPosition]
+  );
+
+  const handleToogle = useCallback(
+    (directions?: DirectionDto[]) => {
+      if (directions) {
+        setPolylines(directions.map((directoin) => directoin.polyline));
+        setLength(
+          directions.reduce((sum, direction) => sum + direction.distance, 0)
+        );
+        const mapDim = captureRef.current!.getBoundingClientRect().width;
+        dispatch(moveToCenter(mapDim));
+      } else {
+        setPolylines(undefined);
+        setLength(undefined);
+      }
+    },
+    [dispatch, setLength, setPolylines]
   );
 
   return (
@@ -236,9 +260,12 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
             />
           </div>
           <div className="absolute bottom-0 right-4 p-4">
-            <MapToggleButton
-              style={{ background: "#FFFFFF", borderRadius: 9999 }}
-            />
+            {editable && (
+              <MapToggleButton
+                style={{ background: "#FFFFFF", borderRadius: 9999 }}
+                onToggle={handleToogle}
+              />
+            )}
           </div>
         </div>
         <div className="p-4">
@@ -248,13 +275,25 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
               control={control}
               render={() => (
                 <>
-                  <div className="flex justify-between">
-                    <div className="flex">
-                      <InputLabelComponent id={""} title={"경로 정보"} />
-                      <p className="ps-4 pt-1 text-sm font-light text-red-500">
-                        {errors.markers?.message}
-                      </p>
-                    </div>
+                  <div className="flex">
+                    <InputLabelComponent id={""} title={"경로 정보"} />
+                    <p className="ps-4 pt-1 text-sm font-light text-red-500">
+                      {errors.markers?.message}
+                    </p>
+                    <Controller
+                      name="length"
+                      control={control}
+                      render={(field) => (
+                        <label className="justify-end ml-auto block min-h-[1.5rem] tracking-tighter">
+                          {field.field.value &&
+                            `예상 거리 : ${
+                              field.field.value >= 1000
+                                ? `${(field.field.value / 1000).toFixed(1)} km`
+                                : `${field.field.value} m`
+                            } `}
+                        </label>
+                      )}
+                    />
                   </div>
                   <MarkerList editable={editable} />
                 </>
