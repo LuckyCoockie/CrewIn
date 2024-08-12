@@ -386,7 +386,8 @@ public class SessionService {
 
         // 호스트가 신청하거나, 신청시간이 세션 시작 이후면 안 받음
         if (session.getHost().getId().equals(member.getId()) ||
-                LocalDateTime.now().isAfter(session.getStartAt())
+                LocalDateTime.now().isAfter(session.getStartAt()) ||
+                LocalDateTime.now().isAfter(session.getEndAt())
         ) {
             throw new InvalidSessionException();
         }
