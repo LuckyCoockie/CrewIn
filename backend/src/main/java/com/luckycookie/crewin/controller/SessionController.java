@@ -41,11 +41,11 @@ public class SessionController {
     public ResponseEntity<BaseResponse<PagingItemsResponse<SessionItem>>> getSessionsByType(
             @RequestParam(value = "status", defaultValue = "") String status,
             @RequestParam(value = "type", defaultValue = "") String type,
-            @RequestParam(value = "crew-name", defaultValue = "") String crewName,
+            @RequestParam(value = "query", defaultValue = "") String query,
             @RequestParam(value = "date", required = false) LocalDate date,
             @RequestParam("page-no") int pageNo) {
         SessionType enumSessionType = SessionType.stringToSessionType(type);
-        PagingItemsResponse<SessionItem> sessions = sessionService.getSessionsByStatusAndTypeAndCrewNameAndDate(status, enumSessionType, crewName, date, pageNo);
+        PagingItemsResponse<SessionItem> sessions = sessionService.getSessionsByStatusAndTypeAndCrewNameAndDate(status, enumSessionType, query, date, pageNo);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 정보를 조회하는데 성공했습니다.", sessions));
     }
 

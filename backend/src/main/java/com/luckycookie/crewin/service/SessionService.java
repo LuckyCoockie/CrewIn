@@ -273,9 +273,9 @@ public class SessionService {
         sessionRepository.delete(session);
     }
 
-    public PagingItemsResponse<SessionItem> getSessionsByStatusAndTypeAndCrewNameAndDate(String status, SessionType sessionType, String crewName, LocalDate date, int pageNo) {
+    public PagingItemsResponse<SessionItem> getSessionsByStatusAndTypeAndCrewNameAndDate(String status, SessionType sessionType, String query, LocalDate date, int pageNo) {
         PageRequest pageRequest = PageRequest.of(pageNo, 10);
-        Page<Session> sessionPage = sessionQueryRepository.findSessionsByStatusAndTypeAndCrewNameAndDate(status, sessionType, crewName, date, pageRequest);
+        Page<Session> sessionPage = sessionQueryRepository.findSessionsByStatusAndTypeAndCrewNameAndDate(status, sessionType, query, date, pageRequest);
         int lastPageNo = Math.max(sessionPage.getTotalPages() - 1, 0);
 
         List<SessionItem> sessionItems = sessionPage.getContent().stream().map(

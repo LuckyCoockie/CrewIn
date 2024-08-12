@@ -4,6 +4,7 @@ import com.luckycookie.crewin.domain.QSession;
 import com.luckycookie.crewin.domain.Session;
 import com.luckycookie.crewin.domain.enums.SessionType;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +28,12 @@ public class SessionQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
     private final QSession session = QSession.session;
 
-    public Page<Session> findSessionsByStatusAndTypeAndCrewNameAndDate(String status, SessionType sessionType, String crewName, LocalDate date, Pageable pageable) {
+    public Page<Session> findSessionsByStatusAndTypeAndCrewNameAndDate(String status, SessionType sessionType, String query, LocalDate date, Pageable pageable) {
         List<Session> content = jpaQueryFactory
                 .select(session)
                 .from(session)
-                .where(statusEq(status), typeEq(sessionType), crewNameEq(crewName), dateEq(date))
+                .leftJoin(session.crew)
+                .where(statusEq(status), typeEq(sessionType), Expressions.anyOf(crewNameEq(query), areaEq(query), nameEq(query)), dateEq(date))
                 .orderBy(session.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -39,7 +41,7 @@ public class SessionQueryRepository {
 
         JPAQuery<Long> countQuery = jpaQueryFactory.select(session.count())
                 .from(session)
-                .where(statusEq(status), typeEq(sessionType), crewNameEq(crewName));
+                .where(statusEq(status), typeEq(sessionType), crewNameEq(query));
 
         return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetch().size());
     }
@@ -58,6 +60,22 @@ public class SessionQueryRepository {
         else
             return
                     session.crew.crewName.contains(crewName);
+    }
+
+    private BooleanExpression areaEq(String area) {
+        if (area.isEmpty())
+            return null;
+        else
+            return
+                    session.area.contains(area);
+    }
+
+    private BooleanExpression nameEq(String name) {
+        if (name.isEmpty())
+            return null;
+        else
+            return
+                    session.name.contains(name);
     }
 
     private BooleanExpression statusEq(String status) {
