@@ -25,7 +25,7 @@ public interface MemberSessionRepository extends JpaRepository<MemberSession, Lo
     @Query("SELECT ms FROM MemberSession ms WHERE ms.member = :member AND ms.session = :session")
     Optional<MemberSession> findByMemberAndSession(Member member, Session session);
 
-    @Query("SELECT ms FROM MemberSession ms JOIN ms.member m JOIN MemberCrew mc ON mc.member = m AND mc.crew = ms.session.crew " +
+    @Query("SELECT ms FROM MemberSession ms JOIN ms.member m LEFT JOIN MemberCrew mc ON mc.member = m AND mc.crew = ms.session.crew " +
             "WHERE ms.session = :session " +
             "ORDER BY CASE mc.position " +
             "  WHEN com.luckycookie.crewin.domain.enums.Position.CAPTAIN THEN 1 " +
