@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import PostItemComponent from "./PostItemOrganism";
 import { PostDto } from "../../apis/api/crewGallaryList";
 import InfiniteScrollComponent from "../../util/paging/component/InfinityScrollComponent";
 import { PageNationData } from "../../util/paging/type";
+import PostItemComponent from "../templates/PostItemTemplate";
 
 type OwnProps = {
   initPage?: number;
@@ -34,9 +34,12 @@ const PostListComponent: React.FC<OwnProps> = ({
       <InfiniteScrollComponent
         fetchKey={["crewGallaryDetail"]}
         fetchData={fetchData}
-        ItemComponent={({ data }) => (
-          <div ref={data.id == initPostId ? ref : null} key={data.id}>
-            <PostItemComponent postData={data} />
+        ItemComponent={(props) => (
+          <div
+            ref={props.data.id == initPostId ? ref : null}
+            key={props.data.id}
+          >
+            <PostItemComponent {...props} />
           </div>
         )}
         initPage={initPage}
