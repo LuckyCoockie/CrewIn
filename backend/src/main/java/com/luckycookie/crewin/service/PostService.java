@@ -346,7 +346,7 @@ public class PostService {
                         .builder()
                         .id(post.getId())
                         .authorName(post.getAuthor().getName())
-                        .authorId(post.getId())
+                        .authorId(post.getAuthor().getId())
                         .content(post.getContent())
                         .heartCount(post.getHearts().size())
                         .isPublic(post.getIsPublic())
