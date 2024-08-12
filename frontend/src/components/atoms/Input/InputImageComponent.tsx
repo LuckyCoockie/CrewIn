@@ -41,8 +41,34 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
 
     return (
       <>
+        {preview ? (
+          <div className="w-full text-center mb-4">
+            <img
+              src={preview}
+              alt="Preview"
+              className="mx-auto border-2 w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover"
+            />
+            <p className="mt-2 text-sm font-medium text-gray-500">
+              이미지 노출 예시
+            </p>
+          </div>
+        ) : (
+          <div className="w-full text-center mb-4">
+            <img
+              src={crewinlogo}
+              alt="crewinlogo"
+              className="mx-auto border-2 w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover"
+            />
+            <label
+              htmlFor={props.id}
+              className="text-center block mt-2 text-sm font-medium text-gray-500 dark:text-white"
+            >
+              *{props.placeholder}
+            </label>
+          </div>
+        )}
         <div className="flex flex-col items-center w-full">
-          <label htmlFor={props.id} className="w-full">
+          <label htmlFor={props.id} className="w-full mb-1">
             <div className="flex p-2 border border-gray-300 rounded-lg w-full text-end">
               {fileCount > 0 ? (
                 <p className="text-gray-500 font-semibold ml-1">
@@ -67,32 +93,6 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
             className="hidden"
           />
         </div>
-        {preview ? (
-          <div className="w-full text-center mt-4">
-            <img
-              src={preview}
-              alt="Preview"
-              className="mx-auto border-2 w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover"
-            />
-            <p className="mt-2 text-sm font-medium text-gray-500">
-              이미지 노출 예시
-            </p>
-          </div>
-        ) : (
-          <div className="w-full text-center mt-4">
-            <img
-              src={crewinlogo}
-              alt="crewinlogo"
-              className="mx-auto border-2 w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover"
-            />
-            <label
-              htmlFor={props.id}
-              className="text-center block mt-2 text-sm font-medium text-gray-500 dark:text-white"
-            >
-              *{props.placeholder}
-            </label>
-          </div>
-        )}
       </>
     );
   }
