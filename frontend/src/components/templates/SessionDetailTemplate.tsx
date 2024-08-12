@@ -31,9 +31,12 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
 
   const albumRef = useRef<{ refreshGallery: () => void } | null>(null);
 
-  const { data: detailData, error: detailError } = useQuery(
-    ["detailData", { sessionId }],
-    () => fetchDetailData({ sessionId: Number(sessionId) })
+  const {
+    data: detailData,
+    error: detailError,
+    refetch,
+  } = useQuery(["detailData", { sessionId }], () =>
+    fetchDetailData({ sessionId: Number(sessionId) })
   );
 
   if (detailError) console.error("detailError", detailError);
@@ -175,6 +178,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
           <SessionDetailOrganism
             detailData={detailData}
             sessionId={detailData?.sessionId}
+            onJoinChange={refetch}
           />
         )}
         {currentTab === "사진첩" && detailData && (

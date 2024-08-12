@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 const BackButton: React.FC = () => {
   const navigate = useNavigate();
   const handleBack = () => {
-    console.log(navigate.length);
     if (navigate.length === 1) navigate("/");
     else navigate(-1);
   };
