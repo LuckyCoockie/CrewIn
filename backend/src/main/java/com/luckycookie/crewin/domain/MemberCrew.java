@@ -32,9 +32,11 @@ public class MemberCrew {
     @Enumerated(EnumType.STRING)
     private Position position;
 
-    private Boolean isJoined;
+    @Builder.Default
+    private Boolean isJoined = false;
 
-    private Boolean isInvited;
+    @Builder.Default
+    private Boolean isInvited = false;
 
     private int attendanceCount;
 

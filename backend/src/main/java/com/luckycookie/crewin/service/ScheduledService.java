@@ -44,9 +44,7 @@ public class ScheduledService {
 
             // 만약 오픈런이면 멤버크루에 없으면 올려주기(false, false)
             if (session.getSessionType() == SessionType.OPEN && !memberCrewRepository.existsByMemberAndCrew(memberSession.getMember(), session.getCrew())) {
-                MemberCrew memberCrew = memberCrewRepository.save(MemberCrew.builder().member(memberSession.getMember()).crew(session.getCrew()).build());
-                log.info("@@@invited {}", memberCrew.getIsInvited());
-                log.info("@@@joined {}", memberCrew.getIsJoined());
+                memberCrewRepository.save(MemberCrew.builder().member(memberSession.getMember()).crew(session.getCrew()).build());
             }
 
             // 회원테이블에 참여횟수, 누적거리, 누적시간 반영
