@@ -171,11 +171,6 @@ const PostDetailTemplate: React.FC = () => {
               onClick={() => navigate(`/profile/${postData.authorId}`)}
             />
           )}
-          {memberId === postData.authorId && (
-            <div className="me-4">
-              <EditDeleteDropdownOrganism type="POST" idData={postData.id} />
-            </div>
-          )}
         </div>
         <Carousel
           showThumbs={false}

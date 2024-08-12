@@ -277,7 +277,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           </>
         )}
       </div>
-      <div className="border-b border-gray-300"></div>
+      <div className="border-b border-gray-300 mx-1"></div>
     </div>
   );
 };
