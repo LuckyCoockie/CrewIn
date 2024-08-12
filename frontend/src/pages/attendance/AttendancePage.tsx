@@ -37,7 +37,7 @@ const AttendancePage: React.FC = () => {
   const onStartAttendanceClick = useCallback(async () => {
     if (!sessionId || !location) return;
 
-    startAttendance({
+    await startAttendance({
       sessionId: parseInt(sessionId),
       lat: location.latitude,
       lng: location.longitude,
@@ -54,7 +54,7 @@ const AttendancePage: React.FC = () => {
   const onGuestAttendanceClick = useCallback(async () => {
     if (!sessionId || !location) return;
 
-    postAttend({
+    await postAttend({
       sessionId: parseInt(sessionId),
       lat: location?.latitude,
       lng: location?.longitude,
@@ -92,8 +92,8 @@ const AttendancePage: React.FC = () => {
   return (
     <AttendanceTemplate
       getMemberList={getMemberList}
-      onStartAttendanceClick={onStartAttendanceClick}
       isSessionHost={state ? state.isSessionHost : false}
+      onStartAttendanceClick={onStartAttendanceClick}
       onHostAttendanceClick={onHostAttendanceClick}
       onGuestAttendanceClick={onGuestAttendanceClick}
       startAt={state.startAt}

@@ -128,14 +128,18 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
   const handleClickAttendanceModalConfirm = useCallback(() => {
     if (isSessionHost) {
       onStartAttendanceClick().then(() => {
-        fetchMemberList();
-        setIsAttendanceModalOpen(false);
+        setTimeout(() => {
+          fetchMemberList();
+          setIsAttendanceModalOpen(false);
+        }, 100);
       });
     } else {
       onGuestAttendanceClick()
         .then(() => {
-          fetchMemberList();
-          setIsAttendanceModalOpen(false);
+          setTimeout(() => {
+            fetchMemberList();
+            setIsAttendanceModalOpen(false);
+          }, 100);
         })
         .catch(() => {
           alert(
