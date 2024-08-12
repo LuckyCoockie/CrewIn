@@ -18,7 +18,6 @@ import BackHeaderMediumOrganism from "../../components/organisms/BackHeaderMediu
 import UserProfileBarNoMenu from "../../components/molecules/UserProfileBarNoMenuMolecule";
 import UserProfileBar from "../../components/molecules/UserProfileBarMolecule";
 import { Carousel } from "react-responsive-carousel";
-import EditDeleteDropdownOrganism from "../../components/organisms/EditDeleteDropdownOrganism";
 import { RootState } from "../../modules";
 import { deletePost } from "../../apis/api/postdelete";
 
