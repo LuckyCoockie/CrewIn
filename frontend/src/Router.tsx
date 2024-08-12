@@ -40,6 +40,7 @@ import CourseDetailPage from "./pages/course/CourseDetailPage.tsx";
 import CrewEditPage from "./pages/CrewEditPage.tsx";
 import SessionEditPage from "./pages/SessionEditPage.tsx";
 import CrewNoticeEditPage from "./pages/CrewNoticeEditPage.tsx";
+import PostDetailPage from "./pages/PostDetailPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -141,6 +142,7 @@ export const router = createBrowserRouter([
           { path: "post/:postId/edit", element: <PostEditPage /> },
           { path: "searchuser", element: <SearchUserPage /> },
           { path: "alarm", element: <AlarmPage /> },
+          { path: "post/:id", element: <PostDetailPage /> },
         ],
       },
       {
