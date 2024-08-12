@@ -6,12 +6,13 @@ const CrewRedirectPage = () => {
   const navigate = useNavigate();
   useEffect(() => {
     getMyCrews().then((response) => {
+      console.log("???");
       if (response.crews.length > 0) {
-        navigate(`/crew/detail/${response.crews[0].crewId}`);
+        navigate(`/crew/detail/${response.crews[0].crewId}`, { replace: true });
       }
     });
   }, [navigate]);
-  return <Navigate to={"/crew/search"} />;
+  return <Navigate to={"/crew/search"} replace />;
 };
 
 export default CrewRedirectPage;
