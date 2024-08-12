@@ -98,9 +98,7 @@ const CrewNoticeDetailTemplate: React.FC = () => {
             </div>
           ))}
         </Carousel>
-        <div className="mt-2">
-          <p>{noticeData.content}</p>
-        </div>
+        
         <div className="flex items-center mt-2">
           <button onClick={handleLike} className="flex items-center ml-3">
             <img
@@ -112,6 +110,9 @@ const CrewNoticeDetailTemplate: React.FC = () => {
           <span className="text-md ml-1">{likes}명이 공감했어요!</span>
         </div>
         <div className="border-t border-gray-300 my-2"></div>
+        <div className="mt-2 mx-3">
+          <p>{noticeData.content}</p>
+        </div>
       </div>
     </>
   );

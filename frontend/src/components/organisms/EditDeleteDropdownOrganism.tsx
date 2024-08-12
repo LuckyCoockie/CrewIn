@@ -16,9 +16,10 @@ import { deleteSession } from "../../apis/api/sessiondetail";
 import { deleteNotice } from "../../apis/api/crewdetail";
 // cousre
 import { deleteCourse } from "../../apis/api/course";
+import { deletePost } from "../../apis/api/postdelete";
 
 type PropsData = {
-  type: "CREW" | "SESSION" | "NOTICE" | "COURSE";
+  type: "CREW" | "SESSION" | "NOTICE" | "COURSE" | "POST";
   idData?: number;
   idData2?: number;
 };
@@ -46,7 +47,9 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({
       case "NOTICE":
         return "공지사항을 정말로 삭제하시겠습니까?";
       case "COURSE":
-        return "경로를 정말로 삭제하시겠습니다?";
+        return "경로를 정말로 삭제하시겠습니까?";
+      case "POST":
+        return "게시글을 정말로 삭제하시겠습니까?";
       default:
         return "항목을 정말로 삭제하시겠습니까?";
     }
@@ -64,6 +67,8 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({
       navigate(`/session/${idData}/edit`);
     } else if (type === "NOTICE") {
       navigate(`/crew/detail/${idData2}/notice/${idData}/edit`);
+    } else if (type === "POST") {
+      navigate(`/post/${idData}/edit`);
     }
   };
 
@@ -88,6 +93,9 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({
       } else if (type === "COURSE") {
         await deleteCourse(idData!);
         navigate(`/profile`);
+      } else if (type === "POST") {
+        await deletePost(idData!);
+        navigate("/home");
       }
       queryClient.invalidateQueries("crewNotice");
     } catch (error) {
