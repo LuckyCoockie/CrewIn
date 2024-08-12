@@ -10,6 +10,7 @@ import { RootState } from "../../modules";
 import { login } from "../../apis/api/authorization";
 import Modal from "../molecules/ModalMolecules";
 import { useState } from "react";
+import { checkAuth } from "../../util/auth";
 
 // 유효성 검사 스키마 정의
 const schema = yup.object({
@@ -49,6 +50,7 @@ const LoginOrganism = () => {
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setIsSubmit(true);
     try {
+      if (checkAuth()) window.location.reload();
       await login(data);
       setIsSubmit(false);
     } catch (err) {
