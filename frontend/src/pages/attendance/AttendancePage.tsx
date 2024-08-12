@@ -65,19 +65,17 @@ const AttendancePage: React.FC = () => {
 
   if (!location) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-screen p-10">
         {error ? (
-          <div className="flex justify-center items-center h-screen p-10">
-            <div className="text-center items-center w-[550px]">
-              <img src={crewinIcon} className="w-[125px]" />
-              <div className="text-xl pt-10 font-bold text-[#A7A7A7] text-center">
-                사용자 위치 권한이 필요합니다.
-              </div>
-              <div className="text-xl pb-10 font-bold text-[#A7A7A7] text-center">
-                권한 수정 후 재시도 해주세요.
-              </div>
-              <LargeAbleButton onClick={refetch} text={"재시도"} />
+          <div className="text-center items-center w-[550px]">
+            <img src={crewinIcon} className="w-[125px]" />
+            <div className="text-xl pt-10 font-bold text-[#A7A7A7] text-center">
+              사용자 위치 권한이 필요합니다.
             </div>
+            <div className="text-xl pb-10 font-bold text-[#A7A7A7] text-center">
+              권한 수정 후 재시도 해주세요.
+            </div>
+            <LargeAbleButton onClick={refetch} text={"재시도"} />
           </div>
         ) : (
           <div>
