@@ -27,10 +27,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByCrewAndPostType(Crew crew, PostType postType, Pageable pageable);
 
     // 1. isPublic이 true인 글 (isPublic은 tinyInt형임) or
-    // 2. 크루가 태그되었다면 해당 크루에 targetMember와 Member가 속해있는 글들 (tagetMember와 Member가 같은 크루에 있을 때만)
+    // 2. isPublic이 false일 때 크루가 태그되었다면
+    //      해당 크루에 targetMember와 Member가 속해있는 글들 (tagetMember와 Member가 같은 크루에 있을 때만)
     @Query("SELECT p FROM Post p " +
             "WHERE  p.postType ='STANDARD' AND p.author = :targetMember AND " +
-            "((p.isPublic = true And p.crew IS NULL) OR (p.crew IS NOT NULL AND " +
+            "((p.isPublic = true) OR (p.isPublic = false AND p.crew IS NOT NULL AND " +
             "     EXISTS (SELECT mc FROM MemberCrew mc WHERE mc.crew = p.crew AND mc.member = :targetMember) AND " +
             "     EXISTS (SELECT mc FROM MemberCrew mc WHERE mc.crew = p.crew AND mc.member = :member))) " +
             "ORDER BY p.createdAt DESC")
