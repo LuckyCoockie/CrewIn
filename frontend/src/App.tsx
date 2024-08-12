@@ -29,7 +29,7 @@ const App: React.FC = () => {
 
   return (
     <div className="mx-auto w-full max-w-[550px]" ref={ref}>
-      <PullToRefresh el={ref} onRefresh={onRefresh} />
+      {standalone && <PullToRefresh el={ref} onRefresh={onRefresh} />}
       <Outlet />
       {!shouldHideBottomBar && (
         <BottomBarOrganism current={location.pathname} />
