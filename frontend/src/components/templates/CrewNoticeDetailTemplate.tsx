@@ -144,13 +144,13 @@ const CrewNoticeDetailTemplate: React.FC = () => {
         <BackHeaderMediumOrganism text={noticeData.title} />
       </header>
       <div className="w-full">
-        <div className="flex items-center">
+        <div className="flex items-center mx-2">
           <UserProfileBarNoMenu
             profileImage={noticeData.profileImage}
             username={noticeData.authorName}
             timeAgo={timeAgo}
           />
-          <div className="me-4">
+          <div className="">
             <EditDeleteDropdownOrganism
               type="NOTICE"
               idData={Number(noticeId)}
@@ -189,7 +189,10 @@ const CrewNoticeDetailTemplate: React.FC = () => {
         </div>
         <div className="text-md ml-3 mt-2">{likes}명이 공감했어요!</div>
         <div className="mt-1 mx-3">
-          <div><span className="font-bold">{noticeData.authorName}{" "}</span>{noticeData.content}</div>
+          <div>
+            <span className="font-bold">{noticeData.authorName} </span>
+            {noticeData.content}
+          </div>
         </div>
       </div>
     </>
