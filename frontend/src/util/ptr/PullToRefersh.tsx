@@ -11,11 +11,11 @@ const PullToRefresh: React.FC<OwnProps> = ({ el, onRefresh }) => {
   const [startY, setStartY] = useState(0);
 
   useEffect(() => {
-    function handleTouchStart(event) {
+    function handleTouchStart(event: any) {
       setStartY(event.touches[0].clientY);
     }
 
-    function handleTouchMove(event) {
+    function handleTouchMove(event: any) {
       if (!el.current) return;
       const moveY = event.touches[0].clientY;
       const pullDistance = moveY - startY;
