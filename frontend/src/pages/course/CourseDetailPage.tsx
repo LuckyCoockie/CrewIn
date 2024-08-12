@@ -44,7 +44,7 @@ const CourseDetailPage: React.FC = () => {
     if (!info) return;
     const data: {
       markers: { title: string; point: number[] }[];
-      polylines: Point[][];
+      polylines: number[][][];
     } = JSON.parse(info);
     return {
       markers: data.markers.map((marker) => {
@@ -53,6 +53,11 @@ const CourseDetailPage: React.FC = () => {
           point: { latitude: marker.point[0], longitude: marker.point[1] },
         };
       }),
+      polylines: data.polylines.map((polyline) =>
+        polyline.map((point) => {
+          return { latitude: point[0], longitude: point[1] };
+        })
+      ),
     };
   };
 
@@ -62,6 +67,8 @@ const CourseDetailPage: React.FC = () => {
     return {
       title: value.name,
       markers: info?.markers ?? [],
+      polylines: info?.polylines,
+      length: value.length,
     };
   };
 
