@@ -26,6 +26,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     id,
     postImages: croppedImages,
     content,
+    title,
     authorName,
     heartCount,
     isHearted,
@@ -143,6 +144,10 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     setIsExpanded(!isExpanded);
   };
 
+  const handleImageClick = () => {
+    navigate(`/post/${id}`);
+  };
+
   const timeAgo = formatDistanceToNow(parseISO(createdAt), {
     addSuffix: true,
     locale: ko,
@@ -172,7 +177,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
         />
       )}
       {croppedImages && croppedImages.length > 0 && (
-        <div className="relative">
+        <div className="relative cursor-pointer" onClick={handleImageClick}>
           <Carousel
             showThumbs={false}
             showIndicators={true}
@@ -197,32 +202,82 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           <img
             src={isHeartedState ? filledFire : emptyFire}
             alt="fire-icon"
-            className={`w-7 h-7 object-contain fire-icon ${isAnimating ? 'animate' : ''}`}
+            className={`w-7 h-7 object-contain fire-icon ${
+              isAnimating ? "animate" : ""
+            }`}
           />
         </button>
-        <span className="text-md ml-1">{likes}명이 공감했어요!</span>
         <button onClick={handleShare} className="flex ml-auto mr-3">
           <ShareIcon className="w-5" />
         </button>
       </div>
-      <div className="border-t border-gray-300 my-2"></div>
+      <p className="text-md ml-3 mt-1">{likes}명이 공감했어요!</p>
       <div className="mb-2 mx-3 break-all">
-        {isExpanded ? (
+        {postType === "NOTICE" ? (
           <>
-            {content}{" "}
-            <button style={{ color: "blue" }} onClick={toggleContent}>
-              접기
-            </button>
-          </>
-        ) : content.length > 50 ? (
-          <>
-            {content.substring(0, 50)}...{" "}
-            <button style={{ color: "blue" }} onClick={toggleContent}>
-              더보기
-            </button>
+            <div className="mt-1">
+              {isExpanded ? (
+                <>
+                  <span className="font-bold">{authorName}</span> {title} <br />
+                  {content}{" "}
+                  <button
+                    className="font-bold"
+                    style={{ color: "gray" }}
+                    onClick={toggleContent}
+                  >
+                    접기
+                  </button>
+                </>
+              ) : content.length > 40 ? (
+                <>
+                  <span className="font-bold">{authorName}</span> {title} <br />
+                  {content.substring(0, 40)}...{" "}
+                  <button
+                    className="font-bold"
+                    style={{ color: "gray" }}
+                    onClick={toggleContent}
+                  >
+                    더보기
+                  </button>
+                </>
+              ) : (
+                <>
+                  <span className="font-bold">{authorName}</span> {content}
+                </>
+              )}
+            </div>
           </>
         ) : (
-          content
+          <>
+            {isExpanded ? (
+              <>
+                <span className="font-bold">{authorName}</span> {content}{" "}
+                <button
+                  className="font-bold"
+                  style={{ color: "#444444" }}
+                  onClick={toggleContent}
+                >
+                  접기
+                </button>
+              </>
+            ) : content.length > 40 ? (
+              <>
+                <span className="font-bold">{authorName}</span>{" "}
+                {content.substring(0, 40)}...{" "}
+                <button
+                  className="font-bold"
+                  style={{ color: "#444444" }}
+                  onClick={toggleContent}
+                >
+                  더보기
+                </button>
+              </>
+            ) : (
+              <>
+                <span className="font-bold">{authorName}</span> {content}
+              </>
+            )}
+          </>
         )}
       </div>
     </div>
