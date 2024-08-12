@@ -17,7 +17,6 @@ import {
   PostDto,
 } from "../apis/api/postlist";
 import { PWAInstallPrompt } from "../components/templates/pwa/PWAInstallPrompt";
-import { PWAOpenAppPrompt } from "../components/templates/pwa/PWAOpenAppPrompt";
 import { fetchNotifications } from "../apis/api/alarm";
 import SpinnerComponent from "../components/atoms/SpinnerComponent";
 import Modal from "../components/molecules/ModalMolecules";
@@ -111,8 +110,6 @@ const PostMainPage: React.FC = () => {
         <Plus />
       </FloatingActionButton>
       <PWAInstallPrompt />
-      <PWAOpenAppPrompt />
-      {/* Modal 컴포넌트 추가 */}
       {isModalOpen && (
         <Modal title="오류 발생" onClose={handleModalClose}>
           <p>{modalMessage}</p>
