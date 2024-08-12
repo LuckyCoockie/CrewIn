@@ -38,6 +38,11 @@ public class PostController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "게시물 리스트를 조회하는데 성공했습니다", postItemsResponse));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse<PostItem>> getPostDetail(@AuthenticationPrincipal CustomUser customUser, @PathVariable("id") Long postId) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "게시물 리스트를 조회하는데 성공했습니다", postService.getPostDetail(postId, customUser)));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<BaseResponse<Void>> updatePost(
             @PathVariable("id") Long postId,
