@@ -202,13 +202,13 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           <img
             src={isHeartedState ? filledFire : emptyFire}
             alt="fire-icon"
-            className={`w-7 h-7 object-contain fire-icon ${
+            className={`w-6 h-6 object-contain fire-icon ${
               isAnimating ? "animate" : ""
             }`}
           />
         </button>
         <button onClick={handleShare} className="flex ml-auto mr-3">
-          <ShareIcon className="w-5" />
+          <ShareIcon />
         </button>
       </div>
       <p className="text-md ml-3 mt-1">{likes}명이 공감했어요!</p>
@@ -221,8 +221,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
                   <span className="font-bold">{authorName}</span> {title} <br />
                   {content}{" "}
                   <button
-                    className="font-bold"
-                    style={{ color: "gray" }}
+                    className="font-bold text-color"
                     onClick={toggleContent}
                   >
                     접기
@@ -233,8 +232,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
                   <span className="font-bold">{authorName}</span> {title} <br />
                   {content.substring(0, 40)}...{" "}
                   <button
-                    className="font-bold"
-                    style={{ color: "gray" }}
+                    className="font-bold text-color"
                     onClick={toggleContent}
                   >
                     더보기
@@ -253,8 +251,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
               <>
                 <span className="font-bold">{authorName}</span> {content}{" "}
                 <button
-                  className="font-bold"
-                  style={{ color: "#444444" }}
+                  className="font-bold text-color"
                   onClick={toggleContent}
                 >
                   접기
@@ -265,8 +262,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
                 <span className="font-bold">{authorName}</span>{" "}
                 {content.substring(0, 40)}...{" "}
                 <button
-                  className="font-bold"
-                  style={{ color: "#444444" }}
+                  className="font-bold text-color"
                   onClick={toggleContent}
                 >
                   더보기

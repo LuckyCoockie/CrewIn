@@ -76,23 +76,23 @@ const SearchUserTemplate: React.FC = () => {
             ItemComponent={(props: { data: MemberDto }) => (
               <li
                 key={props.data.memberId}
-                className="flex items-center p-2 border-b"
+                className="flex items-center p-2 border-b hover:bg-gray-100"
               >
                 {props.data.profileUrl ? (
                   <img
                     src={props.data.profileUrl}
                     alt={props.data.memberName}
                     className="w-10 h-10 rounded-full mr-2"
-                    onClick={() => handleUserProfile}
+                    onClick={() => handleUserProfile(props.data.memberId)}
                   />
                 ) : (
                   <CrewinLogo className="w-10 h-10 rounded-full mr-4" />
                 )}
                 <div className="flex-1">
-                  <div className="font-bold" onClick={() => handleUserProfile}>
+                  <div className="font-bold" onClick={() => handleUserProfile(props.data.memberId)}>
                     {props.data.memberName}
                   </div>
-                  <div className="text-gray-600">
+                  <div className="text-gray-600" onClick={() => handleUserProfile(props.data.memberId)}>
                     {props.data.memberNickName}
                   </div>
                 </div>

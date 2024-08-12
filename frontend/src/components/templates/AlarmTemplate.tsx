@@ -174,6 +174,7 @@ const AlarmTemplate: React.FC = () => {
                             e.stopPropagation();
                             handleDelete(alarm.notificationId);
                           }}
+                          className="bg-transparent"
                         >
                           <img
                             src={closeButton}
@@ -199,6 +200,7 @@ const AlarmTemplate: React.FC = () => {
                             e.stopPropagation();
                             handleDelete(alarm.notificationId);
                           }}
+                          className="bg-transparent"
                         >
                           <img
                             src={closeButton}

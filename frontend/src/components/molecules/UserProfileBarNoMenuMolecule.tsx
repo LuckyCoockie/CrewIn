@@ -18,7 +18,7 @@ const UserProfileBarNoMenu: React.FC<ProfileHeaderProps> = ({
   onClick,
 }) => {
   return (
-    <div className="flex items-center w-full mb-3">
+    <div className="flex items-center w-full mb-2">
       <div className="cursor-pointer" onClick={onClick}>
         <ProfileImageComponent src={profileImage} />
       </div>

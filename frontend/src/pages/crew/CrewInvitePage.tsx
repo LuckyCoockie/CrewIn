@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { ReactComponent as Searchicon } from "../../assets/icons/searchicon.svg";
 import InfiniteScrollComponent from "../../util/paging/component/InfinityScrollComponent";
 import {
@@ -36,6 +36,7 @@ const CrewInvitePage: React.FC = () => {
   const [invitingMemberId, setInvitingMemberId] = useState<number | null>(null);
   const [, setMembers] = useState<CrewSearchMemberDto[]>([]);
   const debouncedQuery = useDebounce(query, 300);
+  const navigate = useNavigate();
 
   const fetchInviteMembers = useCallback(
     async (
@@ -114,7 +115,8 @@ const CrewInvitePage: React.FC = () => {
             ItemComponent={({ data }: { data: CrewSearchMemberDto }) => (
               <li
                 key={data.memberId}
-                className="flex items-center p-2 border-b"
+                className="flex items-center p-2 border-b cursor-pointer hover:bg-gray-100"
+                onClick={() => navigate(`/profile/${data.memberId}`)}
               >
                 <div className="w-12 h-12 flex-shrink-0">
                   {data.imageUrl ? (
