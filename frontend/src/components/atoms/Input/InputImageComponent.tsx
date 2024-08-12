@@ -65,7 +65,6 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
             accept="image/*"
             aria-describedby={`${props.id}-description`}
             className="hidden"
-            multiple
           />
         </div>
         {preview ? (
