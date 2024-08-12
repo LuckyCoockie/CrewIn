@@ -12,6 +12,7 @@ import { changeAuthority } from "../../../apis/api/changeauthority";
 import { changeCaptain } from "../../../apis/api/captainchange";
 import { crewOut } from "../../../apis/api/crewout";
 import InfiniteScrollComponent from "../../../util/paging/component/InfinityScrollComponent";
+import ModalConfirm from "../../molecules/ModalConfirmMolecules";
 
 // Captain - Pacer - Member 순으로 정렬
 const sortPositions: Record<string, number> = {
@@ -27,6 +28,35 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
   const [members, setMembers] = useState<CrewMemberDto[]>([]);
   const [, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedMember, setSelectedMember] = useState<CrewMemberDto | null>(
+    null
+  );
+  const [originalPosition, setOriginalPosition] = useState<string | null>(null);
+  const [action, setAction] = useState<"BAN" | "CAPTAIN" | null>(null);
+
+  const modalTitle = action === "BAN" ? "알림" : "권한 변경";
+  const modalMessage =
+    action === "BAN"
+      ? "회원을 정말로 강퇴하시겠습니까?"
+      : "권한을 변경하시겠습니까?";
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    if (selectedMember && originalPosition !== null) {
+      // 모달이 닫힐 때 원래 포지션으로 되돌림
+      setMembers((prevMembers) =>
+        prevMembers.map((m) =>
+          m.email === selectedMember.email
+            ? { ...m, position: originalPosition }
+            : m
+        )
+      );
+    }
+    setSelectedMember(null);
+    setOriginalPosition(null);
+    setAction(null);
+  };
 
   const fetchCrewMembers = useCallback(
     async (page: number): Promise<GetCrewMemberListResponseDto> => {
@@ -64,40 +94,18 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
     );
 
     if (member) {
-      try {
-        if (newPosition === "CAPTAIN" && currentCaptain) {
-          await changeCaptain({
-            crewId: Number(crewId),
-            memberId: member.memberId,
-            position: "PACER",
-          });
-          setMembers((prevMembers) =>
-            prevMembers
-              .map((m) =>
-                m.email === email
-                  ? { ...m, position: "CAPTAIN" }
-                  : m.email === currentCaptain.email
-                  ? { ...m, position: member.position }
-                  : m
-              )
-              .sort((a, b) => {
-                return (
-                  (sortPositions[a.position] || Infinity) -
-                  (sortPositions[b.position] || Infinity)
-                );
-              })
-          );
-          navigate(`/crew/detail/${crewId}`);
-        } else if (newPosition === "BAN") {
-          await crewOut({
-            crewId: Number(crewId),
-            memberId: member.memberId,
-          });
-          setMembers((prevMembers) =>
-            prevMembers.filter((m) => m.email !== email)
-          );
-          navigate(0);
-        } else {
+      if (newPosition === "CAPTAIN" && currentCaptain) {
+        setSelectedMember(member);
+        setOriginalPosition(member.position); // 원래 포지션 저장
+        setAction("CAPTAIN");
+        setIsModalOpen(true);
+      } else if (newPosition === "BAN") {
+        setSelectedMember(member);
+        setOriginalPosition(member.position); // 원래 포지션 저장
+        setAction("BAN");
+        setIsModalOpen(true);
+      } else {
+        try {
           await changeAuthority({
             crewId: Number(crewId),
             memberId: member.memberId,
@@ -116,13 +124,70 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
               })
           );
           navigate(0);
+        } catch (error) {
+          console.error("권한 변경 오류:", error);
+          setError("권한 변경에 실패했습니다.");
         }
-      } catch (error) {
-        console.error("권한 변경 오류:", error);
-        setError("권한 변경에 실패했습니다.");
       }
     } else {
       console.error("Member not found:", email);
+    }
+  };
+
+  const handleConfirm = async () => {
+    if (selectedMember) {
+      if (action === "BAN") {
+        try {
+          await crewOut({
+            crewId: Number(crewId),
+            memberId: selectedMember.memberId,
+          });
+          setMembers((prevMembers) =>
+            prevMembers.filter((m) => m.email !== selectedMember.email)
+          );
+          navigate(0);
+        } catch (error) {
+          console.error("강퇴 실패:", error);
+          setError("강퇴에 실패했습니다.");
+        } finally {
+          handleModalClose();
+        }
+      } else if (action === "CAPTAIN") {
+        try {
+          const currentCaptain = members.find(
+            (member) => member.position === "CAPTAIN"
+          );
+          if (currentCaptain) {
+            await changeCaptain({
+              crewId: Number(crewId),
+              memberId: selectedMember.memberId,
+              position: "PACER",
+            });
+            setMembers((prevMembers) =>
+              prevMembers
+                .map((m) =>
+                  m.email === selectedMember.email
+                    ? { ...m, position: "CAPTAIN" }
+                    : m.email === currentCaptain.email
+                    ? { ...m, position: "PACER" }
+                    : m
+                )
+                .sort((a, b) => {
+                  return (
+                    (sortPositions[a.position] || Infinity) -
+                    (sortPositions[b.position] || Infinity)
+                  );
+                })
+            );
+            navigate(`/crew/detail/${crewId}`);
+          }
+        } catch (error) {
+          console.error("캡틴 변경 실패:", error);
+          setError("캡틴 변경에 실패했습니다.");
+        } finally {
+          handleModalClose();
+        }
+      }
     }
   };
 
@@ -163,8 +228,8 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
             </button>
           ) : (
             <select
-              className="border border-gray-400 w-30 h-10 rounded-md text-sm"
-              defaultValue={member.position}
+              className="border border-gray-400 w-30 h-10 rounded-md text-sm focus:ring-0 focus:border-black"
+              value={member.position} 
               onChange={(e) =>
                 handlePositionChange(member.email, e.target.value)
               }
@@ -186,26 +251,39 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
   );
 
   return (
-    <div className="relative flex flex-col max-w-[550px] mx-auto">
-      <header className="mb-1">
-        <BackHeaderMediumOrganism text="크루원 관리" />
-        <div className="flex items-center flex-grow justify-end">
-          <Searchicon className="cursor-pointer" onClick={onSearchClick} />
+    <>
+      <div className="relative flex flex-col max-w-[550px] mx-auto">
+        <header className="mb-1">
+          <BackHeaderMediumOrganism text="크루원 관리" />
+          <div className="flex items-center flex-grow justify-end">
+            <Searchicon className="cursor-pointer" onClick={onSearchClick} />
+          </div>
+        </header>
+        <hr />
+
+        {error && <div className="text-red-500 text-center mt-2">{error}</div>}
+
+        <div>
+          <InfiniteScrollComponent
+            fetchKey="crewMembers"
+            fetchData={fetchCrewMembers}
+            ItemComponent={({ data }) => renderMemberItem(data)}
+            className="crew-member-list"
+          />
         </div>
-      </header>
-      <hr />
-
-      {error && <div className="text-red-500 text-center mt-2">{error}</div>}
-
-      <div>
-        <InfiniteScrollComponent
-          fetchKey="crewMembers"
-          fetchData={fetchCrewMembers}
-          ItemComponent={({ data }) => renderMemberItem(data)}
-          className="crew-member-list"
-        />
       </div>
-    </div>
+      {/* Modal 컴포넌트 */}
+      {isModalOpen && (
+        <ModalConfirm
+          title={modalTitle}
+          onClose={handleModalClose}
+          onConfirm={handleConfirm} // 확인 클릭 시 처리 실행
+          type="delete"
+        >
+          <p>{modalMessage}</p>
+        </ModalConfirm>
+      )}
+    </>
   );
 };
 
