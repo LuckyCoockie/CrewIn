@@ -41,34 +41,6 @@ const InputBannermageComponent = React.forwardRef<HTMLInputElement, InputImage>(
 
     return (
       <>
-        <div className="w-full text-center mb-3">
-          <label htmlFor={props.id} className="w-full">
-            <div className="flex p-2 border border-gray-300 rounded-lg w-full">
-              {fileCount > 0 ? (
-                <p className="text-gray-500 font-semibold ml-1">
-                  이미지가 선택되었습니다.
-                </p>
-              ) : (
-                <p className="text-gray-500 font-semibold ml-1">
-                  3:2 비율을 권장합니다.
-                </p>
-              )}
-              <p className="ml-auto">
-                <Attach />
-              </p>
-            </div>
-          </label>
-          <input
-            className="hidden"
-            id={props.id}
-            type="file"
-            name={props.name}
-            placeholder={props.placeholder}
-            onChange={handleChange}
-            ref={ref}
-            accept="image/*"
-          />
-        </div>
         {preview ? (
           <>
             <div className="w-full text-center">
@@ -99,6 +71,34 @@ const InputBannermageComponent = React.forwardRef<HTMLInputElement, InputImage>(
             </label>
           </>
         )}
+        <div className="w-full text-center mb-4">
+          <label htmlFor={props.id} className="w-full">
+            <div className="flex p-2 border border-gray-300 rounded-lg w-full">
+              {fileCount > 0 ? (
+                <p className="text-gray-500 font-semibold ml-1">
+                  이미지가 선택되었습니다.
+                </p>
+              ) : (
+                <p className="text-gray-500 font-semibold ml-1">
+                  3:2 비율을 권장합니다.
+                </p>
+              )}
+              <p className="ml-auto">
+                <Attach />
+              </p>
+            </div>
+          </label>
+          <input
+            className="hidden"
+            id={props.id}
+            type="file"
+            name={props.name}
+            placeholder={props.placeholder}
+            onChange={handleChange}
+            ref={ref}
+            accept="image/*"
+          />
+        </div>
       </>
     );
   }
