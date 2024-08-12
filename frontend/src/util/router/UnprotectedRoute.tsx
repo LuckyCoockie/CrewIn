@@ -3,9 +3,12 @@ import { useSelector } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { RootState } from "../../modules";
 import { checkAuth } from "../auth";
+import SplashPage from "./SplashPage";
 
 const UnprotectedRoute = () => {
-  const { accessToken } = useSelector((state: RootState) => state.auth);
+  const { accessToken, loading } = useSelector(
+    (state: RootState) => state.auth
+  );
   const location = useLocation();
 
   const navigate = useNavigate();
@@ -17,7 +20,12 @@ const UnprotectedRoute = () => {
     }
   }, [isAuthenticated, location.state?.navigateFrom, navigate]);
 
-  return <Outlet />;
+  if (loading) return <SplashPage />;
+  return (
+    <div className="mx-auto w-full max-w-[500px]">
+      <Outlet />
+    </div>
+  );
 };
 
 export default UnprotectedRoute;

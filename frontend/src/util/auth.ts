@@ -1,16 +1,20 @@
 import store from "../modules";
 import { clearAccessToken, setAccessToken } from "../modules/reducers/auth";
+import { debounce } from "lodash";
 
-export const setAuth = (dto: { accessToken: string; memberId: number }) => {
-  const currentTime = new Date().getTime().toString();
-  localStorage.setItem("AUTH", currentTime);
-  store.dispatch(setAccessToken(dto.accessToken, dto.memberId));
-};
+export const setAuth = debounce(
+  (dto: { accessToken: string; memberId: number }) => {
+    const currentTime = new Date().getTime().toString();
+    localStorage.setItem("AUTH", currentTime);
+    store.dispatch(setAccessToken(dto.accessToken, dto.memberId));
+  },
+  300
+);
 
-export const clearAuth = () => {
+export const clearAuth = debounce(() => {
   localStorage.removeItem("AUTH");
   store.dispatch(clearAccessToken());
-};
+}, 300);
 
 export const checkAuth = (): boolean => {
   if (!localStorage.getItem("AUTH")) return false;
