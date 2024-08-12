@@ -4,6 +4,7 @@ import BottomBarOrganism from "./components/organisms/BottomBarOrganism";
 import PullToRefresh from "./util/ptr/PullToRefersh.tsx";
 
 const standalone = window.matchMedia("(display-mode: standalone)").matches;
+const isIOS = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
 
 const App: React.FC = () => {
   // 현 위치 파악 함수
@@ -24,12 +25,12 @@ const App: React.FC = () => {
 
   const ref = useRef<HTMLDivElement>(null);
   const onRefresh = async () => {
-    if (standalone) window.location.reload();
+    if (standalone && isIOS) window.location.reload();
   };
 
   return (
     <div className="mx-auto w-full max-w-[550px]" ref={ref}>
-      {standalone && <PullToRefresh el={ref} onRefresh={onRefresh} />}
+      {standalone && isIOS && <PullToRefresh el={ref} onRefresh={onRefresh} />}
       <Outlet />
       {!shouldHideBottomBar && (
         <BottomBarOrganism current={location.pathname} />
