@@ -49,7 +49,7 @@ export const getMyMadeSessions = async (
   return response.data;
 };
 
-// 내가 참가한 세션
+// 내가 신청한 세션
 export type MyParticipatedSessionDto = {
   startAt: string;
   endAt: string;
