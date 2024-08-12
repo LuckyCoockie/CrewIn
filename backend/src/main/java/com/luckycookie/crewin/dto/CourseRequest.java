@@ -37,7 +37,7 @@ public class CourseRequest {
         private Long id;
         private Long creatorId;
         private Integer length;
-
+        private String area;
         private String info;
         private String name;
         private String thumbnailImage;

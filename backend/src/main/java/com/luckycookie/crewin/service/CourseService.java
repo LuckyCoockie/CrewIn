@@ -3,6 +3,7 @@ package com.luckycookie.crewin.service;
 import com.luckycookie.crewin.domain.Course;
 import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.dto.CourseRequest;
+import com.luckycookie.crewin.dto.CourseRequest.CourseDetailResponse;
 import com.luckycookie.crewin.dto.CourseRequest.UpdateCourseRequest;
 import com.luckycookie.crewin.dto.CourseResponse;
 import com.luckycookie.crewin.exception.course.NotFoundCourseException;
@@ -87,15 +88,16 @@ public class CourseService {
         courseRepository.delete(course);
     }
 
-    public CourseRequest.CourseDetailResponse getCourseDetail(Long courseId) {
+    public CourseDetailResponse getCourseDetail(Long courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(NotFoundCourseException::new);
 
-        return CourseRequest.CourseDetailResponse.builder()
+        return CourseDetailResponse.builder()
                 .id(courseId)
                 .creatorId(course.getCreator().getId())
                 .length(course.getLength())
                 .info(course.getInfo())
+                .area(course.getArea())
                 .name(course.getName())
                 .thumbnailImage(course.getThumbnailImage())
                 .build();
