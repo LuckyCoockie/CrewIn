@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import {
   getPostDetail,
   PostDetailResponseDto,
@@ -9,6 +10,7 @@ import { registerPostHeart } from "../../apis/api/heart";
 import { deletePostHeart } from "../../apis/api/heartdelete";
 import filledFire from "../../assets/images/filledfire.png";
 import emptyFire from "../../assets/images/emptyfire.png";
+import { ReactComponent as ShareIcon } from "../../assets/icons/shareicon.svg";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -17,16 +19,13 @@ import UserProfileBarNoMenu from "../../components/molecules/UserProfileBarNoMen
 import UserProfileBar from "../../components/molecules/UserProfileBarMolecule";
 import { Carousel } from "react-responsive-carousel";
 import EditDeleteDropdownOrganism from "../../components/organisms/EditDeleteDropdownOrganism";
-import { useSelector } from "react-redux";
 import { RootState } from "../../modules";
-import { useNavigate } from "react-router-dom";
 import { deletePost } from "../../apis/api/postdelete";
 
-const PostDetailPage: React.FC = () => {
+const PostDetailTemplate: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const memberId = useSelector((state: RootState) => state.auth.memberId);
   const navigate = useNavigate();
-
   const queryClient = useQueryClient();
 
   const {
@@ -50,6 +49,12 @@ const PostDetailPage: React.FC = () => {
       setIsHeartedState(postData.isHearted);
     }
   }, [postData]);
+
+  useEffect(() => {
+    if (!(window as any).Kakao.isInitialized()) {
+      (window as any).Kakao.init("16a9019862d8945c0a1082f314f6cef0");
+    }
+  }, []);
 
   const likeMutation = useMutation(registerPostHeart, {
     onSuccess: () => {
@@ -91,6 +96,36 @@ const PostDetailPage: React.FC = () => {
     } catch (error) {
       console.error("게시물 삭제 요청 중 오류가 발생했습니다:", error);
     }
+  };
+
+  const handleShare = () => {
+    const kakao = (window as any).Kakao;
+    if (!kakao) {
+      console.error("Kakao SDK not loaded");
+      return;
+    }
+
+    kakao.Link.sendDefault({
+      objectType: "feed",
+      content: {
+        title: postData?.authorName || "",
+        description: postData?.content.substring(0, 100) + "...",
+        imageUrl: postData?.postImages ? postData.postImages[0] : "",
+        link: {
+          mobileWebUrl: window.location.href,
+          webUrl: window.location.href,
+        },
+      },
+      buttons: [
+        {
+          title: "View Post",
+          link: {
+            mobileWebUrl: window.location.href,
+            webUrl: window.location.href,
+          },
+        },
+      ],
+    });
   };
 
   if (isLoading) {
@@ -159,15 +194,18 @@ const PostDetailPage: React.FC = () => {
             </div>
           ))}
         </Carousel>
-        <div className="flex items-center mt-2 mb-1">
+        <div className="flex items-center mt-2 mb-2">
           <button onClick={handleLike} className="flex items-center ml-3">
             <img
               src={isHeartedState ? filledFire : emptyFire}
               alt="fire-icon"
-              className={`w-6 h-6 object-contain fire-icon ${
+              className={`w-7 h-7 object-contain fire-icon ${
                 isAnimating ? "animate" : ""
               }`}
             />
+          </button>
+          <button onClick={handleShare} className="flex ml-auto mr-3">
+            <ShareIcon />
           </button>
         </div>
         <span className="text-md ml-3">{likes}명이 공감했어요!</span>
@@ -194,4 +232,4 @@ const PostDetailPage: React.FC = () => {
   );
 };
 
-export default PostDetailPage;
+export default PostDetailTemplate;
