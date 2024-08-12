@@ -68,7 +68,7 @@ const SearchUserTemplate: React.FC = () => {
       </header>
       <hr />
 
-      <div className="mt-4">
+      <div className="">
         {query.trim() !== "" && (
           <InfiniteScrollComponent
             fetchKey={["userData", query]}

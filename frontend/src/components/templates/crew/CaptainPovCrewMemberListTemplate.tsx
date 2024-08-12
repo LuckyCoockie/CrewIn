@@ -207,9 +207,9 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
     <li
       key={member.email}
       className="flex items-center p-2 border-b cursor-pointer hover:bg-gray-100"
-      onClick={() => navigate(`/profile/${member.memberId}`)}
+      
     >
-      <div className="w-12 h-12 flex-shrink-0">
+      <div className="w-12 h-12 flex-shrink-0" onClick={() => navigate(`/profile/${member.memberId}`)}>
         {member.imageUrl ? (
           <img
             src={member.imageUrl}
@@ -220,7 +220,7 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
           <CrewinLogo className="w-full h-full object-cover rounded-full" />
         )}
       </div>
-      <div className="flex-1 ml-3">
+      <div className="flex-1 ml-3" onClick={() => navigate(`/profile/${member.memberId}`)}>
         <div className="font-bold">{member.name}</div>
         <div className="text-gray-600">{member.nickname}</div>
       </div>

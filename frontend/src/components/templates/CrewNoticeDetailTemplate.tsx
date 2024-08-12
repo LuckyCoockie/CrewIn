@@ -16,6 +16,7 @@ import { Carousel } from "react-responsive-carousel";
 import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
 import { registerPostHeart } from "../../apis/api/heart";
 import { deletePostHeart } from "../../apis/api/heartdelete";
+import { ReactComponent as ShareIcon } from "../../assets/icons/shareicon.svg";
 
 const CrewNoticeDetailTemplate: React.FC = () => {
   const { crewId, noticeId } = useParams<{
@@ -51,6 +52,12 @@ const CrewNoticeDetailTemplate: React.FC = () => {
     }
   }, [noticeData]);
 
+  useEffect(() => {
+    if (!(window as any).Kakao.isInitialized()) {
+      (window as any).Kakao.init("YOUR_APP_KEY");
+    }
+  }, []);
+
   const likeMutation = useMutation(registerPostHeart, {
     onSuccess: () => {
       queryClient.invalidateQueries(["noticeDetail", requestDto]);
@@ -84,6 +91,36 @@ const CrewNoticeDetailTemplate: React.FC = () => {
     setTimeout(() => setIsAnimating(false), 200);
   };
 
+  const handleShare = () => {
+    const kakao = (window as any).Kakao;
+    if (!kakao) {
+      console.error("Kakao SDK not loaded");
+      return;
+    }
+
+    kakao.Link.sendDefault({
+      objectType: "feed",
+      content: {
+        title: noticeData?.title,
+        description: noticeData?.content.substring(0, 100) + "...",
+        imageUrl: noticeData?.postImages ? noticeData.postImages[0] : "",
+        link: {
+          mobileWebUrl: window.location.href,
+          webUrl: window.location.href,
+        },
+      },
+      buttons: [
+        {
+          title: "View Notice",
+          link: {
+            mobileWebUrl: window.location.href,
+            webUrl: window.location.href,
+          },
+        },
+      ],
+    });
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -107,13 +144,13 @@ const CrewNoticeDetailTemplate: React.FC = () => {
         <BackHeaderMediumOrganism text={noticeData.title} />
       </header>
       <div className="w-full">
-        <div className="flex items-center">
+        <div className="flex items-center mx-2">
           <UserProfileBarNoMenu
             profileImage={noticeData.profileImage}
             username={noticeData.authorName}
             timeAgo={timeAgo}
           />
-          <div className="me-4">
+          <div className="">
             <EditDeleteDropdownOrganism
               type="NOTICE"
               idData={Number(noticeId)}
@@ -146,11 +183,16 @@ const CrewNoticeDetailTemplate: React.FC = () => {
               className={`w-7 ${isAnimating ? "animate" : ""}`}
             />
           </button>
-          <span className="text-md ml-1">{likes}명이 공감했어요!</span>
+          <button onClick={handleShare} className="flex ml-auto mr-3">
+            <ShareIcon />
+          </button>
         </div>
-        <div className="border-t border-gray-300 my-2"></div>
-        <div className="mt-2 mx-3">
-          <p>{noticeData.content}</p>
+        <div className="text-md ml-3 mt-2">{likes}명이 공감했어요!</div>
+        <div className="mt-1 mx-3">
+          <div>
+            <span className="font-bold">{noticeData.authorName} </span>
+            {noticeData.content}
+          </div>
         </div>
       </div>
     </>

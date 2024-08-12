@@ -156,28 +156,33 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     .replace(" 후", " 전");
 
   return (
-    <div className="w-full mb-4 pb-3">
-      {postType === "NOTICE" ? (
-        <UserProfileBarNoMenu
-          profileImage={profileImage}
-          username={authorName}
-          timeAgo={timeAgo}
-          onClick={() => handleCrewDetail(authorId)}
-        />
-      ) : (
-        <UserProfileBar
-          profileImage={profileImage}
-          username={authorName}
-          timeAgo={timeAgo}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          authorId={authorId}
-          memberId={memberId!}
-          onClick={() => handleUserProfile(authorId)}
-        />
-      )}
+    <div className="w-full mb-4">
+      <div className="mx-2">
+        {postType === "NOTICE" ? (
+          <UserProfileBarNoMenu
+            profileImage={profileImage}
+            username={authorName}
+            timeAgo={timeAgo}
+            onClick={() => handleCrewDetail(authorId)}
+          />
+        ) : (
+          <UserProfileBar
+            profileImage={profileImage}
+            username={authorName}
+            timeAgo={timeAgo}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            authorId={authorId}
+            memberId={memberId!}
+            onClick={() => handleUserProfile(authorId)}
+          />
+        )}
+      </div>
       {croppedImages && croppedImages.length > 0 && (
-        <div className="relative cursor-pointer sm:mx-1" onClick={handleImageClick}>
+        <div
+          className="relative cursor-pointer mx-1"
+          onClick={handleImageClick}
+        >
           <Carousel
             showThumbs={false}
             showIndicators={true}
@@ -202,7 +207,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           <img
             src={isHeartedState ? filledFire : emptyFire}
             alt="fire-icon"
-            className={`w-6 h-6 object-contain fire-icon ${
+            className={`w-7 h-7 object-contain fire-icon ${
               isAnimating ? "animate" : ""
             }`}
           />
@@ -211,11 +216,11 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           <ShareIcon />
         </button>
       </div>
-      <p className="text-md ml-3 mt-1">{likes}명이 공감했어요!</p>
+      <p className="text-md ml-3 mt-2">{likes}명이 공감했어요!</p>
       <div className="mb-2 mx-3 break-all">
         {postType === "NOTICE" ? (
           <>
-            <div className="mt-1">
+            <div className="">
               {isExpanded ? (
                 <>
                   <span className="font-bold">{authorName}</span> {title} <br />
@@ -240,7 +245,8 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
                 </>
               ) : (
                 <>
-                  <span className="font-bold">{authorName}</span> {content}
+                  <span className="font-bold">{authorName}</span> {title} <br />
+                  {content}
                 </>
               )}
             </div>
@@ -276,6 +282,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           </>
         )}
       </div>
+      <div className="border-b border-gray-300 mx-1"></div>
     </div>
   );
 };
