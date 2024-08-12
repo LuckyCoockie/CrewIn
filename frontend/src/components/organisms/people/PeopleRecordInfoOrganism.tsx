@@ -23,7 +23,7 @@ const PeopleRecordInfoOrganism: React.FC<FetchDataProps> = ({
   return (
     <>
       <div className="flex items-center flex-col w-full my-4">
-        <MyPageProfileImage src={imageUrl} />
+        <MyPageProfileImage src={imageUrl} editable={false} />
         <BarTitle title={nickname} />
         <BarContent content={name} />
         <div className="flex w-full justify-evenly py-2">
