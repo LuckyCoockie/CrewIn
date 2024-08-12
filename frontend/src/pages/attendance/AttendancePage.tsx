@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router";
+import { Navigate, useLocation, useParams } from "react-router";
 import AttendanceTemplate from "../../components/templates/attendance/AttendanceTemplate";
 import { useCallback } from "react";
 import {
@@ -11,10 +11,12 @@ import {
 } from "../../apis/api/attendance";
 import useGeolocation from "../../util/geolocation/gelocation";
 import SpinnerComponent from "../../components/atoms/SpinnerComponent";
+import LargeAbleButton from "../../components/atoms/Button/LargeAbleButton";
+import crewinIcon from "../../assets/icons/crewinicon.svg";
 
 const AttendancePage: React.FC = () => {
   const { sessionId } = useParams();
-  const { location } = useGeolocation();
+  const { location, error, refetch } = useGeolocation();
   const { state } = useLocation();
 
   const getMemberList =
@@ -35,7 +37,7 @@ const AttendancePage: React.FC = () => {
   const onStartAttendanceClick = useCallback(async () => {
     if (!sessionId || !location) return;
 
-    startAttendance({
+    await startAttendance({
       sessionId: parseInt(sessionId),
       lat: location.latitude,
       lng: location.longitude,
@@ -52,28 +54,46 @@ const AttendancePage: React.FC = () => {
   const onGuestAttendanceClick = useCallback(async () => {
     if (!sessionId || !location) return;
 
-    postAttend({
+    await postAttend({
       sessionId: parseInt(sessionId),
       lat: location?.latitude,
       lng: location?.longitude,
     });
   }, [location, sessionId]);
 
-  if (!sessionId) return "sessionId가 필요합니다.";
+  if (!sessionId) return <Navigate to={`/session`} replace />;
 
   if (!location) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <SpinnerComponent />
+      <div className="flex justify-center items-center h-screen p-10">
+        {error ? (
+          <div className="text-center items-center w-[550px]">
+            <img src={crewinIcon} className="w-[125px]" />
+            <div className="text-xl pt-10 font-bold text-[#A7A7A7] text-center">
+              사용자 위치 권한이 필요합니다.
+            </div>
+            <div className="text-xl pb-10 font-bold text-[#A7A7A7] text-center">
+              권한 수정 후 재시도 해주세요.
+            </div>
+            <LargeAbleButton onClick={refetch} text={"재시도"} />
+          </div>
+        ) : (
+          <div>
+            위치정보를 받아오는 중입니다.
+            <SpinnerComponent />
+          </div>
+        )}
       </div>
     );
   }
 
+  if (!state) return <Navigate to={`/session/${sessionId}`} replace />;
+
   return (
     <AttendanceTemplate
       getMemberList={getMemberList}
-      onStartAttendanceClick={onStartAttendanceClick}
       isSessionHost={state ? state.isSessionHost : false}
+      onStartAttendanceClick={onStartAttendanceClick}
       onHostAttendanceClick={onHostAttendanceClick}
       onGuestAttendanceClick={onGuestAttendanceClick}
       startAt={state.startAt}

@@ -83,6 +83,8 @@ const AttendanceMemberListOrganism = <T,>({
 
   if (isError || !memberList) return "데이터를 불러오지 못했습니다.";
 
+  console.log(memberList)
+
   return (
     <>
       {memberList.map((member, index) => (

@@ -5,9 +5,6 @@ import PostCreatePage from "./pages/PostCreatePage";
 import CourseCreatePage from "./pages/course/CourseCreatePage.tsx";
 import LoginPage from "./pages/LoginPage";
 import SessionCreatePage from "./pages/SessionCreatePage";
-import SessionPage from "./pages/SessionPage";
-import CrewPage from "./pages/CrewPage";
-import ProfilePage from "./pages/ProfilePage";
 import JoinPage from "./pages/JoinPage";
 import SessionDetailPage from "./pages/SessionDetailPage";
 import PostMainPage from "./pages/PostMainPage";
@@ -28,7 +25,6 @@ import CrewMemberSearchPage from "./pages/crew/CrewMemberSearchPage.tsx";
 import CaptainPovCrewMemberPage from "./pages/crew/CaptainPovCrewMemberPage.tsx";
 import CaptainPovCrewMemberSearchPage from "./pages/crew/CaptainPovCrewMemberSearchPage.tsx";
 import CourseEditPage from "./pages/course/CourseEditPage.tsx";
-import CoursePage from "./pages/course/CoursePage.tsx";
 import CrewInvitePage from "./pages/crew/CrewInvitePage.tsx";
 import MySessionPage from "./pages/session/MySessionPage.tsx";
 import MyProfilePage from "./pages/MyProfilePage.tsx";
@@ -56,7 +52,6 @@ export const router = createBrowserRouter([
           { path: "home", element: <PostMainPage /> },
           {
             path: "session",
-            element: <SessionPage />,
             children: [
               { path: "", element: <SessionSearchPage /> },
               { path: "create", element: <SessionCreatePage /> },
@@ -72,7 +67,6 @@ export const router = createBrowserRouter([
           },
           {
             path: "crew",
-            element: <CrewPage />,
             children: [
               { path: "", element: <CrewRedirectPage /> },
               { path: "search", element: <CrewSearchPage /> },
@@ -117,7 +111,6 @@ export const router = createBrowserRouter([
           { path: "mypage/session/:type", element: <MySessionPage /> },
           {
             path: "profile",
-            element: <ProfilePage />,
             children: [
               { path: "", element: <MyProfilePage /> },
               { path: ":memberId", element: <PeopleProfilePage /> },
@@ -130,8 +123,8 @@ export const router = createBrowserRouter([
           { path: "info", element: <ProfileInfoPage /> },
           {
             path: "course",
-            element: <CoursePage />,
             children: [
+              { path: "", element: <Navigate to={"/profile"} /> },
               {
                 path: "create",
                 element: <CourseCreatePage />,
