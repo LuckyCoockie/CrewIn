@@ -10,19 +10,6 @@ const App: React.FC = () => {
   // 현 위치 파악 함수
   const location = useLocation();
 
-  // 제외할 페이지
-  // const hideBottomBarRoutes = [
-  //   /^\/login$/,
-  //   /^\/join$/,
-  //   /^\/find-password$/,
-  //   /^\/info$/,
-  //   /^\/course\/create$/,
-  //   /^\/profile\/[^/]+$/, // /profile/:userId 만 포함하도록 설정
-  // ];
-  // const shouldHideBottomBar = hideBottomBarRoutes.some((pattern) =>
-  //   pattern.test(location.pathname)
-  // );
-
   // 바텀바를 그릴 페이지
   const showBottomBarRoutes = [
     /^\/home$/,
