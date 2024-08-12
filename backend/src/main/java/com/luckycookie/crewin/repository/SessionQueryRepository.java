@@ -62,7 +62,7 @@ public class SessionQueryRepository {
 
     private BooleanExpression statusEq(String status) {
         if (status.equalsIgnoreCase("active"))
-            return session.startAt.after(LocalDateTime.now());
+            return session.endAt.after(LocalDateTime.now());
         else
             return null;
     }
