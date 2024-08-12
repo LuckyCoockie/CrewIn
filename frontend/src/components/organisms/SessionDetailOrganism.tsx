@@ -49,6 +49,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
   const navigate = useNavigate();
 
   const isSessionStarted = detailData ? new Date(startAt) < new Date() : false;
+  const isSessionEnded = detailData ? new Date(endAt) < new Date() : false;
 
   const sessionTypeSubstitute = (type: string) => {
     if (type === "OPEN") {
@@ -214,7 +215,8 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
               isLoading={isOutSubmit}
             />
           )}
-        {isSessionStarted && <LargeDisableButton text="종료된 세션" />}
+        {isSessionStarted && !isSessionEnded && <LargeDisableButton text="시작된 세션" />}
+        {isSessionEnded && <LargeDisableButton text="종료된 세션" />}
       </main>
     </>
   );
