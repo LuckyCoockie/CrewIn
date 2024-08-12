@@ -30,7 +30,8 @@ public class MemberCrew {
     private Crew crew;
 
     @Enumerated(EnumType.STRING)
-    private Position position;
+    @Builder.Default
+    private Position position = Position.MEMBER;
 
     @Builder.Default
     private Boolean isJoined = false;
@@ -40,7 +41,7 @@ public class MemberCrew {
 
     private int attendanceCount;
 
-    public void plusAttendance(){
+    public void plusAttendance() {
         attendanceCount++;
     }
 
