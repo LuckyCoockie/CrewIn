@@ -15,6 +15,8 @@ import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import UserProfileBarNoMenu from "../molecules/UserProfileBarNoMenuMolecule";
 import { Carousel } from "react-responsive-carousel";
 import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
+import SpinnerComponent from "../atoms/SpinnerComponent";
+import ErrorText from "../atoms/ErrorText";
 
 const CrewNoticeDetailTemplate: React.FC = () => {
   const { crewId, noticeId } = useParams<{
@@ -46,11 +48,11 @@ const CrewNoticeDetailTemplate: React.FC = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SpinnerComponent />;
   }
 
   if (error) {
-    return <div>Error loading data</div>;
+    return <ErrorText text="데이터를 로드하는데 오류가 발생했습니다." />;
   }
 
   if (!noticeData) {

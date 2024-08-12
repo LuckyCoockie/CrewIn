@@ -14,6 +14,7 @@ import InputDropdonwTypeMolecule from "../molecules/Input/InputDropdonwTypeMolec
 import { regions } from "../../regions";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
+import SpinnerComponent from "../atoms/SpinnerComponent";
 
 import {
   getCrewInfo,
@@ -192,7 +193,7 @@ const CrewEditOrganism: React.FC = () => {
   const watchedCity = watch("city");
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SpinnerComponent/>;
   }
 
   return (

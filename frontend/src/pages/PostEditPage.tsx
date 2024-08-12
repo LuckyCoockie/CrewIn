@@ -5,6 +5,8 @@ import { updatePost, UpdatePostRequestDto } from "../apis/api/postupdate";
 import { getPostList, PostDto } from "../apis/api/postlist";
 import { getMyCrews, CrewDto } from "../apis/api/mycrew";
 import BackHeaderMediumOrganism from "../components/organisms/BackHeaderMediumOrganism";
+import SpinnerComponent from "../components/atoms/SpinnerComponent";
+import ErrorText from "../components/atoms/ErrorText";
 
 const fetchPostById = async (postId: number) => {
   let allPosts: PostDto[] = [];
@@ -99,11 +101,11 @@ const PostEditPage: React.FC = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <SpinnerComponent />;
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <ErrorText text="데이터를 로드하는데 오류가 발생했습니다." />;
   }
 
   return (
