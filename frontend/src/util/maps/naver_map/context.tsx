@@ -104,6 +104,36 @@ const initialState: NaverMapStateType = {
 };
 
 /* ----------------- 리듀서 ------------------ */
+const makeInfoWindow = (title: string) => {
+  return `
+    <style>
+      .balloon {
+        position: relative;
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 15px;
+        max-width: 300px;
+        margin: 20px;
+        box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .balloon::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 10px 7px 0;
+        border-style: solid;
+        border-color: #ffffff transparent transparent;
+        display: block;
+        width: 0;
+      }
+    </style>
+    <div class="balloon">${title}</div>
+    `;
+};
+
 export default function NaverMapReducer(
   state = initialState,
   action: NaverMapAction
@@ -154,34 +184,7 @@ export default function NaverMapReducer(
       });
 
       const infowindow = new naver.maps.InfoWindow({
-        // TODO : infowindow 꾸미기
-        content: `
-          <style>
-            .balloon {
-              position: relative;
-              background-color: #ffffff;
-              border-radius: 10px;
-              padding: 15px;
-              max-width: 300px;
-              margin: 20px;
-              box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
-            }
-
-            .balloon::after {
-              content: "";
-              position: absolute;
-              bottom: -10px;
-              left: 50%;
-              transform: translateX(-50%);
-              border-width: 10px 7px 0;
-              border-style: solid;
-              border-color: #ffffff transparent transparent;
-              display: block;
-              width: 0;
-            }
-          </style>
-          <div class="balloon">${marker.getTitle()}</div>
-          `,
+        content: makeInfoWindow(marker.getTitle()),
         borderWidth: 0,
         disableAnchor: true,
         backgroundColor: "transparent",
@@ -225,7 +228,9 @@ export default function NaverMapReducer(
       const marker = state.markers[action.index];
       if (action.data?.title) {
         marker.setTitle(action.data.title);
-        state.infoWindows[action.index].setContent(action.data.title);
+        state.infoWindows[action.index].setContent(
+          makeInfoWindow(action.data.title)
+        );
       }
       if (action.data?.latitude && action.data?.longitude) {
         marker.setPosition(
