@@ -28,10 +28,22 @@ export const updateCourse = async (dto: {
   return response.data;
 };
 
+export type GetCourseDetailResponseDto = {
+  id: number;
+  creatorId: number;
+  info: string;
+  name: string;
+  length: number;
+  thumbnailImage: string;
+  area: string;
+};
+
 export const getCourseDetail = async (dto: {
   id: number;
-}): Promise<CreateCourseRequestDto> => {
-  const response = await api.get<CreateCourseRequestDto>(`/course/${dto.id}`);
+}): Promise<GetCourseDetailResponseDto> => {
+  const response = await api.get<GetCourseDetailResponseDto>(
+    `/course/${dto.id}`
+  );
   return response.data;
 };
 
