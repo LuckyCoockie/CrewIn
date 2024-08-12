@@ -137,7 +137,11 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
   const positions = ["CAPTAIN", "PACER", "MEMBER"];
 
   const renderMemberItem = (member: CrewMemberDto) => (
-    <li key={member.email} className="flex items-center p-2 border-b">
+    <li
+      key={member.email}
+      className="flex items-center p-2 border-b cursor-pointer hover:bg-gray-100"
+      onClick={() => navigate(`/profile/${member.memberId}`)}
+    >
       <div className="w-12 h-12 flex-shrink-0">
         {member.imageUrl ? (
           <img

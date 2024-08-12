@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { useQuery } from "react-query";
-
+import React, { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
 import {
   getCrewNoticeDetail,
@@ -15,6 +14,8 @@ import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import UserProfileBarNoMenu from "../molecules/UserProfileBarNoMenuMolecule";
 import { Carousel } from "react-responsive-carousel";
 import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
+import { registerPostHeart } from "../../apis/api/heart";
+import { deletePostHeart } from "../../apis/api/heartdelete";
 
 const CrewNoticeDetailTemplate: React.FC = () => {
   const { crewId, noticeId } = useParams<{
@@ -26,6 +27,8 @@ const CrewNoticeDetailTemplate: React.FC = () => {
     crewId: Number(crewId),
     noticeId: Number(noticeId),
   };
+
+  const queryClient = useQueryClient();
 
   const {
     data: noticeData,
@@ -39,10 +42,46 @@ const CrewNoticeDetailTemplate: React.FC = () => {
   const [isHeartedState, setIsHeartedState] = useState<boolean>(
     noticeData?.isHearted || false
   );
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (noticeData) {
+      setLikes(noticeData.heartCount);
+      setIsHeartedState(noticeData.isHearted);
+    }
+  }, [noticeData]);
+
+  const likeMutation = useMutation(registerPostHeart, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["noticeDetail", requestDto]);
+      setLikes((prevLikes) => prevLikes + 1);
+      setIsHeartedState(true);
+    },
+    onError: (error) => {
+      console.error("좋아요 처리 중 오류가 발생했습니다:", error);
+    },
+  });
+
+  const unlikeMutation = useMutation(deletePostHeart, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["noticeDetail", requestDto]);
+      setLikes((prevLikes) => prevLikes - 1);
+      setIsHeartedState(false);
+    },
+    onError: (error) => {
+      console.error("좋아요 취소 처리 중 오류가 발생했습니다:", error);
+    },
+  });
 
   const handleLike = () => {
-    setLikes((prevLikes) => (isHeartedState ? prevLikes - 1 : prevLikes + 1));
-    setIsHeartedState(!isHeartedState);
+    if (isHeartedState) {
+      unlikeMutation.mutate(Number(noticeId));
+    } else {
+      likeMutation.mutate(Number(noticeId));
+    }
+
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 200);
   };
 
   if (isLoading) {
@@ -61,6 +100,7 @@ const CrewNoticeDetailTemplate: React.FC = () => {
     addSuffix: true,
     locale: ko,
   });
+
   return (
     <>
       <header>
@@ -98,13 +138,12 @@ const CrewNoticeDetailTemplate: React.FC = () => {
             </div>
           ))}
         </Carousel>
-        
         <div className="flex items-center mt-2">
           <button onClick={handleLike} className="flex items-center ml-3">
             <img
               src={isHeartedState ? filledFire : emptyFire}
               alt="fire-icon"
-              className="w-7"
+              className={`w-7 ${isAnimating ? "animate" : ""}`}
             />
           </button>
           <span className="text-md ml-1">{likes}명이 공감했어요!</span>
