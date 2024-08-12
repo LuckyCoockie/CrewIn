@@ -8,17 +8,12 @@ import store from "./modules/index.ts";
 import { Flowbite } from "flowbite-react";
 import { customTheme } from "./styles/FlowbiteTheme.ts";
 import { QueryClient, QueryClientProvider } from "react-query";
-import PullToRefresh from "pulltorefreshjs";
+import ReactPullToRefresh from "react-pull-to-refresh";
 
 const standalone = window.matchMedia("(display-mode: standalone)").matches;
-
-if (standalone) {
-  PullToRefresh.init({
-    onRefresh() {
-      window.location.reload();
-    },
-  });
-}
+const refresh = async () => {
+  if (standalone) window.location.reload();
+};
 
 const queryClient = new QueryClient();
 
@@ -26,7 +21,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <Flowbite theme={{ theme: customTheme }}>
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
-        <RouterProvider router={router} />
+        <ReactPullToRefresh onRefresh={refresh}>
+          <RouterProvider router={router} />
+        </ReactPullToRefresh>
       </Provider>
     </QueryClientProvider>
   </Flowbite>
