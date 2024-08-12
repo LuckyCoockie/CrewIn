@@ -157,27 +157,32 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
 
   return (
     <div className="w-full mb-4">
-      {postType === "NOTICE" ? (
-        <UserProfileBarNoMenu
-          profileImage={profileImage}
-          username={authorName}
-          timeAgo={timeAgo}
-          onClick={() => handleCrewDetail(authorId)}
-        />
-      ) : (
-        <UserProfileBar
-          profileImage={profileImage}
-          username={authorName}
-          timeAgo={timeAgo}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          authorId={authorId}
-          memberId={memberId!}
-          onClick={() => handleUserProfile(authorId)}
-        />
-      )}
+      <div className="mx-2">
+        {postType === "NOTICE" ? (
+          <UserProfileBarNoMenu
+            profileImage={profileImage}
+            username={authorName}
+            timeAgo={timeAgo}
+            onClick={() => handleCrewDetail(authorId)}
+          />
+        ) : (
+          <UserProfileBar
+            profileImage={profileImage}
+            username={authorName}
+            timeAgo={timeAgo}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            authorId={authorId}
+            memberId={memberId!}
+            onClick={() => handleUserProfile(authorId)}
+          />
+        )}
+      </div>
       {croppedImages && croppedImages.length > 0 && (
-        <div className="relative cursor-pointer mx-1" onClick={handleImageClick}>
+        <div
+          className="relative cursor-pointer mx-1"
+          onClick={handleImageClick}
+        >
           <Carousel
             showThumbs={false}
             showIndicators={true}

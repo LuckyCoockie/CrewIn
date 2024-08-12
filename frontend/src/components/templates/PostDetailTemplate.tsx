@@ -150,7 +150,7 @@ const PostDetailTemplate: React.FC = () => {
         <BackHeaderMediumOrganism text={postData.title} />
       </header>
       <div className="w-full">
-        <div className="flex items-center">
+        <div className="flex items-center mx-2">
           {postData.postType === "NOTICE" ? (
             <UserProfileBarNoMenu
               profileImage={postData.profileImage}
