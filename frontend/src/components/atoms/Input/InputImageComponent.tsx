@@ -17,6 +17,7 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
       props.previewUrl || null
     );
     const [fileCount, setFileCount] = useState(0);
+
     useEffect(() => {
       if (props.previewUrl) {
         setPreview(props.previewUrl);
@@ -43,22 +44,42 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
       <>
         {preview ? (
           <div className="w-full text-center mb-4">
-            <img
-              src={preview}
-              alt="Preview"
-              className="mx-auto border-2 w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover"
-            />
+            <div
+              className="mx-auto w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover"
+              style={{
+                backgroundImage:
+                  "linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)",
+                backgroundSize: "20px 20px",
+                backgroundPosition: "0 0, 0 10px, 10px -10px, -10px 0px",
+              }}
+            >
+              <img
+                src={preview}
+                alt="Preview"
+                className="w-full h-full rounded-full object-cover"
+              />
+            </div>
             <p className="mt-2 text-sm font-medium text-gray-500">
               이미지 노출 예시
             </p>
           </div>
         ) : (
           <div className="w-full text-center mb-4">
-            <img
-              src={crewinlogo}
-              alt="crewinlogo"
-              className="mx-auto border-2 w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover"
-            />
+            <div
+              className="mx-auto w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover"
+              style={{
+                backgroundImage:
+                  "linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)",
+                backgroundSize: "20px 20px",
+                backgroundPosition: "0 0, 0 10px, 10px -10px, -10px 0px",
+              }}
+            >
+              <img
+                src={crewinlogo}
+                alt="crewinlogo"
+                className="w-full h-full rounded-full object-cover"
+              />
+            </div>
             <label
               htmlFor={props.id}
               className="text-center block mt-2 text-sm font-medium text-gray-500 dark:text-white"
