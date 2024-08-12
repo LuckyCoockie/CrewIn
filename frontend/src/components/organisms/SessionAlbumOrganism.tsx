@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import {
   GetSessionAlbumDto,
   getSessionAlbum,
@@ -13,17 +13,19 @@ import { uploadImage } from "../../apis/api/presigned";
 
 type PropsData = {
   sessionId: number;
+  onSelectImage: (imageUrl: string, imageId: number) => void;
 };
 
-const SessionAlbumOrganism: React.FC<PropsData> = ({ sessionId }) => {
-  const [images, setImages] = useState<GetSessionAlbumDto[]>([]); // 이미지 데이터 상태 추가
-  const [fetchKey, setFetchKey] = useState(0); // fetchKey 상태 추가
+const SessionAlbumOrganism = forwardRef(({ sessionId, onSelectImage }: PropsData, ref) => {
+  const [images, setImages] = useState<GetSessionAlbumDto[]>([]);
+  const [fetchKey, setFetchKey] = useState(0);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // 갤러리 데이터 가져오기
-  const fetchGallery = async (
-    pageNo: number
-  ): Promise<PageNationData<GetSessionAlbumDto>> => {
+  useEffect(() => {
+    refreshGallery();
+  }, [sessionId]);
+
+  const fetchGallery = async (pageNo: number): Promise<PageNationData<GetSessionAlbumDto>> => {
     const data = await getSessionAlbum(pageNo, sessionId);
     if (pageNo === 0) {
       setImages(data.items);
@@ -33,17 +35,13 @@ const SessionAlbumOrganism: React.FC<PropsData> = ({ sessionId }) => {
     return data;
   };
 
-  // 파일 업로드 버튼 클릭 핸들러
   const handleAlbumUpload = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
 
-  // 파일 변경 이벤트 핸들러
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {
       try {
@@ -57,33 +55,36 @@ const SessionAlbumOrganism: React.FC<PropsData> = ({ sessionId }) => {
         };
         await uploadSessionImages(uploadDto);
 
-        // 업로드 성공 후 갤러리 갱신
-        await refreshGallery(); // 갤러리 갱신 함수 호출
-        setFetchKey((prevKey) => prevKey + 1); // fetchKey 갱신
+        await refreshGallery();
+        setFetchKey((prevKey) => prevKey + 1);
       } catch (error) {
         console.error("Image upload failed", error);
       }
     }
   };
 
-  // 갤러리 갱신 함수
   const refreshGallery = async () => {
     try {
-      // 첫 페이지의 데이터를 다시 불러옴
       const updatedData = await getSessionAlbum(0, sessionId);
-      setImages(updatedData.items); // 이미지를 다시 설정
+      setImages(updatedData.items);
     } catch (error) {
       console.error("Failed to refresh gallery", error);
     }
   };
 
-  // 컴포넌트가 마운트될 때 갤러리 데이터를 불러옴
-  useEffect(() => {
-    refreshGallery();
-  }, [sessionId]);
+  const removeImageFromState = (imageId: number) => {
+    setImages((prevImages) =>
+      prevImages.filter((image) => image.sessionImageId !== imageId)
+    );
+  };
+
+  useImperativeHandle(ref, () => ({
+    refreshGallery,
+    removeImageFromState,
+  }));
 
   return (
-    <>
+    <div className="h-[500px] overflow-y-auto">
       <input
         type="file"
         accept="image/*"
@@ -101,24 +102,25 @@ const SessionAlbumOrganism: React.FC<PropsData> = ({ sessionId }) => {
         </div>
       ) : (
         <InfiniteScrollComponent
-          fetchKey={`sessionGallery-${fetchKey}`} // fetchKey에 동적 값 추가
+          fetchKey={`sessionGallery-${fetchKey}`}
           fetchData={fetchGallery}
           ItemComponent={({ data }) => (
             <div
+              key={data.sessionImageId}
               className="w-full h-full"
               style={{ position: "relative", paddingBottom: "100%" }}
+              onClick={() => onSelectImage(data.imageUrl, data.sessionImageId)}
             >
               <img
                 src={data.imageUrl}
                 alt={`gallery-item-${data.sessionImageId}`}
-                key={`gallery-${data.sessionImageId}`}
                 style={{
                   position: "absolute",
                   top: 0,
                   left: 0,
                   width: "100%",
                   height: "100%",
-                  objectFit: "cover", // 또는 contain으로 변경 가능
+                  objectFit: "cover",
                   border: "1px solid rgba(255, 0, 0, 0)",
                 }}
               />
@@ -127,8 +129,8 @@ const SessionAlbumOrganism: React.FC<PropsData> = ({ sessionId }) => {
           className="grid grid-cols-3"
         />
       )}
-    </>
+    </div>
   );
-};
+});
 
 export default SessionAlbumOrganism;

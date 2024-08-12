@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import "../../styles/square.css";
 import { IconTextComponent } from "../atoms/text/IconText";
 import React from "react";
@@ -28,8 +27,6 @@ const CrewListItem = ({
   peopleCount,
   crewId,
 }: OwnProps) => {
-  const [image, setImage] = useState<string | null>(null);
-
   const navigate = useNavigate();
 
   const handleCrewDetail = (crewId: number) => {
@@ -38,25 +35,6 @@ const CrewListItem = ({
     navigate(`/crew/detail/${crewId}`);
   };
 
-  useEffect(() => {
-    console.log(`Fetching image for crewId: ${crewId}`);
-    fetch(mainLogo)
-      .then((response) => response.blob())
-      .then((blob) => {
-        const url = URL.createObjectURL(blob);
-        setImage(url);
-      })
-      .catch(() => {
-        setImage(null);
-      });
-
-    return () => {
-      if (mainLogo) {
-        URL.revokeObjectURL(mainLogo);
-      }
-    };
-  }, [mainLogo]);
-
   return (
     <div className="max-w-sm rounded-lg border-[2px] xs:border-2 border-primary bg-white tracking-tighter truncate">
       <div
@@ -64,19 +42,11 @@ const CrewListItem = ({
         onClick={() => handleCrewDetail(crewId)}
       >
         <div className="square">
-          {image ? (
-            <img
-              alt="crew image"
-              src={image}
-              className="rounded-full b border xs:border-2 border-white w-full"
-            />
-          ) : (
-            <img
-              alt="crew image"
-              src={crewInLogoImage}
-              className="rounded-full b border xs:border-2 border-white w-full"
-            />
-          )}
+          <img
+            alt="crew image"
+            src={mainLogo || crewInLogoImage}
+            className="rounded-full b border xs:border-2 border-white w-full"
+          />
         </div>
       </div>
       <div className="m-2 xs:m-4 ml-2">

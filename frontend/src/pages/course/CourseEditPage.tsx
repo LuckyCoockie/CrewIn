@@ -9,20 +9,27 @@ import CourseCreateTemplate from "../../components/templates/CourseCreateTemplat
 import { NaverMapProvider } from "../../util/maps/naver_map/context.tsx";
 import { Point } from "../../util/maps/tmap/apis/api/directionApi.ts";
 import { reversGeocodingApi } from "../../util/maps/tmap/apis/api/geocodeApi.ts";
-import { useNavigate, useParams } from "react-router";
+import { Navigate, useNavigate, useParams } from "react-router";
 import BackHeaderMediumOrganism from "../../components/organisms/BackHeaderMediumOrganism.tsx";
 import EditDeleteDropdownOrganism from "../../components/organisms/EditDeleteDropdownOrganism.tsx";
+import { useSelector } from "react-redux";
+import { RootState } from "../../modules/index.ts";
+import UnauthorizedPage from "../UnauthorizedPage.tsx";
 
 const CourseEditPage: React.FC = () => {
   const { courseId } = useParams();
   const [initValue, setInitValue] = useState<CreateCourseRequestDto>();
+
   const navigate = useNavigate();
+  const [creatorId, setCreatorId] = useState<number>();
+  const memberId = useSelector((state: RootState) => state.auth.memberId);
 
   useEffect(() => {
-    if (!courseId) return;
-    getCourseDetail({ id: parseInt(courseId) }).then((data) =>
-      setInitValue(data)
-    );
+    if (!courseId || !parseInt(courseId)) return;
+    getCourseDetail({ id: parseInt(courseId) }).then((data) => {
+      setCreatorId(data.creatorId);
+      setInitValue(data);
+    });
   }, [courseId]);
 
   const encodeInfo = async (
@@ -84,7 +91,11 @@ const CourseEditPage: React.FC = () => {
     return `${address.addressInfo.city_do} ${address.addressInfo.gu_gun} ${address.addressInfo.legalDong}`;
   };
 
-  if (!courseId) return "course id가 필요합니다";
+  if (!courseId || !parseInt(courseId)) {
+    return <Navigate to={"/profile"} replace />;
+  }
+
+  if (creatorId && creatorId !== memberId) return <UnauthorizedPage />;
 
   return (
     <NaverMapProvider>

@@ -41,17 +41,20 @@ const LoginOrganism = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalMessage, setModalMessage] = useState("");
-
+  const [isSubmit, setIsSubmit] = useState(false);
   const handleModalClose = () => {
     setIsModalOpen(false);
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    setIsSubmit(true);
     try {
       await login(data);
+      setIsSubmit(false);
     } catch (err) {
       console.log(err);
       // 서버 오류 또는 네트워크 오류 등
+      setIsSubmit(false);
       setModalTitle("로그인 오류");
       setModalMessage("이메일과 비밀번호를 확인해주세요.");
       setIsModalOpen(true);
@@ -98,7 +101,7 @@ const LoginOrganism = () => {
         <div>
           <p className="ps-4 pt-1 text-sm font-light text-red-500">{error}</p>
           {isValid ? (
-            <LargeAbleButton text="로그인" />
+            <LargeAbleButton text="로그인" isLoading={isSubmit} />
           ) : (
             <LargeDisableButton text="로그인" />
           )}

@@ -17,6 +17,7 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
       props.previewUrl || null
     );
     const [fileCount, setFileCount] = useState(0);
+
     useEffect(() => {
       if (props.previewUrl) {
         setPreview(props.previewUrl);
@@ -41,8 +42,54 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
 
     return (
       <>
+        {preview ? (
+          <div className="w-full text-center mb-4">
+            <div
+              className="mx-auto w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover"
+              style={{
+                backgroundImage:
+                  "linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)",
+                backgroundSize: "20px 20px",
+                backgroundPosition: "0 0, 0 10px, 10px -10px, -10px 0px",
+              }}
+            >
+              <img
+                src={preview}
+                alt="Preview"
+                className="w-full h-full rounded-full object-cover"
+              />
+            </div>
+            <p className="mt-2 text-sm font-medium text-gray-500">
+              이미지 노출 예시
+            </p>
+          </div>
+        ) : (
+          <div className="w-full text-center mb-4">
+            <div
+              className="mx-auto w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover"
+              style={{
+                backgroundImage:
+                  "linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)",
+                backgroundSize: "20px 20px",
+                backgroundPosition: "0 0, 0 10px, 10px -10px, -10px 0px",
+              }}
+            >
+              <img
+                src={crewinlogo}
+                alt="crewinlogo"
+                className="w-full h-full rounded-full object-cover"
+              />
+            </div>
+            <label
+              htmlFor={props.id}
+              className="text-center block mt-2 text-sm font-medium text-gray-500 dark:text-white"
+            >
+              *{props.placeholder}
+            </label>
+          </div>
+        )}
         <div className="flex flex-col items-center w-full">
-          <label htmlFor={props.id} className="w-full">
+          <label htmlFor={props.id} className="w-full mb-1">
             <div className="flex p-2 border border-gray-300 rounded-lg w-full text-end">
               {fileCount > 0 ? (
                 <p className="text-gray-500 font-semibold ml-1">
@@ -65,35 +112,8 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
             accept="image/*"
             aria-describedby={`${props.id}-description`}
             className="hidden"
-            multiple
           />
         </div>
-        {preview ? (
-          <div className="w-full text-center mt-4">
-            <img
-              src={preview}
-              alt="Preview"
-              className="mx-auto border-2 w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover"
-            />
-            <p className="mt-2 text-sm font-medium text-gray-500">
-              이미지 노출 예시
-            </p>
-          </div>
-        ) : (
-          <div className="w-full text-center mt-4">
-            <img
-              src={crewinlogo}
-              alt="crewinlogo"
-              className="mx-auto border-2 w-32 h-32 sm:w-48 sm:h-48 rounded-full object-cover"
-            />
-            <label
-              htmlFor={props.id}
-              className="text-center block mt-2 text-sm font-medium text-gray-500 dark:text-white"
-            >
-              *{props.placeholder}
-            </label>
-          </div>
-        )}
       </>
     );
   }

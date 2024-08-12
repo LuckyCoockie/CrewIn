@@ -129,7 +129,7 @@ const CrewEditOrganism: React.FC = () => {
   const watchedMainLogo = useWatch({ control, name: "mainLogo" });
   const watchedSubLogo = useWatch({ control, name: "subLogo" });
   const watchedBanner = useWatch({ control, name: "banner" });
-
+  const [isSubmit, setIsSubmit] = useState(false);
   useEffect(() => {
     if (watchedMainLogo || watchedSubLogo || watchedBanner) {
       setIsFilesChanged(true); // 파일이 변경되었음을 표시
@@ -144,6 +144,7 @@ const CrewEditOrganism: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
+    setIsSubmit(true);
     if (isValid === false) {
       return;
     }
@@ -173,9 +174,11 @@ const CrewEditOrganism: React.FC = () => {
         return mutation.mutate(submitData);
       })
       .then(() => {
+        setIsSubmit(false);
         console.log("수정 완료");
       })
       .catch((error) => {
+        setIsSubmit(false);
         console.error("Crew edited fail:", error);
       });
   };
@@ -372,6 +375,7 @@ const CrewEditOrganism: React.FC = () => {
             <LargeAbleButton
               text="수정 완료"
               onClick={handleSubmit(onSubmit)}
+              isLoading={isSubmit}
             />
           ) : (
             <LargeDisableButton text="수정 완료" />

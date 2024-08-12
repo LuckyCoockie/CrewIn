@@ -58,14 +58,14 @@ const MyPageParticipatedSessionOrganism: React.FC<
     <>
       <div className="flex items-center">
         <div className="cursor-pointer">
-          <MediumTitleMolecule text="최근 참가한 세션" onClick={clickRouter} />
+          <MediumTitleMolecule text="최근 신청한 세션" onClick={clickRouter} />
         </div>
         <IntoArrowButton router={`/mypage/session/${MySessionType.JOINED}`} />
       </div>
       {!isParticipatedSessionsError ? (
         !isParticipatedSessionsLoading && (
           <GaroScrollMolecule
-            replaceText="최근 참가한 세션이 없습니다."
+            replaceText="최근 신청한 세션이 없습니다."
             propsData={sortedSessions}
             renderItem={(data, index) => (
               <ListButtonMolecule
