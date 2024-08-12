@@ -379,7 +379,7 @@ const SessionEditOrganism: React.FC = () => {
                 <InputDateStartTypeMolecule
                   id="sessionstart"
                   title="세션 시작"
-                  selected={field.value ?? new Date()}
+                  selected={field.value ?? new Date(new Date().setSeconds(0))}
                   onChange={field.onChange}
                 />
               )}
@@ -393,7 +393,7 @@ const SessionEditOrganism: React.FC = () => {
                 <InputDateEndTypeMolecule
                   id="sessionend"
                   title="세션 종료"
-                  selected={field.value ?? new Date()}
+                  selected={field.value ?? new Date(new Date().setSeconds(0))}
                   onChange={field.onChange}
                   minDate={watchedSessionStart}
                 />
