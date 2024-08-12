@@ -156,8 +156,7 @@ const SessionCreateOrganism: React.FC = () => {
       const day = String(date.getDate()).padStart(2, "0");
       const hours = String(date.getHours()).padStart(2, "0");
       const minutes = String(date.getMinutes()).padStart(2, "0");
-      const seconds = String(date.getSeconds()).padStart(2, "0");
-      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+      return `${year}-${month}-${day} ${hours}:${minutes}:00`;
     };
     const formType = (type: string) => {
       if (type === "번개런") return "THUNDER";
