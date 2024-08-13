@@ -202,7 +202,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           </Carousel>
         </div>
       ) : postType === "NOTICE" && profileImage ? (
-        <div className=" mx-1">
+        <div className="sm:mx-1">
           <div
             className="relative cursor-pointer square"
             onClick={handleImageClick}
