@@ -145,12 +145,10 @@ const SessionEditOrganism: React.FC = () => {
 
   const checkUndefined = async (files: FileList) => {
     if (files) {
-      const uploadPromises = Array.from(files)
-        .reverse()
-        .map(async (file) => {
-          const result = await uploadImage(file);
-          return result;
-        });
+      const uploadPromises = Array.from(files).map(async (file) => {
+        const result = await uploadImage(file);
+        return result;
+      });
       return Promise.all(uploadPromises);
     } else {
       return [];
