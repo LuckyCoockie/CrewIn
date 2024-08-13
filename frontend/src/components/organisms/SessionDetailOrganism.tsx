@@ -176,7 +176,10 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
         />
         <DetailInfoPaceMolecule title="평균 페이스" content={pace} />
         <DetailInfoMolecule title="거리" content={`${courseDistance}km`} />
-        <DetailInfoMolecule title="제한인원" content={`${maxPeople}명`} />
+        <DetailInfoMolecule
+          title="제한인원"
+          content={`${maxPeople}명 (현재 ${currentPeople}명)`}
+        />
         <DetailInfoMolecule title="집결지" content={spot} />
         <DetailInfoMolecule title="코스" content={area} />
         <DetailInfoMolecule title="내용" content={content} />
@@ -269,7 +272,9 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
           <LargeAbleButton
             text="출석하기"
             onClick={() =>
-              navigate(`session/${sessionId}/attendance`, { state: detailData })
+              navigate(`/session/${sessionId}/attendance`, {
+                state: detailData,
+              })
             }
           />
         )}
@@ -278,7 +283,9 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
           <LargeAbleButton
             text="세션시작"
             onClick={() =>
-              navigate(`session/${sessionId}/attendance`, { state: detailData })
+              navigate(`/session/${sessionId}/attendance`, {
+                state: detailData,
+              })
             }
           />
         )}
