@@ -8,11 +8,15 @@ export type LoginResponseDto = { accessToken: string; memberId: number };
 
 export const login = async (dto: LoginRequestDto) => {
   store.dispatch(loading());
-  const response = await axios.post<{ data: LoginResponseDto }>(
-    `${import.meta.env.VITE_SERVER_URL}/member/login`,
-    dto
-  );
-  setAuth(response.data.data);
+  try {
+    const response = await axios.post<{ data: LoginResponseDto }>(
+      `${import.meta.env.VITE_SERVER_URL}/member/login`,
+      dto
+    );
+    setAuth(response.data.data);
+  } catch (e) {
+    clearAuth("로그인에 실패하였습니다.");
+  }
 };
 
 export const refreshToken = async () => {
