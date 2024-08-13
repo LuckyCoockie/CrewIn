@@ -12,6 +12,8 @@ import {
   directionApiWithWayPoints,
   DirectionDto,
 } from "../../util/maps/tmap/apis/api/directionApi";
+import { useSelector } from "react-redux";
+import { RootState } from "../../modules";
 
 type OwnProps = {
   style?: React.CSSProperties;
@@ -34,12 +36,16 @@ const MapToggleButton: React.FC<OwnProps> = ({
     return { latitude: position.y, longitude: position.x };
   };
 
+  const { accessToken } = useSelector((state: RootState) => state.auth);
+
   useEffect(() => {
     if (isDetail) {
       dispatch(clearPolyline());
       const waypoints = markers.map(markerToPoint);
-      directionApiWithWayPoints(waypoints, (direction) =>
-        dispatch(addPolyline(direction.polyline))
+      directionApiWithWayPoints(
+        waypoints,
+        (direction) => dispatch(addPolyline(direction.polyline)),
+        accessToken
       ).then(onToggle);
     } else {
       dispatch(updateMarkerList());

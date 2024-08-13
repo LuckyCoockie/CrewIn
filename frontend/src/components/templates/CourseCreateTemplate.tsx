@@ -28,6 +28,8 @@ import {
   clearMarker,
 } from "../../util/maps/naver_map/context";
 import { debounce } from "lodash";
+import { RootState } from "../../modules";
+import { useSelector } from "react-redux";
 
 type OwnProps = {
   initPosition?: Point;
@@ -89,6 +91,8 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
   const dispatch = useNaverMapDispatch();
   const [isSubmit, setIsSubmit] = useState(false);
 
+  const { accessToken } = useSelector((state: RootState) => state.auth);
+
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setIsSubmit(true);
     const mapDim = captureRef.current!.getBoundingClientRect().width;
@@ -98,7 +102,8 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
       data.markers.map((marker) => marker.point),
       (direction) => {
         dispatch(addPolyline(direction.polyline));
-      }
+      },
+      accessToken
     ).then((directions) => {
       handleSave({
         ...data,
