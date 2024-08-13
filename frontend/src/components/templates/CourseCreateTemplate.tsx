@@ -26,7 +26,7 @@ import {
   moveToCenter,
   useNaverMapDispatch,
   clearMarker,
-  removeMarker,
+  setMarkerVisibility,
 } from "../../util/maps/naver_map/context";
 import { debounce } from "lodash";
 import { RootState } from "../../modules";
@@ -100,7 +100,7 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
     dispatch(moveToCenter(mapDim));
     dispatch(clearPolyline());
     for (let i = 1; i < data.markers.length - 1; i++) {
-      dispatch(removeMarker(i));
+      dispatch(setMarkerVisibility(i, false));
     }
     directionApiWithWayPoints(
       data.markers.map((marker) => marker.point),
@@ -116,6 +116,10 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
           (sum, direction) => sum + direction.distance,
           0
         ),
+      })?.then(() => {
+        for (let i = 1; i < data.markers.length - 1; i++) {
+          dispatch(setMarkerVisibility(i, true));
+        }
       });
     });
   };

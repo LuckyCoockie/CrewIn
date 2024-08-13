@@ -9,6 +9,7 @@ const MOVE_TO_CENTER = "naver/maps/MOVE_TO_CENTER" as const;
 const ADD_MARKER = "naver/maps/ADD_MARKER" as const;
 const REMOVE_MARKER = "naver/maps/REMOVE_MARKER" as const;
 const UPDATE_MARKER = "naver/maps/UPDATE_MARKER" as const;
+const SET_MARKER_VISIBILITY = "naver/maps/SET_MARKER_VISIBILITY" as const;
 const UPDATE_MARKER_LIST = "naver/maps/UPDATE_MARKER_LIST" as const;
 const CLEAR_MARKER = "naver/maps/CLEAR_MARKER" as const;
 const FOCUS_MARKER = "naver/maps/FOCUS_MARKER" as const;
@@ -48,6 +49,12 @@ export const updateMarker = (
   data,
 });
 
+export const setMarkerVisibility = (index: number, visible: boolean) => ({
+  type: SET_MARKER_VISIBILITY,
+  index,
+  visible,
+});
+
 export const updateMarkerList = (list?: naver.maps.Marker[]) => ({
   type: UPDATE_MARKER_LIST,
   list,
@@ -85,7 +92,8 @@ type NaverMapAction =
   | ReturnType<typeof updateMarkerList>
   | ReturnType<typeof addPolyline>
   | ReturnType<typeof removePolyline>
-  | ReturnType<typeof clearPolyline>;
+  | ReturnType<typeof clearPolyline>
+  | ReturnType<typeof setMarkerVisibility>;
 
 type NaverMapDispatch = Dispatch<NaverMapAction>;
 
@@ -258,6 +266,10 @@ export default function NaverMapReducer(
         ...state,
         markers: [...(action.list ?? state.markers)],
       };
+    }
+    case SET_MARKER_VISIBILITY: {
+      state.markers[action.index].setVisible(action.visible);
+      return state;
     }
     case ADD_POLYLINE: {
       const polyline = new naver.maps.Polyline({
