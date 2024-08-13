@@ -153,6 +153,11 @@ public class CrewService {
                             .build();
                     postImageRepository.save(postImage);
                 }
+            } else {
+                postImageRepository.save(PostImage.builder()
+                        .post(post)
+                        .imageUrl(crew.getMainLogo())
+                        .build());
             }
 
             // 작성자 제외한 멤버들에 대한 알림 생성
