@@ -90,7 +90,7 @@ label {
 /* main 설정 */
 main {
   width: 100%;
-  padding: 0px 16px;
+  padding: 0px 12px;
 }
 
 /* header 설정 */
@@ -100,7 +100,7 @@ header {
   padding-top: 12px;
   padding-bottom: 6px;
   padding-left: 12px;
-  padding-right: 16px;
+  padding-right: 12px;
   display: flex;
   align-items: center;
 }
@@ -218,4 +218,11 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .fire-icon.animate {
   transform: scale(1.2);
+}
+
+/* 화면의 가로 크기가 500px 이상일 때 FAB 위치 조정 */
+@media (min-width: 500px) {
+  .fab {
+    right: calc(50% - 250px); /* 500px 중앙에 고정 */
+  }
 }
