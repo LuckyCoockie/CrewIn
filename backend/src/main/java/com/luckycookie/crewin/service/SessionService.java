@@ -376,7 +376,7 @@ public class SessionService {
         Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
         SessionImage sessionImage = sessionImageRepository.findById(sessionImageId).orElseThrow(SessionImageUploadException::new);
-        if (memberSessionRepository.existsByMemberAndSession(member, sessionImage.getSession())) {
+        if (!memberSessionRepository.existsByMemberAndSession(member, sessionImage.getSession())) {
             throw new NotFoundMemberSessionException();
         }
         s3Service.deleteImage(sessionImage.getImageUrl());
