@@ -180,7 +180,7 @@ const SessionCreateOrganism: React.FC = () => {
 
     return postCreateSession(submitData)
       .then(() => {
-        navigate(`/session?status=active`);
+        navigate(`/session`);
       })
       .catch((error) => {
         setErrorMessage("모든 항목을 확인해주세요.");

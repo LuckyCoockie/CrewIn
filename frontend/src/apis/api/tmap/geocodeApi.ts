@@ -1,4 +1,4 @@
-import api from "../utils/instance";
+import { api } from "./instance";
 
 export type Point = { latitude: number; longitude: number };
 

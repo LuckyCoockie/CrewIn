@@ -11,7 +11,7 @@ import { ToggleSwitch } from "flowbite-react";
 import {
   directionApiWithWayPoints,
   DirectionDto,
-} from "../../util/maps/tmap/apis/api/directionApi";
+} from "../../apis/api/tmap/directionApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../modules";
 
