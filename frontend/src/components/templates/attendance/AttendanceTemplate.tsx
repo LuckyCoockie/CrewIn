@@ -15,6 +15,8 @@ import locationImage from "../../../assets/icons/location.png";
 import { IconTextComponent } from "../../atoms/text/IconText";
 import { ReactComponent as InfoIcon } from "../../../assets/icons/info_icon.svg";
 import Modal from "../../molecules/ModalMolecules";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../modules";
 
 type OwnProps = {
   onStartAttendanceClick: () => Promise<void>;
@@ -92,18 +94,23 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     return response.items;
   }, [getMemberList]);
 
+  const { accessToken } = useSelector((state: RootState) => state.auth);
+
   const handleStartAttendanceClick = useCallback(async () => {
-    const address = await reversGeocodingApi({
-      lat: location.latitude,
-      lon: location.longitude,
-      addressType: "A10",
-      newAddressExtend: "Y",
-    });
+    const address = await reversGeocodingApi(
+      {
+        lat: location.latitude,
+        lon: location.longitude,
+        addressType: "A10",
+        newAddressExtend: "Y",
+      },
+      accessToken
+    );
     setSpot(
       `${address.addressInfo.city_do} ${address.addressInfo.gu_gun} ${address.addressInfo.legalDong}`
     );
     setIsAttendanceModalOpen(true);
-  }, [location.latitude, location.longitude]);
+  }, [accessToken, location.latitude, location.longitude]);
 
   const handleAttendanceChange = useCallback(
     (data: { memberSessionId: number; isAttend: boolean }) => {
@@ -113,17 +120,20 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
   );
 
   const handleGuestAttendanceClick = useCallback(async () => {
-    const address = await reversGeocodingApi({
-      lat: location.latitude,
-      lon: location.longitude,
-      addressType: "A10",
-      newAddressExtend: "Y",
-    });
+    const address = await reversGeocodingApi(
+      {
+        lat: location.latitude,
+        lon: location.longitude,
+        addressType: "A10",
+        newAddressExtend: "Y",
+      },
+      accessToken
+    );
     setSpot(
       `${address.addressInfo.city_do} ${address.addressInfo.gu_gun} ${address.addressInfo.legalDong}`
     );
     setIsAttendanceModalOpen(true);
-  }, [location.latitude, location.longitude]);
+  }, [accessToken, location.latitude, location.longitude]);
 
   const handleClickAttendanceModalConfirm = useCallback(() => {
     if (isSessionHost) {

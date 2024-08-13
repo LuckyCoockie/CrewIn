@@ -33,8 +33,12 @@ export type ReverseGeocodeResponseDto = {
 };
 
 export const reversGeocodingApi = async (
-  dto: ReverseGeocodeRequestDto
+  dto: ReverseGeocodeRequestDto,
+  token?: string | null
 ): Promise<ReverseGeocodeResponseDto> => {
-  const response = await api.get("/reversegeocoding/", { params: dto });
+  const response = await api.get("/reversegeocoding/", {
+    params: dto,
+    headers: { Authorization: `Bearer ${token}` },
+  });
   return response.data as ReverseGeocodeResponseDto;
 };

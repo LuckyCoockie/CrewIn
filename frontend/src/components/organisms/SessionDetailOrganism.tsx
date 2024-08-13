@@ -250,9 +250,20 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
               isLoading={isOutSubmit}
             />
           )}
-        {isSessionStarted && !isSessionEnded && (
-          <LargeDisableButton text="진행 중인 세션" />
-        )}
+        {isSessionStarted &&
+          !isSessionEnded &&
+          (isJoined ? (
+            <LargeAbleButton
+              text="춣석하기"
+              onClick={() =>
+                navigate(`/session/${sessionId}/attendance`, {
+                  state: detailData,
+                })
+              }
+            />
+          ) : (
+            <LargeDisableButton text="진행 중인 세션" />
+          ))}
         {isSessionEnded && <LargeDisableButton text="종료된 세션" />}
       </main>
     </>
