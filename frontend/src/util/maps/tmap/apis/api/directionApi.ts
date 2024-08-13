@@ -6,7 +6,8 @@ export type DirectionDto = { polyline: Point[]; distance: number };
 
 export const directionApi = async (
   start: Point,
-  end: Point
+  end: Point,
+  token?: string | null
 ): Promise<DirectionDto> => {
   const result: DirectionDto = { polyline: [], distance: 0 };
 
@@ -21,10 +22,12 @@ export const directionApi = async (
       endName: "도착지",
       reqCoordType: "WGS84GEO",
       resCoordType: "WGS84GEO",
+    },
+    {
+      headers: { Authorization: `Bearer ${token}` },
     }
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   response["data"]["features"].forEach((feature: any) => {
     if (feature["geometry"]["type"] == "LineString") {
       feature["geometry"]["coordinates"].forEach((coord: number[]) =>
@@ -42,13 +45,14 @@ export const directionApi = async (
 
 export async function directionApiWithWayPoints(
   waypoints: Point[],
-  callback: (result: DirectionDto) => void
+  callback: (result: DirectionDto) => void,
+  token?: string | null
 ) {
   const result: DirectionDto[] = [];
   const promises: Promise<DirectionDto>[] = [];
 
   for (let i = 1; i < waypoints.length; i++) {
-    const promise = directionApi(waypoints[i - 1], waypoints[i]);
+    const promise = directionApi(waypoints[i - 1], waypoints[i], token);
     promises.push(promise);
     promise.then((direction) => {
       callback(direction);
