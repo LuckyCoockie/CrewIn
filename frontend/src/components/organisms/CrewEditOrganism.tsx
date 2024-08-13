@@ -80,7 +80,7 @@ const CrewEditOrganism: React.FC = () => {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors, isValid, isDirty },
+    formState: { errors, isValid },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onChange",
@@ -147,6 +147,7 @@ const CrewEditOrganism: React.FC = () => {
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     setIsSubmit(true);
     if (isValid === false) {
+      setIsSubmit(false);
       return;
     }
     Promise.all([
@@ -193,7 +194,7 @@ const CrewEditOrganism: React.FC = () => {
   const watchedCity = watch("city");
 
   if (isLoading) {
-    return <SpinnerComponent/>;
+    return <SpinnerComponent />;
   }
 
   return (
@@ -372,7 +373,7 @@ const CrewEditOrganism: React.FC = () => {
           </div>
         </div>
         <div>
-          {(isValid && isDirty) || isFilesChanged ? (
+          {isValid || isFilesChanged ? (
             <LargeAbleButton
               text="수정 완료"
               onClick={handleSubmit(onSubmit)}

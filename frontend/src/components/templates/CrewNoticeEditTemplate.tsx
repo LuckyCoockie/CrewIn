@@ -77,7 +77,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
     control,
     handleSubmit,
     setValue,
-    formState: { errors, isValid, isDirty },
+    formState: { errors, isValid },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onChange",
@@ -194,10 +194,11 @@ const CrewNoticeEditTemplate: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    setIsSubmitting(true);
     if (!isValid && !isFilesChanged) {
+      setIsSubmitting(false);
       return;
     }
-    setIsSubmitting(true);
     try {
       const urls = await checkUndefined(croppedFiles);
 
@@ -334,7 +335,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
               />
             </div>
             <div>
-              {(isValid && isDirty) || isFilesChanged ? (
+              {isValid || isFilesChanged ? (
                 <LargeAbleButton text="수정" isLoading={isSubmitting} />
               ) : (
                 <LargeDisableButton text="수정" />

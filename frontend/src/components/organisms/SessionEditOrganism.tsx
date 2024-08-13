@@ -91,7 +91,7 @@ const SessionEditOrganism: React.FC = () => {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors, isValid, isDirty },
+    formState: { errors, isValid },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onChange",
@@ -159,7 +159,8 @@ const SessionEditOrganism: React.FC = () => {
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setIsSubmitting(true);
-    if (isValid === false && isDirty === false) {
+    if (!isValid && !isFilesChanged) {
+      setIsSubmitting(false);
       return;
     }
     try {
@@ -415,7 +416,7 @@ const SessionEditOrganism: React.FC = () => {
           )}
         </div>
         <div>
-          {(isValid && isDirty) || isFilesChanged ? (
+          {isValid || isFilesChanged ? (
             <LargeAbleButton
               text="수정 완료"
               onClick={handleSubmit(onSubmit)}
