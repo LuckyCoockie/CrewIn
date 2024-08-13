@@ -28,7 +28,7 @@ const AlarmTabMolecule: React.FC<Name> = (props) => {
     };
 
     checkNotifications();
-  }, []);
+  });
 
   return (
     <>
