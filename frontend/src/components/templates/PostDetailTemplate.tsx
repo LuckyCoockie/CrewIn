@@ -15,7 +15,6 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { ko } from "date-fns/locale";
 import BackHeaderMediumOrganism from "../../components/organisms/BackHeaderMediumOrganism";
-import UserProfileBarNoMenu from "../../components/molecules/UserProfileBarNoMenuMolecule";
 import UserProfileBar from "../../components/molecules/UserProfileBarMolecule";
 import { Carousel } from "react-responsive-carousel";
 import { RootState } from "../../modules";
