@@ -4,7 +4,9 @@ import { useParams } from "react-router-dom";
 import {
   getCrewNoticeDetail,
   CrewNoticeDetailRequestDto,
+  CrewNoticeDetailResponseDto,
 } from "../../apis/api/crewdetail";
+import { getCrewInfo } from "../../apis/api/crewdetail";
 import filledFire from "../../assets/images/filledfire.png";
 import emptyFire from "../../assets/images/emptyfire.png";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -33,12 +35,27 @@ const CrewNoticeDetailTemplate: React.FC = () => {
 
   const queryClient = useQueryClient();
 
+  // Fetch the notice details
   const {
     data: noticeData,
-    isLoading,
-    error,
-  } = useQuery(["noticeDetail", requestDto], () =>
-    getCrewNoticeDetail(requestDto)
+    isLoading: noticeLoading,
+    error: noticeError,
+  } = useQuery<CrewNoticeDetailResponseDto>(
+    ["noticeDetail", requestDto],
+    () => getCrewNoticeDetail(requestDto)
+  );
+
+  // Fetch crew information
+  const {
+    data: crewInfo,
+    isLoading: crewLoading,
+    error: crewError,
+  } = useQuery(
+    ["crewInfo", crewId],
+    () => getCrewInfo({ crewId: Number(crewId) }),
+    {
+      enabled: !!noticeData, // Only fetch crew info if notice data is available
+    }
   );
 
   const [likes, setLikes] = useState<number>(noticeData?.heartCount || 0);
@@ -105,7 +122,7 @@ const CrewNoticeDetailTemplate: React.FC = () => {
       content: {
         title: noticeData?.title,
         description: noticeData?.content.substring(0, 100) + "...",
-        imageUrl: noticeData?.postImages ? noticeData.postImages[0] : "",
+        imageUrl: noticeData?.postImages?.[0] || noticeData?.profileImage || "",
         link: {
           mobileWebUrl: window.location.href,
           webUrl: window.location.href,
@@ -123,17 +140,20 @@ const CrewNoticeDetailTemplate: React.FC = () => {
     });
   };
 
-  if (isLoading) {
+  if (noticeLoading || crewLoading) {
     return <SpinnerComponent />;
   }
 
-  if (error) {
+  if (noticeError || crewError) {
     return <ErrorText text="데이터를 로드하는데 오류가 발생했습니다." />;
   }
 
   if (!noticeData) {
     return <div>No data available</div>;
   }
+
+  const crewName = crewInfo?.crewName || noticeData.authorName;
+  const profileImage = crewInfo?.mainLogo || noticeData.profileImage;
 
   const timeAgo = formatDistanceToNow(parseISO(noticeData.createdAt), {
     addSuffix: true,
@@ -148,8 +168,8 @@ const CrewNoticeDetailTemplate: React.FC = () => {
       <div className="w-full">
         <div className="flex items-center mx-2">
           <UserProfileBarNoMenu
-            profileImage={noticeData.profileImage}
-            username={noticeData.authorName}
+            profileImage={profileImage}
+            username={crewName}
             timeAgo={timeAgo}
           />
           <div className="">
@@ -160,23 +180,35 @@ const CrewNoticeDetailTemplate: React.FC = () => {
             />
           </div>
         </div>
-        <Carousel
-          showThumbs={false}
-          showIndicators={true}
-          showStatus={false}
-          infiniteLoop={false}
-          autoPlay={false}
-        >
-          {noticeData.postImages?.map((image, index) => (
-            <div key={image}>
+        {noticeData.postImages && noticeData.postImages.length > 0 ? (
+          <Carousel
+            showThumbs={false}
+            showIndicators={true}
+            showStatus={false}
+            infiniteLoop={false}
+            autoPlay={false}
+          >
+            {noticeData.postImages.map((image, index) => (
+              <div key={image}>
+                <img
+                  src={image}
+                  alt={`Notice ${index}`}
+                  style={{ width: "100%", height: "auto" }}
+                />
+              </div>
+            ))}
+          </Carousel>
+        ) : (
+          profileImage && (
+            <div className="flex justify-center">
               <img
-                src={image}
-                alt={`Notice ${index}`}
+                src={profileImage}
+                alt="Profile"
                 style={{ width: "100%", height: "auto" }}
               />
             </div>
-          ))}
-        </Carousel>
+          )
+        )}
         <div className="flex items-center mt-2">
           <button onClick={handleLike} className="flex items-center ml-3">
             <img
@@ -192,7 +224,7 @@ const CrewNoticeDetailTemplate: React.FC = () => {
         <div className="text-md ml-3 mt-2">{likes}명이 공감했어요!</div>
         <div className="mt-1 mx-3">
           <div>
-            <span className="font-bold">{noticeData.authorName} </span>
+            <span className="font-bold">{crewName}{" "}</span>
             {noticeData.content}
           </div>
         </div>
