@@ -19,14 +19,14 @@ const HomeTabMolecule: React.FC<Name> = (props) => {
         {props.tab ? (
           <>
             <HomeSelected />
-            <p className="text-center text-xs font-bold lg:pl-2">
+            <p className="text-center text-xs lg:text-base font-bold lg:pl-2">
               {props.name}
             </p>
           </>
         ) : (
           <>
             <HomeDeselected />
-            <p className="text-center text-xs text-gray-500 lg:pl-2">
+            <p className="text-center text-xs lg:text-base text-gray-500 lg:pl-2">
               {props.name}
             </p>
           </>
