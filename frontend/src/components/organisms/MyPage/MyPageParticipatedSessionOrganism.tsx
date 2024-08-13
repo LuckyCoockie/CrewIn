@@ -8,6 +8,7 @@ import ErrorText from "../../atoms/ErrorText";
 import SpinnerComponent from "../../atoms/SpinnerComponent";
 import { MySessionType } from "../../../apis/api/session";
 import { useNavigate } from "react-router";
+import RemainingTimer from "../../atoms/RemainingTimer";
 
 interface MyPageParticipatedSessionOrganismProps {
   sessions: MyParticipatedSessionDto[];
@@ -23,36 +24,47 @@ const MyPageParticipatedSessionOrganism: React.FC<
   isParticipatedSessionsError,
 }) => {
   const navigate = useNavigate();
+
   const clickRouter = () => {
     navigate(`/mypage/session/joined`);
   };
 
+  // 세션 상태를 숫자로 변환하는 함수
+  const getStatusValue = (startAt: string, endAt: string): number => {
+    const now = new Date();
+    const startAtDate = new Date(startAt);
+    const endAtDate = new Date(endAt);
+
+    if (now < startAtDate) {
+      return 1; // 진행 예정
+    } else if (now >= startAtDate && now <= endAtDate) {
+      return 2; // 진행 중
+    } else {
+      return 3; // 종료
+    }
+  };
+
+  // 세션을 정렬하는 함수
+  const sortedSessions = sessions?.sort((a, b) => {
+    return (
+      getStatusValue(a.startAt, a.endAt) - getStatusValue(b.startAt, b.endAt)
+    );
+  });
+
+  // 텍스트나 타이머를 변환하는 함수
   const convertText = (startAt: string, endAt: string) => {
     const now = new Date();
     const startAtDate = new Date(startAt);
     const endAtDate = new Date(endAt);
 
     if (now < startAtDate) {
-      return "진행 예정";
+      return <RemainingTimer startAt={startAt} />; // 타이머 표시
     } else if (now >= startAtDate && now <= endAtDate) {
       return "진행중";
     } else {
       return "종료";
     }
   };
-
-  // sessions 배열을 정렬
-  const sortedSessions = sessions?.sort((a, b) => {
-    const aStatus = convertText(a.startAt, a.endAt);
-    const bStatus = convertText(b.startAt, b.endAt);
-    const statusOrder = {
-      "진행 예정": 1,
-      진행중: 2,
-      종료: 3,
-    };
-
-    return statusOrder[aStatus] - statusOrder[bStatus];
-  });
 
   return (
     <>

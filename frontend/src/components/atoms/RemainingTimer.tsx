@@ -37,15 +37,21 @@ const RemainingTimer: React.FC<TimerProps> = ({ startAt }) => {
     return () => clearInterval(timer);
   }, [startAt]);
 
+  const isLessThanOneHour = timeLeft.days === 0 && timeLeft.hours < 1;
+  const isLessThanOneDay = timeLeft.days === 0;
+
   return (
     <div
       className="font-normal"
-      style={{ color: "lightgray", fontSize: "12px" }}
+      style={{
+        color: isLessThanOneHour ? "red" : "gray",
+        fontSize: "12px",
+      }}
     >
-      {timeLeft.days > 0 && `${timeLeft.days}일 `}
-      {timeLeft.hours > 0 && `${timeLeft.hours}시간 `}
-      {timeLeft.minutes > 0 && `${timeLeft.minutes}분 `}
-      {timeLeft.seconds > 0 && `${timeLeft.seconds}초 남음`}
+      {timeLeft.days > 0 && `${timeLeft.days}일 남음`}
+      {isLessThanOneDay && `${String(timeLeft.hours).padStart(2, "0")}:`}
+      {isLessThanOneDay && `${String(timeLeft.minutes).padStart(2, "0")}:`}
+      {isLessThanOneDay && `${String(timeLeft.seconds).padStart(2, "0")}`}
     </div>
   );
 };

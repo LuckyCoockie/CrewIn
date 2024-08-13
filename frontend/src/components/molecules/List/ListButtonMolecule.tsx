@@ -5,7 +5,7 @@ import ImageButtonTitle from "../../atoms/Title/ImageButtonTitle";
 type Infos = {
   src: string;
   alt: string;
-  text: string;
+  text: string | JSX.Element;
   router?: string;
   routerId?: number | string;
 };
