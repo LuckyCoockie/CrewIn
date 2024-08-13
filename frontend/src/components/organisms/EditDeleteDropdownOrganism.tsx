@@ -86,7 +86,7 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({
         navigate(`/crew`);
       } else if (type === "SESSION") {
         await deleteSession(idData!);
-        navigate(`/session?status=active`);
+        navigate(`/session`);
       } else if (type === "NOTICE") {
         await deleteNotice(idData!);
         navigate(`/crew/detail/${idData2}`);
