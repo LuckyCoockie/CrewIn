@@ -33,20 +33,22 @@ const CrewSearchTemplate: React.FC<OwnProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center max-w-[500px] mt-4 mb-20">
-      <div className="flex items-center bg-white w-full mb-5 xs:mb-10">
-        <div className="flex items-center">
+    <div className="flex flex-col items-center mb-20">
+      <header>
+        <div className="flex items-center w-full">
           <LargeTitleMolecule text="전체 크루 목록" />
+          <div className="flex items-center flex-grow justify-end ml-4">
+            <SearchInputMolecule hint={"크루명"} onSubmit={handleFetchData} />
+            <CrewCreateIcon
+              className="w-6 h-6 ml-2"
+              onClick={handleCrewCreateRoute}
+            />
+          </div>
         </div>
-        <div className="flex items-center flex-grow justify-end ml-4">
-          <SearchInputMolecule hint={"크루명"} onSubmit={handleFetchData} />
-          <CrewCreateIcon
-            className="w-6 h-6 ml-2"
-            onClick={handleCrewCreateRoute}
-          />
-        </div>
-      </div>
-      <CrewListComponent fetchData={fetchData} />
+      </header>
+      <main>
+        <CrewListComponent fetchData={fetchData} />
+      </main>
     </div>
   );
 };

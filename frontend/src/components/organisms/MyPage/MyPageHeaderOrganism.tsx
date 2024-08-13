@@ -22,7 +22,7 @@ const MyPageHeaderOrganism: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-between w-full">
+    <div className="flex items-center justify-between w-full h-10">
       <div className="flex items-center">
         <LargeTitleMolecule text="마이페이지" />
       </div>

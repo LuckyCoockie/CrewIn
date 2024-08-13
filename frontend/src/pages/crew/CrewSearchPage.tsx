@@ -17,9 +17,7 @@ const CrewSearchPage: React.FC = () => {
     return getCrewList(dto);
   }, []);
 
-  return (
-      <CrewSearchTemplate onSearch={onSearch} fetchData={fetchData} />
-  );
+  return <CrewSearchTemplate onSearch={onSearch} fetchData={fetchData} />;
 };
 
 export default CrewSearchPage;
