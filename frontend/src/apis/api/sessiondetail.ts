@@ -22,6 +22,7 @@ export type SessionDetailDto = {
   isJoined: boolean;
   currentPeople: number;
   courseDistance: number;
+  isMyCrew: boolean;
 };
 
 export type GetSessionInfoRequestDto = {
