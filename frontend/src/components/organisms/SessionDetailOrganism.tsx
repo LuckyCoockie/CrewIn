@@ -197,6 +197,17 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
         {!isSessionHost &&
           !isSessionStarted &&
           !isJoined &&
+          isMyCrew &&
+          sessionType === "STANDARD" && (
+            <LargeAbleButton
+              onClick={handleParticipate}
+              text="참가 신청"
+              isLoading={isJoinSubmit}
+            />
+          )}
+        {!isSessionHost &&
+          !isSessionStarted &&
+          !isJoined &&
           !isMyCrew &&
           sessionType === "STANDARD" && (
             <LargeDisableButton text="크루원 전용입니다." />
@@ -216,9 +227,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
           !isSessionStarted &&
           !isJoined &&
           sessionType === "THUNDER" &&
-          currentPeople >= maxPeople && (
-            <LargeDisableButton text="인원 마감" />
-          )}
+          currentPeople >= maxPeople && <LargeDisableButton text="인원 마감" />}
         {!isSessionHost &&
           !isSessionStarted &&
           isJoined &&
