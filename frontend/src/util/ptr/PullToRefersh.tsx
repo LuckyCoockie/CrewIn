@@ -12,22 +12,23 @@ const PullToRefresh: React.FC<OwnProps> = ({ el, onRefresh }) => {
   const [startScrollY, setStartScrollY] = useState(0);
 
   useEffect(() => {
-    function handleTouchStart(event: any) {
-      setStartY(event.touches[0].clientY);
+    const element = el.current;
+
+    function handleTouchStart(event: TouchEvent) {
       setStartScrollY(window.scrollY);
+      setStartY(event.touches[0].clientY);
     }
 
-    function handleTouchMove(event: any) {
-      if (!el.current || startScrollY >= 80) return;
+    function handleTouchMove(event: TouchEvent) {
+      if (!element || window.scrollY > startScrollY) return;
       const moveY = event.touches[0].clientY;
       const pullDistance = moveY - startY;
 
-      if (pullDistance > 0) {
-        event.preventDefault();
-
+      if (element.scrollTop === 0 && pullDistance > 0) {
         if (pullDistance > 80) {
-          el.current.style.transform = "translate(0, 40px)";
-          el.current.style.transition = "0.3s";
+          element.style.position = "relative";
+          element.style.top = "40px";
+          element.style.transition = "0.3s";
           setRefreshing(true);
         }
       }
@@ -37,9 +38,10 @@ const PullToRefresh: React.FC<OwnProps> = ({ el, onRefresh }) => {
       if (refreshing) {
         if (onRefresh) {
           onRefresh().then(() => {
-            if (!el.current) return;
+            if (!element) return;
             setRefreshing(false);
-            el.current.style.transform = "translate(0,0)";
+            element.style.position = "";
+            element.style.top = "0";
           });
         }
       }
@@ -54,7 +56,7 @@ const PullToRefresh: React.FC<OwnProps> = ({ el, onRefresh }) => {
       document.removeEventListener("touchmove", handleTouchMove);
       document.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [refreshing, startY, el, onRefresh]);
+  }, [refreshing, startY, el, onRefresh, startScrollY]);
 
   return (
     <div className="w-full text-center">
