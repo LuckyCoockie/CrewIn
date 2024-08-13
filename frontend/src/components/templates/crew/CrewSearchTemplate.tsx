@@ -33,7 +33,7 @@ const CrewSearchTemplate: React.FC<OwnProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20">
+    <div className="flex flex-col items-center max-w-[500px] mt-4 mb-20">
       <div className="flex items-center bg-white w-full mb-5 xs:mb-10">
         <div className="flex items-center">
           <LargeTitleMolecule text="전체 크루 목록" />

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
 import { ReactComponent as Searchicon } from "../../../assets/icons/searchicon.svg";
 import { ReactComponent as CrewinLogo } from "../../../assets/icons/crewinlogo.svg";
@@ -9,6 +9,7 @@ import {
   CrewMemberDto,
 } from "../../../apis/api/crewmemberlist";
 import InfiniteScrollComponent from "../../../util/paging/component/InfinityScrollComponent";
+
 
 const sortPositions: Record<string, number> = {
   CAPTAIN: 1,
@@ -37,6 +38,7 @@ const CrewMemberSearchTemplate: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [, setMembers] = useState<CrewMemberDto[]>([]);
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  const navigate = useNavigate();
 
   const fetchCrewMembers = useCallback(
     async (page: number): Promise<GetCrewMemberListResponseDto> => {
@@ -84,7 +86,11 @@ const CrewMemberSearchTemplate: React.FC = () => {
   }, [debouncedSearchQuery]);
 
   const renderMemberItem = (member: CrewMemberDto) => (
-    <li key={member.email} className="flex items-center p-2 border-b">
+    <li
+      key={member.email}
+      className="flex items-center p-2 border-b hover:bg-gray-100"
+      onClick={() => navigate(`/profile/${member.memberId}`)}
+    >
       <div className="w-12 h-12 flex-shrink-0">
         {member.imageUrl ? (
           <img
@@ -109,7 +115,7 @@ const CrewMemberSearchTemplate: React.FC = () => {
   );
 
   return (
-    <div className="relative flex flex-col max-w-[550px] mx-auto">
+    <div className="relative flex flex-col max-w-[500px] mx-auto">
       <header className="mb-1">
         <BackHeaderMediumOrganism text="" />
         <div className="relative flex-1 font-weight-sm">

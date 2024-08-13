@@ -92,7 +92,7 @@ const AlarmTemplate: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col max-w-[550px] mx-auto">
+    <div className="flex flex-col max-w-[500px] mx-auto">
       <header>
         <BackHeaderMediumOrganism text="알림" />
       </header>
@@ -174,6 +174,7 @@ const AlarmTemplate: React.FC = () => {
                             e.stopPropagation();
                             handleDelete(alarm.notificationId);
                           }}
+                          className="bg-transparent"
                         >
                           <img
                             src={closeButton}
@@ -199,6 +200,7 @@ const AlarmTemplate: React.FC = () => {
                             e.stopPropagation();
                             handleDelete(alarm.notificationId);
                           }}
+                          className="bg-transparent"
                         >
                           <img
                             src={closeButton}

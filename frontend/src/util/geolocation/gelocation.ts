@@ -25,11 +25,22 @@ const useGeolocation = () => {
     setError({ code: err.code, message: err.message });
   };
 
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
-  }, []);
+  const refetch = () => {
+    setError(null);
+    navigator.permissions
+      .query({ name: "geolocation" })
+      .then((permissionStatus) => {
+        if (permissionStatus.state === "denied") {
+          setError({ code: -1, message: permissionStatus.state });
+        } else {
+          navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
+        }
+      });
+  };
 
-  return { location, error };
+  useEffect(refetch, []);
+
+  return { location, error, refetch };
 };
 
 export default useGeolocation;

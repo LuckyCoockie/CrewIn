@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { useQuery } from "react-query";
-
+import React, { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
 import {
   getCrewNoticeDetail,
@@ -15,6 +14,9 @@ import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import UserProfileBarNoMenu from "../molecules/UserProfileBarNoMenuMolecule";
 import { Carousel } from "react-responsive-carousel";
 import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
+import { registerPostHeart } from "../../apis/api/heart";
+import { deletePostHeart } from "../../apis/api/heartdelete";
+import { ReactComponent as ShareIcon } from "../../assets/icons/shareicon.svg";
 import SpinnerComponent from "../atoms/SpinnerComponent";
 import ErrorText from "../atoms/ErrorText";
 
@@ -29,6 +31,8 @@ const CrewNoticeDetailTemplate: React.FC = () => {
     noticeId: Number(noticeId),
   };
 
+  const queryClient = useQueryClient();
+
   const {
     data: noticeData,
     isLoading,
@@ -41,10 +45,82 @@ const CrewNoticeDetailTemplate: React.FC = () => {
   const [isHeartedState, setIsHeartedState] = useState<boolean>(
     noticeData?.isHearted || false
   );
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (noticeData) {
+      setLikes(noticeData.heartCount);
+      setIsHeartedState(noticeData.isHearted);
+    }
+  }, [noticeData]);
+
+  useEffect(() => {
+    if (!(window as any).Kakao.isInitialized()) {
+      (window as any).Kakao.init("YOUR_APP_KEY");
+    }
+  }, []);
+
+  const likeMutation = useMutation(registerPostHeart, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["noticeDetail", requestDto]);
+      setLikes((prevLikes) => prevLikes + 1);
+      setIsHeartedState(true);
+    },
+    onError: (error) => {
+      console.error("좋아요 처리 중 오류가 발생했습니다:", error);
+    },
+  });
+
+  const unlikeMutation = useMutation(deletePostHeart, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["noticeDetail", requestDto]);
+      setLikes((prevLikes) => prevLikes - 1);
+      setIsHeartedState(false);
+    },
+    onError: (error) => {
+      console.error("좋아요 취소 처리 중 오류가 발생했습니다:", error);
+    },
+  });
 
   const handleLike = () => {
-    setLikes((prevLikes) => (isHeartedState ? prevLikes - 1 : prevLikes + 1));
-    setIsHeartedState(!isHeartedState);
+    if (isHeartedState) {
+      unlikeMutation.mutate(Number(noticeId));
+    } else {
+      likeMutation.mutate(Number(noticeId));
+    }
+
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 200);
+  };
+
+  const handleShare = () => {
+    const kakao = (window as any).Kakao;
+    if (!kakao) {
+      console.error("Kakao SDK not loaded");
+      return;
+    }
+
+    kakao.Link.sendDefault({
+      objectType: "feed",
+      content: {
+        title: noticeData?.title,
+        description: noticeData?.content.substring(0, 100) + "...",
+        imageUrl: noticeData?.postImages ? noticeData.postImages[0] : "",
+        link: {
+          mobileWebUrl: window.location.href,
+          webUrl: window.location.href,
+        },
+      },
+      buttons: [
+        {
+          title: "View Notice",
+          link: {
+            mobileWebUrl: window.location.href,
+            webUrl: window.location.href,
+          },
+        },
+      ],
+    });
   };
 
   if (isLoading) {
@@ -63,19 +139,20 @@ const CrewNoticeDetailTemplate: React.FC = () => {
     addSuffix: true,
     locale: ko,
   });
+
   return (
     <>
       <header>
         <BackHeaderMediumOrganism text={noticeData.title} />
       </header>
       <div className="w-full">
-        <div className="flex items-center">
+        <div className="flex items-center mx-2">
           <UserProfileBarNoMenu
             profileImage={noticeData.profileImage}
             username={noticeData.authorName}
             timeAgo={timeAgo}
           />
-          <div className="me-4">
+          <div className="">
             <EditDeleteDropdownOrganism
               type="NOTICE"
               idData={Number(noticeId)}
@@ -100,20 +177,25 @@ const CrewNoticeDetailTemplate: React.FC = () => {
             </div>
           ))}
         </Carousel>
-        <div className="mt-2">
-          <p>{noticeData.content}</p>
-        </div>
         <div className="flex items-center mt-2">
           <button onClick={handleLike} className="flex items-center ml-3">
             <img
               src={isHeartedState ? filledFire : emptyFire}
               alt="fire-icon"
-              className="w-7"
+              className={`w-7 ${isAnimating ? "animate" : ""}`}
             />
           </button>
-          <span className="text-md ml-1">{likes}명이 공감했어요!</span>
+          <button onClick={handleShare} className="flex ml-auto mr-3">
+            <ShareIcon />
+          </button>
         </div>
-        <div className="border-t border-gray-300 my-2"></div>
+        <div className="text-md ml-3 mt-2">{likes}명이 공감했어요!</div>
+        <div className="mt-1 mx-3">
+          <div>
+            <span className="font-bold">{noticeData.authorName} </span>
+            {noticeData.content}
+          </div>
+        </div>
       </div>
     </>
   );

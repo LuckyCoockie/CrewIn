@@ -137,8 +137,11 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
   const positions = ["CAPTAIN", "PACER", "MEMBER"];
 
   const renderMemberItem = (member: CrewMemberDto) => (
-    <li key={member.email} className="flex items-center p-2 border-b">
-      <div className="w-12 h-12 flex-shrink-0">
+    <li
+      key={member.email}
+      className="flex items-center p-2 border-b cursor-pointer hover:bg-gray-100"
+    >
+      <div className="w-12 h-12 flex-shrink-0" onClick={() => navigate(`/profile/${member.memberId}`)}>
         {member.imageUrl ? (
           <img
             src={member.imageUrl}
@@ -149,7 +152,7 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
           <CrewinLogo className="w-full h-full object-cover rounded-full" />
         )}
       </div>
-      <div className="flex-1 ml-3">
+      <div className="flex-1 ml-3" onClick={() => navigate(`/profile/${member.memberId}`)}>
         <div className="font-bold">{member.name}</div>
         <div className="text-gray-600">{member.nickname}</div>
       </div>
@@ -182,7 +185,7 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
   }, [searchQuery]);
 
   return (
-    <div className="relative flex flex-col max-w-[550px] mx-auto">
+    <div className="relative flex flex-col max-w-[500px] mx-auto">
       <header className="mb-1">
         <BackHeaderMediumOrganism text="" />
         <div className="relative flex-1 font-weight-sm">

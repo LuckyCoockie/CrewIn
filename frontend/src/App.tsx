@@ -1,29 +1,20 @@
-import React from "react";
-import { Outlet, useLocation } from "react-router-dom";
-import BottomBarOrganism from "./components/organisms/BottomBarOrganism";
+import React, { useRef } from "react";
+import { Outlet } from "react-router-dom";
+import PullToRefresh from "./util/ptr/PullToRefersh.tsx";
+
+const standalone = window.matchMedia("(display-mode: standalone)").matches;
+const isIOS = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
 
 const App: React.FC = () => {
-  // 현 위치 파악 함수
-  const location = useLocation();
+  const ref = useRef<HTMLDivElement>(null);
+  const onRefresh = async () => {
+    if (standalone && isIOS) window.location.reload();
+  };
 
-  // 제외할 페이지
-  const hideBottomBarRoutes = [
-    /^\/login$/,
-    /^\/join$/,
-    /^\/find-password$/,
-    /^\/info$/,
-    /^\/course\/create$/,
-    /^\/profile\/[^/]+$/, // /profile/:userId 만 포함하도록 설정
-  ];
-  const shouldHideBottomBar = hideBottomBarRoutes.some((pattern) =>
-    pattern.test(location.pathname)
-  );
   return (
-    <div className="mx-auto w-full max-w-[550px]">
+    <div className="items-center" ref={ref}>
+      {standalone && isIOS && <PullToRefresh el={ref} onRefresh={onRefresh} />}
       <Outlet />
-      {!shouldHideBottomBar && (
-        <BottomBarOrganism current={location.pathname} />
-      )}{" "}
     </div>
   );
 };

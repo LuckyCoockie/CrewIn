@@ -9,7 +9,7 @@ const ProfileImageComponent: React.FC<Image> = ({ src }) => {
     <img
       src={src}
       alt="profile"
-      className="border w-10 h-10 rounded-full mx-3 mr-3"
+      className="border w-10 h-10 rounded-full mx-1 mr-3"
     />
   );
 };

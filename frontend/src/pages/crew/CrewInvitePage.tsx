@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { ReactComponent as Searchicon } from "../../assets/icons/searchicon.svg";
 import InfiniteScrollComponent from "../../util/paging/component/InfinityScrollComponent";
 import {
@@ -36,6 +36,7 @@ const CrewInvitePage: React.FC = () => {
   const [invitingMemberId, setInvitingMemberId] = useState<number | null>(null);
   const [, setMembers] = useState<CrewSearchMemberDto[]>([]);
   const debouncedQuery = useDebounce(query, 300);
+  const navigate = useNavigate();
 
   const fetchInviteMembers = useCallback(
     async (
@@ -88,7 +89,7 @@ const CrewInvitePage: React.FC = () => {
   }, [debouncedQuery]);
 
   return (
-    <div className="relative flex flex-col max-w-[550px] mx-auto">
+    <div className="relative flex flex-col max-w-[500px] mx-auto">
       <header className="mb-1">
         <BackHeaderMediumOrganism text="" />
         <div className="relative flex-1 font-weight-sm">
@@ -114,9 +115,10 @@ const CrewInvitePage: React.FC = () => {
             ItemComponent={({ data }: { data: CrewSearchMemberDto }) => (
               <li
                 key={data.memberId}
-                className="flex items-center p-2 border-b"
+                className="flex items-center p-2 border-b cursor-pointer hover:bg-gray-100"
+                
               >
-                <div className="w-12 h-12 flex-shrink-0">
+                <div className="w-12 h-12 flex-shrink-0" onClick={() => navigate(`/profile/${data.memberId}`)}>
                   {data.imageUrl ? (
                     <img
                       src={data.imageUrl}
@@ -127,7 +129,7 @@ const CrewInvitePage: React.FC = () => {
                     <CrewinLogo className="w-full h-full object-cover rounded-full" />
                   )}
                 </div>
-                <div className="flex-1 ml-3">
+                <div className="flex-1 ml-3" onClick={() => navigate(`/profile/${data.memberId}`)}>
                   <div>
                     <span className="font-bold">{data.name + " "}</span>
                     <span className="text-gray-600 text-sm">

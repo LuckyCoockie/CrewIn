@@ -14,7 +14,7 @@ const CrewGalleryListDetailTemplate: React.FC<OwnProps> = ({
   fetchData,
 }: OwnProps) => {
   return (
-    <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20">
+    <div className="flex flex-col items-center max-w-[500px] mt-4 mb-20">
       <header>
         <BackHeaderMediumOrganism text={"사진첩 상세조회"} />
       </header>

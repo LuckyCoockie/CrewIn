@@ -96,12 +96,12 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
     if (member) {
       if (newPosition === "CAPTAIN" && currentCaptain) {
         setSelectedMember(member);
-        setOriginalPosition(member.position); // 원래 포지션 저장
+        setOriginalPosition(member.position);
         setAction("CAPTAIN");
         setIsModalOpen(true);
       } else if (newPosition === "BAN") {
         setSelectedMember(member);
-        setOriginalPosition(member.position); // 원래 포지션 저장
+        setOriginalPosition(member.position);
         setAction("BAN");
         setIsModalOpen(true);
       } else {
@@ -204,8 +204,12 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
   };
 
   const renderMemberItem = (member: CrewMemberDto) => (
-    <li key={member.email} className="flex items-center p-2 border-b">
-      <div className="w-12 h-12 flex-shrink-0">
+    <li
+      key={member.email}
+      className="flex items-center p-2 border-b cursor-pointer hover:bg-gray-100"
+      
+    >
+      <div className="w-12 h-12 flex-shrink-0" onClick={() => navigate(`/profile/${member.memberId}`)}>
         {member.imageUrl ? (
           <img
             src={member.imageUrl}
@@ -216,7 +220,7 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
           <CrewinLogo className="w-full h-full object-cover rounded-full" />
         )}
       </div>
-      <div className="flex-1 ml-3">
+      <div className="flex-1 ml-3" onClick={() => navigate(`/profile/${member.memberId}`)}>
         <div className="font-bold">{member.name}</div>
         <div className="text-gray-600">{member.nickname}</div>
       </div>
@@ -229,7 +233,7 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
           ) : (
             <select
               className="border border-gray-400 w-30 h-10 rounded-md text-sm focus:ring-0 focus:border-black"
-              value={member.position} 
+              value={member.position}
               onChange={(e) =>
                 handlePositionChange(member.email, e.target.value)
               }
@@ -252,7 +256,7 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
 
   return (
     <>
-      <div className="relative flex flex-col max-w-[550px] mx-auto">
+      <div className="relative flex flex-col max-w-[500px] mx-auto">
         <header className="mb-1">
           <BackHeaderMediumOrganism text="크루원 관리" />
           <div className="flex items-center flex-grow justify-end">

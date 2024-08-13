@@ -1,13 +1,10 @@
 import { Navigate, createBrowserRouter } from "react-router-dom";
-import App from "./App";
+import App from "./App.tsx";
 import CrewCreatePage from "./pages/CrewCreatePage";
 import PostCreatePage from "./pages/PostCreatePage";
 import CourseCreatePage from "./pages/course/CourseCreatePage.tsx";
 import LoginPage from "./pages/LoginPage";
 import SessionCreatePage from "./pages/SessionCreatePage";
-import SessionPage from "./pages/SessionPage";
-import CrewPage from "./pages/CrewPage";
-import ProfilePage from "./pages/ProfilePage";
 import JoinPage from "./pages/JoinPage";
 import SessionDetailPage from "./pages/SessionDetailPage";
 import PostMainPage from "./pages/PostMainPage";
@@ -28,7 +25,6 @@ import CrewMemberSearchPage from "./pages/crew/CrewMemberSearchPage.tsx";
 import CaptainPovCrewMemberPage from "./pages/crew/CaptainPovCrewMemberPage.tsx";
 import CaptainPovCrewMemberSearchPage from "./pages/crew/CaptainPovCrewMemberSearchPage.tsx";
 import CourseEditPage from "./pages/course/CourseEditPage.tsx";
-import CoursePage from "./pages/course/CoursePage.tsx";
 import CrewInvitePage from "./pages/crew/CrewInvitePage.tsx";
 import MySessionPage from "./pages/session/MySessionPage.tsx";
 import MyProfilePage from "./pages/MyProfilePage.tsx";
@@ -40,7 +36,9 @@ import CourseDetailPage from "./pages/course/CourseDetailPage.tsx";
 import CrewEditPage from "./pages/CrewEditPage.tsx";
 import SessionEditPage from "./pages/SessionEditPage.tsx";
 import CrewNoticeEditPage from "./pages/CrewNoticeEditPage.tsx";
+import PostDetailPage from "./pages/PostDetailPage.tsx";
 import PeopleGalleryListDetailPage from "./pages/PeopleGalleryListDetailPage.tsx";
+import NotFoundPage from "./pages/util/NotFoundPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -55,7 +53,6 @@ export const router = createBrowserRouter([
           { path: "home", element: <PostMainPage /> },
           {
             path: "session",
-            element: <SessionPage />,
             children: [
               { path: "", element: <SessionSearchPage /> },
               { path: "create", element: <SessionCreatePage /> },
@@ -71,7 +68,6 @@ export const router = createBrowserRouter([
           },
           {
             path: "crew",
-            element: <CrewPage />,
             children: [
               { path: "", element: <CrewRedirectPage /> },
               { path: "search", element: <CrewSearchPage /> },
@@ -116,7 +112,6 @@ export const router = createBrowserRouter([
           { path: "mypage/session/:type", element: <MySessionPage /> },
           {
             path: "profile",
-            element: <ProfilePage />,
             children: [
               { path: "", element: <MyProfilePage /> },
               { path: ":memberId", element: <PeopleProfilePage /> },
@@ -129,8 +124,8 @@ export const router = createBrowserRouter([
           { path: "info", element: <ProfileInfoPage /> },
           {
             path: "course",
-            element: <CoursePage />,
             children: [
+              { path: "", element: <Navigate to={"/profile"} /> },
               {
                 path: "create",
                 element: <CourseCreatePage />,
@@ -146,6 +141,7 @@ export const router = createBrowserRouter([
           { path: "post/:postId/edit", element: <PostEditPage /> },
           { path: "searchuser", element: <SearchUserPage /> },
           { path: "alarm", element: <AlarmPage /> },
+          { path: "post/:id", element: <PostDetailPage /> },
         ],
       },
       {
@@ -157,6 +153,7 @@ export const router = createBrowserRouter([
           { path: "find-password", element: <FindPasswordPage /> },
         ],
       },
+      { path: "*", element: <NotFoundPage /> },
     ],
   },
 ]);

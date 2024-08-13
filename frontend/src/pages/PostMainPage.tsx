@@ -17,10 +17,10 @@ import {
   PostDto,
 } from "../apis/api/postlist";
 import { PWAInstallPrompt } from "../components/templates/pwa/PWAInstallPrompt";
-import { PWAOpenAppPrompt } from "../components/templates/pwa/PWAOpenAppPrompt";
 import { fetchNotifications } from "../apis/api/alarm";
 import SpinnerComponent from "../components/atoms/SpinnerComponent";
 import Modal from "../components/molecules/ModalMolecules";
+import useIsMobile from "../util/windowSize/useIsMobile";
 
 const PostMainPage: React.FC = () => {
   const navigate = useNavigate();
@@ -28,6 +28,7 @@ const PostMainPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const { isMobile } = useIsMobile();
 
   useEffect(() => {
     const checkNotifications = async () => {
@@ -82,20 +83,22 @@ const PostMainPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20 relative">
-      <div className="flex items-center w-full mb-5 xs:mb-10">
-        <div className="flex items-center ms-3">
-          <CrewinLogo />
+    <div className="flex flex-col items-center max-w-[500px] mt-4 mb-20 relative">
+      {isMobile && (
+        <div className="flex items-center w-full mb-5 xs:mb-10">
+          <div className="flex items-center ms-3">
+            <CrewinLogo />
+          </div>
+          <div className="flex items-center flex-grow justify-end mr-2">
+            <Searchicon className="w-6 h-6 mr-4" onClick={handleSearch} />
+            {hasCheckedNotifications ? (
+              <AlarmOnicon className="w-6 h-6" onClick={handleAlarm} />
+            ) : (
+              <Alarmicon className="w-6 h-6" onClick={handleAlarm} />
+            )}
+          </div>
         </div>
-        <div className="flex items-center flex-grow justify-end mr-2">
-          <Searchicon className="w-6 h-6 mr-4" onClick={handleSearch} />
-          {hasCheckedNotifications ? (
-            <AlarmOnicon className="w-6 h-6" onClick={handleAlarm} />
-          ) : (
-            <Alarmicon className="w-6 h-6" onClick={handleAlarm} />
-          )}
-        </div>
-      </div>
+      )}
       {isLoading && <SpinnerComponent />}
       <div className="w-full">
         <InfiniteScrollComponent
@@ -111,8 +114,6 @@ const PostMainPage: React.FC = () => {
         <Plus />
       </FloatingActionButton>
       <PWAInstallPrompt />
-      <PWAOpenAppPrompt />
-      {/* Modal 컴포넌트 추가 */}
       {isModalOpen && (
         <Modal title="오류 발생" onClose={handleModalClose}>
           <p>{modalMessage}</p>

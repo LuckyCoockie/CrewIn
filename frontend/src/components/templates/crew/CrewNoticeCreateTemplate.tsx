@@ -178,7 +178,7 @@ const CrewNoticeCreateTemplate: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[550px]">
+    <div className="mx-auto w-full max-w-[500px]">
       <div className="flex flex-col items-center justify-center">
         <header>
           <BackHeaderMediumOrganism text="공지글 작성" />

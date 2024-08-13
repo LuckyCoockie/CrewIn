@@ -65,7 +65,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   };
 
   return (
-    <div className="flex items-center w-full mb-3">
+    <div className="flex items-center w-full mb-2">
       <div className="cursor-pointer" onClick={onClick}>
         <ProfileImageComponent src={profileImage} />
       </div>
@@ -74,7 +74,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         <BarContent content={timeAgo} />
       </div>
       {authorId === memberId && (
-        <div className="ml-auto mr-2 relative" ref={dropdownRef}>
+        <div className="ml-auto mr-1 relative" ref={dropdownRef}>
           <button onClick={toggleDropdown}>
             <MoreVerticalIcon className="w-6 h-6" />
           </button>

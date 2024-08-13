@@ -285,7 +285,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
         </>
       )}
       <main>
-        <div className="w-full flex">
+        <div className="w-full flex mt-2">
           <div className="w-full">
             <InputRadioTypeMolecule
               id="visibility"

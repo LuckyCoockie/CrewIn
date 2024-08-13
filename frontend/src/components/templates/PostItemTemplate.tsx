@@ -26,6 +26,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     id,
     postImages: croppedImages,
     content,
+    title,
     authorName,
     heartCount,
     isHearted,
@@ -143,6 +144,10 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     setIsExpanded(!isExpanded);
   };
 
+  const handleImageClick = () => {
+    navigate(`/post/${id}`);
+  };
+
   const timeAgo = formatDistanceToNow(parseISO(createdAt), {
     addSuffix: true,
     locale: ko,
@@ -151,28 +156,33 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     .replace(" 후", " 전");
 
   return (
-    <div className="w-full mb-4 pb-3">
-      {postType === "NOTICE" ? (
-        <UserProfileBarNoMenu
-          profileImage={profileImage}
-          username={authorName}
-          timeAgo={timeAgo}
-          onClick={() => handleCrewDetail(authorId)}
-        />
-      ) : (
-        <UserProfileBar
-          profileImage={profileImage}
-          username={authorName}
-          timeAgo={timeAgo}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          authorId={authorId}
-          memberId={memberId!}
-          onClick={() => handleUserProfile(authorId)}
-        />
-      )}
+    <div className="w-full mb-4">
+      <div className="mx-2">
+        {postType === "NOTICE" ? (
+          <UserProfileBarNoMenu
+            profileImage={profileImage}
+            username={authorName}
+            timeAgo={timeAgo}
+            onClick={() => handleCrewDetail(authorId)}
+          />
+        ) : (
+          <UserProfileBar
+            profileImage={profileImage}
+            username={authorName}
+            timeAgo={timeAgo}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            authorId={authorId}
+            memberId={memberId!}
+            onClick={() => handleUserProfile(authorId)}
+          />
+        )}
+      </div>
       {croppedImages && croppedImages.length > 0 && (
-        <div className="relative">
+        <div
+          className="relative cursor-pointer sm:mx-1"
+          onClick={handleImageClick}
+        >
           <Carousel
             showThumbs={false}
             showIndicators={true}
@@ -197,34 +207,82 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           <img
             src={isHeartedState ? filledFire : emptyFire}
             alt="fire-icon"
-            className={`w-7 h-7 object-contain fire-icon ${isAnimating ? 'animate' : ''}`}
+            className={`w-7 h-7 object-contain fire-icon ${
+              isAnimating ? "animate" : ""
+            }`}
           />
         </button>
-        <span className="text-md ml-1">{likes}명이 공감했어요!</span>
         <button onClick={handleShare} className="flex ml-auto mr-3">
-          <ShareIcon className="w-5" />
+          <ShareIcon />
         </button>
       </div>
-      <div className="border-t border-gray-300 my-2"></div>
+      <p className="text-md ml-3 mt-2">{likes}명이 공감했어요!</p>
       <div className="mb-2 mx-3 break-all">
-        {isExpanded ? (
+        {postType === "NOTICE" ? (
           <>
-            {content}{" "}
-            <button style={{ color: "blue" }} onClick={toggleContent}>
-              접기
-            </button>
-          </>
-        ) : content.length > 50 ? (
-          <>
-            {content.substring(0, 50)}...{" "}
-            <button style={{ color: "blue" }} onClick={toggleContent}>
-              더보기
-            </button>
+            <div className="">
+              {isExpanded ? (
+                <>
+                  <span className="font-bold">{authorName}</span> {title} <br />
+                  {content}{" "}
+                  <button
+                    className="font-bold text-color"
+                    onClick={toggleContent}
+                  >
+                    접기
+                  </button>
+                </>
+              ) : content.length > 40 ? (
+                <>
+                  <span className="font-bold">{authorName}</span> {title} <br />
+                  {content.substring(0, 40)}...{" "}
+                  <button
+                    className="font-bold text-color"
+                    onClick={toggleContent}
+                  >
+                    더보기
+                  </button>
+                </>
+              ) : (
+                <>
+                  <span className="font-bold">{authorName}</span> {title} <br />
+                  {content}
+                </>
+              )}
+            </div>
           </>
         ) : (
-          content
+          <>
+            {isExpanded ? (
+              <>
+                <span className="font-bold">{authorName}</span> {content}{" "}
+                <button
+                  className="font-bold text-color"
+                  onClick={toggleContent}
+                >
+                  접기
+                </button>
+              </>
+            ) : content.length > 40 ? (
+              <>
+                <span className="font-bold">{authorName}</span>{" "}
+                {content.substring(0, 40)}...{" "}
+                <button
+                  className="font-bold text-color"
+                  onClick={toggleContent}
+                >
+                  더보기
+                </button>
+              </>
+            ) : (
+              <>
+                <span className="font-bold">{authorName}</span> {content}
+              </>
+            )}
+          </>
         )}
       </div>
+      <div className="border-b border-gray-300 mx-1"></div>
     </div>
   );
 };

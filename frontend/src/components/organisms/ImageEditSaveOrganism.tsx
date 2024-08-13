@@ -260,7 +260,7 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
               value={totalTime}
               onChange={(e) => setTotalTime(e.target.value)}
               placeholder="00:00:00"
-              className="border border-gray-300 rounded px-3 py-2 w-24 h-8"
+              className="border border-gray-300 rounded px-3 py-2 w-24 h-8 bg-white"
             />
           )}
           <ToggleButton
@@ -282,7 +282,7 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
               value={totalDistance}
               onChange={(e) => setTotalDistance(e.target.value)}
               placeholder="00.00"
-              className="border border-gray-300 rounded px-3 py-2 w-24 h-8"
+              className="border border-gray-300 rounded px-3 py-2 w-24 h-8 bg-white"
             />
           )}
           <ToggleButton
@@ -304,7 +304,7 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
               value={pace}
               onChange={(e) => setPace(e.target.value)}
               placeholder="0'00''"
-              className="border border-gray-300 rounded px-3 py-2 w-24 h-8"
+              className="border border-gray-300 rounded px-3 py-2 w-24 h-8 bg-white"
             />
           )}
           <ToggleButton

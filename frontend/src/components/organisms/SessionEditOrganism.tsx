@@ -208,7 +208,10 @@ const SessionEditOrganism: React.FC = () => {
 
   useEffect(() => {
     if (watchedSessionStart) {
-      setValue("sessionend", watchedSessionStart);
+      setValue(
+        "sessionend",
+        new Date(watchedSessionStart.getTime() + 1000 * 60 * 10)
+      );
     }
   }, [watchedSessionStart, setValue]);
 
@@ -379,7 +382,7 @@ const SessionEditOrganism: React.FC = () => {
                 <InputDateStartTypeMolecule
                   id="sessionstart"
                   title="세션 시작"
-                  selected={field.value ?? new Date()}
+                  selected={field.value ?? new Date(new Date().setSeconds(0))}
                   onChange={field.onChange}
                 />
               )}
@@ -393,7 +396,7 @@ const SessionEditOrganism: React.FC = () => {
                 <InputDateEndTypeMolecule
                   id="sessionend"
                   title="세션 종료"
-                  selected={field.value ?? new Date()}
+                  selected={field.value ?? new Date(new Date().setSeconds(0))}
                   onChange={field.onChange}
                   minDate={watchedSessionStart}
                 />
@@ -403,7 +406,7 @@ const SessionEditOrganism: React.FC = () => {
           {errors.sessionend &&
           watchedSessionStart &&
           watchedSessionEnd &&
-          watchedSessionEnd < watchedSessionStart ? (
+          watchedSessionEnd <= watchedSessionStart ? (
             <p className="ps-4 mb-3 text-sm font-light text-red-500">
               종료시간은 시작시간보다 늦어야 합니다.
             </p>

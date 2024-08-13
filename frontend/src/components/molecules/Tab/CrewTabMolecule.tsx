@@ -12,19 +12,19 @@ const CrewTabMolecule: React.FC<Name> = (props) => {
   return (
     <>
       <div
-        className="flex flex-col items-center py-2 hover:scale-105 transform active:scale-90 transition cursor-pointer button"
+        className="p-7 lg:pr-10 flex flex-col lg:flex-row items-center py-2 lg:py-4 hover:scale-105 transform active:scale-90 transition cursor-pointer button"
         onClick={props.onClick}
         onTouchEnd={props.onClick}
       >
         {props.tab ? (
           <>
             <CrewSelected />
-            <p className="text-center text-xs font-bold">{props.name}</p>
+            <p className="text-center text-xs font-bold lg:pl-2">{props.name}</p>
           </>
         ) : (
           <>
             <CrewDeselected />
-            <p className="text-center text-xs text-gray-500">{props.name}</p>
+            <p className="text-center text-xs text-gray-500 lg:pl-2">{props.name}</p>
           </>
         )}
       </div>
