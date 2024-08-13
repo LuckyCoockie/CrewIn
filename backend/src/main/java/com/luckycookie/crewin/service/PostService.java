@@ -255,16 +255,16 @@ public class PostService {
         return convertToGalleryItemResponse(pageNo, postListPage);
     }
 
-    public PagingItemsResponse<PostGalleryItem> getUserPostGallery(int pageNo, long targetMemgerId, CustomUser customUser) {
+    public PagingItemsResponse<PostGalleryItem> getUserPostGallery(int pageNo, long targetMemberId, CustomUser customUser) {
         PageRequest pageRequest = PageRequest.of(pageNo, 12);
-        Member targetMember = memberRepository.findById(targetMemgerId)
+        Member targetMember = memberRepository.findById(targetMemberId)
                 .orElseThrow(NotFoundMemberException::new);
         Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
 
         Page<Post> postListPage = null;
 
-        if (member.getId() == targetMemgerId) {
+        if (member.getId() == targetMemberId) {
             postListPage = postRepository.findByMember(member, pageRequest);
         } else {
             // 1. isPublic이 true인 글 (isPublic은 tinyInt형임) or
