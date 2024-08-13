@@ -47,6 +47,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // 오류 메시지 상태 추가
+  const [isWarningVisible, setIsWarningVisible] = useState<boolean>(true); // 경고 메시지 상태 추가
 
   const { data: noticeData } = useQuery<CrewNoticeDetailResponseDto, Error>(
     ["getNoticeInfo", crewId, noticeId],
@@ -125,6 +126,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
     setCroppedImages(tempCroppedImages);
     setIsCropped(false);
     setIsFilesChanged(true);
+    setIsWarningVisible(true); // 경고 메시지 표시
   };
 
   const handleCrop = (index: number) => {
@@ -171,6 +173,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
       imagePaths.forEach((_, index) => handleCrop(index));
     }
     setIsCropped(!isCropped);
+    setIsWarningVisible(false); // 경고 메시지 숨기기
   };
 
   const handleClearImages = () => {
@@ -179,6 +182,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
     setCroppedFiles([]);
     setIsCropped(false);
     setIsFilesChanged(false);
+    setIsWarningVisible(true); // 경고 메시지 표시
   };
 
   const checkUndefined = async (files: File[]) => {
@@ -290,9 +294,11 @@ const CrewNoticeEditTemplate: React.FC = () => {
         )}
 
         <main className="w-full">
-          <p className="mt-2 text-center text-xs text-red-600">
-            *사진 편집을 완료해야 작성이 가능합니다. (체크 버튼을 클릭해주세요.)
-          </p>
+          {isWarningVisible && (
+            <p className="mt-2 text-center text-xs text-red-600">
+              *사진 편집을 완료해야 작성이 가능합니다. (체크 버튼을 클릭해주세요.)
+            </p>
+          )}
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-6 mt-2">
               <Controller

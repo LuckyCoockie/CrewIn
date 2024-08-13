@@ -44,6 +44,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isWarningVisible, setIsWarningVisible] = useState<boolean>(true);
 
   const cropperRefs = useRef<(ReactCropperElement | null)[]>([]);
 
@@ -102,10 +103,12 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
       ...tempOriginalCroppedImages,
     ]);
     setIsCropped(false);
+    setIsWarningVisible(true);
   };
 
   const handleCrop = (index: number) => {
     const cropperRef = cropperRefs.current[index];
+    
     if (cropperRef && cropperRef.cropper) {
       const cropper = cropperRef.cropper;
       const croppedCanvas = cropper.getCroppedCanvas({
@@ -143,6 +146,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
       imagePaths.forEach((_, index) => handleCrop(index));
     }
     setIsCropped(!isCropped);
+    setIsWarningVisible(false); 
   };
 
   const handleFinishEdit = (finalImage: string) => {
@@ -195,6 +199,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
     setCroppedImages([]);
     setOriginalCroppedImages([]);
     setIsCropped(false);
+    setIsWarningVisible(true);
   };
 
   const handleModalClose = () => {
@@ -270,9 +275,11 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
         </>
       )}
       <main>
-        <p className="mt-2 text-center text-xs text-red-600">
-          *사진 편집을 완료해야 작성이 가능합니다. (체크 버튼을 클릭해주세요.)
-        </p>
+        {isWarningVisible && (
+          <p className="mt-2 text-center text-xs text-red-600">
+            *사진 편집을 완료해야 작성이 가능합니다. (체크 버튼을 클릭해주세요.)
+          </p>
+        )}
         <div className="w-full flex mt-2">
           <div className="w-full">
             <InputRadioTypeMolecule
