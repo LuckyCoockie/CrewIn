@@ -11,21 +11,21 @@ const PullToRefresh: React.FC<OwnProps> = ({ el, onRefresh }) => {
   const [startY, setStartY] = useState(0);
 
   useEffect(() => {
-    function handleTouchStart(event: any) {
+    const element = el.current; // el.current를 로컬 변수에 저장
+
+    function handleTouchStart(event: TouchEvent) {
       setStartY(event.touches[0].clientY);
     }
 
-    function handleTouchMove(event: any) {
-      if (!el.current) return;
+    function handleTouchMove(event: TouchEvent) {
+      if (!element) return;
       const moveY = event.touches[0].clientY;
       const pullDistance = moveY - startY;
 
-      if (pullDistance > 0) {
-        event.preventDefault();
-
+      if (element.scrollTop === 0 && pullDistance > 0) {
         if (pullDistance > 80) {
-          el.current.style.transform = "translate(0, 40px)";
-          el.current.style.transition = "0.3s";
+          element.style.transform = "translate(0, 40px)";
+          element.style.transition = "0.3s";
           setRefreshing(true);
         }
       }
@@ -35,9 +35,9 @@ const PullToRefresh: React.FC<OwnProps> = ({ el, onRefresh }) => {
       if (refreshing) {
         if (onRefresh) {
           onRefresh().then(() => {
-            if (!el.current) return;
+            if (!element) return;
             setRefreshing(false);
-            el.current.style.transform = "translate(0,0)";
+            element.style.transform = "translate(0,0)";
           });
         }
       }

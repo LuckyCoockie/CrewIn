@@ -6,11 +6,9 @@ type Image = {
 
 const ProfileImageComponent: React.FC<Image> = ({ src }) => {
   return (
-    <img
-      src={src}
-      alt="profile"
-      className="border w-10 h-10 rounded-full mx-1 mr-3"
-    />
+    <div className="square w-10 h-10 mx-1 mr-3">
+      <img src={src} alt="profile" className="border rounded-full" />
+    </div>
   );
 };
 
