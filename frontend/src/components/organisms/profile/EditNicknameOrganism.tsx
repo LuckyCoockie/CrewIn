@@ -27,13 +27,16 @@ const schema = yup.object({
 });
 
 export const EditNicknameOrganism = ({ init, onClose, onEdit }: OwnProps) => {
+  const [isSubmit, setIsSubmit] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     async (data) => {
       try {
-        await onEdit(data);
+        if (isSubmit) return;
+        setIsSubmit(true);
+        onEdit(data).then(() => setIsSubmit(false));
       } catch (error) {
         setModalMessage("닉네임 변경에 실패했습니다. 다시 시도해주세요.");
         setIsModalOpen(true);

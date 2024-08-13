@@ -178,7 +178,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           />
         )}
       </div>
-      {croppedImages && croppedImages.length > 0 && (
+      {croppedImages && croppedImages.length > 0 ? (
         <div
           className="relative cursor-pointer sm:mx-1"
           onClick={handleImageClick}
@@ -201,7 +201,18 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
             ))}
           </Carousel>
         </div>
-      )}
+      ) : postType === "NOTICE" && profileImage ? (
+        <div
+          className="relative cursor-pointer mx-1"
+          onClick={handleImageClick}
+        >
+          <img
+            src={profileImage}
+            alt="Profile"
+            style={{ width: "100%", height: "auto" }}
+          />
+        </div>
+      ) : null}
       <div className="flex items-center mt-2">
         <button onClick={handleLike} className="flex items-center ml-3">
           <img
@@ -224,7 +235,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
               {isExpanded ? (
                 <>
                   <span className="font-bold">{authorName}</span> {title} <br />
-                  {content}{" "}
+                  <span style={{ whiteSpace: "pre-line" }}>{content} </span>
                   <button
                     className="font-bold text-color"
                     onClick={toggleContent}
@@ -235,7 +246,9 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
               ) : content.length > 40 ? (
                 <>
                   <span className="font-bold">{authorName}</span> {title} <br />
-                  {content.substring(0, 40)}...{" "}
+                  <span style={{ whiteSpace: "pre-line" }}>
+                    {content.substring(0, 40)}...{" "}
+                  </span>
                   <button
                     className="font-bold text-color"
                     onClick={toggleContent}
@@ -246,7 +259,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
               ) : (
                 <>
                   <span className="font-bold">{authorName}</span> {title} <br />
-                  {content}
+                  <span style={{ whiteSpace: "pre-line" }}>{content}</span>
                 </>
               )}
             </div>
@@ -255,7 +268,8 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           <>
             {isExpanded ? (
               <>
-                <span className="font-bold">{authorName}</span> {content}{" "}
+                <span className="font-bold">{authorName}</span>{" "}
+                <span style={{ whiteSpace: "pre-line" }}>{content} </span>
                 <button
                   className="font-bold text-color"
                   onClick={toggleContent}
@@ -266,7 +280,9 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
             ) : content.length > 40 ? (
               <>
                 <span className="font-bold">{authorName}</span>{" "}
-                {content.substring(0, 40)}...{" "}
+                <span style={{ whiteSpace: "pre-line" }}>
+                  {content.substring(0, 40)}...{" "}
+                </span>
                 <button
                   className="font-bold text-color"
                   onClick={toggleContent}
@@ -276,7 +292,8 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
               </>
             ) : (
               <>
-                <span className="font-bold">{authorName}</span> {content}
+                <span className="font-bold">{authorName}</span>{" "}
+                <span style={{ whiteSpace: "pre-line" }}>{content}</span>
               </>
             )}
           </>

@@ -7,6 +7,7 @@ import ModalMolecules from "../../molecules/ModalMolecules";
 import InputPasswordTypeMolecule from "../../molecules/Input/InputPasswordTypeMolecule";
 
 import { NewPasswordRequestDto } from "../../../apis/api/profile";
+import { useState } from "react";
 
 const passwordRules = /^(?=.*[a-zA-Z])(?=.*[0-9]).{0,}$/;
 
@@ -46,13 +47,17 @@ const schema = yup.object({
 });
 
 export const EditPasswordOrganism = ({ onClose, onEdit }: OwnProps) => {
+  const [isSubmit, setIsSubmit] = useState(false);
+
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const submitData: NewPasswordRequestDto = {
       oldPassword: data.pastPassword,
       newPassword: data.newPassword,
     };
     try {
-      await onEdit(submitData, onClose);
+      if (isSubmit) return;
+      setIsSubmit(true);
+      onEdit(submitData, onClose).then(() => setIsSubmit(false));
     } catch (error) {
       console.error("수정 실패");
       window.alert("이전 비밀번호를 확인하세요.");

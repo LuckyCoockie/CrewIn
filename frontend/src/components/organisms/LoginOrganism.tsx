@@ -101,7 +101,7 @@ const LoginOrganism = () => {
           />
         </div>
         <div>
-          <p className="ps-4 pt-1 text-sm font-light text-red-500">{error}</p>
+          <p className="pb-2 text-sm font-light text-red-500">{error}</p>
           {isValid ? (
             <LargeAbleButton text="로그인" isLoading={isSubmit} />
           ) : (

@@ -11,9 +11,9 @@ export const setAuth = debounce(
   300
 );
 
-export const clearAuth = debounce(() => {
+export const clearAuth = debounce((error?: string) => {
   localStorage.removeItem("AUTH");
-  store.dispatch(clearAccessToken());
+  store.dispatch(clearAccessToken(error));
 }, 300);
 
 export const checkAuth = (): boolean => {

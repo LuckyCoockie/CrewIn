@@ -71,9 +71,9 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({
   }, []);
 
   return (
-    <main>
-      <div className="flex flex-col items-center max-w-[500px] mt-4 mb-20 relative">
-        <div className="flex items-center bg-white w-full mb-5 xs:mb-10 h-10">
+    <>
+      <header>
+        <div className="flex items-center w-full h-10">
           <p className="text-xl font-bold pr-1">
             <DropdownTypeComponent
               id={""}
@@ -88,6 +88,8 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({
           </p>
           <InfoIcon onClick={handleClickInfoModalConfirm} />
         </div>
+      </header>
+      <main>
         <SessionSearchOrganism onSearch={handleSearch} />
         <InfiniteScrollComponent
           className="grid grid-cols-2 gap-2 xs:gap-4 mb-2 xs:mb-4 w-full"
@@ -114,9 +116,13 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({
         <FloatingActionButton onClick={handleSessionCreateRoute}>
           <Plus />
         </FloatingActionButton>
-      </div>
+      </main>
       {isInfoModalOpen && (
-        <Modal title={"세션"} onClose={() => setIsInfoModalOpen(false)} titleSize="text-xl">
+        <Modal
+          title={"세션"}
+          onClose={() => setIsInfoModalOpen(false)}
+          titleSize="text-xl"
+        >
           <div className="pb-4">
             <label className="block min-h-[2rem] tracking-tighter text-gray-900 text-lg">
               {"번개런"}
@@ -145,7 +151,7 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({
           </div>
         </Modal>
       )}
-    </main>
+    </>
   );
 };
 
