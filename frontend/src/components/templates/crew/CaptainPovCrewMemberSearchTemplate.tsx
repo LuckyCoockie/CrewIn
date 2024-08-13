@@ -141,7 +141,7 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
       key={member.email}
       className="flex items-center p-2 border-b cursor-pointer hover:bg-gray-100"
     >
-      <div className="w-12 h-12 flex-shrink-0" onClick={() => navigate(`/profile/${member.memberId}`)}>
+      <div className="w-12 h-12 flex-shrink-0 border rounded-full" onClick={() => navigate(`/profile/${member.memberId}`)}>
         {member.imageUrl ? (
           <img
             src={member.imageUrl}
