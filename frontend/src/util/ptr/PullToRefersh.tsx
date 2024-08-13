@@ -15,17 +15,17 @@ const PullToRefresh: React.FC<OwnProps> = ({ el, onRefresh }) => {
     const element = el.current;
 
     function handleTouchStart(event: TouchEvent) {
-      setStartScrollY(window.scrollY);
       setStartY(event.touches[0].clientY);
+      setStartScrollY(window.scrollY);
     }
 
     function handleTouchMove(event: TouchEvent) {
-      if (!element || window.scrollY > startScrollY) return;
+      if (!element || startScrollY > 0) return;
       const moveY = event.touches[0].clientY;
       const pullDistance = moveY - startY;
 
       if (element.scrollTop === 0 && pullDistance > 0) {
-        if (pullDistance > 80) {
+        if (pullDistance > 100) {
           element.style.position = "relative";
           element.style.top = "40px";
           element.style.transition = "0.3s";
