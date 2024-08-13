@@ -38,6 +38,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
     currentPeople,
     courseDistance,
     courseId,
+    isMyCrew,
   } = detailData;
 
   const [isJoined, setIsJoined] = useState(detailData.isJoined);
@@ -194,6 +195,14 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
         {!isSessionHost &&
           !isSessionStarted &&
           !isJoined &&
+          !isMyCrew &&
+          sessionType === "STANDARD" && (
+            <LargeDisableButton text="크루원 전용입니다." />
+          )}
+        {!isSessionHost &&
+          !isSessionStarted &&
+          !isJoined &&
+          sessionType === "THUNDER" &&
           currentPeople < maxPeople && (
             <LargeAbleButton
               onClick={handleParticipate}
@@ -204,7 +213,10 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
         {!isSessionHost &&
           !isSessionStarted &&
           !isJoined &&
-          currentPeople >= maxPeople && <LargeDisableButton text="인원 마감" />}
+          sessionType === "THUNDER" &&
+          currentPeople >= maxPeople && (
+            <LargeDisableButton text="인원 마감" />
+          )}
         {!isSessionHost &&
           !isSessionStarted &&
           isJoined &&
@@ -215,7 +227,9 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
               isLoading={isOutSubmit}
             />
           )}
-        {isSessionStarted && !isSessionEnded && <LargeDisableButton text="시작된 세션" />}
+        {isSessionStarted && !isSessionEnded && (
+          <LargeDisableButton text="시작된 세션" />
+        )}
         {isSessionEnded && <LargeDisableButton text="종료된 세션" />}
       </main>
     </>
