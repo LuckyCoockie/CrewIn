@@ -110,7 +110,7 @@ const SessionAlbumOrganism = forwardRef(
           ref={fileInputRef}
           onChange={handleFileChange}
         />
-        <FloatingActionButton onClick={handleAlbumUpload}>
+        <FloatingActionButton onClick={handleAlbumUpload} className="z-50">
           <PlusIcon />
         </FloatingActionButton>
         {images.length === 0 ? (
