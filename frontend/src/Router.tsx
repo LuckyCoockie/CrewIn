@@ -1,5 +1,5 @@
 import { Navigate, createBrowserRouter } from "react-router-dom";
-import App from "./App";
+import App from "./App.tsx";
 import CrewCreatePage from "./pages/CrewCreatePage";
 import PostCreatePage from "./pages/PostCreatePage";
 import CourseCreatePage from "./pages/course/CourseCreatePage.tsx";

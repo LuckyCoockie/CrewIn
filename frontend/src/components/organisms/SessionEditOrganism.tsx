@@ -24,6 +24,7 @@ import {
 import { uploadImage } from "../../apis/api/presigned";
 import { getMapList } from "../../apis/api/mycourse";
 import Modal from "../molecules/ModalMolecules";
+import SpinnerComponent from "../atoms/SpinnerComponent";
 
 const schema = yup.object({
   sessiontype: yup.string().required("세션 종류를 선택해주세요."),
@@ -170,8 +171,7 @@ const SessionEditOrganism: React.FC = () => {
         const day = String(date.getDate()).padStart(2, "0");
         const hours = String(date.getHours()).padStart(2, "0");
         const minutes = String(date.getMinutes()).padStart(2, "0");
-        const seconds = String(date.getSeconds()).padStart(2, "0");
-        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        return `${year}-${month}-${day} ${hours}:${minutes}:00`;
       };
 
       const submitData: EditSessionRequestDto = {
@@ -220,7 +220,7 @@ const SessionEditOrganism: React.FC = () => {
   };
 
   if (!sessionData) {
-    return <div>Loading...</div>;
+    return <SpinnerComponent />;
   }
 
   return (

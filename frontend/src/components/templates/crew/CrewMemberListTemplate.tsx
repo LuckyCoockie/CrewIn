@@ -90,7 +90,7 @@ const CrewMemberListTemplate: React.FC = () => {
   );
 
   return (
-    <div className="relative flex flex-col max-w-[550px] mx-auto">
+    <div className="relative flex flex-col max-w-[500px] mx-auto">
       <header className="mb-1">
         <BackHeaderMediumOrganism text="크루원 조회" />
         <div className="flex items-center flex-grow justify-end">

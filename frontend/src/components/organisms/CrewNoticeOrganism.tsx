@@ -6,6 +6,9 @@ import PaginationMolecule from "../molecules/Pagination/PaginationMolecule";
 import { ReactComponent as Plus } from "../../assets/icons/plus.svg";
 import { useNavigate } from "react-router-dom";
 import { getCrewNoticeList } from "../../apis/api/crewdetail";
+import SpinnerComponent from "../atoms/SpinnerComponent";
+import ErrorText from "../atoms/ErrorText";
+
 
 type CrewNoticeOrganismProps = {
   crewId: number;
@@ -43,11 +46,11 @@ const CrewNoticeOrganism: React.FC<CrewNoticeOrganismProps> = ({
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SpinnerComponent/>
   }
 
   if (error) {
-    return <div>Error loading data</div>;
+    return <ErrorText text="데이터를 로드하는데 오류가 발생했습니다."/>;
   }
 
   const totalPages = (noticeData?.lastPageNo ?? 0) + 1;

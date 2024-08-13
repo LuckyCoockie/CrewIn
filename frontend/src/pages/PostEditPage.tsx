@@ -5,6 +5,8 @@ import { updatePost, UpdatePostRequestDto } from "../apis/api/postupdate";
 import { getPostList, PostDto } from "../apis/api/postlist";
 import { getMyCrews, CrewDto } from "../apis/api/mycrew";
 import BackHeaderMediumOrganism from "../components/organisms/BackHeaderMediumOrganism";
+import SpinnerComponent from "../components/atoms/SpinnerComponent";
+import ErrorText from "../components/atoms/ErrorText";
 
 const fetchPostById = async (postId: number) => {
   let allPosts: PostDto[] = [];
@@ -99,11 +101,11 @@ const PostEditPage: React.FC = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <SpinnerComponent />;
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <ErrorText text="데이터를 로드하는데 오류가 발생했습니다." />;
   }
 
   return (
@@ -111,7 +113,7 @@ const PostEditPage: React.FC = () => {
       <header className="mb-10">
         <BackHeaderMediumOrganism text="게시글 수정" />
       </header>
-      <div className="mx-auto w-full max-w-[550px] pb-10">
+      <div className="mx-auto w-full max-w-[500px] pb-10">
         <PostEditTemplate
           content={content}
           isPublic={isPublic}

@@ -43,7 +43,6 @@ const MyPageRecordInfoOrganism: React.FC<FetchDataProps> = ({
         <MyPageProfileImage
           src={imageUrl}
           onClick={handleOpenEditProfileImageModal}
-          editable={false}
         />
         <BarTitle title={nickname} />
         <BarContent content={name} />

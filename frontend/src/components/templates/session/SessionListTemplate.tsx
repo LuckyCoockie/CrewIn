@@ -63,7 +63,7 @@ const SessionListTemplate: React.FC<OwnProps> = ({
         <InfoIcon onClick={handleClickInfoModalConfirm} className="ml-2" />
       </header>
       <main>
-        <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20 relative">
+        <div className="flex flex-col items-center max-w-[500px] mt-4 mb-20 relative">
           <div className="mb-3 xs:mb-5 flex items-center bg-white w-full">
             <DropdownTypeComponent
               id="sessionpaceminutes"

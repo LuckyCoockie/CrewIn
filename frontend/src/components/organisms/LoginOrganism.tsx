@@ -64,7 +64,7 @@ const LoginOrganism = () => {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[550px] pt-4 pb-10">
+    <div className="mx-auto w-full max-w-[500px] pt-4 pb-10">
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* 이메일 */}
         <div className="w-full">

@@ -99,7 +99,7 @@ const LeftBarOrganism: React.FC<Current> = (props) => {
         <div className="py-3 border-t">
           <div className="w-full">
             <div
-              className="p-7 pr-10 flex flex-col lg:flex-row items-center py-2 lg:py-4 hover:scale-105 transform active:scale-90 transition cursor-pointer button"
+              className="p-7 lg:pr-10 flex flex-col lg:flex-row items-center py-2 lg:py-4 hover:scale-105 transform active:scale-90 transition cursor-pointer button"
               onClick={() => navigate("/info")}
             >
               <SettingIcon />
@@ -110,7 +110,7 @@ const LeftBarOrganism: React.FC<Current> = (props) => {
           </div>
           <div className="w-full">
             <div
-              className="p-7 pr-10 flex flex-col lg:flex-row items-center py-2 lg:py-4 hover:scale-105 transform active:scale-90 transition cursor-pointer button"
+              className="p-7 lg:pr-10 flex flex-col lg:flex-row items-center py-2 lg:py-4 hover:scale-105 transform active:scale-90 transition cursor-pointer button"
               onClick={() => logout().then(() => clearAuth())}
             >
               <LogoutIcon />

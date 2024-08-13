@@ -255,7 +255,7 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
 
   return (
     <>
-      <div className="mx-auto w-full max-w-[550px] pb-10">
+      <div className="mx-auto w-full max-w-[500px] pb-10">
         <div className="flex justify-center relative overflow-hidden">
           <div ref={captureRef}>
             <NaverMap

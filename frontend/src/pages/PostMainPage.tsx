@@ -83,7 +83,7 @@ const PostMainPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center max-w-[550px] mt-4 mb-20 relative">
+    <div className="flex flex-col items-center max-w-[500px] mt-4 mb-20 relative">
       {isMobile && (
         <div className="flex items-center w-full mb-5 xs:mb-10">
           <div className="flex items-center ms-3">
