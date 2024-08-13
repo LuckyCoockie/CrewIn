@@ -234,6 +234,12 @@ const CrewNoticeCreateTemplate: React.FC = () => {
                 ))}
               </Carousel>
             </div>
+            {imagePaths.length > 0 && !isCropped && (
+              <p className="mt-2 text-center text-xs text-red-600">
+                *사진 편집을 완료해야 작성이 가능합니다. (체크 버튼을
+                클릭해주세요.)
+              </p>
+            )}
             <button
               onClick={handleClearImages}
               className="mt-2 button-color text-light p-2 rounded"
@@ -244,9 +250,6 @@ const CrewNoticeCreateTemplate: React.FC = () => {
         )}
 
         <main className="w-full">
-          <p className="mt-2 text-center text-xs text-red-600">
-            *사진 편집을 완료해야 작성이 가능합니다. (체크 버튼을 클릭해주세요.)
-          </p>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-6 mt-2">
               <Controller

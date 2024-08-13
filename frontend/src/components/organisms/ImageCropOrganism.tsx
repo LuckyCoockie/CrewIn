@@ -261,6 +261,12 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
               ))}
             </Carousel>
           </div>
+          {imagePaths.length > 0 && !isCropped && (
+            <p className="mt-2 text-center text-xs text-red-600">
+              *사진 편집을 완료해야 작성이 가능합니다. (체크 버튼을
+              클릭해주세요.)
+            </p>
+          )}
           <button
             onClick={handleClearImages}
             className="mt-2 button-color text-light p-2 rounded"
@@ -270,9 +276,6 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
         </>
       )}
       <main>
-        <p className="mt-2 text-center text-xs text-red-600">
-          *사진 편집을 완료해야 작성이 가능합니다. (체크 버튼을 클릭해주세요.)
-        </p>
         <div className="w-full flex mt-2">
           <div className="w-full">
             <InputRadioTypeMolecule
