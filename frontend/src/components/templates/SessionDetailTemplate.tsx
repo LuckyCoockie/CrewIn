@@ -17,6 +17,7 @@ import OneToOneImageMolecule from "../molecules/Image/OneToOneImageMolecule";
 import { ReactComponent as DownloadIcon } from "../../assets/icons/download.svg";
 import { ReactComponent as TrashIcon } from "../../assets/icons/trash.svg";
 import ModalConfirm from "../molecules/ModalConfirmMolecules";
+import Modal from "../molecules/ModalMolecules";
 
 type OwnDetailProps = {
   fetchDetailData: (dto: GetSessionInfoRequestDto) => Promise<SessionDetailDto>;
@@ -30,6 +31,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedImageId, setSelectedImageId] = useState<number | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const albumRef = useRef<{ refreshGallery: () => void } | null>(null);
 
   const {
@@ -60,14 +62,15 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
         const link = document.createElement("a");
         link.href = url;
         link.download = file.name;
+
         document.body.appendChild(link);
-
         link.click();
-
         document.body.removeChild(link);
+
         window.URL.revokeObjectURL(url);
       } catch (error) {
         console.error("Error downloading the image:", error);
+        setIsErrorModalOpen(true);
       }
     }
   };
@@ -96,6 +99,10 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
 
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);
+  };
+
+  const closeErrorModal = () => {
+    setIsErrorModalOpen(false);
   };
 
   if (!sessionId) return null;
@@ -206,6 +213,11 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
         >
           <p>이 사진을 삭제하시겠습니까?</p>
         </ModalConfirm>
+      )}
+      {isErrorModalOpen && (
+        <Modal title="다운로드 실패" onClose={closeErrorModal}>
+          <p>이미지 다운로드에 실패했습니다. 잠시후 시도해주세요.</p>
+        </Modal>
       )}
     </>
   );
