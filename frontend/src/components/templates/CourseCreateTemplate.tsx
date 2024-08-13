@@ -17,7 +17,7 @@ import {
   DirectionDto,
   Point,
   directionApiWithWayPoints,
-} from "../../util/maps/tmap/apis/api/directionApi";
+} from "../../apis/api/tmap/directionApi";
 import {
   addMarker,
   updateMarkerList,
