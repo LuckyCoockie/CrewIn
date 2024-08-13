@@ -200,22 +200,20 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
                 <img
                   src={image}
                   alt={`Cropped ${index}`}
-                  style={{ width: "100%", height: "auto" }}
+                  style={{ width: "100%", height: "100%" }}
                 />
               </div>
             ))}
           </Carousel>
         </div>
       ) : postType === "NOTICE" && profileImage ? (
-        <div
-          className="relative cursor-pointer mx-1"
-          onClick={handleImageClick}
-        >
-          <img
-            src={profileImage}
-            alt="Profile"
-            style={{ width: "100%", height: "auto" }}
-          />
+        <div className="sm:mx-1">
+          <div
+            className="relative cursor-pointer square"
+            onClick={handleImageClick}
+          >
+            <img src={profileImage} alt="Profile" />
+          </div>
         </div>
       ) : null}
       <div className="flex items-center mt-2">
