@@ -40,9 +40,8 @@ const CrewNoticeDetailTemplate: React.FC = () => {
     data: noticeData,
     isLoading: noticeLoading,
     error: noticeError,
-  } = useQuery<CrewNoticeDetailResponseDto>(
-    ["noticeDetail", requestDto],
-    () => getCrewNoticeDetail(requestDto)
+  } = useQuery<CrewNoticeDetailResponseDto>(["noticeDetail", requestDto], () =>
+    getCrewNoticeDetail(requestDto)
   );
 
   // Fetch crew information
@@ -200,12 +199,8 @@ const CrewNoticeDetailTemplate: React.FC = () => {
           </Carousel>
         ) : (
           profileImage && (
-            <div className="flex justify-center">
-              <img
-                src={profileImage}
-                alt="Profile"
-                style={{ width: "100%", height: "auto" }}
-              />
+            <div className="relative cursor-pointer square">
+              <img src={profileImage} alt="Profile" />
             </div>
           )
         )}
@@ -224,7 +219,7 @@ const CrewNoticeDetailTemplate: React.FC = () => {
         <div className="text-md ml-3 mt-2">{likes}명이 공감했어요!</div>
         <div className="mt-1 mx-3">
           <div>
-            <span className="font-bold">{crewName}{" "}</span>
+            <span className="font-bold">{crewName} </span>
             {noticeData.content}
           </div>
         </div>
