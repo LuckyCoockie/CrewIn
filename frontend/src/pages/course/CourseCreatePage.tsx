@@ -7,6 +7,8 @@ import { NaverMapProvider } from "../../util/maps/naver_map/context.tsx";
 import { Point } from "../../util/maps/tmap/apis/api/directionApi.ts";
 import { reversGeocodingApi } from "../../util/maps/tmap/apis/api/geocodeApi.ts";
 import BackHeaderMediumOrganism from "../../components/organisms/BackHeaderMediumOrganism.tsx";
+import { RootState } from "../../modules/index.ts";
+import { useSelector } from "react-redux";
 
 const CourseCreatePage: React.FC = () => {
   const { location } = useGeolocation();
@@ -29,13 +31,18 @@ const CourseCreatePage: React.FC = () => {
     });
   };
 
+  const { accessToken } = useSelector((state: RootState) => state.auth);
+
   const parseArea = async (point: Point) => {
-    const address = await reversGeocodingApi({
-      lat: point.latitude,
-      lon: point.longitude,
-      addressType: "A10",
-      newAddressExtend: "Y",
-    });
+    const address = await reversGeocodingApi(
+      {
+        lat: point.latitude,
+        lon: point.longitude,
+        addressType: "A10",
+        newAddressExtend: "Y",
+      },
+      accessToken
+    );
 
     return `${address.addressInfo.city_do} ${address.addressInfo.gu_gun} ${address.addressInfo.legalDong}`;
   };

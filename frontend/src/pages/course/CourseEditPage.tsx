@@ -80,13 +80,18 @@ const CourseEditPage: React.FC = () => {
     };
   };
 
+  const { accessToken } = useSelector((state: RootState) => state.auth);
+
   const parseArea = async (point: Point) => {
-    const address = await reversGeocodingApi({
-      lat: point.latitude,
-      lon: point.longitude,
-      addressType: "A10",
-      newAddressExtend: "Y",
-    });
+    const address = await reversGeocodingApi(
+      {
+        lat: point.latitude,
+        lon: point.longitude,
+        addressType: "A10",
+        newAddressExtend: "Y",
+      },
+      accessToken
+    );
 
     return `${address.addressInfo.city_do} ${address.addressInfo.gu_gun} ${address.addressInfo.legalDong}`;
   };
