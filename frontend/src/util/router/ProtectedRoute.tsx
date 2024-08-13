@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useSelector } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { RootState } from "../../modules";
@@ -7,6 +7,7 @@ import SplashPage from "./SplashPage";
 import BottomBarOrganism from "../../components/organisms/BottomBarOrganism";
 import useIsMobile from "../windowSize/useIsMobile";
 import LeftBarOrganism from "../../components/organisms/LeftBarOrganism";
+import PullToRefresh from "../../util/ptr/PullToRefersh.tsx";
 
 const ProtectedRoute = () => {
   const { accessToken, loading } = useSelector(
@@ -37,12 +38,23 @@ const ProtectedRoute = () => {
   );
   const { isMobile } = useIsMobile();
 
+  const standalone = window.matchMedia("(display-mode: standalone)").matches;
+  const isIOS = /iphone|ipad|ipod/.test(
+    window.navigator.userAgent.toLowerCase()
+  );
+
+  const ref = useRef<HTMLDivElement>(null);
+  const onRefresh = async () => {
+    if (standalone && isIOS) window.location.reload();
+  };
+
   if (loading || !isAuthenticated) return <SplashPage />;
 
   return (
     <div className={"md:ml-[97.93px] lg:ml-[176px]"}>
       {!loading && !isMobile && <LeftBarOrganism current={location.pathname} />}
-      <div className="mx-auto w-full max-w-[500px]">
+      <div className="mx-auto w-full max-w-[500px]" ref={ref}>
+        <PullToRefresh el={ref} onRefresh={onRefresh} />
         <Outlet />
       </div>
       {!loading && shouldShowBottomBar && isMobile && (
