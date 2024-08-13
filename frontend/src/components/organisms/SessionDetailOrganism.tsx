@@ -185,7 +185,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
           onClick={handelCourseClick}
         >
           <img src={courseThumbnail} alt="courseThumbnail" className="mt-4" />
-          <div className="text-gray-400 mb-6">
+          <div className="text-gray-400 mt-1 mb-6">
             지도를 클릭하면 상세보기가 가능합니다.
           </div>
         </div>
@@ -260,7 +260,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
           currentPeople >= maxPeople && <LargeDisableButton text="인원 마감" />}
         {/* 호스트일 경우 */}
         {isSessionHost && !isSessionStarted && (
-          <LargeDisableButton text="세션 시작" startAt={startAt}/>
+          <LargeDisableButton text="세션 시작" startAt={startAt} />
         )}
 
         {/* 세션 시작 - 세션 종료 사이 */}
