@@ -98,7 +98,7 @@ const MyProfileTemplate: React.FC = () => {
 
   return (
     <>
-      <header>
+      <header className="px-[12px] md:px-0">
         <MyPageHeaderOrganism />
       </header>
       {profileData && (

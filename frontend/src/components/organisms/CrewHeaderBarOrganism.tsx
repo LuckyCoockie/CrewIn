@@ -27,12 +27,14 @@ const CrewHeaderBarOrganism: React.FC<CrewHeaderBarOrganismProps> = ({
             }
           `}
         </style>
-        <RoundButtonMolecule
-          src={crewlistplus}
-          alt="plus"
-          text="더보기"
-          router="/crew/search"
-        />
+        {crewList.length > 0 && (
+          <RoundButtonMolecule
+            src={crewlistplus}
+            alt="plus"
+            text="더보기"
+            router="/crew/search"
+          />
+        )}
         {crewList?.map((crew) => {
           return (
             <RoundButtonMolecule

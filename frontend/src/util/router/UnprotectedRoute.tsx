@@ -21,15 +21,8 @@ const UnprotectedRoute = () => {
     }
   }, [isAuthenticated, location.state?.navigateFrom, navigate]);
 
-  const standalone = window.matchMedia("(display-mode: standalone)").matches;
-  const isIOS = /iphone|ipad|ipod/.test(
-    window.navigator.userAgent.toLowerCase()
-  );
-
   const ref = useRef<HTMLDivElement>(null);
-  const onRefresh = async () => {
-    if (standalone && isIOS) window.location.reload();
-  };
+  const onRefresh = async () => window.location.reload();
 
   if (loading) return <SplashPage />;
 

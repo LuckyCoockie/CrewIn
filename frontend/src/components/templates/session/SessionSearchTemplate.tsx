@@ -72,7 +72,7 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({
 
   return (
     <>
-      <header>
+      <header className="px-[12px] md:px-0">
         <div className="flex items-center w-full h-10">
           <p className="text-xl font-bold pr-1">
             <DropdownTypeComponent
@@ -89,7 +89,7 @@ const SessionSearchTemplate: React.FC<OwnProps> = ({
           <InfoIcon onClick={handleClickInfoModalConfirm} />
         </div>
       </header>
-      <main>
+      <main className="px-[12px] md:px-0">
         <SessionSearchOrganism onSearch={handleSearch} />
         <InfiniteScrollComponent
           className="grid grid-cols-2 gap-2 xs:gap-4 mb-2 xs:mb-4 w-full"

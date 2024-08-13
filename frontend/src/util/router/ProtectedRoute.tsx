@@ -38,15 +38,8 @@ const ProtectedRoute = () => {
   );
   const { isMobile } = useIsMobile();
 
-  const standalone = window.matchMedia("(display-mode: standalone)").matches;
-  const isIOS = /iphone|ipad|ipod/.test(
-    window.navigator.userAgent.toLowerCase()
-  );
-
   const ref = useRef<HTMLDivElement>(null);
-  const onRefresh = async () => {
-    if (standalone && isIOS) window.location.reload();
-  };
+  const onRefresh = async () => window.location.reload();
 
   if (loading || !isAuthenticated) return <SplashPage />;
 
