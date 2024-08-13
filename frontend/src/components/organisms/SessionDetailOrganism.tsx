@@ -11,7 +11,6 @@ import {
   cancelSession,
 } from "../../apis/api/sessiondetail";
 import { useNavigate } from "react-router";
-
 type SessionDetailOrganismProps = {
   detailData: SessionDetailDto;
   sessionId: number;
@@ -177,7 +176,10 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
         />
         <DetailInfoPaceMolecule title="평균 페이스" content={pace} />
         <DetailInfoMolecule title="거리" content={`${courseDistance}km`} />
-        <DetailInfoMolecule title="제한인원" content={`${maxPeople}명`} />
+        <DetailInfoMolecule
+          title="제한인원"
+          content={`${maxPeople}명 (현재 ${currentPeople}명)`}
+        />
         <DetailInfoMolecule title="집결지" content={spot} />
         <DetailInfoMolecule title="코스" content={area} />
         <DetailInfoMolecule title="내용" content={content} />
@@ -185,15 +187,14 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
           className="flex flex-col justify-center items-center"
           onClick={handelCourseClick}
         >
-          <img
-            src={courseThumbnail}
-            alt="courseThumbnail"
-            className="mt-4"
-          />
-          <div className="text-gray-400 mb-6">
+          <img src={courseThumbnail} alt="courseThumbnail" className="mt-4" />
+          <div className="text-gray-400 mt-1 mb-6">
             지도를 클릭하면 상세보기가 가능합니다.
           </div>
         </div>
+        {/* 세션 시작 전 버튼 구역*/}
+        {/* 참가신청 로직 */}
+        {/* 정규런 */}
         {!isSessionHost &&
           !isSessionStarted &&
           !isJoined &&
@@ -206,6 +207,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
               isLoading={isJoinSubmit}
             />
           )}
+        {/* 오픈런 */}
         {!isSessionHost &&
           !isSessionStarted &&
           !isJoined &&
@@ -215,15 +217,10 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
               onClick={handleParticipate}
               text="참가 신청"
               isLoading={isJoinSubmit}
+              startAt={startAt}
             />
           )}
-        {!isSessionHost &&
-          !isSessionStarted &&
-          !isJoined &&
-          !isMyCrew &&
-          sessionType === "STANDARD" && (
-            <LargeDisableButton text="크루원 전용입니다." />
-          )}
+        {/* 번개런 */}
         {!isSessionHost &&
           !isSessionStarted &&
           !isJoined &&
@@ -233,13 +230,11 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
               onClick={handleParticipate}
               text="참가 신청"
               isLoading={isJoinSubmit}
+              startAt={startAt}
             />
           )}
-        {!isSessionHost &&
-          !isSessionStarted &&
-          !isJoined &&
-          sessionType === "THUNDER" &&
-          currentPeople >= maxPeople && <LargeDisableButton text="인원 마감" />}
+
+        {/* 참가취소 로직 */}
         {!isSessionHost &&
           !isSessionStarted &&
           isJoined &&
@@ -248,22 +243,59 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
               onClick={handleConfirmCancel}
               text="참가 취소"
               isLoading={isOutSubmit}
+              startAt={startAt}
             />
           )}
-        {isSessionStarted &&
-          !isSessionEnded &&
-          (isJoined ? (
-            <LargeAbleButton
-              text="출석하기"
-              onClick={() =>
-                navigate(`/session/${sessionId}/attendance`, {
-                  state: detailData,
-                })
-              }
-            />
-          ) : (
-            <LargeDisableButton text="진행 중인 세션" />
-          ))}
+
+        {/* disabled 버튼 로직 */}
+        {/* 정규런일 경우 */}
+        {!isSessionHost &&
+          !isSessionStarted &&
+          !isJoined &&
+          !isMyCrew &&
+          sessionType === "STANDARD" && (
+            <LargeDisableButton text="크루원 전용입니다." />
+          )}
+        {/* 인원이 마감되었을 경우 */}
+        {!isSessionHost &&
+          !isSessionStarted &&
+          !isJoined &&
+          currentPeople >= maxPeople && <LargeDisableButton text="인원 마감" />}
+        {/* 호스트일 경우 */}
+        {isSessionHost && !isSessionStarted && (
+          <LargeDisableButton text="세션 시작" startAt={startAt} />
+        )}
+
+        {/* 세션 시작 - 세션 종료 사이 */}
+        {/* 참가자일 경우 */}
+        {isSessionStarted && !isSessionEnded && isJoined && !isSessionHost && (
+          <LargeAbleButton
+            text="출석하기"
+            onClick={() =>
+              navigate(`/session/${sessionId}/attendance`, {
+                state: detailData,
+              })
+            }
+          />
+        )}
+        {/* 개최자일 경우 */}
+        {isSessionStarted && !isSessionEnded && isSessionHost && (
+          <LargeAbleButton
+            text="세션시작"
+            onClick={() =>
+              navigate(`/session/${sessionId}/attendance`, {
+                state: detailData,
+              })
+            }
+          />
+        )}
+        {/* 미 신청자일 경우 */}
+        {isSessionStarted && !isSessionEnded && !isJoined && (
+          <LargeDisableButton text="진행중인 세션" />
+        )}
+
+        {/* 세션 종료 */}
+        {/* 공통 */}
         {isSessionEnded && <LargeDisableButton text="종료된 세션" />}
       </main>
     </>
