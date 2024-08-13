@@ -198,7 +198,19 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
           !isSessionStarted &&
           !isJoined &&
           isMyCrew &&
-          sessionType === "STANDARD" && (
+          sessionType === "STANDARD" &&
+          currentPeople < maxPeople && (
+            <LargeAbleButton
+              onClick={handleParticipate}
+              text="참가 신청"
+              isLoading={isJoinSubmit}
+            />
+          )}
+        {!isSessionHost &&
+          !isSessionStarted &&
+          !isJoined &&
+          sessionType === "OPEN" &&
+          currentPeople < maxPeople && (
             <LargeAbleButton
               onClick={handleParticipate}
               text="참가 신청"
