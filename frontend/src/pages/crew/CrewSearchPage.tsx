@@ -18,9 +18,7 @@ const CrewSearchPage: React.FC = () => {
   }, []);
 
   return (
-    <main>
       <CrewSearchTemplate onSearch={onSearch} fetchData={fetchData} />
-    </main>
   );
 };
 

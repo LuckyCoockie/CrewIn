@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import InputImageTypeMolecule from "../../molecules/Input/InputImageTypeMolecule";
@@ -26,12 +26,15 @@ export const EditProfileImageOrganism = ({
   onClose,
   onEdit,
 }: OwnProps) => {
+  const [isSubmit, setIsSubmit] = useState(false);
+
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     (data) => {
-      console.log(data.image);
-      onEdit(data);
+      if (isSubmit) return;
+      setIsSubmit(true);
+      onEdit(data).then(() => setIsSubmit(false));
     },
-    [onEdit]
+    [isSubmit, onEdit]
   );
 
   const {
@@ -73,7 +76,7 @@ export const EditProfileImageOrganism = ({
         <div>
           {/* 유효성 검사 통과 여부에 따라 버튼 교체 */}
           {isValid ? (
-            <LargeAbleButton text="수정" />
+            <LargeAbleButton text="수정" isLoading={isSubmit} />
           ) : (
             <LargeDisableButton text="수정" />
           )}
