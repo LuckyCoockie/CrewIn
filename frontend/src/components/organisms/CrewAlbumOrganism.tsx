@@ -6,6 +6,7 @@ import {
 import InfiniteScrollComponent, {
   ItemComponentProps,
 } from "../../util/paging/component/InfinityScrollComponent";
+import SpinnerComponent from "../atoms/SpinnerComponent";
 
 type PhotosProps = {
   fetchgalleryData: (pageNo: number) => Promise<GetCrewGalleryListResponseDto>;
@@ -30,7 +31,7 @@ const CrewAlbumOrganism: React.FC<PhotosProps> = ({
   }, [fetchgalleryData]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SpinnerComponent />;
   }
 
   if (photos.length === 0) {

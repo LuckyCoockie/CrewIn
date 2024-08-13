@@ -10,6 +10,8 @@ import CrewHeaderBarOrganism from "../organisms/CrewHeaderBarOrganism";
 import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
 import GroupsButton from "../atoms/Button/GroupsButton";
 import MemberPlusButton from "../atoms/Button/MemberPlusButton";
+import SpinnerComponent from "../atoms/SpinnerComponent";
+import ErrorText from "../atoms/ErrorText";
 
 import {
   getCrewInfo,
@@ -77,11 +79,11 @@ const CrewDetailTemplate: React.FC = () => {
 
   const renderTab = () => {
     if (infoLoading || myCrewsLoading) {
-      return <div>Loading...</div>;
+      return <SpinnerComponent />;
     }
 
     if (infoError || myCrewsError) {
-      return <div>Error loading data</div>;
+      return <ErrorText text="데이터를 로드하는데 오류가 발생했습니다." />;
     }
 
     if (!isUserCrewMember) {

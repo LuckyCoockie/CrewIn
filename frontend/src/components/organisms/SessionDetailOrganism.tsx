@@ -41,6 +41,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
     courseDistance,
     courseId,
     isJoined,
+    isMyCrew,
   } = detailData;
 
   const [showModal, setShowModal] = useState(false); // 참가 완료 모달 상태
@@ -196,6 +197,14 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
         {!isSessionHost &&
           !isSessionStarted &&
           !isJoined &&
+          !isMyCrew &&
+          sessionType === "STANDARD" && (
+            <LargeDisableButton text="크루원 전용입니다." />
+          )}
+        {!isSessionHost &&
+          !isSessionStarted &&
+          !isJoined &&
+          sessionType === "THUNDER" &&
           currentPeople < maxPeople && (
             <LargeAbleButton
               onClick={handleParticipate}
@@ -206,7 +215,10 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
         {!isSessionHost &&
           !isSessionStarted &&
           !isJoined &&
-          currentPeople >= maxPeople && <LargeDisableButton text="인원 마감" />}
+          sessionType === "THUNDER" &&
+          currentPeople >= maxPeople && (
+            <LargeDisableButton text="인원 마감" />
+          )}
         {!isSessionHost &&
           !isSessionStarted &&
           isJoined &&

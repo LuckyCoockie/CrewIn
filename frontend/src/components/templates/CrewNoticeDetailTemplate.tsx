@@ -17,6 +17,8 @@ import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism"
 import { registerPostHeart } from "../../apis/api/heart";
 import { deletePostHeart } from "../../apis/api/heartdelete";
 import { ReactComponent as ShareIcon } from "../../assets/icons/shareicon.svg";
+import SpinnerComponent from "../atoms/SpinnerComponent";
+import ErrorText from "../atoms/ErrorText";
 
 const CrewNoticeDetailTemplate: React.FC = () => {
   const { crewId, noticeId } = useParams<{
@@ -122,11 +124,11 @@ const CrewNoticeDetailTemplate: React.FC = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SpinnerComponent />;
   }
 
   if (error) {
-    return <div>Error loading data</div>;
+    return <ErrorText text="데이터를 로드하는데 오류가 발생했습니다." />;
   }
 
   if (!noticeData) {
