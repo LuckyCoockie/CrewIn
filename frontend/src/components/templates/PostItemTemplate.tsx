@@ -235,7 +235,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
               {isExpanded ? (
                 <>
                   <span className="font-bold">{authorName}</span> {title} <br />
-                  {content}{" "}
+                  <span style={{ whiteSpace: "pre-line" }}>{content} </span>
                   <button
                     className="font-bold text-color"
                     onClick={toggleContent}
@@ -246,7 +246,9 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
               ) : content.length > 40 ? (
                 <>
                   <span className="font-bold">{authorName}</span> {title} <br />
-                  {content.substring(0, 40)}...{" "}
+                  <span style={{ whiteSpace: "pre-line" }}>
+                    {content.substring(0, 40)}...{" "}
+                  </span>
                   <button
                     className="font-bold text-color"
                     onClick={toggleContent}
@@ -257,7 +259,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
               ) : (
                 <>
                   <span className="font-bold">{authorName}</span> {title} <br />
-                  {content}
+                  <span style={{ whiteSpace: "pre-line" }}>{content}</span>
                 </>
               )}
             </div>
@@ -266,7 +268,8 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           <>
             {isExpanded ? (
               <>
-                <span className="font-bold">{authorName}</span> {content}{" "}
+                <span className="font-bold">{authorName}</span>{" "}
+                <span style={{ whiteSpace: "pre-line" }}>{content} </span>
                 <button
                   className="font-bold text-color"
                   onClick={toggleContent}
@@ -277,7 +280,9 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
             ) : content.length > 40 ? (
               <>
                 <span className="font-bold">{authorName}</span>{" "}
-                {content.substring(0, 40)}...{" "}
+                <span style={{ whiteSpace: "pre-line" }}>
+                  {content.substring(0, 40)}...{" "}
+                </span>
                 <button
                   className="font-bold text-color"
                   onClick={toggleContent}
@@ -287,7 +292,8 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
               </>
             ) : (
               <>
-                <span className="font-bold">{authorName}</span> {content}
+                <span className="font-bold">{authorName}</span>{" "}
+                <span style={{ whiteSpace: "pre-line" }}>{content}</span>
               </>
             )}
           </>
