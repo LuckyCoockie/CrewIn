@@ -188,7 +188,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
           <img
             src={courseThumbnail}
             alt="courseThumbnail"
-            className="mt-4 w-2/3"
+            className="mt-4"
           />
           <div className="text-gray-400 mb-6">
             지도를 클릭하면 상세보기가 가능합니다.
@@ -254,7 +254,7 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
           !isSessionEnded &&
           (isJoined ? (
             <LargeAbleButton
-              text="춣석하기"
+              text="출석하기"
               onClick={() =>
                 navigate(`/session/${sessionId}/attendance`, {
                   state: detailData,
