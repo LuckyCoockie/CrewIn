@@ -34,7 +34,7 @@ const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
   }
 
   const handleSearch = useCallback(() => {
-    onSearch({ type: type, crewName: input, date: formatDate(date) });
+    onSearch({ type: type, query: input, date: formatDate(date) });
   }, [date, input, onSearch, type]);
 
   const handelTypeChange = useCallback(
@@ -43,7 +43,7 @@ const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
       setType(value);
       onSearch({
         type: value,
-        crewName: input,
+        query: input,
         date: formatDate(date),
       });
     },
@@ -59,7 +59,7 @@ const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
       setDate(value);
       onSearch({
         type: type,
-        crewName: input,
+        query: input,
         date: formatDate(value),
       });
     },
@@ -94,7 +94,7 @@ const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
         />
         <div className="flex items-center flex-grow justify-end ml-2 xs:ml-4">
           <SearchInputMolecule
-            hint={"크루명"}
+            hint={"크루명, 지역명, 세션명"}
             onChange={handleInputChange}
             onSubmit={handleSearch}
           />
