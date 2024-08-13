@@ -151,25 +151,16 @@ const PostDetailTemplate: React.FC = () => {
       </header>
       <div className="w-full">
         <div className="flex items-center mx-2">
-          {postData.postType === "NOTICE" ? (
-            <UserProfileBarNoMenu
-              profileImage={postData.profileImage}
-              username={postData.authorName}
-              timeAgo={timeAgo}
-              onClick={() => navigate(`/crew/detail/${postData.authorId}`)}
-            />
-          ) : (
-            <UserProfileBar
-              profileImage={postData.profileImage}
-              username={postData.authorName}
-              timeAgo={timeAgo}
-              onEdit={() => navigate(`/post/${id}/edit`)}
-              onDelete={handleDelete}
-              authorId={postData.authorId}
-              memberId={memberId!}
-              onClick={() => navigate(`/profile/${postData.authorId}`)}
-            />
-          )}
+          <UserProfileBar
+            profileImage={postData.profileImage}
+            username={postData.authorName}
+            timeAgo={timeAgo}
+            onEdit={() => navigate(`/post/${id}/edit`)}
+            onDelete={handleDelete}
+            authorId={postData.authorId}
+            memberId={memberId!}
+            onClick={() => navigate(`/profile/${postData.authorId}`)}
+          />
         </div>
         <Carousel
           showThumbs={false}
@@ -204,22 +195,12 @@ const PostDetailTemplate: React.FC = () => {
         </div>
         <span className="text-md ml-3">{likes}명이 공감했어요!</span>
         <div className="mx-3">
-          {postData.postType === "NOTICE" ? (
-            <>
-              <p>
-                <span className="font-bold">{postData.authorName}</span>{" "}
-                {postData.title}
-              </p>
-              <p>{postData.content}</p>
-            </>
-          ) : (
-            <>
-              <p>
-                <span className="font-bold">{postData.authorName}</span>{" "}
-                {postData.content}
-              </p>
-            </>
-          )}
+          <>
+            <p>
+              <span className="font-bold">{postData.authorName}</span>{" "}
+              {postData.content}
+            </p>
+          </>
         </div>
       </div>
     </>
