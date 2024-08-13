@@ -9,14 +9,16 @@ type OwnProps = {
 const PullToRefresh: React.FC<OwnProps> = ({ el, onRefresh }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [startY, setStartY] = useState(0);
+  const [startScrollY, setStartScrollY] = useState(0);
 
   useEffect(() => {
     function handleTouchStart(event: any) {
       setStartY(event.touches[0].clientY);
+      setStartScrollY(window.scrollY);
     }
 
     function handleTouchMove(event: any) {
-      if (!el.current) return;
+      if (!el.current || startScrollY >= 80) return;
       const moveY = event.touches[0].clientY;
       const pullDistance = moveY - startY;
 
