@@ -24,7 +24,7 @@ public class HealthController {
     @GetMapping("/token")
     public ResponseEntity<String> tokenValidation(@RequestHeader("Authorization") String token, HttpServletRequest request) {
         if (!tokenUtil.validateToken(token.substring(7), request)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid token");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
         }
         return ResponseEntity.ok("OK");
     }
