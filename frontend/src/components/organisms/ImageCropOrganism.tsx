@@ -5,9 +5,9 @@ import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import ModalMolecules from "../molecules/ModalMolecules";
 import ImageEditSave from "./ImageEditSaveOrganism";
-import editButton from "../../assets/images/editbutton.png";
-import cropButton from "../../assets/images/cropbutton.png";
-import checkButton from "../../assets/images/checkbutton.png";
+import { ReactComponent as CheckButton } from "../../assets/icons/checkButton.svg";
+import { ReactComponent as CropButton } from "../../assets/icons/cropButton.svg";
+import { ReactComponent as EditButton } from "../../assets/icons/editButton.svg";
 import InputTextAreaNoLimitTypeMolecule from "../molecules/Input/InputTextAreaNoLimitTypeMolecule";
 import InputRadioTypeMolecule from "../molecules/Input/InputRadioTypeMolecule";
 import InputDropdonwTypeMoleculeCenter from "../molecules/Input/InputDropdownTypeMoleculeLeft";
@@ -242,35 +242,20 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
                           style={{ width: 360, height: 360 }}
                         />
                       </div>
+
                       <button
                         onClick={() => setCurrentEditIndex(index)}
-                        className="absolute bottom-16 right-3 z-1 bg-transparent p-1"
+                        className="absolute bottom-16 right-3 z-50 p-2 rounded-full bg-white bg-opacity-50"
                       >
-                        <img
-                          src={editButton}
-                          alt="edit Button"
-                          className="w-12 h-12"
-                        />
+                        <EditButton />
                       </button>
                     </>
                   )}
                   <button
                     onClick={handleCropAll}
-                    className="absolute bottom-6 right-3 bg-transparent z-1 p-1"
+                    className="absolute bottom-4 right-3 z-50 p-2 rounded-full bg-white bg-opacity-50"
                   >
-                    {isCropped ? (
-                      <img
-                        src={cropButton}
-                        alt="crop Button"
-                        className="w-12 h-12"
-                      />
-                    ) : (
-                      <img
-                        src={checkButton}
-                        alt="check Button"
-                        className="w-12 h-12"
-                      />
-                    )}
+                    {isCropped ? <CropButton /> : <CheckButton />}
                   </button>
                 </div>
               ))}
@@ -285,6 +270,9 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
         </>
       )}
       <main>
+        <p className="mt-2 text-center text-xs text-red-600">
+          *사진 편집을 완료해야 작성이 가능합니다. (체크 버튼을 클릭해주세요.)
+        </p>
         <div className="w-full flex mt-2">
           <div className="w-full">
             <InputRadioTypeMolecule

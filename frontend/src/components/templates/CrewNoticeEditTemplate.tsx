@@ -12,8 +12,8 @@ import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import ImageUploadDropzone from "../molecules/Input/ImageUploadDropzone";
 import LargeAbleButton from "../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../atoms/Button/LargeDisableButton";
-import cropButton from "../../assets/images/cropbutton.png";
-import checkButton from "../../assets/images/checkbutton.png";
+import { ReactComponent as CheckButton } from "../../assets/icons/checkButton.svg";
+import { ReactComponent as CropButton } from "../../assets/icons/cropButton.svg";
 
 import { uploadImage } from "../../apis/api/presigned";
 import {
@@ -271,26 +271,15 @@ const CrewNoticeEditTemplate: React.FC = () => {
                     )}
                     <button
                       onClick={handleCropAll}
-                      className="absolute bottom-8 right-3 bg-transparent z-1 p-1"
+                      className="absolute bottom-8 right-3 z-1 p-2 rounded-full bg-white bg-opacity-50"
                     >
-                      {isCropped ? (
-                        <img
-                          src={cropButton}
-                          alt="crop Button"
-                          className="w-10 h-10"
-                        />
-                      ) : (
-                        <img
-                          src={checkButton}
-                          alt="check Button"
-                          className="w-10 h-10"
-                        />
-                      )}
+                      {isCropped ? <CropButton /> : <CheckButton />}
                     </button>
                   </div>
                 ))}
               </Carousel>
             </div>
+
             <button
               onClick={handleClearImages}
               className="mt-2 button-color text-light p-2 rounded"
@@ -301,6 +290,9 @@ const CrewNoticeEditTemplate: React.FC = () => {
         )}
 
         <main className="w-full">
+          <p className="mt-2 text-center text-xs text-red-600">
+            *사진 편집을 완료해야 작성이 가능합니다. (체크 버튼을 클릭해주세요.)
+          </p>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-6 mt-2">
               <Controller
