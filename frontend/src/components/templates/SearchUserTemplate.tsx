@@ -82,7 +82,7 @@ const SearchUserTemplate: React.FC = () => {
                   <img
                     src={props.data.profileUrl}
                     alt={props.data.memberName}
-                    className="w-10 h-10 rounded-full mr-2"
+                    className="w-10 h-10 rounded-full mr-2 border"
                     onClick={() => handleUserProfile(props.data.memberId)}
                   />
                 ) : (

@@ -117,6 +117,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
       return;
     }
 
+    const postDetailUrl = `${window.location.origin}/post/${id}`;
     kakao.Link.sendDefault({
       objectType: "feed",
       content: {
@@ -124,16 +125,16 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
         description: content.substring(0, 100) + "...",
         imageUrl: croppedImages.length > 0 ? croppedImages[0] : "",
         link: {
-          mobileWebUrl: window.location.href,
-          webUrl: window.location.href,
+          mobileWebUrl: postDetailUrl,
+          webUrl: postDetailUrl,
         },
       },
       buttons: [
         {
           title: "View Post",
           link: {
-            mobileWebUrl: window.location.href,
-            webUrl: window.location.href,
+            mobileWebUrl: postDetailUrl,
+            webUrl: postDetailUrl,
           },
         },
       ],
@@ -145,7 +146,11 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   };
 
   const handleImageClick = () => {
-    navigate(`/post/${id}`);
+    if (postType === "STANDARD") {
+      navigate(`/post/${id}`);
+    } else if (postType === "NOTICE") {
+      navigate(`/crew/detail/${authorId}/notice/${id}`);
+    }
   };
 
   const timeAgo = formatDistanceToNow(parseISO(createdAt), {
