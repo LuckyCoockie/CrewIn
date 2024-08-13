@@ -178,7 +178,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           />
         )}
       </div>
-      {croppedImages && croppedImages.length > 0 && (
+      {croppedImages && croppedImages.length > 0 ? (
         <div
           className="relative cursor-pointer mx-1"
           onClick={handleImageClick}
@@ -201,7 +201,18 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
             ))}
           </Carousel>
         </div>
-      )}
+      ) : postType === "NOTICE" && profileImage ? (
+        <div
+          className="relative cursor-pointer mx-1"
+          onClick={handleImageClick}
+        >
+          <img
+            src={profileImage}
+            alt="Profile"
+            style={{ width: "100%", height: "auto" }}
+          />
+        </div>
+      ) : null}
       <div className="flex items-center mt-2">
         <button onClick={handleLike} className="flex items-center ml-3">
           <img
