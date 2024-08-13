@@ -6,8 +6,8 @@ import { useQueryClient } from "react-query";
 import { Carousel } from "react-responsive-carousel";
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
-import cropButton from "../../../assets/images/cropbutton.png";
-import checkButton from "../../../assets/images/checkbutton.png";
+import { ReactComponent as CheckButton } from "../../../assets/icons/checkButton.svg";
+import { ReactComponent as CropButton } from "../../../assets/icons/cropButton.svg";
 import InputTextAreaNoLimitTypeMolecule from "../../molecules/Input/InputTextAreaNoLimitTypeMolecule";
 import InputTextTypeMolecule from "../../molecules/Input/InputTextTypeMolecule";
 import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
@@ -226,21 +226,9 @@ const CrewNoticeCreateTemplate: React.FC = () => {
                     )}
                     <button
                       onClick={handleCropAll}
-                      className="absolute bottom-8 right-3 bg-transparent z-1 p-1"
+                      className="absolute bottom-8 right-3 z-1 p-2 rounded-full bg-white bg-opacity-50"
                     >
-                      {isCropped ? (
-                        <img
-                          src={cropButton}
-                          alt="crop Button"
-                          className="w-10 h-10"
-                        />
-                      ) : (
-                        <img
-                          src={checkButton}
-                          alt="check Button"
-                          className="w-10 h-10"
-                        />
-                      )}
+                      {isCropped ? <CropButton /> : <CheckButton />}
                     </button>
                   </div>
                 ))}
@@ -256,6 +244,9 @@ const CrewNoticeCreateTemplate: React.FC = () => {
         )}
 
         <main className="w-full">
+          <p className="mt-2 text-center text-xs text-red-600">
+            *사진 편집을 완료해야 작성이 가능합니다. (체크 버튼을 클릭해주세요.)
+          </p>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-6 mt-2">
               <Controller
