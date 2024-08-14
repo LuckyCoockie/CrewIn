@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type Image = {
   src: string;
@@ -11,10 +11,13 @@ type Image = {
 
 const CrewImageButton: React.FC<Image> = ({ src, alt, router, routerId }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const handleClickButton = () => {
     if (routerId === undefined && router) {
       navigate(router);
     } else {
+      if (location.pathname === `/${router}/${routerId}`) return;
       navigate(`/${router}/${routerId}`);
     }
   };
