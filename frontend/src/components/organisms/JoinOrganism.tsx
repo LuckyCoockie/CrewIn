@@ -120,7 +120,6 @@ const LoginOrganism: React.FC = () => {
       setModalMessage("회원가입에 성공했습니다. 로그인해주세요.");
       setIsModalOpen(true);
     } catch (error) {
-      console.error("회원가입 실패:", error);
       setModalTitle("회원가입 실패");
       setModalMessage("회원가입에 실패했습니다.");
       setIsModalOpen(true);
@@ -146,7 +145,6 @@ const LoginOrganism: React.FC = () => {
         setIsModalOpen(true);
       }
     } catch (error) {
-      console.error("이메일 인증 실패:", error);
       setModalTitle("이메일 인증 실패");
       setModalMessage("이메일 인증에 실패했습니다.");
       setIsModalOpen(true);
@@ -174,7 +172,6 @@ const LoginOrganism: React.FC = () => {
         setIsModalOpen(true);
       }
     } catch (error) {
-      console.error("인증번호 검증 중 오류 발생:", error);
       setModalTitle("인증번호 오류");
       setModalMessage("인증번호 검증 중 오류가 발생했습니다.");
       setIsModalOpen(true);

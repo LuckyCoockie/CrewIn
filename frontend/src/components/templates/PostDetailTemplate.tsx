@@ -59,9 +59,7 @@ const PostDetailTemplate: React.FC = () => {
       setLikes((prevLikes) => prevLikes + 1);
       setIsHeartedState(true);
     },
-    onError: (error) => {
-      console.error("좋아요 처리 중 오류가 발생했습니다:", error);
-    },
+    onError: () => {},
   });
 
   const unlikeMutation = useMutation(deletePostHeart, {
@@ -70,9 +68,7 @@ const PostDetailTemplate: React.FC = () => {
       setLikes((prevLikes) => prevLikes - 1);
       setIsHeartedState(false);
     },
-    onError: (error) => {
-      console.error("좋아요 취소 처리 중 오류가 발생했습니다:", error);
-    },
+    onError: () => {},
   });
 
   const handleLike = () => {
@@ -87,18 +83,13 @@ const PostDetailTemplate: React.FC = () => {
   };
 
   const handleDelete = async () => {
-    try {
-      await deletePost(Number(id));
-      navigate(0);
-    } catch (error) {
-      console.error("게시물 삭제 요청 중 오류가 발생했습니다:", error);
-    }
+    await deletePost(Number(id));
+    navigate(0);
   };
 
   const handleShare = () => {
     const kakao = (window as any).Kakao;
     if (!kakao) {
-      console.error("Kakao SDK not loaded");
       return;
     }
 

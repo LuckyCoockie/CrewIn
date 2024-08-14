@@ -32,12 +32,8 @@ const PostMainPage: React.FC = () => {
 
   useEffect(() => {
     const checkNotifications = async () => {
-      try {
-        const { exist } = await checkNotificationsExist();
-        setHasCheckedNotifications(exist);
-      } catch (error) {
-        console.error("Error fetching notifications:", error);
-      }
+      const { exist } = await checkNotificationsExist();
+      setHasCheckedNotifications(exist);
     };
 
     checkNotifications();
@@ -51,7 +47,6 @@ const PostMainPage: React.FC = () => {
         setIsLoading(false);
         return postData;
       } catch (error) {
-        console.error("Error fetching post data:", error);
         setIsModalOpen(true);
         setModalMessage(
           "포스트를 불러오는 중 오류가 발생했습니다. 다시 시도해주세요."

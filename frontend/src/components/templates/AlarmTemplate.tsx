@@ -25,7 +25,6 @@ const AlarmTemplate: React.FC = () => {
           setAlarms(data);
         }
       } catch (error) {
-        console.error("알림 목록을 가져오는 중 오류가 발생했습니다.", error);
         setModalMessage("알림 목록을 가져오는 중 오류가 발생했습니다.");
       }
     };
@@ -41,11 +40,9 @@ const AlarmTemplate: React.FC = () => {
           prevAlarms.filter((alarm) => alarm.notificationId !== notificationId)
         );
       } else {
-        console.error("Failed to delete notification:", response);
         setModalMessage("알림 삭제에 실패했습니다.");
       }
     } catch (error) {
-      console.error("알림 삭제 요청 중 오류가 발생했습니다:", error);
       setModalMessage("알림 삭제 요청 중 오류가 발생했습니다.");
     }
   };
@@ -60,7 +57,6 @@ const AlarmTemplate: React.FC = () => {
       setModalMessage("크루 초대를 수락했습니다.");
       navigate(0);
     } catch (error) {
-      console.error("크루 초대 수락 중 오류가 발생했습니다:", error);
       setModalMessage("크루 초대 수락 중 오류가 발생했습니다.");
     }
   };
@@ -76,7 +72,6 @@ const AlarmTemplate: React.FC = () => {
       await handleDelete(notification.notificationId);
       setModalMessage("크루 초대를 거절했습니다.");
     } catch (error) {
-      console.error("크루 초대 거절 중 오류가 발생했습니다:", error);
       setModalMessage("크루 초대 거절 중 오류가 발생했습니다.");
     }
   };

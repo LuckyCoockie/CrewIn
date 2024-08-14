@@ -46,23 +46,19 @@ const ImageEditSave: React.FC<ImageEditSaveProps> = ({
 
   useEffect(() => {
     const fetchCrewData = async () => {
-      try {
-        const response = await getMyCrews();
-        const selectedCrew = response.crews.find(
-          (crew) => crew.crewId === crewId
-        );
+      const response = await getMyCrews();
+      const selectedCrew = response.crews.find(
+        (crew) => crew.crewId === crewId
+      );
 
-        if (selectedCrew) {
-          setCrewImageUrl(selectedCrew.subLogo);
-          const crewImageUrl = selectedCrew.subLogo;
+      if (selectedCrew) {
+        setCrewImageUrl(selectedCrew.subLogo);
+        const crewImageUrl = selectedCrew.subLogo;
 
-          const file = await fetchImageAsFile(crewImageUrl);
+        const file = await fetchImageAsFile(crewImageUrl);
 
-          const imageUrl = URL.createObjectURL(file);
-          setCrewImageUrl(imageUrl);
-        }
-      } catch (error) {
-        console.error("크루 데이터 로딩 오류:", error);
+        const imageUrl = URL.createObjectURL(file);
+        setCrewImageUrl(imageUrl);
       }
     };
 

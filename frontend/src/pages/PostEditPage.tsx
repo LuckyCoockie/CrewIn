@@ -14,22 +14,18 @@ const fetchPostById = async (postId: number) => {
   let lastPageNo = 0;
   let foundPost: PostDto | undefined;
 
-  try {
-    while (true) {
-      const pageData = await getPostList(pageNo);
-      allPosts = pageData.items;
-      lastPageNo = pageData.lastPageNo;
-      foundPost = allPosts.find((post) => post.id === postId);
-      if (foundPost) {
-        break;
-      }
-      if (pageNo >= lastPageNo) {
-        break;
-      }
-      pageNo += 1;
+  while (true) {
+    const pageData = await getPostList(pageNo);
+    allPosts = pageData.items;
+    lastPageNo = pageData.lastPageNo;
+    foundPost = allPosts.find((post) => post.id === postId);
+    if (foundPost) {
+      break;
     }
-  } catch (error) {
-    console.error(`Error fetching posts:`, error);
+    if (pageNo >= lastPageNo) {
+      break;
+    }
+    pageNo += 1;
   }
 
   return foundPost;
@@ -86,7 +82,6 @@ const PostEditPage: React.FC = () => {
       await updatePost(Number(postId), updateData);
       navigate("/home");
     } catch (error) {
-      console.error(error);
       alert("수정 실패");
     }
   };
