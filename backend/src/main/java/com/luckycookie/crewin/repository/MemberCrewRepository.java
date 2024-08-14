@@ -32,6 +32,7 @@ public interface MemberCrewRepository extends JpaRepository<MemberCrew, Long> {
 
     Optional<MemberCrew> findByMemberAndCrew(Member member, Crew crew);
 
+    @Query("select count(mc) > 0 from MemberCrew mc where mc.member = :member and mc.crew = :crew and mc.isJoined = true")
     boolean existsByMemberAndCrew(Member member, Crew crew);
 
     // 해당 크루에 있는 크루원 조회
