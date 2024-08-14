@@ -1,8 +1,4 @@
 import { Dispatch } from "redux";
-import {
-  clearTokenInterceptors,
-  setTokenInterceptors,
-} from "../../apis/utils/instance";
 
 /* ----------------- 액션 타입 ------------------ */
 const BASE_ACTION_TYPE = "api/auth";
@@ -56,7 +52,6 @@ export const clearAccessToken = (error?: string) => {
 type AuthState = {
   accessToken: string | null;
   memberId: number | null;
-  interceptorId: number | null;
   loading: boolean;
   error?: string;
 };
@@ -64,7 +59,6 @@ type AuthState = {
 /* ----------------- 모듈의 초기 상태 ------------------ */
 const initialState: AuthState = {
   accessToken: null,
-  interceptorId: null,
   memberId: null,
   loading: false,
 };
@@ -78,22 +72,14 @@ const authReducer = (
     case LOADING:
       return { ...state, loading: true };
     case SET_ACCESS_TOKEN:
-      if (state.interceptorId) {
-        clearTokenInterceptors(state.interceptorId);
-      }
       return {
         ...state,
         accessToken: action.accessToken,
         memberId: action.memberId,
-        interceptorId: setTokenInterceptors(action.accessToken),
         loading: false,
       };
     case CLEAR_ACCESS_TOKEN: {
-      if (state.interceptorId) {
-        clearTokenInterceptors(state.interceptorId);
-      }
       return {
-        interceptorId: null,
         memberId: null,
         accessToken: null,
         loading: false,

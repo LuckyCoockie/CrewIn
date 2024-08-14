@@ -138,6 +138,9 @@ const LoginOrganism: React.FC = () => {
         setIsCodeInput(true);
         setIsEmailValid(true);
         setIsLoading(false);
+        setModalTitle("알림");
+        setModalMessage("인증번호가 발송되었습니다.");
+        setIsModalOpen(true);
       } else {
         setModalTitle("이메일 오류");
         setModalMessage("유효한 이메일을 입력해주세요.");
@@ -164,6 +167,8 @@ const LoginOrganism: React.FC = () => {
       if (response.verified) {
         console.log("인증번호 일치");
         setIsCodeVerified(true);
+        setModalTitle("알림");
+        setModalMessage("인증되었습니다.");
         setTimer(false);
       } else {
         setModalTitle("인증번호 오류");

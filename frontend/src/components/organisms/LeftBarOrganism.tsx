@@ -64,7 +64,7 @@ const LeftBarOrganism: React.FC<Current> = (props) => {
             <AlarmTabMolecule
               name={"Alarm"}
               tab={isTab && currentTab === "alarm"}
-              onClick={() => navigate("alarm")}
+              onClick={() => {navigate("alarm")}}
             />
           </div>
           <div className="w-full">
@@ -78,7 +78,7 @@ const LeftBarOrganism: React.FC<Current> = (props) => {
             <SessionTabMolecule
               name="Session"
               tab={isTab && currentTab === "session"}
-              onClick={() => onTabSelected("session?status=active")}
+              onClick={() => onTabSelected("session")}
             />
           </div>
           <div className="w-full">

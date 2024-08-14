@@ -137,10 +137,10 @@ const SessionCreateOrganism: React.FC = () => {
 
   const checkUndefined = async (files: FileList) => {
     if (files) {
-      const reversedFiles = Array.from(files).reverse();
-      const uploadPromises = reversedFiles.map(
-        async (file) => await uploadImage(file)
-      );
+      const uploadPromises = Array.from(files).map(async (file) => {
+        const result = await uploadImage(file);
+        return result;
+      });
       return Promise.all(uploadPromises);
     } else {
       return [];
@@ -180,7 +180,7 @@ const SessionCreateOrganism: React.FC = () => {
 
     return postCreateSession(submitData)
       .then(() => {
-        navigate(`/session?status=active`);
+        navigate(`/session`);
       })
       .catch((error) => {
         setErrorMessage("모든 항목을 확인해주세요.");

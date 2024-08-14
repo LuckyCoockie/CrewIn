@@ -60,7 +60,6 @@ body {
   padding-bottom: 100px;
   background-color: white;
   color: black;
-  overscroll-behavior-y: contain;
 }
 
 /* 버튼 컬러 */

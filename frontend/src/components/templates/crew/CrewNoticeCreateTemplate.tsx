@@ -170,7 +170,7 @@ const CrewNoticeCreateTemplate: React.FC = () => {
     setCroppedImages([]);
     setCroppedFiles([]);
     setIsCropped(false);
-    setIsWarningVisible(true); 
+    setIsWarningVisible(true);
   };
 
   const closeModal = () => {
@@ -229,7 +229,7 @@ const CrewNoticeCreateTemplate: React.FC = () => {
                         handleCropAll();
                         console.log("Handle Crop All button clicked");
                       }}
-                      className="absolute bottom-8 right-3 z-1 p-2 rounded-full bg-white bg-opacity-50"
+                      className="absolute bottom-8 right-3 z-1 p-2 rounded-full bg-white bg-opacity-60"
                     >
                       {isCropped ? <CropButton /> : <CheckButton />}
                     </button>
@@ -237,6 +237,12 @@ const CrewNoticeCreateTemplate: React.FC = () => {
                 ))}
               </Carousel>
             </div>
+            {imagePaths.length > 0 && !isCropped && (
+              <p className="mt-2 text-center text-xs text-red-600">
+                *사진 편집을 완료해야 작성이 가능합니다. (체크 버튼을
+                클릭해주세요.)
+              </p>
+            )}
             <button
               onClick={() => {
                 handleClearImages();
@@ -250,11 +256,6 @@ const CrewNoticeCreateTemplate: React.FC = () => {
         )}
 
         <main className="w-full">
-          {isWarningVisible && (
-            <p className="mt-2 text-center text-xs text-red-600">
-              *사진 편집을 완료해야 작성이 가능합니다. (체크 버튼을 클릭해주세요.)
-            </p>
-          )}
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-6 mt-2">
               <Controller

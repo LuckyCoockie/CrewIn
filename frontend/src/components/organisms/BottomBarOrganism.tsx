@@ -41,7 +41,7 @@ const BottomBarOrganism: React.FC<Current> = (props) => {
           <SessionTabMolecule
             name="Session"
             tab={currentTab === "session"}
-            onClick={() => selectedTab("session?status=active")}
+            onClick={() => selectedTab("session")}
           />
         </div>
         <div className="w-full h-full">

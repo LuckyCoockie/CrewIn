@@ -17,7 +17,7 @@ import {
   DirectionDto,
   Point,
   directionApiWithWayPoints,
-} from "../../util/maps/tmap/apis/api/directionApi";
+} from "../../apis/api/tmap/directionApi";
 import {
   addMarker,
   updateMarkerList,
@@ -26,6 +26,7 @@ import {
   moveToCenter,
   useNaverMapDispatch,
   clearMarker,
+  setMarkerVisibility,
 } from "../../util/maps/naver_map/context";
 import { debounce } from "lodash";
 import { RootState } from "../../modules";
@@ -98,6 +99,9 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
     const mapDim = captureRef.current!.getBoundingClientRect().width;
     dispatch(moveToCenter(mapDim));
     dispatch(clearPolyline());
+    for (let i = 1; i < data.markers.length - 1; i++) {
+      dispatch(setMarkerVisibility(i, false));
+    }
     directionApiWithWayPoints(
       data.markers.map((marker) => marker.point),
       (direction) => {
@@ -112,6 +116,10 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
           (sum, direction) => sum + direction.distance,
           0
         ),
+      })?.then(() => {
+        for (let i = 1; i < data.markers.length - 1; i++) {
+          dispatch(setMarkerVisibility(i, true));
+        }
       });
     });
   };

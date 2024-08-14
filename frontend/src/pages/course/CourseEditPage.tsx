@@ -7,8 +7,8 @@ import {
 import { uploadImage } from "../../apis/api/presigned.ts";
 import CourseCreateTemplate from "../../components/templates/CourseCreateTemplate.tsx";
 import { NaverMapProvider } from "../../util/maps/naver_map/context.tsx";
-import { Point } from "../../util/maps/tmap/apis/api/directionApi.ts";
-import { reversGeocodingApi } from "../../util/maps/tmap/apis/api/geocodeApi.ts";
+import { Point } from "../../apis/api/tmap/directionApi.ts";
+import { reversGeocodingApi } from "../../apis/api/tmap/geocodeApi.ts";
 import { Navigate, useNavigate, useParams } from "react-router";
 import BackHeaderMediumOrganism from "../../components/organisms/BackHeaderMediumOrganism.tsx";
 import EditDeleteDropdownOrganism from "../../components/organisms/EditDeleteDropdownOrganism.tsx";

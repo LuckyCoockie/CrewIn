@@ -9,8 +9,8 @@ import AttendanceMemberListOrganism from "../../organisms/attendance/AttendanceM
 import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
 import TimerOrganism from "../../organisms/TimerOrganism";
 import ModalConfirm from "../../molecules/ModalConfirmMolecules";
-import { reversGeocodingApi } from "../../../util/maps/tmap/apis/api/geocodeApi";
-import { Point } from "../../../util/maps/tmap/apis/api/directionApi";
+import { reversGeocodingApi } from "../../../apis/api/tmap/geocodeApi";
+import { Point } from "../../../apis/api/tmap/directionApi";
 import locationImage from "../../../assets/icons/location.png";
 import { IconTextComponent } from "../../atoms/text/IconText";
 import { ReactComponent as InfoIcon } from "../../../assets/icons/info_icon.svg";
