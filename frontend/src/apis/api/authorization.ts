@@ -24,6 +24,7 @@ export const refreshToken = async () => {
     clearAuth();
     throw "";
   }
+  console.log("refreshToken");
   try {
     store.dispatch(loading());
     const response = await axios.post<{ data: LoginResponseDto }>(
