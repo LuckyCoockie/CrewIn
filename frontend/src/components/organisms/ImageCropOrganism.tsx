@@ -87,20 +87,15 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
       return;
     }
 
-    const tempImagePaths: string[] = [];
-    const tempOriginalCroppedImages: string[] = [];
+    // Create a new array to keep the newly added images in order
+    const newImagePaths = filteredFiles.map((file) => URL.createObjectURL(file));
+    const newOriginalCroppedImages = [...newImagePaths];
 
-    filteredFiles.forEach((file) => {
-      const tempImagePath = URL.createObjectURL(file);
-      tempImagePaths.push(tempImagePath);
-      tempOriginalCroppedImages.push(tempImagePath);
-    });
-
-    setImagePaths((prevPaths) => [...prevPaths, ...tempImagePaths]);
-    setCroppedImages((prevImages) => [...prevImages, ...tempImagePaths]);
+    setImagePaths((prevPaths) => [...prevPaths, ...newImagePaths]);
+    setCroppedImages((prevImages) => [...prevImages, ...newImagePaths]);
     setOriginalCroppedImages((prevImages) => [
       ...prevImages,
-      ...tempOriginalCroppedImages,
+      ...newOriginalCroppedImages,
     ]);
     setIsCropped(false);
     setIsWarningVisible(true);
