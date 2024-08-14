@@ -197,7 +197,7 @@ const PostDetailTemplate: React.FC = () => {
           <>
             <p>
               <span className="font-bold">{postData.authorName}</span>{" "}
-              {postData.content}
+              <span style={{ whiteSpace: "pre-line" }}>{postData.content}</span>
             </p>
           </>
         </div>

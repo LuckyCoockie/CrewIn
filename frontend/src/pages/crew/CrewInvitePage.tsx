@@ -116,20 +116,25 @@ const CrewInvitePage: React.FC = () => {
               <li
                 key={data.memberId}
                 className="flex items-center p-2 border-b cursor-pointer hover:bg-gray-100"
-                
               >
-                <div className="w-12 h-12 flex-shrink-0" onClick={() => navigate(`/profile/${data.memberId}`)}>
+                <div
+                  className="w-12 h-12 flex-shrink-0"
+                  onClick={() => navigate(`/profile/${data.memberId}`)}
+                >
                   {data.imageUrl ? (
                     <img
                       src={data.imageUrl}
                       alt={data.name}
-                      className="w-full h-full object-cover rounded-full"
+                      className="w-full h-full object-cover rounded-full border"
                     />
                   ) : (
-                    <CrewinLogo className="w-full h-full object-cover rounded-full" />
+                    <CrewinLogo className="w-full h-full object-cover rounded-full border" />
                   )}
                 </div>
-                <div className="flex-1 ml-3" onClick={() => navigate(`/profile/${data.memberId}`)}>
+                <div
+                  className="flex-1 ml-3"
+                  onClick={() => navigate(`/profile/${data.memberId}`)}
+                >
                   <div>
                     <span className="font-bold">{data.name + " "}</span>
                     <span className="text-gray-600 text-sm">
