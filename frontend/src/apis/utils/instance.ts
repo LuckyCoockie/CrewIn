@@ -4,6 +4,8 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 import ErrorResponseDto from "./errorCode/ErrorResponseDto";
+import store from "../../modules";
+import { loading } from "../../modules/reducers/auth";
 import { convertKeysToKebabCase } from "./querystring.ts/camelToKebab";
 import { clearAuth, setAuth } from "../../util/auth";
 
@@ -32,7 +34,7 @@ api.interceptors.response.use(
   async (error: AxiosError<ErrorResponseDto>) => {
     if (error.response && error.response.status === 401) {
       try {
-        clearAuth();
+        store.dispatch(loading());
 
         const response = await axios.post<{
           data: {
@@ -49,7 +51,7 @@ api.interceptors.response.use(
 
         setAuth(response.data.data);
 
-        return axios(error.config ?? {});
+        return api(error.config ?? {});
       } catch (refreshError) {
         clearAuth();
         return Promise.reject(refreshError);
