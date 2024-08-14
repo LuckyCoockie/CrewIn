@@ -5,7 +5,7 @@ import axios, {
 } from "axios";
 import ErrorResponseDto from "./errorCode/ErrorResponseDto";
 import store from "../../modules";
-import { loading, onSuccess } from "../../modules/reducers/auth";
+import { loading, endLoading } from "../../modules/reducers/auth";
 import { convertKeysToKebabCase } from "./querystring.ts/camelToKebab";
 import { clearAuth, setAuth } from "../../util/auth";
 
@@ -25,7 +25,7 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 
 api.interceptors.response.use(
   (response: AxiosResponse) => {
-    store.dispatch(onSuccess());
+    store.dispatch(endLoading());
     return { ...response, data: response.data.data };
   },
   async (error: AxiosError<ErrorResponseDto>) => {

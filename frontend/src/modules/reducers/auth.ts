@@ -5,7 +5,7 @@ const BASE_ACTION_TYPE = "api/auth";
 export const LOADING = `${BASE_ACTION_TYPE}/LOADING`;
 export const SET_ACCESS_TOKEN = `${BASE_ACTION_TYPE}/SET_ACCESS_TOKEN`;
 export const CLEAR_ACCESS_TOKEN = `${BASE_ACTION_TYPE}/CLEAR_ACCESS_TOKEN`;
-export const ON_SUCCESS = `${BASE_ACTION_TYPE}/ON_SUCCESS`;
+export const END_LOADING = `${BASE_ACTION_TYPE}/END_LOADING`;
 
 /* ----------------- 액션 ------------------ */
 type Loading = {
@@ -23,15 +23,15 @@ type ClearAccessTokenAction = {
   error?: string;
 };
 
-type OnSuccess = {
-  type: typeof ON_SUCCESS;
+type EndLoadingAction = {
+  type: typeof END_LOADING;
 };
 
 export type AuthActionTypes =
   | Loading
   | SetAccessTokenAction
   | ClearAccessTokenAction
-  | OnSuccess;
+  | EndLoadingAction;
 
 /* ----------------- 액션 함수 ------------------ */
 export const loading = (): Loading => ({
@@ -54,8 +54,8 @@ export const clearAccessToken = (error?: string) => {
   };
 };
 
-export const onSuccess = (): OnSuccess => ({
-  type: ON_SUCCESS,
+export const endLoading = (): EndLoadingAction => ({
+  type: END_LOADING,
 });
 /* ----------------- 모듈 상태 타입 ------------------ */
 type AuthState = {
@@ -94,7 +94,7 @@ const authReducer = (
         error: action.error,
       };
     }
-    case ON_SUCCESS:
+    case END_LOADING:
       return { ...state, loading: false };
     default:
       return state;
