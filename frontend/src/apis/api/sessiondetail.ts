@@ -110,7 +110,6 @@ export const deleteSessionImage = async (imageId: number): Promise<void> => {
 
 export const participateSession = async (sessionId: number): Promise<void> => {
   const response = await api.post(`/session/${sessionId}`);
-  console.log("참가 신청 완료");
   return response.data;
 };
 
@@ -121,7 +120,6 @@ export type CancelSEssionRequestDto = {
 
 export const cancelSession = async (sessionId: number): Promise<void> => {
   const response = await api.delete(`session/${sessionId}`);
-  console.log("참가 취소 완료");
 
   return response.data;
 };

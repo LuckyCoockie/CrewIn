@@ -102,13 +102,9 @@ const CrewCreateOrganism: React.FC = () => {
           subLogo: subLogoImageUrl!,
           banner: bannerImageUrl!,
         };
-
-        console.log(submitData);
         return postCreateCrew(submitData);
       })
       .then((response) => {
-        console.log("Crew created successfully");
-        console.log(response.crewId);
         navigate(`/crew/detail/${response.crewId}`, { replace: true });
       })
       .catch((error) => {

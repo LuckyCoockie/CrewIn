@@ -20,11 +20,13 @@ import ModalConfirm from "../molecules/ModalConfirmMolecules";
 import Modal from "../molecules/ModalMolecules";
 
 type OwnDetailProps = {
-  fetchDetailData: (dto: GetSessionInfoRequestDto) => Promise<SessionDetailDto>;
+  fetchSessionDetailData: (
+    dto: GetSessionInfoRequestDto
+  ) => Promise<SessionDetailDto>;
 };
 
 const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
-  fetchDetailData,
+  fetchSessionDetailData,
 }) => {
   const { sessionId } = useParams<{ sessionId: string }>();
   const [currentTab, setCurrentTab] = useState<string>("세션정보");
@@ -39,7 +41,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
     error: detailError,
     refetch,
   } = useQuery(["detailData", { sessionId }], () =>
-    fetchDetailData({ sessionId: Number(sessionId) })
+    fetchSessionDetailData({ sessionId: Number(sessionId) })
   );
 
   if (detailError) console.error("detailError", detailError);

@@ -6,15 +6,14 @@ import {
 } from "../apis/api/sessiondetail";
 
 const SessionDetailPage: React.FC = () => {
-  const fetchDetailData = useCallback(async (dto: GetSessionInfoRequestDto) => {
+  const fetchSessionDetailData = useCallback(async (dto: GetSessionInfoRequestDto) => {
     const data = await getSessionDetail(dto);
-    console.log("fetchDetailData", data);
     return data;
   }, []);
 
   return (
     <>
-      <SessionDetailTemplate fetchDetailData={fetchDetailData} />
+      <SessionDetailTemplate fetchSessionDetailData={fetchSessionDetailData} />
     </>
   );
 };

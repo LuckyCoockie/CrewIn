@@ -179,8 +179,6 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
         postImages: uploadedImages,
       };
 
-      console.log("작성할 데이터:", postData);
-
       const response = await createPost(postData);
       console.log("서버 응답:", response);
       onComplete(uploadedImages, crewId, isPublic, content);

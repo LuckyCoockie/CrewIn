@@ -17,7 +17,6 @@ const MyPageAlbumOrganism: React.FC<OwnProps> = ({ onItemClicked }) => {
     pageNo: number
   ): Promise<PageNationData<MyGalleryDto>> => {
     const result = await getMyGallery(pageNo, memberId!);
-    console.log(result);
 
     if (result.items.length === 0 && pageNo === 0) {
       setHasData(false); // 데이터가 없을 경우 상태를 false로 설정

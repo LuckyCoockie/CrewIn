@@ -155,8 +155,6 @@ export type EditCrewRequestDto = {
 };
 
 export const editCrew = async (dto: EditCrewRequestDto): Promise<void> => {
-  // return console.log("크루 수정 요청 정보: ", dto);
-
   const { crewId, ...body } = dto;
   const response = await api.put(`/crew/${crewId}`, body);
   return response.data;

@@ -15,14 +15,12 @@ export type ProfileDto = {
 
 export const getMyProfileInfo = async (): Promise<ProfileDto> => {
   const response = await api.get(`/member/profile`);
-  console.log(response.data);
   return response.data;
 };
 
 export const getPeopleProfileInfo = async (
   memberId: number
 ): Promise<ProfileDto> => {
-  console.log(memberId);
   const response = await api.get(`/member/profile/${memberId}`);
   return response.data;
 };
@@ -96,13 +94,9 @@ export const getMyGallery = async (
   pageNo: number,
   memberId: number
 ): Promise<MyGalleryResponseDto> => {
-  console.log(memberId);
-
   const response = await api.get(
     `/post/member/gallery/${memberId}?page-no=${pageNo}`
   );
-  console.log(response.data);
-
   return response.data;
 };
 
@@ -124,8 +118,6 @@ export const getPeopleGallery = async (
   const response = await api.get(
     `/post/member/gallery/${memberId}?page-no=${pageNo}`
   );
-  console.log(response.data);
-
   return response.data;
 };
 

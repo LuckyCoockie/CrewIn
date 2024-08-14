@@ -42,7 +42,6 @@ const PostDetailTemplate: React.FC = () => {
 
   useEffect(() => {
     if (postData) {
-      console.log("Post Type:", postData.postType);
       setLikes(postData.heartCount);
       setIsHeartedState(postData.isHearted);
     }

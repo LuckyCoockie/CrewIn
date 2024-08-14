@@ -54,7 +54,6 @@ const LoginOrganism = () => {
       await login(data);
       setIsSubmit(false);
     } catch (err) {
-      console.log(err);
       // 서버 오류 또는 네트워크 오류 등
       setIsSubmit(false);
       setModalTitle("로그인 오류");

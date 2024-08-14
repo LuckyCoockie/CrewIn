@@ -43,16 +43,13 @@ const FindPasswordOrganism: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    console.log(data);
     const submitData: temporarilyPasswordDto = {
       ...data,
     };
     try {
       await temporarilyPassword(submitData);
-      console.log("임시 비밀번호 발송");
       setIsModalOpen(true);
     } catch (error) {
-      console.log("비밀번호 발송 실패");
       window.alert("인증번호를 확인해주세요.");
     }
   };
