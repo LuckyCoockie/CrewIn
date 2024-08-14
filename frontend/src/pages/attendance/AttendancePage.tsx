@@ -61,7 +61,7 @@ const AttendancePage: React.FC = () => {
     });
   }, [location, sessionId]);
 
-  if (!sessionId) return <Navigate to={`/session`} replace />;
+  if (!sessionId) return <Navigate to={`/session?type=STANDARD`} replace />;
 
   if (!location) {
     return (
