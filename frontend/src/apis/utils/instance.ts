@@ -46,7 +46,7 @@ api.interceptors.response.use(
         const { accessToken } = response.data.data;
 
         console.log(`Interceptor1 : ${accessToken}`);
-        console.log(`Interceptor2 : ${error.config}`);
+        console.log(`Interceptor2 : ${error.config?.headers.Authorization}`);
 
         if (error.config?.headers) {
           error.config.headers["Authorization"] = `Bearer ${accessToken}`;
@@ -54,7 +54,7 @@ api.interceptors.response.use(
 
         setAuth(response.data.data);
 
-        console.log(`Interceptor3 : ${error.config}`);
+        console.log(`Interceptor3 : ${error.config?.headers.Authorization}`);
 
         return api(error.config ?? {});
       } catch (refreshError) {
