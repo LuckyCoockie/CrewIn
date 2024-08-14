@@ -1,6 +1,8 @@
 package com.luckycookie.crewin.controller;
 
 import com.luckycookie.crewin.dto.NotificationResponse;
+import com.luckycookie.crewin.dto.NotificationResponse.NotificationExistence;
+import com.luckycookie.crewin.dto.NotificationResponse.NotificationItem;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.NotificationService;
@@ -19,11 +21,11 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @GetMapping()
-    public ResponseEntity<BaseResponse<List<NotificationResponse>>> getMemberNotification(@AuthenticationPrincipal CustomUser customUser) {
+    public ResponseEntity<BaseResponse<List<NotificationItem>>> getMemberNotification(@AuthenticationPrincipal CustomUser customUser) {
         return ResponseEntity.ok(
                 BaseResponse.create(HttpStatus.OK.value()
-                , "해당 멤버의 알림 조회에 성공했습니다."
-                , notificationService.getMemberNotifications(customUser))
+                        , "해당 멤버의 알림 조회에 성공했습니다."
+                        , notificationService.getMemberNotifications(customUser))
         );
     }
 
@@ -39,4 +41,9 @@ public class NotificationController {
         }
     }
 
+    @GetMapping("/exist")
+    public ResponseEntity<BaseResponse<NotificationExistence>> isExistNotification(@AuthenticationPrincipal CustomUser customUser) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당 멤버의 알림 유무 조회에 성공했습니다.", notificationService.isExistNotification(customUser.getEmail()))
+        );
+    }
 }

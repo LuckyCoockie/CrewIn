@@ -5,6 +5,8 @@ import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.domain.Notification;
 import com.luckycookie.crewin.domain.enums.NotificationType;
 import com.luckycookie.crewin.dto.NotificationResponse;
+import com.luckycookie.crewin.dto.NotificationResponse.NotificationExistence;
+import com.luckycookie.crewin.dto.NotificationResponse.NotificationItem;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.exception.notification.NotFoundNotificationException;
@@ -35,7 +37,7 @@ public class NotificationService {
         notificationRepository.save(
                 Notification
                         .builder()
-                        .isChecked(Boolean.FALSE)
+                        .isChecked(false)
                         .notificationType(notificationType)
                         .senderId(senderId)
                         .postId(postId)
@@ -43,11 +45,14 @@ public class NotificationService {
                         .build());
 
         receiver.updateMemberNotification(true);
-        memberRepository.save(receiver);
-
     }
 
-    public List<NotificationResponse> getMemberNotifications(CustomUser customUser) {
+    public NotificationExistence isExistNotification(String email) {
+        Member member = memberRepository.findFirstByEmail(email).orElseThrow(NotFoundMemberException::new);
+        return NotificationExistence.builder().isExist(member.getExistNotification()).build();
+    }
+
+    public List<NotificationItem> getMemberNotifications(CustomUser customUser) {
         Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
@@ -55,7 +60,7 @@ public class NotificationService {
 
         List<Notification> notificationList = notificationRepository.findByReceiver(member);
 
-        List<NotificationResponse> responseList = notificationList.stream()
+        List<NotificationItem> responseList = notificationList.stream()
                 .map(this::convertToDto)
                 .toList();
 
@@ -66,7 +71,7 @@ public class NotificationService {
         return responseList;
     }
 
-    private NotificationResponse convertToDto(Notification notification) {
+    private NotificationItem convertToDto(Notification notification) {
         String senderName;
         String senderThumbnail;
         switch (notification.getNotificationType()) {
@@ -88,7 +93,7 @@ public class NotificationService {
             }
         }
 
-        return NotificationResponse.builder()
+        return NotificationItem.builder()
                 .notificationId(notification.getId())
                 .isChecked(notification.getIsChecked())
                 .notificationType(notification.getNotificationType())
