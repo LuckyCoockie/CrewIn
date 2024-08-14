@@ -58,7 +58,6 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
           setCrewId(response.crews[0].crewId);
         }
       } catch (error) {
-        console.error("내가 속한 크루 조회 오류:", error);
         setModalMessage("크루 정보를 불러오는 중 오류가 발생했습니다.");
         setIsModalOpen(true);
       } finally {
@@ -184,7 +183,6 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
       onComplete(uploadedImages, crewId, isPublic, content);
       navigate("/home", { replace: true });
     } catch (error) {
-      console.error("게시글 작성 오류:", error);
       setModalMessage("게시글 작성 중 오류가 발생했습니다.");
       setIsModalOpen(true);
     } finally {

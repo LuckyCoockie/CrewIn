@@ -76,7 +76,6 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
         }
         return response;
       } catch (error) {
-        console.error("크루원 데이터를 가져오는 중 오류 발생:", error);
         setError("크루원 데이터를 가져오는 중 오류가 발생했습니다.");
         return { pageNo: 0, lastPageNo: 0, items: [] };
       } finally {
@@ -124,12 +123,9 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
           );
           navigate(0);
         } catch (error) {
-          console.error("권한 변경 오류:", error);
           setError("권한 변경에 실패했습니다.");
         }
       }
-    } else {
-      console.error("Member not found:", email);
     }
   };
 
@@ -146,7 +142,6 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
           );
           navigate(0);
         } catch (error) {
-          console.error("강퇴 실패:", error);
           setError("강퇴에 실패했습니다.");
         } finally {
           handleModalClose();
@@ -181,7 +176,6 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
             navigate(`/crew/detail/${crewId}`);
           }
         } catch (error) {
-          console.error("캡틴 변경 실패:", error);
           setError("캡틴 변경에 실패했습니다.");
         } finally {
           handleModalClose();
@@ -227,7 +221,9 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
       >
         <span className="font-bold">{member.name + " "}</span>
         <span className="text-gray-600 text-sm">{member.nickname}</span>
-      <div className="text-gray-600">세션 참가 {member.attendanceCount}회</div>
+        <div className="text-gray-600">
+          세션 참가 {member.attendanceCount}회
+        </div>
       </div>
       <div>
         {member.joined ? (

@@ -99,7 +99,6 @@ const EditDeleteDropdownOrganism: React.FC<PropsData> = ({
       }
       queryClient.invalidateQueries("crewNotice");
     } catch (error) {
-      console.error("삭제 실패:", error);
       setIsErrorModalOpen(true);
     } finally {
       setIsLoader(false);

@@ -5,16 +5,11 @@ export type CrewInviteRequestDto = {
   crewId: number;
 };
 
-export type CrewInviteResponseDto = {};
+export type CrewInviteResponseDto = void;
 
 export const inviteCrewMember = async (
   dto: CrewInviteRequestDto
 ): Promise<CrewInviteResponseDto> => {
-  try {
-    const response = await api.post("/crew/member/invitation", dto);
-    return response.data;
-  } catch (error) {
-    console.error("API 호출 오류:", error);
-    throw error;
-  }
+  const response = await api.post("/crew/member/invitation", dto);
+  return response.data;
 };

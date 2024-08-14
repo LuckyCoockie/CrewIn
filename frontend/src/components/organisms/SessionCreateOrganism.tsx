@@ -182,10 +182,9 @@ const SessionCreateOrganism: React.FC = () => {
       .then(() => {
         navigate(`/session?status=active`);
       })
-      .catch((error) => {
+      .catch(() => {
         setErrorMessage("모든 항목을 확인해주세요.");
         setIsSubmitting(false);
-        console.error(error);
       });
   };
 

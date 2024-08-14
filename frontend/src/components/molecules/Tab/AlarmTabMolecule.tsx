@@ -16,12 +16,8 @@ const AlarmTabMolecule: React.FC<Name> = (props) => {
 
   useEffect(() => {
     const checkNotifications = async () => {
-      try {
-        const { exist } = await checkNotificationsExist();
-        setHasCheckedNotifications(exist);
-      } catch (error) {
-        console.error("Error fetching notifications:", error);
-      }
+      const { exist } = await checkNotificationsExist();
+      setHasCheckedNotifications(exist);
     };
 
     checkNotifications();

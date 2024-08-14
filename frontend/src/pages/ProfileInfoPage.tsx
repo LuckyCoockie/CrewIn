@@ -36,7 +36,6 @@ export const ProfileInfoPage = () => {
         "프로필 이미지 업로드에 실패했습니다. 잠시 후 다시 시도해주세요."
       );
       setIsModalOpen(true);
-      console.error("프로필 이미지 업로드 에러:", error);
     }
   };
 
@@ -52,7 +51,6 @@ export const ProfileInfoPage = () => {
     } catch (error) {
       setModalMessage("닉네임 변경에 실패했습니다. 아이디를 확인하세요.");
       setIsModalOpen(true);
-      console.error("닉네임 변경 에러:", error);
     }
   };
 
@@ -70,7 +68,6 @@ export const ProfileInfoPage = () => {
         "비밀번호 변경에 실패했습니다. 이전 비밀번호를 확인하세요."
       );
       setIsModalOpen(true);
-      console.error("비밀번호 변경 에러", error);
     }
   };
 

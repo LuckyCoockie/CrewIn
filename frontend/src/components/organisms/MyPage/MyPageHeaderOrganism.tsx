@@ -9,11 +9,7 @@ import { clearAuth } from "../../../util/auth";
 const MyPageHeaderOrganism: React.FC = () => {
   const navigate = useNavigate();
   const handleLogout = async () => {
-    try {
-      logout().then(() => clearAuth());
-    } catch (error) {
-      console.error("로그아웃 실패:", error);
-    }
+    logout().then(() => clearAuth());
   };
 
   const handleSetting = () => {

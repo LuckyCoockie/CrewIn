@@ -190,7 +190,6 @@ const SessionEditOrganism: React.FC = () => {
       navigate(`/session/${sessionId}`);
     } catch (error) {
       setErrorMessage("세션 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
-      console.error(error);
     }
   };
 

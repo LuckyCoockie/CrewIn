@@ -18,11 +18,6 @@ export type GetMyCrewsResponseDto = {
 };
 
 export const getMyCrews = async (): Promise<GetMyCrewsResponseDto> => {
-  try {
-    const response = await api.get("/crew/my-crew");
-    return response.data;
-  } catch (error) {
-    console.error("내 크루 목록 조회 오류:", error);
-    throw error;
-  }
+  const response = await api.get("/crew/my-crew");
+  return response.data;
 };

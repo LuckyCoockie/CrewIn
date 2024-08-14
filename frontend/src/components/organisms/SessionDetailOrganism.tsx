@@ -110,7 +110,6 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
       setIsJoinSubmit(false);
       onJoinChange();
     } catch (error) {
-      console.error("참가 신청 실패:", error);
       setIsJoinSubmit(false);
     }
   };
@@ -123,7 +122,6 @@ const SessionDetailOrganism: React.FC<SessionDetailOrganismProps> = ({
       setIsOutSubmit(false);
       onJoinChange();
     } catch (error) {
-      console.error("참가 취소 실패:", error);
       setIsOutSubmit(false);
     }
   };
