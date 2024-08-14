@@ -37,7 +37,7 @@ const CrewNoticeCreateTemplate: React.FC = () => {
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [isWarningVisible, setIsWarningVisible] = useState<boolean>(true);
+  const [, setIsWarningVisible] = useState<boolean>(true);
 
   const {
     control,
