@@ -112,10 +112,8 @@ public class AttendanceService {
             throw new InvalidSessionException();
         }
 
-        // 주최자 위치 등록, 시작시간 등록, 주최자 출석 true
+        // 주최자 위치 등록, 시작시간 등록
         session.startSession(attendanceInfoRequest);
-        MemberSession hostAttendance = memberSessionRepository.findByMemberAndSession(host, session).orElseThrow(NotFoundMemberSessionException::new);
-        hostAttendance.changeAttend(true);
 
         // 스케줄러 등록
         long delay = Duration.between(LocalDateTime.now(), session.getEndAt()).toSeconds();
