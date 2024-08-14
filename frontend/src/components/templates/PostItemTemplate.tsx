@@ -184,10 +184,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
         )}
       </div>
       {croppedImages && croppedImages.length > 0 ? (
-        <div
-          className="relative cursor-pointer sm:mx-1"
-          onClick={handleImageClick}
-        >
+        <div className="relative cursor-pointer sm:mx-1">
           <Carousel
             showThumbs={false}
             showIndicators={true}
@@ -208,10 +205,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
         </div>
       ) : postType === "NOTICE" && profileImage ? (
         <div className="sm:mx-1">
-          <div
-            className="relative cursor-pointer square"
-            onClick={handleImageClick}
-          >
+          <div className="relative cursor-pointer square">
             <img src={profileImage} alt="Profile" />
           </div>
         </div>
@@ -230,15 +224,71 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           <ShareIcon />
         </button>
       </div>
-      <p className="text-md ml-3 mt-2">{likes}명이 공감했어요!</p>
-      <div className="mb-2 mx-3 break-all">
-        {postType === "NOTICE" ? (
-          <>
-            <div className="">
+      <div>
+        <div>
+          <p className="text-md ml-3 mt-2">{likes}명이 공감했어요!</p>
+        </div>
+        <div className="mb-2 mx-3 break-all">
+          {postType === "NOTICE" ? (
+            <>
+              <div className="">
+                {isExpanded ? (
+                  <>
+                    <span className="font-bold">{authorName}</span>{" "}
+                    <span onClick={handleImageClick}>{title} </span>
+                    <br />
+                    <span
+                      style={{ whiteSpace: "pre-line" }}
+                      onClick={handleImageClick}
+                    >
+                      {content}{" "}
+                    </span>
+                    <button
+                      className="font-bold text-color"
+                      onClick={toggleContent}
+                    >
+                      접기
+                    </button>
+                  </>
+                ) : content.length > 40 ? (
+                  <>
+                    <span className="font-bold">{authorName}</span>{" "}
+                    <span onClick={handleImageClick}>{title} </span>
+                    <br />
+                    <span
+                      style={{ whiteSpace: "pre-line" }}
+                      onClick={handleImageClick}
+                    >
+                      {content.substring(0, 40)}...{" "}
+                    </span>
+                    <button
+                      className="font-bold text-color"
+                      onClick={toggleContent}
+                    >
+                      더보기
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <span className="font-bold">{authorName}</span>{" "}
+                    <span onClick={handleImageClick}>{title} </span>
+                    <br />
+                    <span style={{ whiteSpace: "pre-line" }}>{content}</span>
+                  </>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
               {isExpanded ? (
                 <>
-                  <span className="font-bold">{authorName}</span> {title} <br />
-                  <span style={{ whiteSpace: "pre-line" }}>{content} </span>
+                  <span className="font-bold">{authorName}</span>{" "}
+                  <span
+                    style={{ whiteSpace: "pre-line" }}
+                    onClick={handleImageClick}
+                  >
+                    {content}{" "}
+                  </span>
                   <button
                     className="font-bold text-color"
                     onClick={toggleContent}
@@ -248,8 +298,11 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
                 </>
               ) : content.length > 40 ? (
                 <>
-                  <span className="font-bold">{authorName}</span> {title} <br />
-                  <span style={{ whiteSpace: "pre-line" }}>
+                  <span className="font-bold">{authorName}</span>{" "}
+                  <span
+                    style={{ whiteSpace: "pre-line" }}
+                    onClick={handleImageClick}
+                  >
                     {content.substring(0, 40)}...{" "}
                   </span>
                   <button
@@ -261,46 +314,20 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
                 </>
               ) : (
                 <>
-                  <span className="font-bold">{authorName}</span> {title} <br />
-                  <span style={{ whiteSpace: "pre-line" }}>{content}</span>
+                  <span className="font-bold" onClick={handleImageClick}>
+                    {authorName}
+                  </span>{" "}
+                  <span
+                    style={{ whiteSpace: "pre-line" }}
+                    onClick={handleImageClick}
+                  >
+                    {content}
+                  </span>
                 </>
               )}
-            </div>
-          </>
-        ) : (
-          <>
-            {isExpanded ? (
-              <>
-                <span className="font-bold">{authorName}</span>{" "}
-                <span style={{ whiteSpace: "pre-line" }}>{content} </span>
-                <button
-                  className="font-bold text-color"
-                  onClick={toggleContent}
-                >
-                  접기
-                </button>
-              </>
-            ) : content.length > 40 ? (
-              <>
-                <span className="font-bold">{authorName}</span>{" "}
-                <span style={{ whiteSpace: "pre-line" }}>
-                  {content.substring(0, 40)}...{" "}
-                </span>
-                <button
-                  className="font-bold text-color"
-                  onClick={toggleContent}
-                >
-                  더보기
-                </button>
-              </>
-            ) : (
-              <>
-                <span className="font-bold">{authorName}</span>{" "}
-                <span style={{ whiteSpace: "pre-line" }}>{content}</span>
-              </>
-            )}
-          </>
-        )}
+            </>
+          )}
+        </div>
       </div>
       <div className="border-b border-gray-300 mx-1"></div>
     </div>

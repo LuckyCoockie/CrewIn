@@ -3,7 +3,7 @@ import { ReactComponent as Alarmicon } from "../../../assets/icons/alarm_deactiv
 import { ReactComponent as AlarmDeselcted } from "../../../assets/icons/alarm_deactivated_deselected.svg";
 import { ReactComponent as AlarmOnicon } from "../../../assets/icons/alarm_activated.svg";
 import { ReactComponent as AlarmOnDeselected } from "../../../assets/icons/alarm_activated_deselected.svg";
-import { fetchNotifications } from "../../../apis/api/alarm";
+import { checkNotificationsExist } from "../../../apis/api/alarm";
 
 type Name = {
   name: string;
@@ -17,11 +17,8 @@ const AlarmTabMolecule: React.FC<Name> = (props) => {
   useEffect(() => {
     const checkNotifications = async () => {
       try {
-        const notifications = await fetchNotifications();
-        const anyChecked = notifications.some(
-          (notification) => notification.isChecked === false
-        );
-        setHasCheckedNotifications(anyChecked);
+        const { exist } = await checkNotificationsExist();
+        setHasCheckedNotifications(exist);
       } catch (error) {
         console.error("Error fetching notifications:", error);
       }

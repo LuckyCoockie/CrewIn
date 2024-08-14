@@ -51,7 +51,7 @@ const initialState: InterceptorState = {
 };
 
 /* ----------------- 리듀서 ------------------ */
-const authReducer = (
+const interceptorReducer = (
   state = initialState,
   action: InterceptorActionType
 ): InterceptorState => {
@@ -74,4 +74,4 @@ const authReducer = (
   }
 };
 
-export default authReducer;
+export default interceptorReducer;

@@ -198,21 +198,34 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
                   onClick={handleStartAttendanceClick}
                 />
               )}
+              {isDuringAutoCheck && isSessionHost && (
+                <div className={`w-full text-center `}>
+                  {"자동 출석 종료 후 출석을 수정할 수 있습니다."}
+                  <TimerOrganism
+                    initSeconds={leftTime}
+                    onEnd={() => setAutoCheckStatus("AFTER")}
+                    render={(seconds) => (
+                      <div className="w-full bg-[#2b2f401a] py-4 px-8 text-center disable rounded-lg font-bold">
+                        {seconds}
+                      </div>
+                    )}
+                  />
+                </div>
+              )}
               {isDuringAutoCheck &&
-                (isSessionHost ? (
-                  <div className="w-full text-center">
-                    {"자동 출석 종료 후 출석을 수정할 수 있습니다."}
-                    <TimerOrganism
-                      initSeconds={leftTime}
-                      onEnd={() => setAutoCheckStatus("AFTER")}
-                    />
-                  </div>
-                ) : isAttend ? (
+                !isSessionHost &&
+                (isAttend ? (
                   <>{"출석 완료"}</>
                 ) : (
-                  <LargeAbleButton
-                    text="출석하기"
-                    onClick={handleGuestAttendanceClick}
+                  <TimerOrganism
+                    initSeconds={leftTime}
+                    onEnd={() => setAutoCheckStatus("AFTER")}
+                    render={() => (
+                      <LargeAbleButton
+                        text="출석하기"
+                        onClick={handleGuestAttendanceClick}
+                      />
+                    )}
                   />
                 ))}
               {isAfterAutoCheck &&

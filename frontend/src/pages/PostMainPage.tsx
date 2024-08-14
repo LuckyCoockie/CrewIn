@@ -17,7 +17,7 @@ import {
   PostDto,
 } from "../apis/api/postlist";
 import { PWAInstallPrompt } from "../components/templates/pwa/PWAInstallPrompt";
-import { fetchNotifications } from "../apis/api/alarm";
+import { checkNotificationsExist } from "../apis/api/alarm";
 import SpinnerComponent from "../components/atoms/SpinnerComponent";
 import Modal from "../components/molecules/ModalMolecules";
 import useIsMobile from "../util/windowSize/useIsMobile";
@@ -33,11 +33,8 @@ const PostMainPage: React.FC = () => {
   useEffect(() => {
     const checkNotifications = async () => {
       try {
-        const notifications = await fetchNotifications();
-        const anyChecked = notifications.some(
-          (notification) => notification.isChecked === false
-        );
-        setHasCheckedNotifications(anyChecked);
+        const { exist } = await checkNotificationsExist();
+        setHasCheckedNotifications(exist);
       } catch (error) {
         console.error("Error fetching notifications:", error);
       }

@@ -14,12 +14,9 @@ import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
 import ImageUploadDropzone from "../../molecules/Input/ImageUploadDropzone";
 import LargeAbleButton from "../../atoms/Button/LargeAbleButton";
 import LargeDisableButton from "../../atoms/Button/LargeDisableButton";
-
 import { uploadImage } from "../../../apis/api/presigned";
 import { createNotice } from "../../../apis/api/crewdetail";
-
 import { useNavigate, useParams } from "react-router-dom";
-
 import Modal from "../../molecules/ModalMolecules";
 
 // 유효성 검사 스키마 정의
@@ -39,7 +36,8 @@ const CrewNoticeCreateTemplate: React.FC = () => {
   const queryClient = useQueryClient();
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null); // 오류 메시지 상태 추가
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [, setIsWarningVisible] = useState<boolean>(true);
 
   const {
     control,
@@ -64,7 +62,7 @@ const CrewNoticeCreateTemplate: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    setIsSubmitting(true); // 로딩 상태 시작
+    setIsSubmitting(true);
     try {
       const urls = await checkUndefined(croppedFiles);
 
@@ -77,14 +75,13 @@ const CrewNoticeCreateTemplate: React.FC = () => {
 
       await createNotice(submitData);
 
-      // 쿼리 무효화
       queryClient.invalidateQueries(["crewNotice", { crewId }]);
 
       navigate(`/crew/detail/${crewId}`, { replace: true });
     } catch (error) {
       setErrorMessage("공지 작성 중 오류가 발생했습니다. 다시 시도해주세요.");
     } finally {
-      setIsSubmitting(false); // 로딩 상태 종료
+      setIsSubmitting(false);
     }
   };
 
@@ -118,6 +115,7 @@ const CrewNoticeCreateTemplate: React.FC = () => {
     setImagePaths(tempImagePaths);
     setCroppedImages(tempCroppedImages);
     setIsCropped(false);
+    setIsWarningVisible(true);
   };
 
   const handleCrop = (index: number) => {
@@ -162,6 +160,7 @@ const CrewNoticeCreateTemplate: React.FC = () => {
   const handleCropAll = () => {
     if (!isCropped) {
       imagePaths.forEach((_, index) => handleCrop(index));
+      setIsWarningVisible(false);
     }
     setIsCropped(!isCropped);
   };
@@ -171,6 +170,7 @@ const CrewNoticeCreateTemplate: React.FC = () => {
     setCroppedImages([]);
     setCroppedFiles([]);
     setIsCropped(false);
+    setIsWarningVisible(true);
   };
 
   const closeModal = () => {
@@ -225,8 +225,11 @@ const CrewNoticeCreateTemplate: React.FC = () => {
                       </>
                     )}
                     <button
-                      onClick={handleCropAll}
-                      className="absolute bottom-8 right-3 z-1 p-2 rounded-full bg-white bg-opacity-50"
+                      onClick={() => {
+                        handleCropAll();
+                        console.log("Handle Crop All button clicked");
+                      }}
+                      className="absolute bottom-8 right-3 z-1 p-2 rounded-full bg-white bg-opacity-60"
                     >
                       {isCropped ? <CropButton /> : <CheckButton />}
                     </button>
@@ -241,7 +244,10 @@ const CrewNoticeCreateTemplate: React.FC = () => {
               </p>
             )}
             <button
-              onClick={handleClearImages}
+              onClick={() => {
+                handleClearImages();
+                console.log("Handle Clear Images button clicked");
+              }}
               className="mt-2 button-color text-light p-2 rounded"
             >
               이미지 초기화

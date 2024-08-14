@@ -220,7 +220,7 @@ const CrewNoticeDetailTemplate: React.FC = () => {
         <div className="mt-1 mx-3">
           <div>
             <span className="font-bold">{crewName} </span>
-            {noticeData.content}
+            <span style={{ whiteSpace: "pre-line" }}>{noticeData.content}</span>
           </div>
         </div>
       </div>

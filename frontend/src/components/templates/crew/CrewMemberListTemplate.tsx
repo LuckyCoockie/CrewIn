@@ -71,7 +71,7 @@ const CrewMemberListTemplate: React.FC = () => {
           <img
             src={member.imageUrl}
             alt={member.nickname}
-            className="w-full h-full object-cover rounded-full"
+            className="w-full h-full object-cover rounded-full border"
           />
         ) : (
           <CrewinLogo className="w-full h-full object-cover rounded-full" />
