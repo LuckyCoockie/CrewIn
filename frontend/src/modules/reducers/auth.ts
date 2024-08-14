@@ -95,7 +95,7 @@ const authReducer = (
       };
     }
     case ON_SUCCESS:
-      return { ...state, loading: true };
+      return { ...state, loading: false };
     default:
       return state;
   }
