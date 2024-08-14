@@ -7,6 +7,11 @@ import ErrorResponseDto from "../../utils/errorCode/ErrorResponseDto";
 import store from "../../../modules";
 import { endLoading, loading } from "../../../modules/reducers/auth";
 import { clearAuth, setAuth } from "../../../util/auth";
+import {
+  addCallback,
+  clearCallback,
+  runCallback,
+} from "../../modules/callback";
 
 const BASE_URL = import.meta.env.VITE_PROXY_URL;
 
@@ -19,6 +24,17 @@ api.interceptors.response.use(
   },
   async (error: AxiosError<ErrorResponseDto>) => {
     if (error.response && error.response.status === 401) {
+      if (store.getState().auth.loading) {
+        return new Promise((resolve) => {
+          const callback = (token: string) => {
+            if (error.config?.headers) {
+              error.config.headers.Authorization = `Bearer ${token}`;
+            }
+            resolve(api(error.config ?? {}));
+          };
+          store.dispatch(addCallback(callback));
+        });
+      }
       try {
         store.dispatch(loading());
 
@@ -36,10 +52,12 @@ api.interceptors.response.use(
         }
 
         setAuth(response.data.data);
+        runCallback(accessToken);
 
         return api(error.config ?? {});
       } catch (refreshError) {
         clearAuth();
+        store.dispatch(clearCallback());
         return Promise.reject(refreshError);
       }
     }
