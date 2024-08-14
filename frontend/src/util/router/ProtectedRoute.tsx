@@ -2,7 +2,7 @@ import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { RootState } from "../../modules";
-import { refreshToken } from "../../apis/api/authorization";
+// import { refreshToken } from "../../apis/api/authorization";
 import SplashPage from "./SplashPage";
 import BottomBarOrganism from "../../components/organisms/BottomBarOrganism";
 import useIsMobile from "../windowSize/useIsMobile";
