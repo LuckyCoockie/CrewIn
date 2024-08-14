@@ -6,7 +6,6 @@ import {
 import Tmap from "../apis/api/tmap/instance";
 import store from "../modules";
 import { clearAccessToken, setAccessToken } from "../modules/reducers/auth";
-import { debounce } from "lodash";
 
 export const setAuth = (dto: { accessToken: string; memberId: number }) => {
   console.log("setAuth");
