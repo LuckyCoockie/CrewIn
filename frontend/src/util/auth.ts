@@ -14,10 +14,18 @@ export const setAuth = debounce(
     localStorage.setItem("AUTH", currentTime);
     store.dispatch(setAccessToken(dto.accessToken, dto.memberId));
     store.dispatch(
-      addInterceptor("auth", setTokenInterceptors(dto.accessToken))
+      addInterceptor(
+        "auth",
+        setTokenInterceptors(dto.accessToken),
+        clearTokenInterceptors
+      )
     );
     store.dispatch(
-      addInterceptor("tmap", Tmap.setTokenInterceptors(dto.accessToken))
+      addInterceptor(
+        "tmap",
+        Tmap.setTokenInterceptors(dto.accessToken),
+        Tmap.clearTokenInterceptors
+      )
     );
   },
   300

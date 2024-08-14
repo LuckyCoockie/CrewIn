@@ -33,7 +33,7 @@ api.interceptors.response.use(
         const { accessToken } = response.data.data;
 
         if (error.config?.headers) {
-          error.config.headers.Authorization = `Bearer ${accessToken}`;
+          error.config.headers["Authorization"] = `Bearer ${accessToken}`;
         }
 
         return api(error.config ?? {});

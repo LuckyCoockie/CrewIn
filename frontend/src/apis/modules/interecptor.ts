@@ -9,6 +9,7 @@ type AddInterceptorAction = {
   type: typeof ADD_INTERCEPTOR;
   key: string;
   interceptor: number;
+  onRemove: (interceptor: number) => void;
 };
 
 type RemoveInterceptorAction = {
@@ -24,11 +25,13 @@ export type InterceptorActionType =
 /* ----------------- 액션 함수 ------------------ */
 export const addInterceptor = (
   key: string,
-  interceptor: number
+  interceptor: number,
+  onRemove: (interceptor: number) => void
 ): AddInterceptorAction => ({
   type: ADD_INTERCEPTOR,
   key: key,
   interceptor: interceptor,
+  onRemove: onRemove,
 });
 
 export const removeInterceptor = (
@@ -57,10 +60,10 @@ const interceptorReducer = (
 ): InterceptorState => {
   switch (action.type) {
     case ADD_INTERCEPTOR: {
+      const interceptor = state.interceptors.get(action.key);
+      if (interceptor) action.onRemove(interceptor);
       state.interceptors.set(action.key, action.interceptor);
-      return {
-        interceptors: state.interceptors,
-      };
+      return { interceptors: state.interceptors };
     }
     case REMOVE_INTERCEPTOR: {
       const interceptor = state.interceptors.get(action.key);

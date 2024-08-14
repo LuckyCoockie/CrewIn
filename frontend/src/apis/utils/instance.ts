@@ -43,13 +43,18 @@ api.interceptors.response.use(
           };
         }>(`${BASE_URL}/member/reissue`, null, { withCredentials: true });
 
-        setAuth(response.data.data);
-
         const { accessToken } = response.data.data;
 
+        console.log(`Interceptor1 : ${accessToken}`);
+        console.log(`Interceptor2 : ${error.config}`);
+
         if (error.config?.headers) {
-          error.config.headers.Authorization = `Bearer ${accessToken}`;
+          error.config.headers["Authorization"] = `Bearer ${accessToken}`;
         }
+
+        setAuth(response.data.data);
+
+        console.log(`Interceptor3 : ${error.config}`);
 
         return api(error.config ?? {});
       } catch (refreshError) {
