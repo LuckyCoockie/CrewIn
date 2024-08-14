@@ -2,10 +2,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type OwnProps = {
   initSeconds: number;
+  render: (seconds: string) => React.ReactNode;
   onEnd?: () => void;
 };
 
-const TimerOrganism: React.FC<OwnProps> = ({ initSeconds, onEnd }) => {
+const TimerOrganism: React.FC<OwnProps> = ({
+  initSeconds,
+  render,
+  onEnd,
+}) => {
   const [seconds, setSeconds] = useState<number>(initSeconds);
 
   const timerRef = useRef<number | null>(null);
@@ -37,11 +42,7 @@ const TimerOrganism: React.FC<OwnProps> = ({ initSeconds, onEnd }) => {
     [seconds]
   );
 
-  return (
-    <div className="w-full bg-[#2b2f401a] py-4 px-8 text-center disable rounded-lg font-bold">
-      {parsedSecond}
-    </div>
-  );
+  return render(parsedSecond);
 };
 
 export default TimerOrganism;
