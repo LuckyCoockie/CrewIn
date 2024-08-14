@@ -205,15 +205,6 @@ const SessionEditOrganism: React.FC = () => {
   const watchedSessionStart = watch("sessionstart");
   const watchedSessionEnd = watch("sessionend");
 
-  useEffect(() => {
-    if (watchedSessionStart) {
-      setValue(
-        "sessionend",
-        new Date(watchedSessionStart.getTime() + 1000 * 60 * 10)
-      );
-    }
-  }, [watchedSessionStart, setValue]);
-
   const closeModal = () => {
     setErrorMessage(null); // 모달 닫기
   };
