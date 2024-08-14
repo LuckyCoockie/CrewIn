@@ -32,12 +32,12 @@ api.interceptors.response.use(
   async (error: AxiosError<ErrorResponseDto>) => {
     if (error.response && error.response.status === 401) {
       if (store.getState().auth.loading) {
-        return new Promise(() => {
+        return new Promise((reslove) => {
           const callback = (token: string) => {
             if (error.config?.headers) {
               error.config.headers["Authorization"] = `Bearer ${token}`;
             }
-            api(error.config ?? {});
+            reslove(api(error.config ?? {}));
           };
           store.dispatch(addCallback(callback));
         });
