@@ -45,18 +45,13 @@ api.interceptors.response.use(
 
         const { accessToken } = response.data.data;
 
-        console.log(`Interceptor1 : ${accessToken}`);
-        console.log(`Interceptor2 : ${error.config?.headers.Authorization}`);
-
         if (error.config?.headers) {
           error.config.headers["Authorization"] = `Bearer ${accessToken}`;
         }
 
         setAuth(response.data.data);
 
-        console.log(`Interceptor3 : ${error.config?.headers.Authorization}`);
-
-        return api(error.config ?? {});
+        return axios(error.config ?? {});
       } catch (refreshError) {
         clearAuth();
         return Promise.reject(refreshError);
