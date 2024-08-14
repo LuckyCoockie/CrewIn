@@ -8,6 +8,7 @@ import store from "../../modules";
 import { loading, endLoading } from "../../modules/reducers/auth";
 import { convertKeysToKebabCase } from "./querystring.ts/camelToKebab";
 import { clearAuth, setAuth } from "../../util/auth";
+import { addCallback, clearCallback, runCallback } from "../modules/callback";
 
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -30,6 +31,17 @@ api.interceptors.response.use(
   },
   async (error: AxiosError<ErrorResponseDto>) => {
     if (error.response && error.response.status === 401) {
+      if (store.getState().auth.loading) {
+        return new Promise((resolve) => {
+          const callback = (token: string) => {
+            if (error.config?.headers) {
+              error.config.headers.Authorization = `Bearer ${token}`;
+            }
+            resolve(api(error.config ?? {}));
+          };
+          store.dispatch(addCallback(callback));
+        });
+      }
       try {
         store.dispatch(loading());
 
@@ -47,10 +59,12 @@ api.interceptors.response.use(
         }
 
         setAuth(response.data.data);
+        runCallback(accessToken);
 
         return api(error.config ?? {});
       } catch (refreshError) {
         clearAuth();
+        store.dispatch(clearCallback());
         return Promise.reject(refreshError);
       }
     }
