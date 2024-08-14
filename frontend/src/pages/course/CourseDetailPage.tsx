@@ -11,8 +11,6 @@ import { Point } from "../../apis/api/tmap/directionApi.ts";
 import { reversGeocodingApi } from "../../apis/api/tmap/geocodeApi.ts";
 import { Navigate, useParams } from "react-router";
 import BackHeaderMediumOrganism from "../../components/organisms/BackHeaderMediumOrganism.tsx";
-import { useSelector } from "react-redux";
-import { RootState } from "../../modules/index.ts";
 
 const CourseDetailPage: React.FC = () => {
   const { courseId } = useParams();
@@ -74,18 +72,13 @@ const CourseDetailPage: React.FC = () => {
     };
   };
 
-  const { accessToken } = useSelector((state: RootState) => state.auth);
-
   const parseArea = async (point: Point) => {
-    const address = await reversGeocodingApi(
-      {
-        lat: point.latitude,
-        lon: point.longitude,
-        addressType: "A10",
-        newAddressExtend: "Y",
-      },
-      accessToken
-    );
+    const address = await reversGeocodingApi({
+      lat: point.latitude,
+      lon: point.longitude,
+      addressType: "A10",
+      newAddressExtend: "Y",
+    });
 
     return `${address.addressInfo.city_do} ${address.addressInfo.gu_gun} ${address.addressInfo.legalDong}`;
   };
