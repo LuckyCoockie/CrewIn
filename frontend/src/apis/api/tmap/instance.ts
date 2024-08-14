@@ -75,10 +75,12 @@ export const setTokenInterceptors = (token: string) => {
       return Promise.reject(error);
     }
   );
+  console.log(`Tmap setTokenInterceptors ${interceptorId}`);
   return interceptorId;
 };
 
 export const clearTokenInterceptors = (interceptorId: number) => {
+  console.log(`Tmap clearTokenInterceptors ${interceptorId}`);
   api.interceptors.request.eject(interceptorId);
 };
 
