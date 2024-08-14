@@ -26,7 +26,7 @@ api.interceptors.response.use(
             accessToken: string;
             memberId: number;
           };
-        }>(`${BASE_URL}/member/reissue`, null, { withCredentials: true });
+        }>(`${BASE_URL}/api/member/reissue`, null, { withCredentials: true });
 
         setAuth(response.data.data);
 
