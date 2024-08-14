@@ -37,7 +37,9 @@ const ProtectedRoute = () => {
   );
   const { isMobile } = useIsMobile();
 
-  if (loading || !isAuthenticated) return <SplashPage />;
+  console.log(loading, isAuthenticated);
+
+  if (loading && !isAuthenticated) return <SplashPage />;
 
   return (
     <div className={"md:ml-[97.93px] lg:ml-[176px]"}>
