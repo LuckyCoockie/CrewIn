@@ -35,7 +35,7 @@ api.interceptors.response.use(
         return new Promise((resolve) => {
           const callback = (token: string) => {
             if (error.config?.headers) {
-              error.config.headers.Authorization = `Bearer ${token}`;
+              error.config.headers["Authorization"] = `Bearer ${token}`;
             }
             resolve(api(error.config ?? {}));
           };
