@@ -18,3 +18,13 @@ export const fetchNotifications =
     const response = await api.get("/notification");
     return response.data;
   };
+
+export type CheckNotificationsResponseDto = {
+  exist: boolean;
+};
+
+export const checkNotificationsExist =
+  async (): Promise<CheckNotificationsResponseDto> => {
+    const response = await api.get("/notification/exist");
+    return response.data;
+  };
