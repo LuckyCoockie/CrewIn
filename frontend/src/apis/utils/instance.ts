@@ -5,7 +5,7 @@ import axios, {
 } from "axios";
 import ErrorResponseDto from "./errorCode/ErrorResponseDto";
 import store from "../../modules";
-import { loading } from "../../modules/reducers/auth";
+import { loading, onSuccess } from "../../modules/reducers/auth";
 import { convertKeysToKebabCase } from "./querystring.ts/camelToKebab";
 import { clearAuth, setAuth } from "../../util/auth";
 
@@ -23,13 +23,10 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   return config;
 });
 
-api.interceptors.response.use((response: AxiosResponse) => {
-  return { ...response, data: response.data.data };
-});
-
 api.interceptors.response.use(
   (response: AxiosResponse) => {
-    return response;
+    store.dispatch(onSuccess());
+    return { ...response, data: response.data.data };
   },
   async (error: AxiosError<ErrorResponseDto>) => {
     if (error.response && error.response.status === 401) {
