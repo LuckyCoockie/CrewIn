@@ -116,7 +116,6 @@ const LoginOrganism: React.FC = () => {
     try {
       // 회원가입 API 호출
       await joinMember(submitData);
-      console.log("회원가입 성공");
       setModalTitle("회원가입 성공");
       setModalMessage("회원가입에 성공했습니다. 로그인해주세요.");
       setIsModalOpen(true);
@@ -165,7 +164,6 @@ const LoginOrganism: React.FC = () => {
     try {
       const response = await getCodeCheck({ email, code: verificationCode });
       if (response.verified) {
-        console.log("인증번호 일치");
         setIsCodeVerified(true);
         setModalTitle("알림");
         setModalMessage("인증되었습니다.");

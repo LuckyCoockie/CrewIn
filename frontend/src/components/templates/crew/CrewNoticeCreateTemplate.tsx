@@ -227,7 +227,6 @@ const CrewNoticeCreateTemplate: React.FC = () => {
                     <button
                       onClick={() => {
                         handleCropAll();
-                        console.log("Handle Crop All button clicked");
                       }}
                       className="absolute bottom-8 right-3 z-1 p-2 rounded-full bg-white bg-opacity-60"
                     >
@@ -246,7 +245,6 @@ const CrewNoticeCreateTemplate: React.FC = () => {
             <button
               onClick={() => {
                 handleClearImages();
-                console.log("Handle Clear Images button clicked");
               }}
               className="mt-2 button-color text-light p-2 rounded"
             >

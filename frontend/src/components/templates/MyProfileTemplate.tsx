@@ -28,7 +28,6 @@ import Modal from "../molecules/ModalMolecules";
 const MyProfileTemplate: React.FC = () => {
   const navigate = useNavigate();
 
-  console.log("여기는 내페이지");
   const [currentTab, setCurrentTab] = useState<string>("러닝 정보");
   const handleTabClick = (tab: string) => {
     setCurrentTab(tab);

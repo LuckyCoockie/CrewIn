@@ -17,7 +17,6 @@ const MyPageHeaderOrganism: React.FC = () => {
   };
 
   const handleSetting = () => {
-    console.log("유저 정보 수정");
     navigate(`/info`);
   };
 

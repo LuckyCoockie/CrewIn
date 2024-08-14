@@ -69,11 +69,7 @@ const CrewDetailTemplate: React.FC = () => {
   const isUserCrewMember = !!userCrew;
   const userPosition = userCrew?.position;
 
-  console.log("isUserCrewMember:", isUserCrewMember);
-  console.log("userPosition:", userPosition);
-
   const handleTabClick = (tab: string) => {
-    console.log("Tab clicked:", tab);
     setCurrentTab(tab);
   };
 

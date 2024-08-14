@@ -108,7 +108,6 @@ const CrewEditOrganism: React.FC = () => {
 
   // 추가: 파일이 변경되었는지 감지하는 상태
   const [isFilesChanged, setIsFilesChanged] = useState(false);
-  console.log(isFilesChanged);
 
   useEffect(() => {
     if (crewData) {
@@ -177,7 +176,6 @@ const CrewEditOrganism: React.FC = () => {
       })
       .then(() => {
         setIsSubmit(false);
-        console.log("수정 완료");
       })
       .catch((error) => {
         setIsSubmit(false);

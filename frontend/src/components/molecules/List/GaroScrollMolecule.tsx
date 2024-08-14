@@ -19,8 +19,6 @@ const GaroScrollMolecule = <T,>({
   router,
   routerId,
 }: GaroScrollProps<T>) => {
-  console.log(propsData);
-
   return (
     <div
       className="whitespace-nowrap overflow-x-auto flex items-center space-x-3"

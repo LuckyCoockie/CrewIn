@@ -15,8 +15,6 @@ const ImageButton: React.FC<Image> = ({ src, alt, router, routerId }) => {
     if (routerId === undefined && router) {
       navigate(router);
     } else {
-      console.log(`/${router}/${routerId}`);
-
       navigate(`/${router}/${routerId}`);
     }
   };

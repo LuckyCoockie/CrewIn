@@ -30,8 +30,6 @@ const CrewListItem = ({
   const navigate = useNavigate();
 
   const handleCrewDetail = (crewId: number) => {
-    console.log(crewId);
-
     navigate(`/crew/detail/${crewId}`);
   };
 

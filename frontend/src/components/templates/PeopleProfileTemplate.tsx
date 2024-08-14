@@ -10,9 +10,7 @@ import SpinnerComponent from "../atoms/SpinnerComponent";
 import ErrorText from "../atoms/ErrorText";
 
 const PeopleProfileTemplate: React.FC = () => {
-  console.log("여기는 남의 페이지");
   const { memberId } = useParams<{ memberId: string }>();
-  console.log(memberId);
 
   const navigate = useNavigate();
   const numericMemberId = Number(memberId);
