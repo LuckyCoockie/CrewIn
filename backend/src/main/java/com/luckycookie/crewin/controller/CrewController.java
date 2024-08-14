@@ -99,6 +99,15 @@ public class CrewController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "크루 공지 조회를 성공했습니다.", crewService.getCrewNoticeList(pageNo, crewId, customUser)));
     }
 
+    // 크루 공지 상세 조회
+    @GetMapping("/notice")
+    public ResponseEntity<BaseResponse<PostResponse.PostItem>> getNoticeDetail(
+            @RequestParam("crew-id") Long crewId,
+            @RequestParam("notice-id") Long noticeId,
+            @AuthenticationPrincipal CustomUser customUser) {
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당 공지 상세 조회를 성공했습니다.", crewService.getNoticeDetail(customUser, crewId, noticeId)));
+    }
+
     // 크루 공지 수정
     @PutMapping("/notice/{notice-id}")
     public ResponseEntity<BaseResponse<Void>> updateNotice(
@@ -164,14 +173,5 @@ public class CrewController {
     public ResponseEntity<BaseResponse<Void>> updateCrewCaptain(@AuthenticationPrincipal CustomUser customUser, @RequestBody UpdateCrewPositionRequest updateCrewPositionRequest) {
         crewService.updateCrewCaptain(updateCrewPositionRequest, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "권한을 변경하는데 성공했습니다."));
-    }
-
-    // 크루 공지 상세 조회
-    @GetMapping("/notice")
-    public ResponseEntity<BaseResponse<PostResponse.PostItem>> getNoticeDetail(
-            @RequestParam("crew-id") Long crewId,
-            @RequestParam("notice-id") Long noticeId,
-            @AuthenticationPrincipal CustomUser customUser) {
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당 공지 상세 조회를 성공했습니다.", crewService.getNoticeDetail(customUser, crewId, noticeId)));
     }
 }

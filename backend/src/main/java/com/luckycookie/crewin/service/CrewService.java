@@ -161,7 +161,7 @@ public class CrewService {
             }
 
             // 작성자 제외한 멤버들에 대한 알림 생성
-            List<MemberCrew> memberCrewList = memberCrewRepository.findByCrew(crew);
+            List<MemberCrew> memberCrewList = memberCrewRepository.findJoinedMembersByCrew(crew);
             for (MemberCrew memberCrew : memberCrewList) {
                 Member crewMember = memberCrew.getMember();
                 // 작성자 자신은 제외하고 크루원에게 알림을 생성
@@ -457,7 +457,7 @@ public class CrewService {
         Member member = memberRepository.findFirstByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
 
         Crew crew = crewRepository.findById(crewMemberRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
-        Position position = memberCrewRepository.findPositionByMemberAndCrew(member, crew).orElseThrow(NotFoundCrewException::new);
+        Position position = memberCrewRepository.findPositionByMemberAndCrew(member, crew).orElseThrow(NotFoundMemberCrewException::new);
 
         // 초대 당한 사람 (memberId)
         Member invitedMember = memberRepository.findById(crewMemberRequest.getMemberId()).orElseThrow(NotFoundMemberException::new);
@@ -549,7 +549,7 @@ public class CrewService {
         // 강퇴 시키는 사람 (CAPTAIN)
         Member admin = memberRepository.findFirstByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
         Crew adminCrew = crewRepository.findById(crewMemberRequest.getCrewId()).orElseThrow(NotFoundCrewException::new);
-        Position adminPosition = memberCrewRepository.findPositionByMemberAndCrew(admin, adminCrew).orElseThrow();
+        Position adminPosition = memberCrewRepository.findPositionByMemberAndCrew(admin, adminCrew).orElseThrow(NotFoundMemberCrewException::new);
 
         // 강퇴 당하는 사람 (MEMBER)
         Member member = memberRepository.findById(crewMemberRequest.getMemberId()).orElseThrow(NotFoundMemberException::new);

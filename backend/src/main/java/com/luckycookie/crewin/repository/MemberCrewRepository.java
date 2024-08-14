@@ -4,7 +4,6 @@ import com.luckycookie.crewin.domain.Crew;
 import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.domain.MemberCrew;
 import com.luckycookie.crewin.domain.enums.Position;
-import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,10 +18,7 @@ import java.util.Optional;
 @Repository
 public interface MemberCrewRepository extends JpaRepository<MemberCrew, Long> {
 
-    @Query(value = "SELECT mc.isJoined FROM MemberCrew mc WHERE mc.member = :member AND mc.crew = :crew")
-    Optional<Boolean> findIsJoinedByMemberAndCrew(Member member, Crew crew);
-
-    @Query("SELECT mc.position FROM MemberCrew mc WHERE mc.member = :member and mc.crew = :crew")
+    @Query("SELECT mc.position FROM MemberCrew mc WHERE mc.member = :member and mc.crew = :crew and mc.isJoined = true")
     Optional<Position> findPositionByMemberAndCrew(Member member, Crew crew);
 
 
@@ -39,7 +35,8 @@ public interface MemberCrewRepository extends JpaRepository<MemberCrew, Long> {
     boolean existsByMemberAndCrew(Member member, Crew crew);
 
     // 해당 크루에 있는 크루원 조회
-    List<MemberCrew> findByCrew(Crew crew);
+    @Query("select mc from MemberCrew mc join fetch mc.member where mc.crew = :crew and mc.isJoined = true")
+    List<MemberCrew> findJoinedMembersByCrew(Crew crew);
 
     @Query("SELECT mc FROM MemberCrew mc WHERE mc.member = :member AND mc.isJoined = true")
     List<MemberCrew> findJoinedMemberCrewsByMember(Member member);
