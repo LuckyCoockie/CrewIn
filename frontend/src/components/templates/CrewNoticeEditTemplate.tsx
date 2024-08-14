@@ -47,7 +47,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // 오류 메시지 상태 추가
-  const [isWarningVisible, setIsWarningVisible] = useState<boolean>(true); // 경고 메시지 상태 추가
+  const [, setIsWarningVisible] = useState<boolean>(true); // 경고 메시지 상태 추가
 
   const { data: noticeData } = useQuery<CrewNoticeDetailResponseDto, Error>(
     ["getNoticeInfo", crewId, noticeId],

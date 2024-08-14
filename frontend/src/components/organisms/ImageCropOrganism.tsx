@@ -44,7 +44,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isWarningVisible, setIsWarningVisible] = useState<boolean>(true);
+  const [, setIsWarningVisible] = useState<boolean>(true);
 
   const cropperRefs = useRef<(ReactCropperElement | null)[]>([]);
 
