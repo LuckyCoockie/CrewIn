@@ -7,7 +7,7 @@ import callbackReducer from "../apis/modules/callback";
 const rootReducer = combineReducers({
   auth: authReducer,
   interceptor: interceptorReducer,
-  refreshQueue: callbackReducer,
+  callbackReducer: callbackReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

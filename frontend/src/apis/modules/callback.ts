@@ -2,13 +2,13 @@ type Callback = (token: string) => void;
 
 /* ----------------- 액션 타입 ------------------ */
 const BASE_ACTION_TYPE = "api/callback";
-export const ADD = `${BASE_ACTION_TYPE}/ADD`;
+export const ADD_CALLBACK = `${BASE_ACTION_TYPE}/ADD`;
 export const RUN_CALLBACK = `${BASE_ACTION_TYPE}/RUN_CALLBACK`;
-export const CLEAR = `${BASE_ACTION_TYPE}/CLEAR`;
+export const CLEAR_CALLBACK = `${BASE_ACTION_TYPE}/CLEAR`;
 
 /* ----------------- 액션 ------------------ */
-type AddAction = {
-  type: typeof ADD;
+type AddCallbackAction = {
+  type: typeof ADD_CALLBACK;
   callback: Callback;
 };
 
@@ -17,18 +17,18 @@ type RunCallbackAction = {
   token: string;
 };
 
-type ClearAction = {
-  type: typeof CLEAR;
+type ClearCallbackAction = {
+  type: typeof CLEAR_CALLBACK;
 };
 
 export type RefreshQueueActionType =
-  | AddAction
+  | AddCallbackAction
   | RunCallbackAction
-  | ClearAction;
+  | ClearCallbackAction;
 
 /* ----------------- 액션 함수 ------------------ */
-export const addCallback = (callback: Callback): AddAction => ({
-  type: ADD,
+export const addCallback = (callback: Callback): AddCallbackAction => ({
+  type: ADD_CALLBACK,
   callback: callback,
 });
 
@@ -37,8 +37,8 @@ export const runCallback = (token: string): RunCallbackAction => ({
   token: token,
 });
 
-export const clearCallback = (): ClearAction => ({
-  type: CLEAR,
+export const clearCallback = (): ClearCallbackAction => ({
+  type: CLEAR_CALLBACK,
 });
 
 /* ----------------- 모듈 상태 타입 ------------------ */
@@ -57,7 +57,7 @@ const callbackReducer = (
   action: RefreshQueueActionType
 ): RefreshQueue => {
   switch (action.type) {
-    case ADD: {
+    case ADD_CALLBACK: {
       state.queue.push(action.callback);
       return { queue: state.queue };
     }
@@ -66,7 +66,7 @@ const callbackReducer = (
       state.queue.forEach((callback) => callback(action.token));
       return { queue: [] };
     }
-    case CLEAR: {
+    case CLEAR_CALLBACK: {
       return { queue: [] };
     }
     default:

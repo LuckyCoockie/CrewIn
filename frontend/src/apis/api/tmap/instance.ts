@@ -25,6 +25,7 @@ api.interceptors.response.use(
   async (error: AxiosError<ErrorResponseDto>) => {
     if (error.response && error.response.status === 401) {
       if (store.getState().auth.loading) {
+        console.log("auth is loading");
         return new Promise((resolve) => {
           const callback = (token: string) => {
             if (error.config?.headers) {
