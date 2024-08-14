@@ -32,6 +32,8 @@ api.interceptors.response.use(
   async (error: AxiosError<ErrorResponseDto>) => {
     if (error.response && error.response.status === 401) {
       try {
+        clearAuth();
+
         const response = await axios.post<{
           data: {
             accessToken: string;
