@@ -78,7 +78,7 @@ const LeftBarOrganism: React.FC<Current> = (props) => {
             <SessionTabMolecule
               name="Session"
               tab={isTab && currentTab === "session"}
-              onClick={() => onTabSelected("session")}
+              onClick={() => onTabSelected("session?status=active")}
             />
           </div>
           <div className="w-full">
