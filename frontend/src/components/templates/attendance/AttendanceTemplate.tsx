@@ -178,14 +178,18 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
                 {isDuringAutoCheck &&
                   !isSessionHost &&
                   (isAttend ? (
-                    <>{"출석 완료"}</>
+                    <TimerOrganism
+                      initSeconds={leftTime}
+                      onEnd={() => setAutoCheckStatus("AFTER")}
+                      render={() => <>출석 완료</>}
+                    />
                   ) : (
                     <TimerOrganism
                       initSeconds={leftTime}
                       onEnd={() => setAutoCheckStatus("AFTER")}
                       render={() => (
                         <LargeAbleButton
-                          text="출석하기"
+                          text={`출석하기`}
                           onClick={handleGuestAttendanceClick}
                         />
                       )}

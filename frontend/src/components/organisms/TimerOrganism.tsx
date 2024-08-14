@@ -30,7 +30,7 @@ const TimerOrganism: React.FC<OwnProps> = ({
         return prevSeconds - 1;
       });
     }, 1000);
-  }, []);
+  }, [onEnd]);
 
   useEffect(() => startAndResetTimer(), [startAndResetTimer]);
 
