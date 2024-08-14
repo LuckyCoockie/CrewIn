@@ -44,7 +44,6 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
   const handleModalClose = () => {
     setIsModalOpen(false);
     if (selectedMember && originalPosition !== null) {
-      // 모달이 닫힐 때 원래 포지션으로 되돌림
       setMembers((prevMembers) =>
         prevMembers.map((m) =>
           m.email === selectedMember.email
@@ -226,8 +225,9 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
         className="flex-1 ml-3"
         onClick={() => navigate(`/profile/${member.memberId}`)}
       >
-        <div className="font-bold">{member.name}</div>
-        <div className="text-gray-600">{member.nickname}</div>
+        <span className="font-bold">{member.name + " "}</span>
+        <span className="text-gray-600 text-sm">{member.nickname}</span>
+      <div className="text-gray-600">세션 참가 {member.attendanceCount}회</div>
       </div>
       <div>
         {member.joined ? (
