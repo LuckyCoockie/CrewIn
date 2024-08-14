@@ -5,7 +5,7 @@ import axios, {
 } from "axios";
 import ErrorResponseDto from "../../utils/errorCode/ErrorResponseDto";
 import store from "../../../modules";
-import { loading } from "../../../modules/reducers/auth";
+import { endLoading, loading } from "../../../modules/reducers/auth";
 import { clearAuth, setAuth } from "../../../util/auth";
 
 const BASE_URL = import.meta.env.VITE_PROXY_URL;
@@ -14,6 +14,7 @@ export const api = axios.create({ baseURL: BASE_URL });
 
 api.interceptors.response.use(
   (response: AxiosResponse) => {
+    store.dispatch(endLoading());
     return response;
   },
   async (error: AxiosError<ErrorResponseDto>) => {
@@ -28,13 +29,13 @@ api.interceptors.response.use(
           };
         }>(`${BASE_URL}/api/member/reissue`, null, { withCredentials: true });
 
-        setAuth(response.data.data);
-
         const { accessToken } = response.data.data;
 
         if (error.config?.headers) {
           error.config.headers["Authorization"] = `Bearer ${accessToken}`;
         }
+
+        setAuth(response.data.data);
 
         return api(error.config ?? {});
       } catch (refreshError) {
