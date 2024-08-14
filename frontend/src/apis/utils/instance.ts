@@ -59,7 +59,7 @@ api.interceptors.response.use(
         }
 
         setAuth(response.data.data);
-        runCallback(accessToken);
+        store.dispatch(runCallback(accessToken));
 
         return api(error.config ?? {});
       } catch (refreshError) {

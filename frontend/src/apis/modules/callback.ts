@@ -62,7 +62,6 @@ const callbackReducer = (
       return { queue: state.queue };
     }
     case RUN_CALLBACK: {
-      console.log(`RUN_CALLBACK : ${state.queue.length}`);
       state.queue.forEach((callback) => callback(action.token));
       return { queue: [] };
     }
