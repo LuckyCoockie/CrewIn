@@ -174,7 +174,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
         <BackHeaderMediumOrganism text={"출석부"} />
         <InfoIcon className="ml-2" onClick={handleClickInfoModalConfirm} />
       </header>
-      <div className="pb-20 relative h-screen">
+      <div className="pb-20 relative">
         <AttendanceMemberListOrganism
           fetchData={fetchMemberList}
           isSessionHost={isSessionHost}
@@ -185,53 +185,55 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
           isSessionEnded={isSessionEnded}
           onAttendanceChange={handleAttendanceChange}
         />
-        <div className="mx-auto w-full max-w-[500px] absolute bottom-0 left-0 right-0 text-center z-50 px-2 pb-20 pt-5 bg-white font-bold">
-          {!isSessionStarted ? (
-            "출석 시작은 세션 시작 후 할 수 있습니다."
-          ) : isSessionEnded ? (
-            "세션이 종료되어 출석을 수정할 수 없습니다."
-          ) : (
-            <>
-              {isBeforeAutoCheck && isSessionHost && (
-                <LargeAbleButton
-                  text="자동 출석 시작"
-                  onClick={handleStartAttendanceClick}
-                />
-              )}
-              {isDuringAutoCheck && isSessionHost && (
-                <div className={`w-full text-center `}>
-                  {"자동 출석 종료 후 출석을 수정할 수 있습니다."}
-                  <TimerOrganism
-                    initSeconds={leftTime}
-                    onEnd={() => setAutoCheckStatus("AFTER")}
-                    render={(seconds) => (
-                      <div className="w-full bg-[#2b2f401a] py-4 px-8 text-center disable rounded-lg font-bold">
-                        {seconds}
-                      </div>
-                    )}
+        <div className="mx-auto w-full max-w-[500px] fixed bottom-0 left-0 right-0 text-center z-50 px-2 pb-4 pt-5 bg-white font-bold">
+          <div className="md:ml-[97.93px] lg:ml-[176px]">
+            {!isSessionStarted ? (
+              "출석 시작은 세션 시작 후 할 수 있습니다."
+            ) : isSessionEnded ? (
+              "세션이 종료되어 출석을 수정할 수 없습니다."
+            ) : (
+              <>
+                {isBeforeAutoCheck && isSessionHost && (
+                  <LargeAbleButton
+                    text="자동 출석 시작"
+                    onClick={handleStartAttendanceClick}
                   />
-                </div>
-              )}
-              {isDuringAutoCheck &&
-                !isSessionHost &&
-                (isAttend ? (
-                  <>{"출석 완료"}</>
-                ) : (
-                  <TimerOrganism
-                    initSeconds={leftTime}
-                    onEnd={() => setAutoCheckStatus("AFTER")}
-                    render={() => (
-                      <LargeAbleButton
-                        text="출석하기"
-                        onClick={handleGuestAttendanceClick}
-                      />
-                    )}
-                  />
-                ))}
-              {isAfterAutoCheck &&
-                "자동 출석이 종료되어 수동 출석만 가능합니다."}
-            </>
-          )}
+                )}
+                {isDuringAutoCheck && isSessionHost && (
+                  <div className={`w-full text-center `}>
+                    {"자동 출석 종료 후 출석을 수정할 수 있습니다."}
+                    <TimerOrganism
+                      initSeconds={leftTime}
+                      onEnd={() => setAutoCheckStatus("AFTER")}
+                      render={(seconds) => (
+                        <div className="w-full bg-[#2b2f401a] py-4 px-8 text-center disable rounded-lg font-bold">
+                          {seconds}
+                        </div>
+                      )}
+                    />
+                  </div>
+                )}
+                {isDuringAutoCheck &&
+                  !isSessionHost &&
+                  (isAttend ? (
+                    <>{"출석 완료"}</>
+                  ) : (
+                    <TimerOrganism
+                      initSeconds={leftTime}
+                      onEnd={() => setAutoCheckStatus("AFTER")}
+                      render={() => (
+                        <LargeAbleButton
+                          text="출석하기"
+                          onClick={handleGuestAttendanceClick}
+                        />
+                      )}
+                    />
+                  ))}
+                {isAfterAutoCheck &&
+                  "자동 출석이 종료되어 수동 출석만 가능합니다."}
+              </>
+            )}
+          </div>
         </div>
       </div>
       {isAttendanceModalOpen && (
