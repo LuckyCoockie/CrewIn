@@ -185,7 +185,12 @@ public class AttendanceService {
 
         // 출석이 시작했는지 체크
         // 출석 시간이 맞는지 체크(출석 시작부터 10분간)
-        if (session.getAttendanceStart() == null || LocalDateTime.now().isBefore(session.getAttendanceStart()) || LocalDateTime.now().isAfter(session.getAttendanceStart().plusMinutes(AUTO_CHECK_TIME))) {
+        if (session.getAttendanceStart() == null
+                || LocalDateTime.now().isBefore(session.getAttendanceStart())
+                || LocalDateTime.now().isAfter(session.getAttendanceStart().plusMinutes(AUTO_CHECK_TIME))
+                || LocalDateTime.now().isAfter(session.getEndAt())
+                || LocalDateTime.now().isBefore(session.getStartAt())
+        ) {
             throw new InvalidRequestTimeException();
         }
 
