@@ -119,7 +119,7 @@ const AlarmTemplate: React.FC = () => {
                 <img
                   src={alarm.senderThumbnail || CrewinLogo}
                   alt={alarm.senderName}
-                  className="w-8 h-8 rounded-full mr-2"
+                  className="w-8 h-8 rounded-full mr-2 border"
                 />
                 <div className="flex flex-col flex-grow">
                   {alarm.notificationType === "INVITATION" && (

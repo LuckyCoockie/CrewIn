@@ -47,6 +47,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // 오류 메시지 상태 추가
+  const [isWarningVisible, setIsWarningVisible] = useState<boolean>(true); // 경고 메시지 상태 추가
 
   const { data: noticeData } = useQuery<CrewNoticeDetailResponseDto, Error>(
     ["getNoticeInfo", crewId, noticeId],
@@ -125,6 +126,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
     setCroppedImages(tempCroppedImages);
     setIsCropped(false);
     setIsFilesChanged(true);
+    setIsWarningVisible(true); // 경고 메시지 표시
   };
 
   const handleCrop = (index: number) => {
@@ -171,6 +173,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
       imagePaths.forEach((_, index) => handleCrop(index));
     }
     setIsCropped(!isCropped);
+    setIsWarningVisible(false); // 경고 메시지 숨기기
   };
 
   const handleClearImages = () => {
@@ -179,6 +182,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
     setCroppedFiles([]);
     setIsCropped(false);
     setIsFilesChanged(false);
+    setIsWarningVisible(true); // 경고 메시지 표시
   };
 
   const checkUndefined = async (files: File[]) => {
@@ -271,7 +275,7 @@ const CrewNoticeEditTemplate: React.FC = () => {
                     )}
                     <button
                       onClick={handleCropAll}
-                      className="absolute bottom-8 right-3 z-1 p-2 rounded-full bg-white bg-opacity-50"
+                      className="absolute bottom-8 right-3 z-1 p-2 rounded-full bg-white bg-opacity-60"
                     >
                       {isCropped ? <CropButton /> : <CheckButton />}
                     </button>

@@ -44,6 +44,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isWarningVisible, setIsWarningVisible] = useState<boolean>(true);
 
   const cropperRefs = useRef<(ReactCropperElement | null)[]>([]);
 
@@ -102,10 +103,12 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
       ...tempOriginalCroppedImages,
     ]);
     setIsCropped(false);
+    setIsWarningVisible(true);
   };
 
   const handleCrop = (index: number) => {
     const cropperRef = cropperRefs.current[index];
+
     if (cropperRef && cropperRef.cropper) {
       const cropper = cropperRef.cropper;
       const croppedCanvas = cropper.getCroppedCanvas({
@@ -143,6 +146,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
       imagePaths.forEach((_, index) => handleCrop(index));
     }
     setIsCropped(!isCropped);
+    setIsWarningVisible(false);
   };
 
   const handleFinishEdit = (finalImage: string) => {
@@ -195,6 +199,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
     setCroppedImages([]);
     setOriginalCroppedImages([]);
     setIsCropped(false);
+    setIsWarningVisible(true);
   };
 
   const handleModalClose = () => {
@@ -245,7 +250,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
 
                       <button
                         onClick={() => setCurrentEditIndex(index)}
-                        className="absolute bottom-16 right-3 z-50 p-2 rounded-full bg-white bg-opacity-50"
+                        className="absolute bottom-16 right-3 z-50 p-2 rounded-full bg-white bg-opacity-60"
                       >
                         <EditButton />
                       </button>
@@ -253,7 +258,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
                   )}
                   <button
                     onClick={handleCropAll}
-                    className="absolute bottom-4 right-3 z-50 p-2 rounded-full bg-white bg-opacity-50"
+                    className="absolute bottom-4 right-3 z-50 p-2 rounded-full bg-white bg-opacity-60"
                   >
                     {isCropped ? <CropButton /> : <CheckButton />}
                   </button>
