@@ -68,7 +68,6 @@ api.interceptors.response.use(
 export const setTokenInterceptors = (token: string) => {
   const interceptorId = api.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-      console.log(`tmap setTokenInterceptors ${token}`);
       config.headers["Authorization"] = `Bearer ${token}`;
       return config;
     },
@@ -76,12 +75,10 @@ export const setTokenInterceptors = (token: string) => {
       return Promise.reject(error);
     }
   );
-  console.log(`tmap setTokenInterceptors ${interceptorId}`);
   return interceptorId;
 };
 
 export const clearTokenInterceptors = (interceptorId: number) => {
-  console.log(`tmap clearTokenInterceptors ${interceptorId}`);
   api.interceptors.request.eject(interceptorId);
 };
 

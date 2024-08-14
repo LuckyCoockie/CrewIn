@@ -61,15 +61,13 @@ const interceptorReducer = (
   switch (action.type) {
     case ADD_INTERCEPTOR: {
       const interceptor = state.interceptors.get(action.key);
-      console.log(`ADD_INTERCEPTOR ${action.key} ${action.interceptor} ${interceptor}`)
-      if (interceptor) action.onRemove(interceptor);
+      if (interceptor !== undefined) action.onRemove(interceptor);
       state.interceptors.set(action.key, action.interceptor);
       return { interceptors: state.interceptors };
     }
     case REMOVE_INTERCEPTOR: {
       const interceptor = state.interceptors.get(action.key);
-      console.log(`REMOVE_INTERCEPTOR ${action.key} ${interceptor}`)
-      if (!interceptor) return state;
+      if (interceptor === undefined) return state;
       action.callback(interceptor);
       state.interceptors.delete(action.key);
       return { interceptors: state.interceptors };
