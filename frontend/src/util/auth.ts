@@ -3,7 +3,10 @@ import {
   clearTokenInterceptors,
   setTokenInterceptors,
 } from "../apis/utils/instance";
-import Tmap from "../apis/api/tmap/instance";
+import {
+  setTokenInterceptors as setTmapTokenInterceptors,
+  clearTokenInterceptors as clearTmapTokenInterceptors,
+} from "../apis/api/tmap/instance";
 import store from "../modules";
 import { clearAccessToken, setAccessToken } from "../modules/reducers/auth";
 
@@ -21,8 +24,8 @@ export const setAuth = (dto: { accessToken: string; memberId: number }) => {
   store.dispatch(
     addInterceptor(
       "tmap",
-      Tmap.setTokenInterceptors(dto.accessToken),
-      Tmap.clearTokenInterceptors
+      setTmapTokenInterceptors(dto.accessToken),
+      clearTmapTokenInterceptors
     )
   );
 };
@@ -31,7 +34,7 @@ export const clearAuth = (error?: string) => {
   localStorage.removeItem("AUTH");
   store.dispatch(clearAccessToken(error));
   store.dispatch(removeInterceptor("auth", clearTokenInterceptors));
-  store.dispatch(removeInterceptor("tmap", Tmap.clearTokenInterceptors));
+  store.dispatch(removeInterceptor("tmap", clearTmapTokenInterceptors));
 };
 
 export const checkAuth = (): boolean => {

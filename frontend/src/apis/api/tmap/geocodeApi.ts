@@ -1,4 +1,4 @@
-import { api } from "./instance";
+import api from "./instance";
 
 export type Point = { latitude: number; longitude: number };
 
@@ -33,7 +33,7 @@ export type ReverseGeocodeResponseDto = {
 };
 
 export const reversGeocodingApi = async (
-  dto: ReverseGeocodeRequestDto,
+  dto: ReverseGeocodeRequestDto
 ): Promise<ReverseGeocodeResponseDto> => {
   const response = await api.get("/reversegeocoding/", {
     params: dto,

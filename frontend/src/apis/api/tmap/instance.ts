@@ -82,4 +82,4 @@ export const clearTokenInterceptors = (interceptorId: number) => {
   api.interceptors.request.eject(interceptorId);
 };
 
-export default { api, setTokenInterceptors, clearTokenInterceptors };
+export default api;
