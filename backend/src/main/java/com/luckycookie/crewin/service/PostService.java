@@ -343,7 +343,7 @@ public class PostService {
                 .map(post -> PostItem
                         .builder()
                         .id(post.getId())
-                        .authorName(post.getAuthor().getName())
+                        .authorName(post.getAuthor().getNickname())
                         .authorId(post.getAuthor().getId())
                         .content(post.getContent())
                         .heartCount(post.getHearts().size())
