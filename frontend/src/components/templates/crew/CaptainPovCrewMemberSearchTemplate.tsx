@@ -152,9 +152,13 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
           <CrewinLogo className="w-full h-full object-cover rounded-full" />
         )}
       </div>
-      <div className="flex-1 ml-3" onClick={() => navigate(`/profile/${member.memberId}`)}>
-        <div className="font-bold">{member.name}</div>
-        <div className="text-gray-600">{member.nickname}</div>
+      <div
+        className="flex-1 ml-3"
+        onClick={() => navigate(`/profile/${member.memberId}`)}
+      >
+        <span className="font-bold">{member.name + " "}</span>
+        <span className="text-gray-600 text-sm">{member.nickname}</span>
+      <div className="text-gray-600">세션 참가 {member.attendanceCount}회</div>
       </div>
       <div>
         {member.position === "CAPTAIN" ? (
