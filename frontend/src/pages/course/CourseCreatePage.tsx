@@ -2,7 +2,7 @@ import { useNavigate } from "react-router";
 import { createCourse } from "../../apis/api/course.ts";
 import { uploadImage } from "../../apis/api/presigned.ts";
 import CourseCreateTemplate from "../../components/templates/CourseCreateTemplate.tsx";
-import useGeolocation from "../../util/geolocation/gelocation.ts";
+import { useGeolocation } from "../../util/geolocation/gelocation.ts";
 import { NaverMapProvider } from "../../util/maps/naver_map/context.tsx";
 import { Point } from "../../apis/api/tmap/directionApi.ts";
 import { reversGeocodingApi } from "../../apis/api/tmap/geocodeApi.ts";

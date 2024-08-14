@@ -1,6 +1,6 @@
 import { Navigate, useLocation, useParams } from "react-router";
 import AttendanceTemplate from "../../components/templates/attendance/AttendanceTemplate";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ChangeAttendRequestDto,
   GetAttendanceMemberListResponseDto,
@@ -10,14 +10,17 @@ import {
   startAttendance,
 } from "../../apis/api/attendance";
 import { useGeolocation } from "../../util/geolocation/gelocation";
-import SpinnerComponent from "../../components/atoms/SpinnerComponent";
-import LargeAbleButton from "../../components/atoms/Button/LargeAbleButton";
-import crewinIcon from "../../assets/icons/crewinicon.svg";
+import { reversGeocodingApi } from "../../apis/api/tmap/geocodeApi";
+import Modal from "../../components/molecules/ModalMolecules";
 
 const AttendancePage: React.FC = () => {
   const { sessionId } = useParams();
-  const { location, error, refetch } = useGeolocation();
+  const { location } = useGeolocation();
+  const [spot, setSpot] = useState<string>();
   const { state } = useLocation();
+  const [isLocationErrorModalOpen, setIsLocationErrorModalOpenModalOpen] = useState(false);
+  const [isAttendanceErrorModalOpen, setIsAttendanceErrorModalOpen] =
+    useState(false);
 
   const getMemberList =
     useCallback(async (): Promise<GetAttendanceMemberListResponseDto> => {
@@ -35,7 +38,10 @@ const AttendancePage: React.FC = () => {
     }, [sessionId]);
 
   const onStartAttendanceClick = useCallback(async () => {
-    if (!sessionId || !location) return;
+    if (!sessionId || !location) {
+      setIsLocationErrorModalOpenModalOpen(true);
+      return;
+    }
 
     await startAttendance({
       sessionId: parseInt(sessionId),
@@ -52,55 +58,65 @@ const AttendancePage: React.FC = () => {
   );
 
   const onGuestAttendanceClick = useCallback(async () => {
-    if (!sessionId || !location) return;
+    if (!sessionId || !location) {
+      setIsLocationErrorModalOpenModalOpen(true);
+      return;
+    }
 
     await postAttend({
       sessionId: parseInt(sessionId),
       lat: location?.latitude,
       lng: location?.longitude,
+    }).catch(() => {
+      setIsAttendanceErrorModalOpen(true);
     });
   }, [location, sessionId]);
 
-  if (!sessionId) return <Navigate to={`/session?type=STANDARD`} replace />;
+  useEffect(() => {
+    if (!location) return;
+    reversGeocodingApi({
+      lat: location.latitude,
+      lon: location.longitude,
+      addressType: "A10",
+      newAddressExtend: "Y",
+    }).then((address) => {
+      setSpot(
+        `${address.addressInfo.city_do} ${address.addressInfo.gu_gun} ${address.addressInfo.legalDong}`
+      );
+    });
+  }, [location]);
 
-  if (!location) {
-    return (
-      <div className="flex justify-center items-center h-screen p-10">
-        {error ? (
-          <div className="text-center items-center w-[500px]">
-            <img src={crewinIcon} className="w-[125px]" />
-            <div className="text-xl pt-10 font-bold text-[#A7A7A7] text-center">
-              사용자 위치 권한이 필요합니다.
-            </div>
-            <div className="text-xl pb-10 font-bold text-[#A7A7A7] text-center">
-              권한 수정 후 재시도 해주세요.
-            </div>
-            <LargeAbleButton onClick={refetch} text={"재시도"} />
-          </div>
-        ) : (
-          <div>
-            위치정보를 받아오는 중입니다.
-            <SpinnerComponent />
-          </div>
-        )}
-      </div>
-    );
-  }
+  if (!sessionId) return <Navigate to={`/session?type=STANDARD`} replace />;
 
   if (!state) return <Navigate to={`/session/${sessionId}`} replace />;
 
   return (
-    <AttendanceTemplate
-      getMemberList={getMemberList}
-      isSessionHost={state ? state.isSessionHost : false}
-      onStartAttendanceClick={onStartAttendanceClick}
-      onHostAttendanceClick={onHostAttendanceClick}
-      onGuestAttendanceClick={onGuestAttendanceClick}
-      startAt={state.startAt}
-      endAt={state.endAt}
-      sessionId={parseInt(sessionId)}
-      location={location}
-    />
+    <>
+      <AttendanceTemplate
+        getMemberList={getMemberList}
+        isSessionHost={state ? state.isSessionHost : false}
+        onStartAttendanceClick={onStartAttendanceClick}
+        onHostAttendanceClick={onHostAttendanceClick}
+        onGuestAttendanceClick={onGuestAttendanceClick}
+        startAt={state.startAt}
+        endAt={state.endAt}
+        sessionId={parseInt(sessionId)}
+        location={spot}
+      />
+      {isLocationErrorModalOpen && (
+        <Modal title="출석 실패" onClose={() => setIsLocationErrorModalOpenModalOpen(false)}>
+          <p>사용자 위치 권한이 필요합니다. 권한 수정 후 재시도 해주세요.</p>
+        </Modal>
+      )}
+      {isAttendanceErrorModalOpen && (
+        <Modal title="출석 실패" onClose={() => setIsAttendanceErrorModalOpen(false)}>
+          <p>
+            출석에 실패하였습니다. 주최자의 거리가 100m 미만이여야 출석이
+            가능합니다.
+          </p>
+        </Modal>
+      )}
+    </>
   );
 };
 

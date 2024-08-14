@@ -10,7 +10,7 @@ type GeolocationError = {
   message: string;
 };
 
-const useGeolocation = () => {
+export const useGeolocation = () => {
   const [location, setCoord] = useState<Location | undefined>();
   const [error, setError] = useState<GeolocationError | null>(null);
 
@@ -43,4 +43,43 @@ const useGeolocation = () => {
   return { location, error, refetch };
 };
 
-export default useGeolocation;
+export const useWatchGeolocation = () => {
+  const [location, setLocation] = useState<Location | undefined>();
+  const [error, setError] = useState<GeolocationError | null>(null);
+  const [id, setId] = useState<number | undefined>();
+
+  const handleSuccess = (pos: GeolocationPosition) => {
+    const { latitude, longitude } = pos.coords;
+    const location = { latitude, longitude };
+    setLocation(location);
+    setError(null);
+  };
+
+  const handleError = (err: GeolocationPositionError) => {
+    setError({ code: err.code, message: err.message });
+  };
+
+  const watch = () => {
+    clear();
+    navigator.permissions
+      .query({ name: "geolocation" })
+      .then((permissionStatus) => {
+        if (permissionStatus.state === "denied") {
+          setError({ code: -1, message: permissionStatus.state });
+        } else {
+          setId(
+            navigator.geolocation.watchPosition(handleSuccess, handleError)
+          );
+        }
+      });
+  };
+
+  const clear = () => {
+    if (id) navigator.geolocation.clearWatch(id);
+    setError(null);
+  };
+
+  return { location, error, watch, clear };
+};
+
+export default { useGeolocation, useWatchGeolocation };

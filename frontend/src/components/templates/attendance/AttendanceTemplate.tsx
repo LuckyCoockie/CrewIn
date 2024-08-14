@@ -9,14 +9,10 @@ import AttendanceMemberListOrganism from "../../organisms/attendance/AttendanceM
 import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
 import TimerOrganism from "../../organisms/TimerOrganism";
 import ModalConfirm from "../../molecules/ModalConfirmMolecules";
-import { reversGeocodingApi } from "../../../apis/api/tmap/geocodeApi";
-import { Point } from "../../../apis/api/tmap/directionApi";
 import locationImage from "../../../assets/icons/location.png";
 import { IconTextComponent } from "../../atoms/text/IconText";
 import { ReactComponent as InfoIcon } from "../../../assets/icons/info_icon.svg";
 import Modal from "../../molecules/ModalMolecules";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../modules";
 
 type OwnProps = {
   onStartAttendanceClick: () => Promise<void>;
@@ -27,7 +23,7 @@ type OwnProps = {
   startAt: string;
   endAt: string;
   sessionId: number;
-  location: Point;
+  location?: string;
 };
 
 const AttendanceTemplate: React.FC<OwnProps> = ({
@@ -58,8 +54,6 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
 
   const [memberSessionId, setMemberSessionId] = useState<number>();
   const [isAttend, setIsAttend] = useState<boolean>(false);
-
-  const [spot, setSpot] = useState<string>();
 
   const [autoCheckStatus, setAutoCheckStatus] =
     useState<AutoCheckStatus>("BEFORE");
@@ -94,23 +88,9 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     return response.items;
   }, [getMemberList]);
 
-  const { accessToken } = useSelector((state: RootState) => state.auth);
-
   const handleStartAttendanceClick = useCallback(async () => {
-    const address = await reversGeocodingApi(
-      {
-        lat: location.latitude,
-        lon: location.longitude,
-        addressType: "A10",
-        newAddressExtend: "Y",
-      },
-      accessToken
-    );
-    setSpot(
-      `${address.addressInfo.city_do} ${address.addressInfo.gu_gun} ${address.addressInfo.legalDong}`
-    );
     setIsAttendanceModalOpen(true);
-  }, [accessToken, location.latitude, location.longitude]);
+  }, []);
 
   const handleAttendanceChange = useCallback(
     (data: { memberSessionId: number; isAttend: boolean }) => {
@@ -120,20 +100,8 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
   );
 
   const handleGuestAttendanceClick = useCallback(async () => {
-    const address = await reversGeocodingApi(
-      {
-        lat: location.latitude,
-        lon: location.longitude,
-        addressType: "A10",
-        newAddressExtend: "Y",
-      },
-      accessToken
-    );
-    setSpot(
-      `${address.addressInfo.city_do} ${address.addressInfo.gu_gun} ${address.addressInfo.legalDong}`
-    );
     setIsAttendanceModalOpen(true);
-  }, [accessToken, location.latitude, location.longitude]);
+  }, []);
 
   const handleClickAttendanceModalConfirm = useCallback(() => {
     if (isSessionHost) {
@@ -144,18 +112,12 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
         }, 100);
       });
     } else {
-      onGuestAttendanceClick()
-        .then(() => {
-          setTimeout(() => {
-            fetchMemberList();
-            setIsAttendanceModalOpen(false);
-          }, 100);
-        })
-        .catch(() => {
-          alert(
-            "출석에 실패하였습니다. 주최자의 거리가 100m 미만이여야 출석이 가능합니다."
-          );
-        });
+      onGuestAttendanceClick().then(() => {
+        setTimeout(() => {
+          fetchMemberList();
+          setIsAttendanceModalOpen(false);
+        }, 100);
+      });
     }
   }, [
     fetchMemberList,
@@ -248,7 +210,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
           <p>{`현재 위치를 확인해주세요.`}</p>
           <IconTextComponent
             icon={locationImage}
-            text={spot ?? "새로고침 해주세요."}
+            text={location ?? "사용자 위치 권한이 필요합니다."}
           />
         </ModalConfirm>
       )}
