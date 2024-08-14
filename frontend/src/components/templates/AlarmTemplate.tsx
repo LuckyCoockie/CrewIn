@@ -28,11 +28,9 @@ const AlarmTemplate: React.FC = () => {
       if (response.status === 204) {
         refetchAlarms();
       } else {
-        console.error("Failed to delete notification:", response);
         setModalMessage("알림 삭제에 실패했습니다.");
       }
     } catch (error) {
-      console.error("알림 삭제 요청 중 오류가 발생했습니다:", error);
       setModalMessage("알림 삭제 요청 중 오류가 발생했습니다.");
     }
   };
@@ -47,7 +45,6 @@ const AlarmTemplate: React.FC = () => {
       setModalMessage("크루 초대를 수락했습니다.");
       refetchAlarms();
     } catch (error) {
-      console.error("크루 초대 수락 중 오류가 발생했습니다:", error);
       setModalMessage("크루 초대 수락 중 오류가 발생했습니다.");
     }
   };
@@ -64,7 +61,6 @@ const AlarmTemplate: React.FC = () => {
       setModalMessage("크루 초대를 거절했습니다.");
       refetchAlarms();
     } catch (error) {
-      console.error("크루 초대 거절 중 오류가 발생했습니다:", error);
       setModalMessage("크루 초대 거절 중 오류가 발생했습니다.");
     }
   };

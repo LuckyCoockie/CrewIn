@@ -19,11 +19,6 @@ export type PostDetailResponseDto = {
 export const getPostDetail = async (
   id: number
 ): Promise<PostDetailResponseDto> => {
-  try {
-    const response = await api.get(`/post/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error("게시글 상세 조회 오류:", error);
-    throw error;
-  }
+  const response = await api.get(`/post/${id}`);
+  return response.data;
 };

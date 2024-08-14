@@ -107,8 +107,7 @@ const CrewCreateOrganism: React.FC = () => {
       .then((response) => {
         navigate(`/crew/detail/${response.crewId}`, { replace: true });
       })
-      .catch((error) => {
-        console.error("Crew created fail:", error);
+      .catch(() => {
         setErrorMessage("크루 생성 중 오류가 발생했습니다. 다시 시도해주세요.");
         setIsSubmitting(false); // 로딩 상태 종료
       });

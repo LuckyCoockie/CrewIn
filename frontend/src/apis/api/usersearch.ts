@@ -34,10 +34,8 @@ export const searchMembers = async (
     }
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Failed to fetch user search results:", error.message);
       throw new Error(`Failed to fetch user search results: ${error.message}`);
     } else {
-      console.error("Failed to fetch user search results:", error);
       throw new Error(
         "Failed to fetch user search results: An unknown error occurred."
       );

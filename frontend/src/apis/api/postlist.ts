@@ -22,13 +22,8 @@ export type GetPostListResponseDto = PageNationData<PostDto>;
 export const getPostList = async (
   pageNo: number
 ): Promise<GetPostListResponseDto> => {
-  try {
-    const response = await api.get("/post/home", {
-      params: { "page-no": pageNo },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("게시글 목록 조회 오류:", error);
-    throw error;
-  }
+  const response = await api.get("/post/home", {
+    params: { "page-no": pageNo },
+  });
+  return response.data;
 };

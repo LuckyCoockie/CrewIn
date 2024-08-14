@@ -82,9 +82,7 @@ const CrewNoticeDetailTemplate: React.FC = () => {
       setLikes((prevLikes) => prevLikes + 1);
       setIsHeartedState(true);
     },
-    onError: (error) => {
-      console.error("좋아요 처리 중 오류가 발생했습니다:", error);
-    },
+    onError: () => {},
   });
 
   const unlikeMutation = useMutation(deletePostHeart, {
@@ -93,9 +91,7 @@ const CrewNoticeDetailTemplate: React.FC = () => {
       setLikes((prevLikes) => prevLikes - 1);
       setIsHeartedState(false);
     },
-    onError: (error) => {
-      console.error("좋아요 취소 처리 중 오류가 발생했습니다:", error);
-    },
+    onError: () => {},
   });
 
   const handleLike = () => {
@@ -112,7 +108,6 @@ const CrewNoticeDetailTemplate: React.FC = () => {
   const handleShare = () => {
     const kakao = (window as any).Kakao;
     if (!kakao) {
-      console.error("Kakao SDK not loaded");
       return;
     }
 

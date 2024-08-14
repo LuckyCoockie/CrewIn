@@ -36,15 +36,10 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const albumRef = useRef<{ refreshGallery: () => void } | null>(null);
 
-  const {
-    data: detailData,
-    error: detailError,
-    refetch,
-  } = useQuery(["detailData", { sessionId }], () =>
-    fetchSessionDetailData({ sessionId: Number(sessionId) })
+  const { data: detailData, refetch } = useQuery(
+    ["detailData", { sessionId }],
+    () => fetchSessionDetailData({ sessionId: Number(sessionId) })
   );
-
-  if (detailError) console.error("detailError", detailError);
 
   const tabs = ["세션정보", "사진첩"];
   const isSessionStarted = detailData
@@ -71,7 +66,6 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
 
         window.URL.revokeObjectURL(url);
       } catch (error) {
-        console.error("Error downloading the image:", error);
         setIsErrorModalOpen(true);
       }
     }

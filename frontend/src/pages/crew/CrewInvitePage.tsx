@@ -59,7 +59,6 @@ const CrewInvitePage: React.FC = () => {
         setMembers((prevMembers) => [...prevMembers, ...response.items]);
         return response;
       } catch (error) {
-        console.error("Failed to fetch invite member data:", error);
         return { pageNo: 0, lastPageNo: 0, items: [] };
       }
     },
@@ -71,15 +70,11 @@ const CrewInvitePage: React.FC = () => {
 
     setInvitingMemberId(memberId);
 
-    try {
-      const response: CrewInviteResponseDto = await inviteCrewMember({
-        memberId,
-        crewId: Number(crewId),
-      });
-      console.log(response);
-    } catch (error) {
-      console.error("Invitation error:", error);
-    }
+    const response: CrewInviteResponseDto = await inviteCrewMember({
+      memberId,
+      crewId: Number(crewId),
+    });
+    console.log(response);
   };
 
   useEffect(() => {

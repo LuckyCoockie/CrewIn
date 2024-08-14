@@ -59,7 +59,6 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
         }
         return { ...response, items: sortedItems };
       } catch (error) {
-        console.error("크루원 데이터를 가져오는 중 오류 발생:", error);
         setError("크루원 데이터를 가져오는 중 오류가 발생했습니다.");
         return { pageNo: 0, lastPageNo: 0, items: [] };
       } finally {
@@ -126,11 +125,8 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
           );
         }
       } catch (error) {
-        console.error("권한 변경 오류:", error);
         setError("권한 변경에 실패했습니다.");
       }
-    } else {
-      console.error("Member not found:", email);
     }
   };
 
@@ -141,7 +137,10 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
       key={member.email}
       className="flex items-center p-2 border-b cursor-pointer hover:bg-gray-100"
     >
-      <div className="w-12 h-12 flex-shrink-0 border rounded-full" onClick={() => navigate(`/profile/${member.memberId}`)}>
+      <div
+        className="w-12 h-12 flex-shrink-0 border rounded-full"
+        onClick={() => navigate(`/profile/${member.memberId}`)}
+      >
         {member.imageUrl ? (
           <img
             src={member.imageUrl}
@@ -158,7 +157,9 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
       >
         <span className="font-bold">{member.name + " "}</span>
         <span className="text-gray-600 text-sm">{member.nickname}</span>
-      <div className="text-gray-600">세션 참가 {member.attendanceCount}회</div>
+        <div className="text-gray-600">
+          세션 참가 {member.attendanceCount}회
+        </div>
       </div>
       <div>
         {member.position === "CAPTAIN" ? (

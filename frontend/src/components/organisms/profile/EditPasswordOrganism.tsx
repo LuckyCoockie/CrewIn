@@ -59,7 +59,6 @@ export const EditPasswordOrganism = ({ onClose, onEdit }: OwnProps) => {
       setIsSubmit(true);
       onEdit(submitData, onClose).then(() => setIsSubmit(false));
     } catch (error) {
-      console.error("수정 실패");
       window.alert("이전 비밀번호를 확인하세요.");
     }
   };

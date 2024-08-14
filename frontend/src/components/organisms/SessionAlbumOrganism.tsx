@@ -61,32 +61,24 @@ const SessionAlbumOrganism = forwardRef(
     ) => {
       const files = event.target.files;
       if (files && files.length > 0) {
-        try {
-          const uploadedUrls = await Promise.all(
-            Array.from(files).map((file) => uploadImage(file))
-          );
+        const uploadedUrls = await Promise.all(
+          Array.from(files).map((file) => uploadImage(file))
+        );
 
-          const uploadDto: UploadSessionImageRequestDto = {
-            sessionId: sessionId,
-            sessionImageUrls: uploadedUrls,
-          };
-          await uploadSessionImages(uploadDto);
+        const uploadDto: UploadSessionImageRequestDto = {
+          sessionId: sessionId,
+          sessionImageUrls: uploadedUrls,
+        };
+        await uploadSessionImages(uploadDto);
 
-          await refreshGallery();
-          setFetchKey((prevKey) => prevKey + 1);
-        } catch (error) {
-          console.error("Image upload failed", error);
-        }
+        await refreshGallery();
+        setFetchKey((prevKey) => prevKey + 1);
       }
     };
 
     const refreshGallery = async () => {
-      try {
-        const updatedData = await getSessionAlbum(0, sessionId);
-        setImages(updatedData.items);
-      } catch (error) {
-        console.error("Failed to refresh gallery", error);
-      }
+      const updatedData = await getSessionAlbum(0, sessionId);
+      setImages(updatedData.items);
     };
 
     const removeImageFromState = (imageId: number) => {

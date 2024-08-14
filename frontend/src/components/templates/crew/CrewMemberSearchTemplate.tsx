@@ -10,7 +10,6 @@ import {
 } from "../../../apis/api/crewmemberlist";
 import InfiniteScrollComponent from "../../../util/paging/component/InfinityScrollComponent";
 
-
 const sortPositions: Record<string, number> = {
   CAPTAIN: 1,
   PACER: 2,
@@ -70,7 +69,6 @@ const CrewMemberSearchTemplate: React.FC = () => {
 
         return { ...data, items: sortedItems };
       } catch (error) {
-        console.error("크루원 데이터를 가져오는 중 오류 발생:", error);
         return { pageNo: 0, lastPageNo: 0, items: [] };
       }
     },
@@ -108,7 +106,9 @@ const CrewMemberSearchTemplate: React.FC = () => {
       >
         <span className="font-bold">{member.name + " "}</span>
         <span className="text-gray-600 text-sm">{member.nickname}</span>
-      <div className="text-gray-600">세션 참가 {member.attendanceCount}회</div>
+        <div className="text-gray-600">
+          세션 참가 {member.attendanceCount}회
+        </div>
       </div>
       <div className="flex gap-2">
         <button className="border border-gray-400 w-20 h-10 rounded-md text-sm">

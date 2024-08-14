@@ -5,16 +5,11 @@ export type CrewOutRequestDto = {
   crewId: number;
 };
 
-export type CrewOutResponseDto = {};
+export type CrewOutResponseDto = void;
 
 export const crewOut = async (
   dto: CrewOutRequestDto
 ): Promise<CrewOutResponseDto> => {
-  try {
-    const response = await api.delete("/crew/member", { data: dto });
-    return response.data;
-  } catch (error) {
-    console.error("크루 멤버 강퇴 오류:", error);
-    throw error;
-  }
+  const response = await api.delete("/crew/member", { data: dto });
+  return response.data;
 };

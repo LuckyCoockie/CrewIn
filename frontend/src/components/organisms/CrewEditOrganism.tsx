@@ -177,9 +177,8 @@ const CrewEditOrganism: React.FC = () => {
       .then(() => {
         setIsSubmit(false);
       })
-      .catch((error) => {
+      .catch(() => {
         setIsSubmit(false);
-        console.error("Crew edited fail:", error);
       });
   };
 
