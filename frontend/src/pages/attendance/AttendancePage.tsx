@@ -9,7 +9,7 @@ import {
   postAttend,
   startAttendance,
 } from "../../apis/api/attendance";
-import useGeolocation from "../../util/geolocation/gelocation";
+import { useGeolocation } from "../../util/geolocation/gelocation";
 import SpinnerComponent from "../../components/atoms/SpinnerComponent";
 import LargeAbleButton from "../../components/atoms/Button/LargeAbleButton";
 import crewinIcon from "../../assets/icons/crewinicon.svg";

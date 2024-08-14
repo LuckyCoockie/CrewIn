@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import CrewinLogo from "../../assets/images/crewinlogo.png";
@@ -9,37 +9,24 @@ import { replyToCrewInvitation } from "../../apis/api/crewallowreject";
 import { useSelector } from "react-redux";
 import { RootState } from "../../modules";
 import Modal from "../molecules/ModalMolecules";
+import { useQuery } from "react-query";
 
 const AlarmTemplate: React.FC = () => {
-  const [alarms, setAlarms] = useState<NotificationDto[]>([]);
   const [modalMessage, setModalMessage] = useState<string | null>(null);
   const navigate = useNavigate();
   const memberId = useSelector((state: RootState) => state.auth.memberId);
 
-  useEffect(() => {
-    const loadNotifications = async () => {
-      try {
-        const data = await fetchNotifications();
-
-        if (data) {
-          setAlarms(data);
-        }
-      } catch (error) {
-        console.error("알림 목록을 가져오는 중 오류가 발생했습니다.", error);
-        setModalMessage("알림 목록을 가져오는 중 오류가 발생했습니다.");
-      }
-    };
-
-    loadNotifications();
-  }, []);
+  const {
+    data: alarms,
+    isLoading: isAlarmLoading,
+    refetch: refetchAlarms,
+  } = useQuery<NotificationDto[]>(["alarms"], fetchNotifications);
 
   const handleDelete = async (notificationId: number) => {
     try {
       const response = await deleteNotification(notificationId);
       if (response.status === 204) {
-        setAlarms((prevAlarms) =>
-          prevAlarms.filter((alarm) => alarm.notificationId !== notificationId)
-        );
+        refetchAlarms();
       } else {
         console.error("Failed to delete notification:", response);
         setModalMessage("알림 삭제에 실패했습니다.");
@@ -58,7 +45,7 @@ const AlarmTemplate: React.FC = () => {
         replyStatus: true,
       });
       setModalMessage("크루 초대를 수락했습니다.");
-      navigate(0);
+      refetchAlarms();
     } catch (error) {
       console.error("크루 초대 수락 중 오류가 발생했습니다:", error);
       setModalMessage("크루 초대 수락 중 오류가 발생했습니다.");
@@ -75,6 +62,7 @@ const AlarmTemplate: React.FC = () => {
 
       await handleDelete(notification.notificationId);
       setModalMessage("크루 초대를 거절했습니다.");
+      refetchAlarms();
     } catch (error) {
       console.error("크루 초대 거절 중 오류가 발생했습니다:", error);
       setModalMessage("크루 초대 거절 중 오류가 발생했습니다.");
@@ -90,6 +78,8 @@ const AlarmTemplate: React.FC = () => {
       );
     }
   };
+
+  if (!alarms || isAlarmLoading) return;
 
   return (
     <div className="flex flex-col max-w-[500px] mx-auto">
