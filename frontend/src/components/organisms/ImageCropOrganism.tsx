@@ -178,8 +178,7 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
         postImages: uploadedImages,
       };
 
-      const response = await createPost(postData);
-      console.log("서버 응답:", response);
+      await createPost(postData);
       onComplete(uploadedImages, crewId, isPublic, content);
       navigate("/home", { replace: true });
     } catch (error) {
@@ -319,7 +318,9 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
               ? "opacity-30 cursor-not-allowed"
               : "cursor-pointer"
           } text-white font-bold`}
-          disabled={imagePaths.length === 0 || (!isPublic && crewId === 0) || isLoading}
+          disabled={
+            imagePaths.length === 0 || (!isPublic && crewId === 0) || isLoading
+          }
         >
           {isLoading ? <SpinnerComponent /> : "작성"}
         </button>

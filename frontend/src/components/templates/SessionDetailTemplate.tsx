@@ -1,11 +1,13 @@
-import React, { useState, useRef } from "react";
-import { useQuery } from "react-query";
+import React, { useState } from "react";
+import { useQuery, useQueryClient } from "react-query";
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import SessionDetailOrganism from "../organisms/SessionDetailOrganism";
 import {
   SessionDetailDto,
   GetSessionInfoRequestDto,
   deleteSessionImage,
+  UploadSessionImageRequestDto,
+  uploadSessionImages,
 } from "../../apis/api/sessiondetail";
 import EditDeleteDropdownOrganism from "../organisms/EditDeleteDropdownOrganism";
 import NavTabMolecule from "../molecules/Tab/NavTabMolecule";
@@ -18,6 +20,7 @@ import { ReactComponent as DownloadIcon } from "../../assets/icons/download.svg"
 import { ReactComponent as TrashIcon } from "../../assets/icons/trash.svg";
 import ModalConfirm from "../molecules/ModalConfirmMolecules";
 import Modal from "../molecules/ModalMolecules";
+import { uploadImage } from "../../apis/api/presigned";
 
 type OwnDetailProps = {
   fetchSessionDetailData: (
@@ -28,13 +31,13 @@ type OwnDetailProps = {
 const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
   fetchSessionDetailData,
 }) => {
+  const queryClient = useQueryClient();
   const { sessionId } = useParams<{ sessionId: string }>();
   const [currentTab, setCurrentTab] = useState<string>("세션정보");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedImageId, setSelectedImageId] = useState<number | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
-  const albumRef = useRef<{ refreshGallery: () => void } | null>(null);
 
   const { data: detailData, refetch } = useQuery(
     ["detailData", { sessionId }],
@@ -76,18 +79,30 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
 
   const handleDelete = async () => {
     if (selectedImageId !== null) {
-      await deleteSessionImage(selectedImageId)
-        .then((r) => {
-          setCurrentTab("");
-          setTimeout(() => setCurrentTab("사진첩"), 0);
-          setSelectedImage(null);
-          setSelectedImageId(null);
-          setIsDeleteModalOpen(false);
-          console.log(r);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      deleteSessionImage(selectedImageId).then(() => {
+        queryClient.refetchQueries([`sessionGallery`, `${sessionId}`]);
+
+        setSelectedImage(null);
+        setSelectedImageId(null);
+        setIsDeleteModalOpen(false);
+      });
+    }
+  };
+
+  const handleUpload = async (files: FileList) => {
+    if (files && files.length > 0) {
+      const uploadedUrls = await Promise.all(
+        Array.from(files).map((file) => uploadImage(file))
+      );
+
+      const uploadDto: UploadSessionImageRequestDto = {
+        sessionId: Number(sessionId),
+        sessionImageUrls: uploadedUrls,
+      };
+
+      uploadSessionImages(uploadDto).then(() => {
+        queryClient.refetchQueries([`sessionGallery`, `${sessionId}`]);
+      });
     }
   };
 
@@ -194,12 +209,12 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
         )}
         {currentTab === "사진첩" && detailData && (
           <SessionAlbumOrganism
-            ref={albumRef}
             sessionId={detailData.sessionId}
             onSelectImage={(imageUrl, imageId) => {
               setSelectedImage(imageUrl);
               setSelectedImageId(imageId);
             }}
+            onUpload={handleUpload}
           />
         )}
       </>

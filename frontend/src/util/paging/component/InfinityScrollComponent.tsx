@@ -13,6 +13,7 @@ type OwnProps<T> = {
   ItemComponent: (
     props: ItemComponentProps<T>
   ) => React.ReactElement<HTMLElement>;
+  EmptyComponent?: React.ReactElement<HTMLElement>;
   className?: string;
   initPage?: number;
 };
@@ -23,6 +24,7 @@ const InfiniteScrollComponent = <T,>({
   ItemComponent,
   className,
   initPage,
+  EmptyComponent,
 }: OwnProps<T>) => {
   const {
     data,
@@ -66,8 +68,7 @@ const InfiniteScrollComponent = <T,>({
   useEffect(() => {
     const handleScroll = async () => {
       const { scrollTop } = document.documentElement;
-      if (!isFetching && scrollTop <= 0) {
-        console.log("TOP")
+      if (!isFetching && scrollTop <= 80) {
         if (hasPreviousPage) fetchPreviousPage();
       }
     };
@@ -76,6 +77,8 @@ const InfiniteScrollComponent = <T,>({
       document.removeEventListener("scroll", handleScroll);
     };
   }, [fetchPreviousPage, hasPreviousPage, isFetching]);
+
+  if (data?.pages[0].items.length === 0) return EmptyComponent;
 
   return (
     <div className={className}>

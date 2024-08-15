@@ -6,10 +6,7 @@ import {
   searchCrewMembers,
   CrewSearchMemberDto,
 } from "../../apis/api/crewsearch";
-import {
-  inviteCrewMember,
-  CrewInviteResponseDto,
-} from "../../apis/api/crewinvite";
+import { inviteCrewMember } from "../../apis/api/crewinvite";
 import BackHeaderMediumOrganism from "../../components/organisms/BackHeaderMediumOrganism";
 import { ReactComponent as CrewinLogo } from "../../assets/icons/crewinlogo.svg";
 
@@ -70,11 +67,10 @@ const CrewInvitePage: React.FC = () => {
 
     setInvitingMemberId(memberId);
 
-    const response: CrewInviteResponseDto = await inviteCrewMember({
+    await inviteCrewMember({
       memberId,
       crewId: Number(crewId),
     });
-    console.log(response);
   };
 
   useEffect(() => {
