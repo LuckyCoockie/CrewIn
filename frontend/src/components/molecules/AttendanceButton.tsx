@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 
 type OwnProps = {
   initPresent: boolean; // 출석 여부
-  isAutoAttendanceEnded: boolean; // 자동 여부
+  isAutoAttendanceEnded: boolean; // 실시간 여부
   onClick?: (state: boolean) => void;
 };
 

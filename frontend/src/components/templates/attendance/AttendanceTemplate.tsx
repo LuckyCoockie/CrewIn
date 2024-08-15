@@ -50,6 +50,8 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
   }, [endAt]);
 
   const [isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
+  const [isAttendanceStartedModalOpen, setIsAttendancStartedeModalOpen] =
+    useState(false);
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
   const [memberSessionId, setMemberSessionId] = useState<number>();
@@ -109,6 +111,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
         setTimeout(() => {
           fetchMemberList();
           setIsAttendanceModalOpen(false);
+          setIsAttendancStartedeModalOpen(true);
         }, 100);
       });
     } else {
@@ -169,13 +172,13 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
               <>
                 {isBeforeAutoCheck && isSessionHost && (
                   <LargeAbleButton
-                    text="자동 출석 시작"
+                    text="실시간 출석 시작"
                     onClick={handleStartAttendanceClick}
                   />
                 )}
                 {isDuringAutoCheck && isSessionHost && (
                   <div className={`w-full text-center `}>
-                    {"자동 출석 종료 후 출석을 수정할 수 있습니다."}
+                    {"실시간 출석 종료 후 출석을 수정할 수 있습니다."}
                     <TimerOrganism
                       initSeconds={leftTime}
                       onEnd={() => setAutoCheckStatus("AFTER")}
@@ -208,7 +211,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
                     />
                   ))}
                 {isAfterAutoCheck &&
-                  "자동 출석이 종료되어 수동 출석만 가능합니다."}
+                  "실시간 출석이 종료되어 수동 출석만 가능합니다."}
               </>
             )}
           </div>
@@ -230,6 +233,14 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
           />
         </ModalConfirm>
       )}
+      {isAttendanceStartedModalOpen && (
+        <Modal
+          title={"출석이 시작되었습니다."}
+          onClose={() => setIsAttendancStartedeModalOpen(false)}
+        >
+          <p>{`실시간 출석 중에는 출석을 수정 할 수 없습니다.`}</p>
+        </Modal>
+      )}
       {isInfoModalOpen && (
         <Modal
           title={"출석부"}
@@ -238,7 +249,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
         >
           <div className="pb-4">
             <label className="block min-h-[2rem] tracking-tighter text-gray-900 min-h-[2rem] text-lg">
-              {"자동 출석"}
+              {"실시간 출석"}
             </label>
             <p>{"· 세션 시작 시각 이후 시작할 수 있습니다."}</p>
             <p>{"· 개최자 기준 100m 내에서 가능합니다."}</p>
@@ -248,7 +259,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
             <label className="block min-h-[2rem] tracking-tighter text-gray-900 min-h-[2rem] text-lg">
               {"수동 출석"}
             </label>
-            <p>{"· 자동 출석 종료 후 출석 정보를 수정할 수 있습니다."}</p>
+            <p>{"· 실시간 출석 종료 후 출석 정보를 수정할 수 있습니다."}</p>
             <p>{"· 세션 종료 시각 이후에는 수정할 수 없습니다."}</p>
           </div>
         </Modal>

@@ -18,7 +18,8 @@ const AttendancePage: React.FC = () => {
   const { location } = useGeolocation();
   const [spot, setSpot] = useState<string>();
   const { state } = useLocation();
-  const [isLocationErrorModalOpen, setIsLocationErrorModalOpenModalOpen] = useState(false);
+  const [isLocationErrorModalOpen, setIsLocationErrorModalOpenModalOpen] =
+    useState(false);
   const [isAttendanceErrorModalOpen, setIsAttendanceErrorModalOpen] =
     useState(false);
 
@@ -104,12 +105,18 @@ const AttendancePage: React.FC = () => {
         location={spot}
       />
       {isLocationErrorModalOpen && (
-        <Modal title="출석 실패" onClose={() => setIsLocationErrorModalOpenModalOpen(false)}>
+        <Modal
+          title="출석 실패"
+          onClose={() => setIsLocationErrorModalOpenModalOpen(false)}
+        >
           <p>사용자 위치 권한이 필요합니다. 권한 수정 후 재시도 해주세요.</p>
         </Modal>
       )}
       {isAttendanceErrorModalOpen && (
-        <Modal title="출석 실패" onClose={() => setIsAttendanceErrorModalOpen(false)}>
+        <Modal
+          title="출석 실패"
+          onClose={() => setIsAttendanceErrorModalOpen(false)}
+        >
           <p>
             출석에 실패하였습니다. 주최자의 거리가 100m 미만이여야 출석이
             가능합니다.

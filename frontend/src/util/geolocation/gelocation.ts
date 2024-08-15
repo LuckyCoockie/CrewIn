@@ -11,13 +11,13 @@ type GeolocationError = {
 };
 
 export const useGeolocation = () => {
-  const [location, setCoord] = useState<Location | undefined>();
+  const [location, setLocation] = useState<Location | undefined>();
   const [error, setError] = useState<GeolocationError | null>(null);
 
   const handleSuccess = (pos: GeolocationPosition) => {
     const { latitude, longitude } = pos.coords;
     const location = { latitude, longitude };
-    setCoord(location);
+    setLocation(location);
     setError(null);
   };
 
