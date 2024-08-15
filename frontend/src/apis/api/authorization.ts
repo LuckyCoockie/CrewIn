@@ -13,7 +13,7 @@ export const login = async (dto: LoginRequestDto) => {
       `${import.meta.env.VITE_SERVER_URL}/member/login`,
       dto
     );
-    setAuth(response.data.data);
+    setAuth(response.data.data, false);
   } catch (e) {
     clearAuth("로그인에 실패하였습니다.");
   }
