@@ -39,7 +39,8 @@ public class TokenUtil {
 
     @Value("${security.secret-key}")
     private String secretKey;
-    private final Long accessTokenExpireTime = 60 * 60L; // 1시간
+//    private final Long accessTokenExpireTime = 60 * 60L; // 1시간
+    private final Long accessTokenExpireTime = 5L; // 1시간
     private final Long refreshTokenExpireTime = 60 * 60 * 24 * 7L; // 일주일
     private SecretKey key;
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
