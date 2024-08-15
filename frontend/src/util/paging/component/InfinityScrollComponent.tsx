@@ -28,10 +28,9 @@ const InfiniteScrollComponent = <T,>({
     data,
     hasNextPage,
     fetchNextPage,
-    isFetchingNextPage,
+    isFetching,
     hasPreviousPage,
     fetchPreviousPage,
-    isFetchingPreviousPage,
   } = useInfiniteQuery(
     fetchKey,
     ({ pageParam = initPage ?? 0 }) => fetchData(pageParam),
@@ -54,35 +53,29 @@ const InfiniteScrollComponent = <T,>({
     const handleScroll = async () => {
       const { scrollHeight, scrollTop, clientHeight } =
         document.documentElement;
-      if (
-        !isFetchingNextPage &&
-        scrollHeight - scrollTop <= clientHeight * 1.2
-      ) {
-        if (hasNextPage) await fetchNextPage();
+      if (!isFetching && scrollHeight - scrollTop <= clientHeight * 1.2) {
+        if (hasNextPage) fetchNextPage();
       }
     };
     document.addEventListener("scroll", handleScroll);
     return () => {
       document.removeEventListener("scroll", handleScroll);
     };
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+  }, [fetchNextPage, hasNextPage, isFetching]);
 
   useEffect(() => {
     const handleScroll = async () => {
-      const { scrollHeight, scrollTop, clientHeight } =
-        document.documentElement;
-      if (
-        !isFetchingPreviousPage &&
-        scrollHeight - scrollTop <= clientHeight * 1.2
-      ) {
-        if (hasPreviousPage) await fetchPreviousPage();
+      const { scrollTop } = document.documentElement;
+      if (!isFetching && scrollTop <= 0) {
+        console.log("TOP")
+        if (hasPreviousPage) fetchPreviousPage();
       }
     };
     document.addEventListener("scroll", handleScroll);
     return () => {
       document.removeEventListener("scroll", handleScroll);
     };
-  }, [fetchPreviousPage, hasPreviousPage, isFetchingPreviousPage]);
+  }, [fetchPreviousPage, hasPreviousPage, isFetching]);
 
   return (
     <div className={className}>

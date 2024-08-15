@@ -49,7 +49,10 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
   const handleDownload = async () => {
     if (selectedImage) {
       try {
-        const response = await fetch(selectedImage);
+        const response = await fetch(selectedImage, {
+          mode: "cors",
+          cache: "no-cache",
+        });
         const blob = await response.blob();
         const fileName = selectedImage.split("/").pop() || "image.jpg";
         const file = new File([blob], fileName, { type: blob.type });
