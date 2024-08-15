@@ -314,9 +314,9 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
 
         <button
           onClick={handlePost}
-          className={`w-full bg-gray-400 py-4 px-8 text-center rounded-lg ${
+          className={`w-full bg-[#2b2f40e6] py-4 px-8 text-center rounded-lg ${
             imagePaths.length === 0 || (!isPublic && crewId === 0)
-              ? "opacity-50 cursor-not-allowed"
+              ? "opacity-30 cursor-not-allowed"
               : "cursor-pointer"
           } text-white font-bold`}
           disabled={imagePaths.length === 0 || (!isPublic && crewId === 0) || isLoading}
