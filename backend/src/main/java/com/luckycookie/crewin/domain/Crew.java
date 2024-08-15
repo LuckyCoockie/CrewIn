@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert
-@Table(name="crew")
+@Table(name = "crew")
 public class Crew {
 
     @Id
@@ -59,5 +59,9 @@ public class Crew {
         this.subLogo = crewInfoRequest.getSubLogo();
         this.banner = crewInfoRequest.getBanner();
         this.crewBirth = crewInfoRequest.getCrewBirth();
+    }
+
+    public void changeCaptain(Member member) {
+        this.captain = member;
     }
 }

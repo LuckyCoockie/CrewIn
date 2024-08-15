@@ -537,6 +537,9 @@ public class CrewService {
             // 권한 교환
             memberCrew.updatePosition(Position.CAPTAIN); // PACER 나 MEMBER 가 CAPTAIN 으로
             adminMemberCrew.updatePosition(updateCrewPositionRequest.getPosition()); // CAPTAIN 은 PACER 나 MEMBER 로
+
+            // 크루 캡틴 이름 변경
+            crew.changeCaptain(member);
         } else {
             throw new CrewUnauthorizedException();
         }
