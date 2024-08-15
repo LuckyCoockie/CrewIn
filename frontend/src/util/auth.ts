@@ -10,10 +10,13 @@ import {
 import store from "../modules";
 import { clearAccessToken, setAccessToken } from "../modules/reducers/auth";
 
-export const setAuth = (dto: { accessToken: string; memberId: number }) => {
+export const setAuth = (
+  dto: { accessToken: string; memberId: number },
+  loading: boolean = true
+) => {
   const currentTime = new Date().getTime().toString();
   localStorage.setItem("AUTH", currentTime);
-  store.dispatch(setAccessToken(dto.accessToken, dto.memberId));
+  store.dispatch(setAccessToken(dto.accessToken, dto.memberId, loading));
   store.dispatch(
     addInterceptor(
       "auth",

@@ -16,6 +16,7 @@ type SetAccessTokenAction = {
   type: typeof SET_ACCESS_TOKEN;
   accessToken: string;
   memberId: number;
+  loading: boolean;
 };
 
 type ClearAccessTokenAction = {
@@ -38,12 +39,17 @@ export const loading = (): Loading => ({
   type: LOADING,
 });
 
-export const setAccessToken = (accessToken: string, memberId: number) => {
+export const setAccessToken = (
+  accessToken: string,
+  memberId: number,
+  loading: boolean = true
+) => {
   return async (dispatch: Dispatch<AuthActionTypes>) => {
     dispatch({
       type: SET_ACCESS_TOKEN,
       accessToken: accessToken,
       memberId: memberId,
+      loading: loading,
     });
   };
 };
@@ -85,6 +91,7 @@ const authReducer = (
         ...state,
         accessToken: action.accessToken,
         memberId: action.memberId,
+        loading: action.loading,
       };
     case CLEAR_ACCESS_TOKEN: {
       return {

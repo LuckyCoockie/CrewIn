@@ -1,6 +1,6 @@
 import axios from "axios";
 import store from "../../modules";
-import { loading, endLoading } from "../../modules/reducers/auth";
+import { loading } from "../../modules/reducers/auth";
 import { checkAuth, clearAuth, setAuth } from "../../util/auth";
 
 export type LoginRequestDto = { email: string; password: string };
@@ -31,8 +31,7 @@ export const refreshToken = async () => {
       null,
       { withCredentials: true }
     );
-    setAuth(response.data.data);
-    store.dispatch(endLoading());
+    setAuth(response.data.data, false);
   } catch (e) {
     clearAuth();
     throw "";
