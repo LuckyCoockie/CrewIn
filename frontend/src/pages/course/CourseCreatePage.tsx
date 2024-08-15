@@ -61,9 +61,9 @@ const CourseCreatePage: React.FC = () => {
               length: length!,
               thumbnailImage: imageUrl,
               area: area,
+            }).then(() => {
+              navigate("/profile", { replace: true });
             });
-
-            navigate("/profile", { replace: true });
           }}
         />
       </NaverMapProvider>
