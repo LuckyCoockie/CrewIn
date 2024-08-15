@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   AutoCheckStatus,
   ChangeAttendRequestDto,
@@ -129,6 +129,18 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
   const handleClickInfoModalConfirm = useCallback(() => {
     setIsInfoModalOpen(true);
   }, []);
+
+  useEffect(() => {
+    const onIsVisibilityChange = () => {
+      if (isDuringAutoCheck && document.visibilityState === "visible") {
+        fetchMemberList();
+      }
+    };
+    document.addEventListener("visibilitychange", onIsVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", onIsVisibilityChange);
+    };
+  }, [fetchMemberList, isDuringAutoCheck]);
 
   return (
     <>
