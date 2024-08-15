@@ -80,7 +80,7 @@ public class MyPageService {
                         memberSessionRepository.findByMemberAndIsAttendAndSessionType(pageable, member, STANDARD);
                 case "THUNDER" ->
                         memberSessionRepository.findByMemberAndIsAttendAndSessionType(pageable, member, THUNDER);
-                default -> memberSessionRepository.findByMember(pageable, member);
+                default -> memberSessionRepository.findJoinedSessionByMember(pageable, member);
             };
         }
 
