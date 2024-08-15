@@ -2,34 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import PostEditTemplate from "../components/templates/PostEditTemplate";
 import { updatePost, UpdatePostRequestDto } from "../apis/api/postupdate";
-import { getPostList, PostDto } from "../apis/api/postlist";
+import { getPostDetail } from "../apis/api/postdetail";
 import { getMyCrews, CrewDto } from "../apis/api/mycrew";
 import BackHeaderMediumOrganism from "../components/organisms/BackHeaderMediumOrganism";
 import SpinnerComponent from "../components/atoms/SpinnerComponent";
 import ErrorText from "../components/atoms/ErrorText";
-
-const fetchPostById = async (postId: number) => {
-  let allPosts: PostDto[] = [];
-  let pageNo = 0;
-  let lastPageNo = 0;
-  let foundPost: PostDto | undefined;
-
-  while (true) {
-    const pageData = await getPostList(pageNo);
-    allPosts = pageData.items;
-    lastPageNo = pageData.lastPageNo;
-    foundPost = allPosts.find((post) => post.id === postId);
-    if (foundPost) {
-      break;
-    }
-    if (pageNo >= lastPageNo) {
-      break;
-    }
-    pageNo += 1;
-  }
-
-  return foundPost;
-};
 
 const PostEditPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
@@ -47,7 +24,7 @@ const PostEditPage: React.FC = () => {
     if (postId) {
       (async () => {
         try {
-          const post = await fetchPostById(Number(postId));
+          const post = await getPostDetail(Number(postId));
           if (post) {
             setPostImages(post.postImages);
             setContent(post.content);
