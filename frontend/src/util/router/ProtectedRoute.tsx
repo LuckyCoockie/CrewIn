@@ -37,6 +37,10 @@ const ProtectedRoute = () => {
   );
   const { isMobile } = useIsMobile();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+
   if (loading || !isAuthenticated) return <SplashPage />;
 
   return (

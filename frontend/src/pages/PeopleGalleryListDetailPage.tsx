@@ -6,7 +6,7 @@ import { getPeopleGalleryDetail } from "../apis/api/mypage";
 
 const PeopleGalleryListDetailPage: React.FC = () => {
   const { memberId } = useParams();
-  const { page, postId } = qs.parse(location.search);
+  const { pageNo, postId } = qs.parse(location.search);
 
   const fetchData = useCallback(
     async (pageNo: number) => {
@@ -28,7 +28,7 @@ const PeopleGalleryListDetailPage: React.FC = () => {
 
   return (
     <PeopleGalleryDetailListTemplate
-      initPage={page}
+      initPage={pageNo}
       initPostId={postId}
       fetchData={fetchData}
     />
