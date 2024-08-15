@@ -1,6 +1,6 @@
 import axios from "axios";
 import store from "../../modules";
-import { loading, endLoading } from "../../modules/reducers/auth";
+import { loading } from "../../modules/reducers/auth";
 import { checkAuth, clearAuth, setAuth } from "../../util/auth";
 
 export type LoginRequestDto = { email: string; password: string };
@@ -13,7 +13,7 @@ export const login = async (dto: LoginRequestDto) => {
       `${import.meta.env.VITE_SERVER_URL}/member/login`,
       dto
     );
-    setAuth(response.data.data);
+    setAuth(response.data.data, false);
   } catch (e) {
     clearAuth("로그인에 실패하였습니다.");
   }
@@ -31,8 +31,7 @@ export const refreshToken = async () => {
       null,
       { withCredentials: true }
     );
-    setAuth(response.data.data);
-    store.dispatch(endLoading());
+    setAuth(response.data.data, false);
   } catch (e) {
     clearAuth();
     throw "";

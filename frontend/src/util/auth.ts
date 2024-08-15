@@ -10,10 +10,12 @@ import {
 import store from "../modules";
 import { clearAccessToken, setAccessToken } from "../modules/reducers/auth";
 
-export const setAuth = (dto: { accessToken: string; memberId: number }) => {
+export const setAuth = (
+  dto: { accessToken: string; memberId: number },
+  loading: boolean = true
+) => {
   const currentTime = new Date().getTime().toString();
   localStorage.setItem("AUTH", currentTime);
-  store.dispatch(setAccessToken(dto.accessToken, dto.memberId));
   store.dispatch(
     addInterceptor(
       "auth",
@@ -28,13 +30,14 @@ export const setAuth = (dto: { accessToken: string; memberId: number }) => {
       clearTmapTokenInterceptors
     )
   );
+  store.dispatch(setAccessToken(dto.accessToken, dto.memberId, loading));
 };
 
 export const clearAuth = (error?: string) => {
   localStorage.removeItem("AUTH");
-  store.dispatch(clearAccessToken(error));
   store.dispatch(removeInterceptor("auth", clearTokenInterceptors));
   store.dispatch(removeInterceptor("tmap", clearTmapTokenInterceptors));
+  store.dispatch(clearAccessToken(error));
 };
 
 export const checkAuth = (): boolean => {
