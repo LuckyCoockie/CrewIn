@@ -350,23 +350,19 @@ public class SessionService {
 
         // 내가 그 세션에 참여 했는지 안했는지 검증
         Member member = memberRepository.findFirstByEmail(customUser.getEmail()).orElseThrow(NotFoundMemberException::new);
-        MemberSession memberSession = memberSessionRepository.findByMemberAndSession(member, session).orElseThrow(NotFoundMemberSessionException::new);
+        memberSessionRepository.findByMemberAndSession(member, session).orElseThrow(NotFoundMemberSessionException::new);
 
-        if (memberSession.getIsAttend()) { // 참석 했음`
-            if (uploadSessionImageRequest.getSessionImageUrls() != null) {
-                for (String imageUrl : uploadSessionImageRequest.getSessionImageUrls()) {
-                    SessionImage sessionImage = SessionImage
-                            .builder()
-                            .session(session)
-                            .imageUrl(imageUrl)
-                            .build();
-                    sessionImageRepository.save(sessionImage);
-                }
-            } else {
-                throw new SessionImageUploadException();
+        if (uploadSessionImageRequest.getSessionImageUrls() != null) {
+            for (String imageUrl : uploadSessionImageRequest.getSessionImageUrls()) {
+                SessionImage sessionImage = SessionImage
+                        .builder()
+                        .session(session)
+                        .imageUrl(imageUrl)
+                        .build();
+                sessionImageRepository.save(sessionImage);
             }
-        } else { // 참석 안함
-            throw new NotFoundMemberSessionException();
+        } else {
+            throw new SessionImageUploadException();
         }
     }
 
