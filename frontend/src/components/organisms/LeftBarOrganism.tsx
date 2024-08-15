@@ -36,7 +36,9 @@ const LeftBarOrganism: React.FC<Current> = (props) => {
   const currentTab = props.current.split(/[?/]/)[1];
 
   const onTabSelected = (tab: string) => {
-    if (tab != currentTab) navigate(`/${tab}`);
+    if (tab != currentTab || props.current.match(/^\/profile\/[^/]+$/)) {
+      navigate(`/${tab}`);
+    }
   };
 
   useEffect(() => {
@@ -64,7 +66,9 @@ const LeftBarOrganism: React.FC<Current> = (props) => {
             <AlarmTabMolecule
               name={"Alarm"}
               tab={isTab && currentTab === "alarm"}
-              onClick={() => {navigate("alarm")}}
+              onClick={() => {
+                navigate("alarm");
+              }}
             />
           </div>
           <div className="w-full">
