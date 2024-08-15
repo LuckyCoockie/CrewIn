@@ -109,7 +109,17 @@ const AttendancePage: React.FC = () => {
           title="출석 실패"
           onClose={() => setIsLocationErrorModalOpenModalOpen(false)}
         >
-          <p>사용자 위치 권한이 필요합니다. 권한 수정 후 재시도 해주세요.</p>
+          <p>
+            사용자 위치 권한이 필요합니다.{" "}
+            <a
+              href={
+                "https://handy-efraasia-07b.notion.site/49d3d992288b4631bfc74d913c86067b"
+              }
+              target="_blank"
+            >
+              권한 수정 후 재시도 해주세요.
+            </a>
+          </p>
         </Modal>
       )}
       {isAttendanceErrorModalOpen && (
