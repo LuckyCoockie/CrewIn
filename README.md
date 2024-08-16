@@ -4,8 +4,6 @@
 
 ![로고글씨 2.png](exec/images/mainLogo.png)
 
----
-
 ## 팀 소개
 
 | 이름 | 직책 | 역할 |
