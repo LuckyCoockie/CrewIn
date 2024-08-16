@@ -2,7 +2,7 @@
 
 **러닝 크루 통합 관리 플랫폼**
 
-![로고글씨 2.png](exec/images/mainLogo.png)
+<img src="exec/images/mainLogo.png" alt="Logo" width="300" height="100">
 
 ## 팀 소개
 
