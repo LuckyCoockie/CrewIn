@@ -2,7 +2,7 @@
 
 **러닝 크루 통합 관리 플랫폼**
 
-![로고글씨 2.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/97e25331-595b-41bf-b321-f16970c70170/43ddfeea-4fcc-4cd6-9c7e-e37981c5ed89/%E1%84%85%E1%85%A9%E1%84%80%E1%85%A9%E1%84%80%E1%85%B3%E1%86%AF%E1%84%8A%E1%85%B5_2.png)
+![로고글씨 2.png](exec/images/mainLogo.png)
 
 ---
 
@@ -72,18 +72,18 @@
 
 ### 2️⃣ 서비스 소개
 
-![KakaoTalk_Photo_2024-08-15-22-57-24 001.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/97e25331-595b-41bf-b321-f16970c70170/999c6728-2c95-4ff1-bd09-ec83ae32197b/KakaoTalk_Photo_2024-08-15-22-57-24_001.png)
+![KakaoTalk_Photo_2024-08-15-22-57-24 001.png](exec/images/introduction1.png)
 
-![KakaoTalk_Photo_2024-08-15-22-57-24 002.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/97e25331-595b-41bf-b321-f16970c70170/e0107c64-8451-4fa0-adfb-dbf709744ea4/KakaoTalk_Photo_2024-08-15-22-57-24_002.png)
+![KakaoTalk_Photo_2024-08-15-22-57-24 002.png](exec/images/introduction2.png)
 
-![KakaoTalk_Photo_2024-08-15-22-57-24 003.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/97e25331-595b-41bf-b321-f16970c70170/0e998835-71d2-44b9-b184-880d60110cc7/KakaoTalk_Photo_2024-08-15-22-57-24_003.png)
+![KakaoTalk_Photo_2024-08-15-22-57-24 003.png](exec/images/introduction3.png)
 
-![KakaoTalk_Photo_2024-08-15-22-57-24 004.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/97e25331-595b-41bf-b321-f16970c70170/e1f0ed11-9d18-4809-bc05-dea3104ac31c/KakaoTalk_Photo_2024-08-15-22-57-24_004.png)
+![KakaoTalk_Photo_2024-08-15-22-57-24 004.png](exec/images/introduction4.png)
 
-![KakaoTalk_Photo_2024-08-15-22-57-24 005.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/97e25331-595b-41bf-b321-f16970c70170/2305fafa-50d4-43d6-bec7-5621d4e2460e/KakaoTalk_Photo_2024-08-15-22-57-24_005.png)
+![KakaoTalk_Photo_2024-08-15-22-57-24 005.png](exec/images/introduction5.png)
 
-![KakaoTalk_Photo_2024-08-15-22-57-24 006.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/97e25331-595b-41bf-b321-f16970c70170/826c8e11-8f60-4312-8735-54ba8b5e23d1/KakaoTalk_Photo_2024-08-15-22-57-24_006.png)
+![KakaoTalk_Photo_2024-08-15-22-57-24 006.png](exec/images/introduction6.png)
 
 ### 3️⃣ 기술 스택
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/97e25331-595b-41bf-b321-f16970c70170/d1b8723b-579e-44ff-ae66-9ed1e8b38378/image.png)
+![image.png](exec/images/architecture.png)
