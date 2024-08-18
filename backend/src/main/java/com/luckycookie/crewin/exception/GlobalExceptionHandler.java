@@ -62,8 +62,8 @@ public class GlobalExceptionHandler {
         String errorCode = "500";
         String message = "서버에서 요청을 처리하는 동안 오류가 발생했습니다.";
         ErrorResponse errorResponse = new ErrorResponse(errorCode, message);
-//        loggingException(ex);
-        log.error(ex.getMessage());
+        loggingException(ex);
+//        log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(errorResponse);
     }
 

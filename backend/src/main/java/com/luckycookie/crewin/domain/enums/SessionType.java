@@ -1,6 +1,7 @@
 package com.luckycookie.crewin.domain.enums;
 
 import com.luckycookie.crewin.exception.session.NotFoundSessionTypeException;
+import org.apache.commons.lang3.StringUtils;
 
 public enum SessionType {
     STANDARD, OPEN, THUNDER, ALL;
@@ -9,7 +10,7 @@ public enum SessionType {
         if (sessionType.isEmpty())
             return ALL;
 
-        if (sessionType.equalsIgnoreCase(STANDARD.toString())) {
+        if (StringUtils.equalsIgnoreCase(sessionType, STANDARD.toString())) {
             return STANDARD;
         } else if (sessionType.equalsIgnoreCase(OPEN.toString())) {
             return OPEN;

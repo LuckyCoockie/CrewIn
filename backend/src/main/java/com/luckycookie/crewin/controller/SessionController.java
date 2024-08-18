@@ -2,6 +2,7 @@ package com.luckycookie.crewin.controller;
 
 import com.luckycookie.crewin.domain.enums.SessionType;
 import com.luckycookie.crewin.dto.*;
+import com.luckycookie.crewin.dto.SessionRequest.CreateSessionRequest;
 import com.luckycookie.crewin.dto.SessionRequest.UpdateSessionRequest;
 import com.luckycookie.crewin.dto.SessionRequest.UploadSessionImageRequest;
 import com.luckycookie.crewin.dto.SessionResponse.SessionDetailResponse;
@@ -30,7 +31,7 @@ public class SessionController {
 
     // 세션 생성
     @PostMapping()
-    public ResponseEntity<BaseResponse<SessionResponse.SessionCreateResponse>> createSession(@RequestBody SessionRequest.CreateSessionRequest createSessionRequest, @AuthenticationPrincipal CustomUser customUser) {
+    public ResponseEntity<BaseResponse<SessionResponse.SessionCreateResponse>> createSession(@RequestBody CreateSessionRequest createSessionRequest, @AuthenticationPrincipal CustomUser customUser) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(BaseResponse.create(HttpStatus.CREATED.value(), "세션을 등록하는데 성공했습니다.", sessionService.createSession(createSessionRequest, customUser)));
@@ -41,12 +42,12 @@ public class SessionController {
     public ResponseEntity<BaseResponse<PagingItemsResponse<SessionItem>>> getSessionsByType(
             @RequestParam(value = "status", defaultValue = "") String status,
             @RequestParam(value = "type", defaultValue = "") String type,
-            @RequestParam(value = "query", defaultValue = "") String query,
-            @RequestParam(value = "date", required = false) LocalDate date,
-            @RequestParam("page-no") int pageNo) {
-        SessionType enumSessionType = SessionType.stringToSessionType(type);
-        PagingItemsResponse<SessionItem> sessions = sessionService.getSessionsByStatusAndTypeAndCrewNameAndDate(status, enumSessionType, query, date, pageNo);
-        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 정보를 조회하는데 성공했습니다.", sessions));
+                @RequestParam(value = "query", defaultValue = "") String query,
+                @RequestParam(value = "date", required = false) LocalDate date,
+                @RequestParam("page-no") int pageNo) {
+            SessionType enumSessionType = SessionType.stringToSessionType(type);
+            PagingItemsResponse<SessionItem> sessions = sessionService.getSessionsByStatusAndTypeAndCrewNameAndDate(status, enumSessionType, query, date, pageNo);
+            return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "세션 정보를 조회하는데 성공했습니다.", sessions));
     }
 
 

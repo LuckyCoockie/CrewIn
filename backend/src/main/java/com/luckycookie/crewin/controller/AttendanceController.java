@@ -21,7 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/attendance")
+@RequestMapping("/attendances")
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
@@ -34,7 +34,7 @@ public class AttendanceController {
     }
 
     // 참가자 출석
-    @PostMapping("/guest/{session-id}")
+    @PostMapping("/guests/{session-id}")
     public ResponseEntity<BaseResponse<Void>> attend(@PathVariable("session-id") Long sessionId, @AuthenticationPrincipal CustomUser customUser, @RequestBody AttendanceInfoRequest attendanceInfoRequest) {
         attendanceService.attend(sessionId, customUser.getEmail(), attendanceInfoRequest);
         HttpHeaders headers = new HttpHeaders();
@@ -62,10 +62,9 @@ public class AttendanceController {
     // SSE 구독
     @GetMapping("/connect/{session-id}")
     public ResponseEntity<SseEmitter> subscribeSSE(@PathVariable("session-id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
-        log.info("Subscribe SSE");
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Accel-Buffering", "no");
         headers.add("Cache-Control", "no-cache");
-        return new ResponseEntity<>(attendanceService.subscribeSSE(sessionId, customUser.getEmail()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(attendanceService.subscribeSse(sessionId, customUser.getEmail()), headers, HttpStatus.OK);
     }
 }

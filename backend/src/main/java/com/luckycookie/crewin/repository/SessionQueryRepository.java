@@ -41,9 +41,9 @@ public class SessionQueryRepository {
 
         JPAQuery<Long> countQuery = jpaQueryFactory.select(session.count())
                 .from(session)
-                .where(statusEq(status), typeEq(sessionType), crewNameEq(query));
+                .where(statusEq(status), typeEq(sessionType), Expressions.anyOf(crewNameEq(query), areaEq(query), nameEq(query)), dateEq(date));
 
-        return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetch().size());
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchFirst);
     }
 
     private BooleanExpression dateEq(LocalDate date) {

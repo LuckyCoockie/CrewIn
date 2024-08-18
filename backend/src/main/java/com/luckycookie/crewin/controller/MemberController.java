@@ -7,6 +7,7 @@ import com.luckycookie.crewin.dto.MemberResponse.EmailResponse;
 import com.luckycookie.crewin.dto.MemberResponse.MemberProfileResponse;
 import com.luckycookie.crewin.dto.TokenResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
+import com.luckycookie.crewin.exception.security.InvalidTokenException;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.MailService;
 import com.luckycookie.crewin.service.MemberService;
@@ -14,6 +15,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -72,9 +74,12 @@ public class MemberController {
     }
 
     @PostMapping("/reissue")
-    public ResponseEntity<BaseResponse<TokenResponse>> reissue(@CookieValue(value = "refreshToken") Cookie cookie, HttpServletRequest request) {
-        String refreshToken = cookie.getValue();
-        log.info("refreshToken: {}", refreshToken);
+    public ResponseEntity<BaseResponse<TokenResponse>> reissue(@CookieValue(value = "refreshToken", required = false) Cookie refreshTokenCookie, HttpServletRequest request) {
+        String refreshToken = refreshTokenCookie.getValue();
+        if (StringUtils.isEmpty(refreshToken)) {
+            throw new InvalidTokenException();
+        }
+
         Token token = memberService.reissue(refreshToken, request);
         ResponseCookie responseCookie = ResponseCookie.from("refreshToken", token.getRefreshToken()).path("/")
                 .secure(true).httpOnly(true).maxAge(Duration.ofDays(7L)).build();

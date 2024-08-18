@@ -52,17 +52,17 @@ public class AttendanceService {
     private final EmitterRepository emitterRepository;
 
     // 자동 출석 시간 인터벌
-    private final int AUTO_CHECK_TIME = 10;
+    private static final int AUTO_CHECK_TIME = 10;
 
     // SSE 구독
-    public SseEmitter subscribeSSE(Long sessionId, String email) {
+    public SseEmitter subscribeSse(Long sessionId, String email) {
         Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundSessionException::new);
         Member member = memberRepository.findFirstByEmail(email).orElseThrow(NotFoundMemberException::new);
 
         // 해당 세션에 존재하지 않는 멤버는 SSE 요청 불가능
         MemberSession memberSession = memberSessionRepository.findByMemberAndSession(member, session).orElseThrow(NotFoundMemberSessionException::new);
-
-        if (session.getAttendanceStart() == null || LocalDateTime.now().isBefore(session.getAttendanceStart()) || LocalDateTime.now().isAfter(session.getEndAt()))
+        LocalDateTime now = LocalDateTime.now();
+        if (session.getAttendanceStart() == null || now.isBefore(session.getAttendanceStart()) || now.isAfter(session.getEndAt()))
             throw new InvalidRequestTimeException();
 
         SseEmitter emitter = emitterRepository.save(session.getId(), memberSession.getId(), new SseEmitter(60 * 1000L * 60));
@@ -74,8 +74,8 @@ public class AttendanceService {
             emitter.complete();
             log.info("SSE emitter onTimeout");
         });
-        emitter.onError((ex) -> {
-            log.error("SSE emitter Error occurred: {}", ex.getMessage());
+        emitter.onError((exception) -> {
+            log.error("SSE emitter Error occurred: {}", exception.getMessage(), exception);
         });
 
         // 503 에러 방지용
@@ -92,7 +92,7 @@ public class AttendanceService {
                     .data(data)
             );
         } catch (IOException exception) {
-            log.error("SSE Exception occurred!!! : {}", exception.getMessage());
+            log.error("SSE Exception occurred!!! : {}", exception.getMessage(), exception);
             emitterRepository.deleteById(sessionId, memberSessionId);
         }
     }
@@ -141,24 +141,24 @@ public class AttendanceService {
         // 현재 로그인한 사용자가 memberSession 에 있어야 함 - 내가 속하지 않은 크루의 출석부는 조회 불가!!
         MemberSession memberSession = memberSessionRepository.findByMemberAndSession(currentMember, session).orElseThrow(NotFoundMemberSessionException::new);
 
-        List<AttendanceMemberItem> attendanceMemberItems = memberSessionList.stream().map(ms -> {
-            Member member = ms.getMember();
+        List<AttendanceMemberItem> attendanceMemberItems = memberSessionList.stream().map(memberSessionItem -> {
+            Member member = memberSessionItem.getMember();
 
             return AttendanceMemberItem
                     .builder()
-                    .memberSessionId(ms.getId())
+                    .memberSessionId(memberSessionItem.getId())
                     .name(member.getName())
-                    .isAttend(ms.getIsAttend())
+                    .isAttend(memberSessionItem.getIsAttend())
                     .profileUrl(member.getImageUrl())
                     .nickname(member.getNickname())
                     .build();
         }).toList();
 
         AutoCheckStatus status = null;
+        LocalDateTime now = LocalDateTime.now();
         if (session.getAttendanceStart() == null || session.getAttendanceStart().isAfter(LocalDateTime.now())) {
             status = BEFORE;
-        } else if (LocalDateTime.now().isAfter(session.getAttendanceStart()) &&
-                LocalDateTime.now().isBefore(session.getAttendanceStart().plusMinutes(AUTO_CHECK_TIME))) {
+        } else if (now.isAfter(session.getAttendanceStart()) && now.isBefore(session.getAttendanceStart().plusMinutes(AUTO_CHECK_TIME))) {
             status = DURING;
         } else {
             status = AFTER;

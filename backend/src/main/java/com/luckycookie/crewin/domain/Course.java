@@ -1,6 +1,5 @@
 package com.luckycookie.crewin.domain;
 
-import com.luckycookie.crewin.dto.CourseRequest;
 import com.luckycookie.crewin.dto.CourseRequest.UpdateCourseRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
