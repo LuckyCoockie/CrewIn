@@ -53,7 +53,7 @@ const JoinAgreementOrganism: React.FC = () => {
                         type="checkbox"
                         checked={allChecked}
                         onChange={handleAllCheckedChange}
-                        className="peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all checked:bg-[#2B2F40]"
+                        className="peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all checked:bg-[#2B2F40] focus:ring-[#2B2F40]"
                     />
                     <div className="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
                         <svg
@@ -72,7 +72,10 @@ const JoinAgreementOrganism: React.FC = () => {
                         </svg>
                     </div>
                 </label>
-                <span className="cursor-pointer select-none font-bold text-lg text-[#2B2F40] ms-2">
+                <span
+                    className="cursor-pointer select-none font-bold text-lg text-[#2B2F40] ms-2"
+                    onClick={handleAllCheckedChange}
+                >
                     약관 전체 동의
                 </span>
             </div>
@@ -89,7 +92,7 @@ const JoinAgreementOrganism: React.FC = () => {
                         type="checkbox"
                         checked={agreement1}
                         onChange={(e) => handleIndividualChange(setAgreement1, e.target.checked)}
-                        className="peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all checked:bg-[#2B2F40]"
+                        className="peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all checked:bg-[#2B2F40] focus:ring-[#2B2F40]"
                     />
                     <div className="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
                         <svg
@@ -127,7 +130,7 @@ const JoinAgreementOrganism: React.FC = () => {
                         type="checkbox"
                         checked={agreement2}
                         onChange={(e) => handleIndividualChange(setAgreement2, e.target.checked)}
-                        className="peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all checked:bg-[#2B2F40]"
+                        className="peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all checked:bg-[#2B2F40] focus:ring-[#2B2F40]"
                     />
                     <div className="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
                         <svg
