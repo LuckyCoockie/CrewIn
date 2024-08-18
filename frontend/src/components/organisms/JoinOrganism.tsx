@@ -24,6 +24,8 @@ import { useNavigate } from "react-router";
 
 // 비밀번호 규칙 설정
 const passwordRules = /^(?=.*[a-zA-Z])(?=.*[0-9]).{0,}$/;
+// 닉네임, 이름 규칙 설정
+const nameRules = /^([가-힣]{2,}|[A-Za-z\s]{2,})$/;
 
 // yup 스키마 정의
 const schema = yup.object({
@@ -49,7 +51,7 @@ const schema = yup.object({
     .min(2, "최소 2자 입니다.")
     .max(10, "최대 10자 입니다.")
     .matches(
-      /^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ ]*$/,
+      nameRules,
       "특수 문자는 사용할 수 없습니다."
     )
     .required("닉네임을 입력해주세요."),
@@ -58,7 +60,7 @@ const schema = yup.object({
     .min(2, "이름은 최소 2자입니다.")
     .max(30, "이름은 최대 30자입니다.")
     .matches(
-      /^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ ]*$/,
+      nameRules,
       "특수 문자는 사용할 수 없습니다."
     )
     .required("이름을 입력해주세요."),

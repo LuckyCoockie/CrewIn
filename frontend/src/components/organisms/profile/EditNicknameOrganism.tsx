@@ -19,10 +19,17 @@ type OwnProps = {
   onEdit: (data: FormValues) => Promise<void>;
 };
 
+const nameRules = /^([가-힣]{2,}|[A-Za-z\s]{2,})$/;
+
 const schema = yup.object({
   nickname: yup
     .string()
+    .min(2, "최소 2자 입니다.")
     .max(10, "최대 10자 입니다.")
+    .matches(
+      nameRules,
+      "특수 문자는 사용할 수 없습니다."
+    )
     .required("닉네임을 입력해주세요."),
 });
 
