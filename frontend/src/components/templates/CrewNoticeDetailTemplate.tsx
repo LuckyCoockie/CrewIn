@@ -70,11 +70,14 @@ const CrewNoticeDetailTemplate: React.FC = () => {
     }
   }, [noticeData]);
 
+  // 공유하기
   useEffect(() => {
+    const kakaoAppKey = import.meta.env.VITE_KAKAO_APP_KEY;
     if (!(window as any).Kakao.isInitialized()) {
-      (window as any).Kakao.init("YOUR_APP_KEY");
+      (window as any).Kakao.init(kakaoAppKey);
     }
   }, []);
+  
 
   const likeMutation = useMutation(registerPostHeart, {
     onSuccess: () => {

@@ -50,9 +50,11 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     setIsHeartedState(isHearted);
   }, [heartCount, isHearted]);
 
+  // 공유하기
   useEffect(() => {
+    const kakaoAppKey = import.meta.env.VITE_KAKAO_APP_KEY;
     if (!(window as any).Kakao.isInitialized()) {
-      (window as any).Kakao.init("16a9019862d8945c0a1082f314f6cef0");
+      (window as any).Kakao.init(kakaoAppKey);
     }
   }, []);
 
