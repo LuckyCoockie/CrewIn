@@ -191,16 +191,16 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
         )}) #${detailData?.courseDistance}km #페이스 ${minutes}'${seconds}''`,
         imageUrl: detailData?.sessionPosters ? detailData.sessionPosters[0] : "",
         link: {
-          mobileWebUrl: window.location.href,
-          webUrl: window.location.href,
+          mobileWebUrl: `kakaotalk://web/openExternal?url=${window.location.href}`,
+          webUrl: `kakaotalk://web/openExternal?url=${window.location.href}`,
         },
       },
       buttons: [
         {
           title: "View Session",
           link: {
-            mobileWebUrl: window.location.href,
-            webUrl: window.location.href,
+            mobileWebUrl: `kakaotalk://web/openExternal?url=${window.location.href}`,
+            webUrl: `kakaotalk://web/openExternal?url=${window.location.href}`,
           },
         },
       ],
