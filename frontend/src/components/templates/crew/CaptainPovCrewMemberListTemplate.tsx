@@ -28,7 +28,9 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
 
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedMember, setSelectedMember] = useState<CrewMemberDto | null>(null);
+  const [selectedMember, setSelectedMember] = useState<CrewMemberDto | null>(
+    null
+  );
   const [originalPosition, setOriginalPosition] = useState<string | null>(null);
   const [action, setAction] = useState<"BAN" | "CAPTAIN" | null>(null);
 
@@ -44,6 +46,16 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
   );
 
   const members = data?.items ?? [];
+
+  // 크루원 리스트를 정렬하는 함수
+  const sortMembers = (members: CrewMemberDto[]) => {
+    return members.sort((a, b) => {
+      return (
+        (sortPositions[a.position] || Infinity) -
+        (sortPositions[b.position] || Infinity)
+      );
+    });
+  };
 
   const handleModalClose = () => {
     setIsModalOpen(false);
@@ -212,7 +224,7 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
         ) : (
           <div>
             <ul>
-              {members.map((member) => renderMemberItem(member))}
+              {sortMembers(members).map((member) => renderMemberItem(member))}
             </ul>
           </div>
         )}
