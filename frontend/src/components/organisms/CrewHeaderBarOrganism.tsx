@@ -1,5 +1,5 @@
 import React from "react";
-import crewlistplus from "../../assets/images/crewlistplus.png";
+import crewlistplus from "../../assets/images/morehoriz.png";
 import RoundButtonMolecule from "../molecules/List/RoundButtonMolecule";
 import { CrewDto } from "../../apis/api/mycrew";
 
