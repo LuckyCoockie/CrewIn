@@ -137,9 +137,9 @@ const StartPage: React.FC = () => {
 
                 {/* 가로 스크롤 섹션 1 (오른쪽으로 스크롤) */}
                 <div className="mx-1 bg-white rounded-xl my-1 pb-4 pt-3">
-                    <div className="text-2xl md:text-4xl ms-4 font-black text-color mt-3">다양한 크루</div>
-                    <div className="mt-3 font-normal md:font-semibold md:text-xl text-gray-400 ms-4 text-sm">찾아 헤매지 말고 지역, 이름으로 간편한 크루 검색</div>
-                    <div className="mb-3 font-normal md:font-semibold md:text-xl text-gray-400 ms-4 text-sm">크루들은 어떻게 활동하고 있을까?</div>
+                    <div className="text-2xl sm:text-4xl ms-3 font-black text-color mt-3">다양한 크루</div>
+                    <div className="mt-3 font-medium sm:font-semibold sm:text-xl text-gray-500 ms-3" style={{ fontSize: '15px' }}>찾아 헤매지 말고 지역, 이름으로 간편한 크루 검색</div>
+                    <div className="mb-3 font-medium sm:font-semibold sm:text-xl text-gray-500 ms-3" style={{ fontSize: '15px' }}>크루들은 어떻게 활동하고 있을까?</div>
                     <div
                         ref={horizontalScrollRef1}
                         className="flex overflow-x-scroll space-x-4 py-2 snap-x snap-mandatory scrollbar-hide"
@@ -155,9 +155,9 @@ const StartPage: React.FC = () => {
 
                 {/* 가로 스크롤 섹션 2 (왼쪽으로 스크롤) */}
                 <div className="mx-1 bg-white rounded-xl my-2 pb-4 pt-3">
-                    <div className="text-2xl md:text-4xl ms-4 font-black text-color mt-3">수 많은 세션</div>
-                    <div className="mt-3 font-normal md:font-semibold md:text-xl text-gray-400 ms-4 text-sm">쉽게 세션에 참가신청</div>
-                    <div className="mb-3 font-normal md:font-semibold md:text-xl text-gray-400 ms-4 text-sm">번개런, 정규런, 오픈런 총 3가지 선택</div>
+                    <div className="text-2xl sm:text-4xl ms-3 font-black text-color mt-3">수 많은 세션</div>
+                    <div className="mt-3 font-medium sm:font-semibold sm:text-xl text-gray-500 ms-3" style={{ fontSize: '15px' }}>쉽게 세션에 참가신청</div>
+                    <div className="mb-3 font-medium sm:font-semibold sm:text-xl text-gray-500 ms-3" style={{ fontSize: '15px' }}>번개런, 정규런, 오픈런 총 3가지 선택</div>
                     <div
                         ref={horizontalScrollRef2}
                         className="flex overflow-x-scroll space-x-4 py-2 snap-x snap-mandatory scrollbar-hide"
