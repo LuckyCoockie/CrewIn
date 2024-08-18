@@ -34,7 +34,7 @@ const DropdownTypeComponent = React.forwardRef<HTMLSelectElement, InputData>(
           <option
             key={index}
             value={option.value ?? ""}
-            className="text-center text-black bg-white"
+            className="text-black bg-white"
           >
             {option.label}
           </option>
