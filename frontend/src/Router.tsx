@@ -40,7 +40,7 @@ import PostDetailPage from "./pages/PostDetailPage.tsx";
 import PeopleGalleryListDetailPage from "./pages/PeopleGalleryListDetailPage.tsx";
 import NotFoundPage from "./pages/util/NotFoundPage.tsx";
 import JoinAgreementPage from "./pages/JoinAgreementPage.tsx";
-import StartPage from "./pages/StartPage.tsx";
+import StartPage from "./pages/MainStartPage.tsx";
 
 export const router = createBrowserRouter([
   {
