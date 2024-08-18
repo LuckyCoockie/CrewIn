@@ -103,6 +103,7 @@ type NaverMapStateType = {
   markers: naver.maps.Marker[];
   infoWindows: naver.maps.InfoWindow[];
   polylines: naver.maps.Polyline[];
+  error?: string;
 };
 
 const initialState: NaverMapStateType = {
@@ -177,6 +178,10 @@ export default function NaverMapReducer(
       return state;
     }
     case ADD_MARKER: {
+      if (state.markers.length >= 10) {
+        return { ...state, error: "마커는 최대 10개까지 지정 가능합니다." };
+      }
+
       const marker = new naver.maps.Marker({
         position: new naver.maps.LatLng(
           action.data.latitude,
@@ -220,6 +225,7 @@ export default function NaverMapReducer(
         ...state,
         markers: state.markers.concat(marker),
         infoWindows: state.infoWindows.concat(infowindow),
+        error: undefined,
       };
     }
     case REMOVE_MARKER: {
@@ -230,6 +236,7 @@ export default function NaverMapReducer(
         infoWindows: state.infoWindows.filter(
           (_, index) => index != action.index
         ),
+        error: undefined,
       };
     }
     case UPDATE_MARKER: {
@@ -248,6 +255,7 @@ export default function NaverMapReducer(
       return {
         ...state,
         markers: [...state.markers],
+        error: undefined,
       };
     }
     case CLEAR_MARKER: {
@@ -255,21 +263,23 @@ export default function NaverMapReducer(
       return {
         ...state,
         markers: [],
+        error: undefined,
       };
     }
     case FOCUS_MARKER: {
       state.map?.panTo(state.markers[action.index].getPosition());
-      return state;
+      return { ...state, error: undefined };
     }
     case UPDATE_MARKER_LIST: {
       return {
         ...state,
         markers: [...(action.list ?? state.markers)],
+        error: undefined,
       };
     }
     case SET_MARKER_VISIBILITY: {
       state.markers[action.index].setVisible(action.visible);
-      return state;
+      return { ...state, error: undefined };
     }
     case ADD_POLYLINE: {
       const polyline = new naver.maps.Polyline({
@@ -284,6 +294,7 @@ export default function NaverMapReducer(
       return {
         ...state,
         polylines: state.polylines.concat(polyline),
+        error: undefined,
       };
     }
     case REMOVE_POLYLINE: {
@@ -291,6 +302,7 @@ export default function NaverMapReducer(
       return {
         ...state,
         number: state.polylines.filter((_, index) => index != action.index),
+        error: undefined,
       };
     }
     case CLEAR_POLYLINE: {
@@ -298,6 +310,7 @@ export default function NaverMapReducer(
       return {
         ...state,
         polylines: [],
+        error: undefined,
       };
     }
     default:
