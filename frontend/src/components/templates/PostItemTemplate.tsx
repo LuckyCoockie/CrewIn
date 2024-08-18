@@ -139,11 +139,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   };
 
   const handleImageClick = () => {
-    if (postType === "STANDARD") {
       navigate(`/post/${id}`);
-    } else if (postType === "NOTICE") {
-      navigate(`/crew/detail/${authorId}/notice/${id}`);
-    }
   };
 
   const timeAgo = formatDistanceToNow(parseISO(createdAt), {

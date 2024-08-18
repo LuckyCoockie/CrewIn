@@ -69,13 +69,21 @@ const AlarmTemplate: React.FC = () => {
     if (notification.notificationType === "INVITATION") {
       navigate(`/crew/detail/${notification.senderId}`);
     } else if (notification.notificationType === "NOTICE") {
-      navigate(
-        `/crew/detail/${notification.senderId}/notice/${notification.postId}`
-      );
+      navigate(`/crew/detail/${notification.senderId}/notice/${notification.postId}`);
+    } else if (notification.notificationType === "LIKE") {
+      navigate(`/post/${notification.postId}`);
     }
   };
 
-  if (!alarms || isAlarmLoading) return;
+  const handleProfileClick = (notification: NotificationDto) => {
+    if (notification.notificationType === "LIKE") {
+      navigate(`/profile/${notification.senderId}`);
+    } else if (notification.notificationType === "INVITATION" || notification.notificationType === "NOTICE") {
+      navigate(`/crew/detail/${notification.senderId}`);
+    }
+  };
+
+  if (!alarms || isAlarmLoading) return null;
 
   return (
     <div className="flex flex-col max-w-[500px] mx-auto">
@@ -92,123 +100,131 @@ const AlarmTemplate: React.FC = () => {
             )
             .slice()
             .reverse()
-            .map((alarm) => (
-              <div
-                key={alarm.notificationId}
-                className={`p-4 border-b border-gray-200 flex items-center ${
-                  alarm.isChecked && alarm.notificationType !== "INVITATION"
-                    ? "bg-gray-100"
-                    : ""
-                }`}
-                onClick={() => handleNotificationClick(alarm)}
-              >
-                <img
-                  src={alarm.senderThumbnail || CrewinLogo}
-                  alt={alarm.senderName}
-                  className="w-8 h-8 rounded-full mr-2 border"
-                />
-                <div className="flex flex-col flex-grow">
-                  {alarm.notificationType === "INVITATION" && (
-                    <div className="flex justify-between items-center tracking-tighter">
-                      <div
-                        style={{
-                          fontWeight: "bold",
-                          maxWidth: "60%",
-                          overflow: "visible",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "break-word",
-                        }}
-                        className="text-sm"
-                      >
-                        {alarm.senderName} 크루에 초대되었습니다.
-                      </div>
-                      <div className="flex space-x-2">
-                        <button
-                          className="w-12 bg-[#D5D5D9] text-white px-3 py-1 rounded text-xs tracking-tighter"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleReject(alarm);
-                          }}
-                        >
-                          거절
-                        </button>
-                        <button
-                          className="w-12 bg-[#2B2F40] text-white px-3 py-1 rounded text-xs tracking-tighter"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleAccept(alarm);
-                          }}
-                        >
-                          수락
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                  {alarm.notificationType === "LIKE" && (
-                    <div
-                      className={`flex justify-between items-center w-full h-6 tracking-tighter ${
-                        alarm.isChecked ? "text-gray-500" : ""
-                      }`}
-                    >
-                      <div className="font-bold text-sm">
-                        {alarm.senderName}님이 회원님의 게시글에 좋아요를
-                        눌렀습니다.
-                      </div>
-                      <div className="flex items-center mt-3">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDelete(alarm.notificationId);
-                          }}
-                          className="bg-transparent"
-                        >
-                          <img
-                            src={closeButton}
-                            alt="Delete"
-                            className="w-2 h-2"
-                          />
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                  {alarm.notificationType === "NOTICE" && (
-                    <div
-                      className={`flex justify-between items-center w-full tracking-tighter ${
-                        alarm.isChecked ? "text-gray-500" : ""
-                      }`}
-                    >
-                      <div className="font-bold text-sm">
-                        {alarm.senderName} 크루에 공지가 올라왔습니다.
-                      </div>
-                      <div className="flex items-center mt-3">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDelete(alarm.notificationId);
-                          }}
-                          className="bg-transparent"
-                        >
-                          <img
-                            src={closeButton}
-                            alt="Delete"
-                            className="w-2 h-2"
-                          />
-                        </button>
-                      </div>
-                    </div>
-                  )}
+            .map((alarm) => {
+              console.log('Alarm:', alarm); // 각 알람 항목에 대한 로그 출력
+
+              return (
+                <div
+                  key={alarm.notificationId}
+                  className={`p-4 border-b border-gray-200 flex items-center ${
+                    alarm.isChecked && alarm.notificationType !== "INVITATION"
+                      ? "bg-gray-100"
+                      : ""
+                  }`}
+                >
+                  <img
+                    src={alarm.senderThumbnail || CrewinLogo}
+                    alt={alarm.senderName}
+                    className="w-8 h-8 rounded-full mr-2 border cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation(); // 클릭 이벤트가 상위 div로 전파되지 않도록
+                      handleProfileClick(alarm);
+                    }}
+                  />
                   <div
-                    className={`text-gray-500 text-xs ${
-                      alarm.isChecked && alarm.notificationType === "INVITATION"
-                        ? "text-black"
-                        : ""
-                    }`}
+                    className="flex flex-col flex-grow cursor-pointer"
+                    onClick={() => handleNotificationClick(alarm)}
                   >
-                    {new Date(alarm.createdAt).toLocaleString()}{" "}
+                    {alarm.notificationType === "INVITATION" && (
+                      <div className="flex justify-between items-center tracking-tighter">
+                        <div
+                          style={{
+                            maxWidth: "60%",
+                            overflow: "visible",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "break-word",
+                          }}
+                          className="text-sm"
+                        >
+                          <span className="font-bold">{alarm.senderName}</span> 크루에 초대되었습니다.
+                        </div>
+                        <div className="flex space-x-2">
+                          <button
+                            className="w-12 bg-[#D5D5D9] text-white px-3 py-1 rounded text-xs tracking-tighter"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleReject(alarm);
+                            }}
+                          >
+                            거절
+                          </button>
+                          <button
+                            className="w-12 bg-[#2B2F40] text-white px-3 py-1 rounded text-xs tracking-tighter"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAccept(alarm);
+                            }}
+                          >
+                            수락
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    {alarm.notificationType === "LIKE" && (
+                      <div
+                        className={`flex justify-between items-center w-full h-6 tracking-tighter ${
+                          alarm.isChecked ? "text-gray-500" : ""
+                        }`}
+                      >
+                        <div className="text-sm">
+                          <span className="font-bold">{alarm.senderName}</span>님이 회원님의 게시글에 좋아요를 눌렀습니다.
+                        </div>
+                        <div className="flex items-center mt-3">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDelete(alarm.notificationId);
+                            }}
+                            className="bg-transparent"
+                          >
+                            <img
+                              src={closeButton}
+                              alt="Delete"
+                              className="w-2 h-2"
+                            />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    {alarm.notificationType === "NOTICE" && (
+                      <div
+                        className={`flex justify-between items-center w-full h-6 tracking-tighter ${
+                          alarm.isChecked ? "text-gray-500" : ""
+                        }`}
+                      >
+                        <div className="text-sm">
+                          <span className="font-bold">{alarm.senderName}</span> 크루에 공지가 올라왔습니다.
+                        </div>
+                        <div className="flex items-center mt-3">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDelete(alarm.notificationId);
+                            }}
+                            className="bg-transparent"
+                          >
+                            <img
+                              src={closeButton}
+                              alt="Delete"
+                              className="w-2 h-2"
+                            />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    <div
+                      className={`text-gray-500 text-xs ${
+                        alarm.isChecked && alarm.notificationType === "INVITATION"
+                          ? "text-black"
+                          : ""
+                      }`}
+                    >
+                      {new Date(alarm.createdAt).toLocaleString()}{" "}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
         ) : (
           <div className="p-4 text-gray-500">알림이 없습니다.</div>
         )}
