@@ -29,6 +29,7 @@ import {
   setMarkerVisibility,
 } from "../../util/maps/naver_map/context";
 import { debounce } from "lodash";
+import Modal from "../molecules/ModalMolecules";
 
 type OwnProps = {
   initPosition?: Point;
@@ -89,6 +90,8 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
 
   const dispatch = useNaverMapDispatch();
   const [isSubmit, setIsSubmit] = useState(false);
+  const [ismarkerErrorModalOpen, setIsMarkerErrorModalOpen] =
+    useState<boolean>(false);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setIsSubmit(true);
@@ -134,8 +137,9 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
   });
 
   const setMarkers = useCallback(
-    (markers: { title: string; point: Point }[]) => {
+    (markers: { title: string; point: Point }[], error?: string) => {
       setValue("markers", markers);
+      if (error !== undefined) setIsMarkerErrorModalOpen(true);
     },
     [setValue]
   );
@@ -347,6 +351,11 @@ const CourseCreateTemplate: React.FC<OwnProps> = ({
             </div>
           </form>
         </div>
+        {ismarkerErrorModalOpen && (
+          <Modal title="알림" onClose={() => setIsMarkerErrorModalOpen(false)}>
+            <p>{"경유지는 최대 10개까지 지정가능합니다."}</p>
+          </Modal>
+        )}
       </div>
     </>
   );

@@ -16,7 +16,8 @@ type props = {
   initPosition?: { lat: number; lng: number };
   zoom?: number;
   onChange?: (
-    markers: { title: string; point: { latitude: number; longitude: number } }[]
+    markers: { title: string; point: { latitude: number; longitude: number } }[],
+    error?: string
   ) => void;
   editable?: boolean;
 };
@@ -27,7 +28,7 @@ const NaverMap: React.FC<props> = ({
   onChange,
   editable = true,
 }: props) => {
-  const { markers } = useNaverMapState();
+  const { markers, error } = useNaverMapState();
   const dispatch = useNaverMapDispatch();
 
   // init map with lat, lng
@@ -72,26 +73,26 @@ const NaverMap: React.FC<props> = ({
           point: { longitude: coord.x, latitude: coord.y },
         };
       });
-      if (onChange) onChange(markerList);
+      if (onChange) onChange(markerList, error);
     }
-  }, [dispatch, markers]);
+  }, [dispatch, markers, error]);
 
   useEffect(() => {
     markers.forEach((marker, index) => {
       if (index === 0) {
         marker.setIcon({
           url: startMarkerImage,
-          scaledSize: new naver.maps.Size(44, 66),
+          scaledSize: new naver.maps.Size(44, 44),
         });
       } else if (index === markers.length - 1) {
         marker.setIcon({
           url: endtMarkerImage,
-          scaledSize: new naver.maps.Size(44, 66),
+          scaledSize: new naver.maps.Size(44, 44),
         });
       } else {
         marker.setIcon({
           url: markerImage,
-          scaledSize: new naver.maps.Size(44, 66),
+          scaledSize: new naver.maps.Size(44, 44),
         });
       }
     });
