@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BackHeaderMediumOrganism from "../../organisms/BackHeaderMediumOrganism";
 import { ReactComponent as Searchicon } from "../../../assets/icons/searchicon.svg";
@@ -11,8 +11,9 @@ import {
 import { changeAuthority } from "../../../apis/api/changeauthority";
 import { changeCaptain } from "../../../apis/api/captainchange";
 import { crewOut } from "../../../apis/api/crewout";
-import InfiniteScrollComponent from "../../../util/paging/component/InfinityScrollComponent";
 import ModalConfirm from "../../molecules/ModalConfirmMolecules";
+import { useQuery } from "react-query";
+import SpinnerComponent from "../../atoms/SpinnerComponent";
 
 // Captain - Pacer - Member 순으로 정렬
 const sortPositions: Record<string, number> = {
@@ -25,13 +26,9 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
   const navigate = useNavigate();
   const { crewId } = useParams<{ crewId: string }>();
 
-  const [members, setMembers] = useState<CrewMemberDto[]>([]);
-  const [, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedMember, setSelectedMember] = useState<CrewMemberDto | null>(
-    null
-  );
+  const [selectedMember, setSelectedMember] = useState<CrewMemberDto | null>(null);
   const [originalPosition, setOriginalPosition] = useState<string | null>(null);
   const [action, setAction] = useState<"BAN" | "CAPTAIN" | null>(null);
 
@@ -41,49 +38,22 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
       ? "회원을 정말로 강퇴하시겠습니까?"
       : "권한을 변경하시겠습니까?";
 
+  const { data, isLoading, refetch } = useQuery<GetCrewMemberListResponseDto>(
+    ["crewMembers", crewId],
+    () => getCrewMemberList(Number(crewId), 0)
+  );
+
+  const members = data?.items ?? [];
+
   const handleModalClose = () => {
     setIsModalOpen(false);
     if (selectedMember && originalPosition !== null) {
-      setMembers((prevMembers) =>
-        prevMembers.map((m) =>
-          m.email === selectedMember.email
-            ? { ...m, position: originalPosition }
-            : m
-        )
-      );
+      refetch();
     }
     setSelectedMember(null);
     setOriginalPosition(null);
     setAction(null);
   };
-
-  const fetchCrewMembers = useCallback(
-    async (page: number): Promise<GetCrewMemberListResponseDto> => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await getCrewMemberList(Number(crewId), page);
-        const sortedMembers = response.items.sort((a, b) => {
-          return (
-            (sortPositions[a.position] || Infinity) -
-            (sortPositions[b.position] || Infinity)
-          );
-        });
-        if (page === 0) {
-          setMembers(sortedMembers);
-        } else {
-          setMembers((prev) => [...prev, ...sortedMembers]);
-        }
-        return response;
-      } catch (error) {
-        setError("크루원 데이터를 가져오는 중 오류가 발생했습니다.");
-        return { pageNo: 0, lastPageNo: 0, items: [] };
-      } finally {
-        setLoading(false);
-      }
-    },
-    [crewId]
-  );
 
   const handlePositionChange = async (email: string, newPosition: string) => {
     const member = members.find((member) => member.email === email);
@@ -109,19 +79,7 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
             memberId: member.memberId,
             position: newPosition,
           });
-          setMembers((prevMembers) =>
-            prevMembers
-              .map((m) =>
-                m.email === email ? { ...m, position: newPosition } : m
-              )
-              .sort((a, b) => {
-                return (
-                  (sortPositions[a.position] || Infinity) -
-                  (sortPositions[b.position] || Infinity)
-                );
-              })
-          );
-          navigate(0);
+          refetch();
         } catch (error) {
           setError("권한 변경에 실패했습니다.");
         }
@@ -137,10 +95,7 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
             crewId: Number(crewId),
             memberId: selectedMember.memberId,
           });
-          setMembers((prevMembers) =>
-            prevMembers.filter((m) => m.email !== selectedMember.email)
-          );
-          navigate(0);
+          refetch();
         } catch (error) {
           setError("강퇴에 실패했습니다.");
         } finally {
@@ -157,22 +112,7 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
               memberId: selectedMember.memberId,
               position: "PACER",
             });
-            setMembers((prevMembers) =>
-              prevMembers
-                .map((m) =>
-                  m.email === selectedMember.email
-                    ? { ...m, position: "CAPTAIN" }
-                    : m.email === currentCaptain.email
-                    ? { ...m, position: "PACER" }
-                    : m
-                )
-                .sort((a, b) => {
-                  return (
-                    (sortPositions[a.position] || Infinity) -
-                    (sortPositions[b.position] || Infinity)
-                  );
-                })
-            );
+            refetch();
             navigate(`/crew/detail/${crewId}`);
           }
         } catch (error) {
@@ -267,15 +207,15 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
         <hr />
 
         {error && <div className="text-red-500 text-center mt-2">{error}</div>}
-
-        <div>
-          <InfiniteScrollComponent
-            fetchKey="crewMembers"
-            fetchData={fetchCrewMembers}
-            ItemComponent={({ data }) => renderMemberItem(data)}
-            className="crew-member-list"
-          />
-        </div>
+        {isLoading ? (
+          <SpinnerComponent />
+        ) : (
+          <div>
+            <ul>
+              {members.map((member) => renderMemberItem(member))}
+            </ul>
+          </div>
+        )}
       </div>
       {/* Modal 컴포넌트 */}
       {isModalOpen && (
