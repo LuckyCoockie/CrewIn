@@ -40,6 +40,7 @@ import PostDetailPage from "./pages/PostDetailPage.tsx";
 import PeopleGalleryListDetailPage from "./pages/PeopleGalleryListDetailPage.tsx";
 import NotFoundPage from "./pages/util/NotFoundPage.tsx";
 import JoinAgreementPage from "./pages/JoinAgreementPage.tsx";
+import StartPage from "./pages/MainStartPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -153,6 +154,7 @@ export const router = createBrowserRouter([
           { path: "join", element: <JoinPage /> },
           { path: "agreement", element: <JoinAgreementPage /> },
           { path: "find-password", element: <FindPasswordPage /> },
+          { path: "start", element: <StartPage /> },
         ],
       },
       { path: "*", element: <NotFoundPage /> },
