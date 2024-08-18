@@ -21,6 +21,7 @@ export const sessionTypeToLabel = (type: SessionType) => {
 export const SessionStatusType = {
   ALL: "all",
   ACTIVE: "active",
+  FINISHED: "finished",
 } as const;
 export type SessionStatusType =
   (typeof SessionStatusType)[keyof typeof SessionStatusType];
@@ -30,6 +31,8 @@ export const sessionStatusTypeToLabel = (type: SessionStatusType) => {
       return "전체 세션 조회";
     case SessionStatusType.ACTIVE:
       return "진행 중인 세션 조회";
+    case SessionStatusType.FINISHED:
+      return "종료된 세션 조회";
   }
 };
 
@@ -57,7 +60,7 @@ export type SessionDto = {
   maxPeople: number;
   sessionId: number;
   startAt: string;
-  currentPeople: number
+  currentPeople: number;
 };
 
 export type GetSessionListRequestDto = {
