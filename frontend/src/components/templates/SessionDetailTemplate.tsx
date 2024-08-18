@@ -141,8 +141,9 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
     return `${durationHours}시간 ${durationMinutes}분`;
   };
 
-  const minutes = Math.floor(detailData!.pace / 60);
-  const seconds = detailData!.pace % 60;
+  const minutes = detailData ? Math.floor(detailData.pace / 60) : 0;
+  const seconds = detailData ? detailData.pace % 60 : 0;
+
   const formatKoreanDate = (dateString: string | undefined) => {
     const date = new Date(dateString!.replace(" ", "T"));
     const months = [
