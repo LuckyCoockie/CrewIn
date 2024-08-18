@@ -419,7 +419,7 @@ public class CrewService {
     @Transactional(readOnly = true)
     public PagingItemsResponse<CrewMemberItem> getCrewMemberList(Long crewId, int pageNo) {
         Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
-        Pageable pageable = PageRequest.of(pageNo, 10);
+        Pageable pageable = PageRequest.of(pageNo, 30);
 
         // 해당 크루에 있는 크루원 조회
         Page<MemberCrew> memberCrewPage = memberCrewRepository.findByCrewOrderByJoinedAndInvitedStatus(crew, pageable);
