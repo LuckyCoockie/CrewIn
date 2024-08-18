@@ -101,7 +101,7 @@ export const EditPasswordOrganism = ({ onClose, onEdit }: OwnProps) => {
               <InputPasswordTypeMolecule
                 id="newPassword"
                 title="새로운 비밀번호"
-                placeholder="소문자, 대문자 조합 4~60자"
+                placeholder="영문, 숫자 조합 4~60자"
                 error={errors.newPassword?.message}
                 {...field}
               />
