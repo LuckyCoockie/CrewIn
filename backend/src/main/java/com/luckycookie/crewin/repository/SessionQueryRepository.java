@@ -9,6 +9,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -79,8 +80,10 @@ public class SessionQueryRepository {
     }
 
     private BooleanExpression statusEq(String status) {
-        if (status.equalsIgnoreCase("active"))
+        if (StringUtils.equalsIgnoreCase(status, "ACTIVE"))
             return session.endAt.after(LocalDateTime.now());
+        else if (StringUtils.equalsIgnoreCase(status, "FINISHED"))
+            return session.endAt.before(LocalDateTime.now());
         else
             return null;
     }
