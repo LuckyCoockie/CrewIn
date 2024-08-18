@@ -26,12 +26,9 @@ const PostDetailTemplate: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const {
-    data: postData,
-    isLoading,
-    error,
-  } = useQuery<PostDetailResponseDto>(["postDetail", id], () =>
-    getPostDetail(Number(id))
+  const { data: postData, isLoading, error } = useQuery<PostDetailResponseDto>(
+    ["postDetail", id],
+    () => getPostDetail(Number(id))
   );
 
   const [likes, setLikes] = useState<number>(postData?.heartCount || 0);
@@ -47,7 +44,6 @@ const PostDetailTemplate: React.FC = () => {
     }
   }, [postData]);
 
-  // 공유하기
   useEffect(() => {
     const kakaoAppKey = import.meta.env.VITE_KAKAO_APP_KEY;
     if (!(window as any).Kakao.isInitialized()) {
@@ -61,7 +57,9 @@ const PostDetailTemplate: React.FC = () => {
       setLikes((prevLikes) => prevLikes + 1);
       setIsHeartedState(true);
     },
-    onError: () => {},
+    onError: (error) => {
+      console.error("Failed to like the post", error);
+    },
   });
 
   const unlikeMutation = useMutation(deletePostHeart, {
@@ -70,7 +68,9 @@ const PostDetailTemplate: React.FC = () => {
       setLikes((prevLikes) => prevLikes - 1);
       setIsHeartedState(false);
     },
-    onError: () => {},
+    onError: (error) => {
+      console.error("Failed to unlike the post", error);
+    },
   });
 
   const handleLike = () => {
@@ -85,37 +85,39 @@ const PostDetailTemplate: React.FC = () => {
   };
 
   const handleDelete = async () => {
-    await deletePost(Number(id));
-    navigate(0);
+    try {
+      await deletePost(Number(id));
+      navigate(0);
+    } catch (error) {
+      console.error("Failed to delete the post", error);
+    }
   };
 
   const handleShare = () => {
     const kakao = (window as any).Kakao;
-    if (!kakao) {
-      return;
-    }
-
-    kakao.Link.sendDefault({
-      objectType: "feed",
-      content: {
-        title: postData?.authorName || "",
-        description: postData?.content.substring(0, 100) + "...",
-        imageUrl: postData?.postImages ? postData.postImages[0] : "",
-        link: {
-          mobileWebUrl: window.location.href,
-          webUrl: window.location.href,
-        },
-      },
-      buttons: [
-        {
-          title: "View Post",
+    if (kakao) {
+      kakao.Link.sendDefault({
+        objectType: "feed",
+        content: {
+          title: postData?.authorName || "",
+          description: postData?.content.substring(0, 100) + "...",
+          imageUrl: postData?.postImages && postData.postImages.length > 0 ? postData.postImages[0] : postData?.profileImage,
           link: {
             mobileWebUrl: window.location.href,
             webUrl: window.location.href,
           },
         },
-      ],
-    });
+        buttons: [
+          {
+            title: "View Post",
+            link: {
+              mobileWebUrl: window.location.href,
+              webUrl: window.location.href,
+            },
+          },
+        ],
+      });
+    }
   };
 
   if (isLoading) {
@@ -153,23 +155,31 @@ const PostDetailTemplate: React.FC = () => {
             onClick={() => navigate(`/profile/${postData.authorId}`)}
           />
         </div>
-        <Carousel
-          showThumbs={false}
-          showIndicators={true}
-          showStatus={false}
-          infiniteLoop={false}
-          autoPlay={false}
-        >
-          {postData.postImages?.map((image, index) => (
-            <div key={image}>
-              <img
-                src={image}
-                alt={`Post ${index}`}
-                style={{ width: "100%", height: "auto" }}
-              />
-            </div>
-          ))}
-        </Carousel>
+        {postData.postType === "NOTICE" && postData.postImages.length === 0 ? (
+          <img
+            src={postData.profileImage}
+            alt="Profile"
+            style={{ width: "100%", height: "auto" }}
+          />
+        ) : (
+          <Carousel
+            showThumbs={false}
+            showIndicators={true}
+            showStatus={false}
+            infiniteLoop={false}
+            autoPlay={false}
+          >
+            {postData.postImages?.map((image, index) => (
+              <div key={image}>
+                <img
+                  src={image}
+                  alt={`Post ${index}`}
+                  style={{ width: "100%", height: "auto" }}
+                />
+              </div>
+            ))}
+          </Carousel>
+        )}
         <div className="flex items-center mt-2 mb-2">
           <button onClick={handleLike} className="flex items-center ml-3">
             <img
@@ -186,12 +196,10 @@ const PostDetailTemplate: React.FC = () => {
         </div>
         <span className="text-md ml-3">{likes}명이 공감했어요!</span>
         <div className="mx-3">
-          <>
-            <p>
-              <span className="font-bold">{postData.authorName}</span>{" "}
-              <span style={{ whiteSpace: "pre-line" }}>{postData.content}</span>
-            </p>
-          </>
+          <p>
+            <span className="font-bold">{postData.authorName}</span>{" "}
+            <span style={{ whiteSpace: "pre-line" }}>{postData.content}</span>
+          </p>
         </div>
       </div>
     </>
