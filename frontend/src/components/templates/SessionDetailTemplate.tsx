@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import BackHeaderMediumOrganism from "../organisms/BackHeaderMediumOrganism";
 import SessionDetailOrganism from "../organisms/SessionDetailOrganism";
@@ -48,7 +48,15 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
   const isSessionStarted = detailData
     ? new Date(detailData.startAt) < new Date()
     : false;
-
+  const convertRunningType = (runningType: string | undefined) => {
+    if (runningType === "THUNDER") {
+      return "번개런"
+    } else if (runningType === "STANDARD") {
+      return "정규런"
+    } else if (runningType === "OPEN") {
+      return "오픈런"
+    }
+  }
   const handleDownload = async () => {
     if (selectedImage) {
       try {
@@ -119,6 +127,85 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
     setIsErrorModalOpen(false);
   };
 
+  const calculateDuration = (start: string | undefined, end: string | undefined) => {
+    const startDate = new Date(start!.replace(" ", "T"));
+    const endDate = new Date(end!.replace(" ", "T"));
+    const durationMs = endDate.getTime() - startDate.getTime();
+    const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
+    const durationMinutes = Math.floor(
+      (durationMs % (1000 * 60 * 60)) / (1000 * 60)
+    );
+    if (durationHours === 0) {
+      return `예정 소요시간 ${durationMinutes}분`;
+    }
+    return `${durationHours}시간 ${durationMinutes}분`;
+  };
+
+  const minutes = Math.floor(detailData!.pace / 60);
+  const seconds = detailData!.pace % 60;
+  const formatKoreanDate = (dateString: string | undefined) => {
+    const date = new Date(dateString!.replace(" ", "T"));
+    const months = [
+      "1월",
+      "2월",
+      "3월",
+      "4월",
+      "5월",
+      "6월",
+      "7월",
+      "8월",
+      "9월",
+      "10월",
+      "11월",
+      "12월",
+    ];
+    const month = months[date.getMonth()];
+    const day = date.getDate();
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    return `${month} ${day}일 ${hours}:${minutes}`;
+  };
+
+  // 공유하기
+  useEffect(() => {
+    if (!(window as any).Kakao.isInitialized()) {
+      (window as any).Kakao.init(import.meta.env.VITE_KAKAO_APP_KEY);
+    }
+  }, []);
+
+  const handleShare = () => {
+    const kakao = (window as any).Kakao;
+    if (!kakao) {
+      return;
+    }
+
+
+    kakao.Link.sendDefault({
+      objectType: "feed",
+      content: {
+        title: `${detailData?.sessionName} (${convertRunningType(detailData?.sessionType)})` || "Session Details",
+        description: `#${detailData?.spot || "Unknown Area"} #${formatKoreanDate(detailData?.startAt)} (${calculateDuration(
+          detailData?.startAt,
+          detailData?.endAt
+        )}) #${detailData?.courseDistance}km #페이스 ${minutes}'${seconds}''`,
+        imageUrl: detailData?.sessionPosters ? detailData.sessionPosters[0] : "",
+        link: {
+          mobileWebUrl: window.location.href,
+          webUrl: window.location.href,
+        },
+      },
+      buttons: [
+        {
+          title: "View Session",
+          link: {
+            mobileWebUrl: window.location.href,
+            webUrl: window.location.href,
+          },
+        },
+      ],
+    });
+  };
+
   if (!sessionId) return null;
 
   return (
@@ -133,8 +220,8 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
             (detailData?.isJoined &&
               isSessionStarted &&
               detailData.sessionType === "THUNDER")) && (
-            <AttendanceButton {...detailData} />
-          )}
+              <AttendanceButton {...detailData} />
+            )}
           {detailData?.isSessionHost && !isSessionStarted && (
             <EditDeleteDropdownOrganism
               type="SESSION"
@@ -147,17 +234,30 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
       {currentTab === "세션정보" &&
         detailData &&
         detailData.sessionPosters.length > 0 && (
-          <Carousel
-            showThumbs={false}
-            showIndicators={true}
-            showStatus={true}
-            infiniteLoop={false}
-            swipeable={true}
-          >
-            {detailData.sessionPosters.map((poster, index) => (
-              <OneToOneImageMolecule key={index} src={poster} alt="poster" />
-            ))}
-          </Carousel>
+          <>
+            <div className="relative">
+              <Carousel
+                showThumbs={false}
+                showIndicators={true}
+                showStatus={true}
+                infiniteLoop={false}
+                swipeable={true}
+
+              >
+                {detailData.sessionPosters.map((poster, index) => (
+                  <OneToOneImageMolecule key={index} src={poster} alt="poster" />
+                ))}
+              </Carousel>
+              {detailData &&
+                <button
+                  onClick={handleShare}
+                  className="absolute bottom-2 right-2 text-white bg-[#2b2f40] bg-opacity-70 rounded-md py-2 font-bold px-2 text-xs"
+                >
+                  세션 공유하기
+                </button>
+              }
+            </div>
+          </>
         )}
 
       {currentTab === "사진첩" && (

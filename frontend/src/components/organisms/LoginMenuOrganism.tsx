@@ -7,7 +7,7 @@ const LoginMenuOrganism: React.FC = () => {
       <Link to="/find-password" className="hover:underline font-normal">
         비밀번호 찾기
       </Link>
-      <Link to="/join" className="hover:underline font-normal">
+      <Link to="/agreement" className="hover:underline font-normal">
         회원가입
       </Link>
     </div>
