@@ -52,8 +52,7 @@ const StartPage: React.FC = () => {
                 <img ref={el => el && imagesRef.current.push(el)} src={startFour} alt="startFour" className="px-1 my-1 start-image" />
                 <img ref={el => el && imagesRef.current.push(el)} src={startFive} alt="startFive" className="px-1 my-1 start-image" />
 
-                {/* 하단 중앙에 고정된 버튼 */}
-                <div className="fixed bottom-3 left-1/2 transform -translate-x-1/2 w-full max-w-md">
+                <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white pb-4 px-4 pt-2 rounded-lg shadow-lg">
                     <LargeAbleButton text="CREW-IN 입장" onClick={clickrouter} />
                 </div>
             </div>
