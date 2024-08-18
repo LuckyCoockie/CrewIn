@@ -187,7 +187,7 @@ export default function NaverMapReducer(
         draggable: action.data.ondragend ? true : false,
         icon: {
           url: markerImage,
-          scaledSize: new naver.maps.Size(44, 66),
+          scaledSize: new naver.maps.Size(44, 44),
         },
       });
 

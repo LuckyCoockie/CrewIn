@@ -81,17 +81,17 @@ const NaverMap: React.FC<props> = ({
       if (index === 0) {
         marker.setIcon({
           url: startMarkerImage,
-          scaledSize: new naver.maps.Size(44, 66),
+          scaledSize: new naver.maps.Size(44, 44),
         });
       } else if (index === markers.length - 1) {
         marker.setIcon({
           url: endtMarkerImage,
-          scaledSize: new naver.maps.Size(44, 66),
+          scaledSize: new naver.maps.Size(44, 44),
         });
       } else {
         marker.setIcon({
           url: markerImage,
-          scaledSize: new naver.maps.Size(44, 66),
+          scaledSize: new naver.maps.Size(44, 44),
         });
       }
     });
