@@ -21,7 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/attendances")
+@RequestMapping("/attendance")
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
