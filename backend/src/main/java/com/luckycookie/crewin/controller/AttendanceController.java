@@ -34,7 +34,7 @@ public class AttendanceController {
     }
 
     // 참가자 출석
-    @PostMapping("/guests/{session-id}")
+    @PostMapping("/guest/{session-id}")
     public ResponseEntity<BaseResponse<Void>> attend(@PathVariable("session-id") Long sessionId, @AuthenticationPrincipal CustomUser customUser, @RequestBody AttendanceInfoRequest attendanceInfoRequest) {
         attendanceService.attend(sessionId, customUser.getEmail(), attendanceInfoRequest);
         HttpHeaders headers = new HttpHeaders();
