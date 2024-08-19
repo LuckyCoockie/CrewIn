@@ -105,22 +105,17 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     setIsAttendanceModalOpen(true);
   }, []);
 
-  const handleClickAttendanceModalConfirm = useCallback(() => {
+  // setTimeOut -> 비동기 처리
+  const handleClickAttendanceModalConfirm = useCallback(async () => {
     if (isSessionHost) {
-      onStartAttendanceClick().then(() => {
-        setTimeout(() => {
-          fetchMemberList();
-          setIsAttendanceModalOpen(false);
-          setIsAttendancStartedeModalOpen(true);
-        }, 100);
-      });
+      await onStartAttendanceClick();
+      await fetchMemberList();
+      setIsAttendanceModalOpen(false);
+      setIsAttendancStartedeModalOpen(true);
     } else {
-      onGuestAttendanceClick().then(() => {
-        setTimeout(() => {
-          fetchMemberList();
-          setIsAttendanceModalOpen(false);
-        }, 100);
-      });
+      await onGuestAttendanceClick();
+      await fetchMemberList();
+      setIsAttendanceModalOpen(false);
     }
   }, [
     fetchMemberList,
@@ -128,6 +123,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
     onGuestAttendanceClick,
     onStartAttendanceClick,
   ]);
+
 
   const handleClickInfoModalConfirm = useCallback(() => {
     setIsInfoModalOpen(true);
