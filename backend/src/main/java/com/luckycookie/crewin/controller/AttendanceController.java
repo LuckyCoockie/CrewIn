@@ -62,6 +62,7 @@ public class AttendanceController {
     // SSE 구독
     @GetMapping("/connect/{session-id}")
     public ResponseEntity<SseEmitter> subscribeSSE(@PathVariable("session-id") Long sessionId, @AuthenticationPrincipal CustomUser customUser) {
+        log.info("email: {}, sse start!!", customUser.getEmail());
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Accel-Buffering", "no");
         headers.add("Cache-Control", "no-cache");
