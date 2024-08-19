@@ -156,7 +156,7 @@ public class AttendanceService {
 
         AutoCheckStatus status = null;
         LocalDateTime now = LocalDateTime.now();
-        if (session.getAttendanceStart() == null || session.getAttendanceStart().isAfter(LocalDateTime.now())) {
+        if (session.getAttendanceStart() == null) {
             status = BEFORE;
         } else if (!now.isBefore(session.getAttendanceStart()) && !now.isAfter(session.getAttendanceStart().plusMinutes(AUTO_CHECK_TIME))) {
             status = DURING;
