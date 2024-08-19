@@ -49,6 +49,17 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "",
+        element: <UnprotectedRoute />,
+        children: [
+          { path: "", element: <StartPage /> },
+          { path: "login", element: <LoginPage /> },
+          { path: "join", element: <JoinPage /> },
+          { path: "agreement", element: <JoinAgreementPage /> },
+          { path: "find-password", element: <FindPasswordPage /> },
+        ],
+      },
+      {
+        path: "",
         element: <ProtectedRoute />,
         children: [
           { path: "", element: <Navigate to="/home" /> },
@@ -144,17 +155,6 @@ export const router = createBrowserRouter([
           { path: "searchuser", element: <SearchUserPage /> },
           { path: "alarm", element: <AlarmPage /> },
           { path: "post/:id", element: <PostDetailPage /> },
-        ],
-      },
-      {
-        path: "",
-        element: <UnprotectedRoute />,
-        children: [
-          { path: "login", element: <LoginPage /> },
-          { path: "join", element: <JoinPage /> },
-          { path: "agreement", element: <JoinAgreementPage /> },
-          { path: "find-password", element: <FindPasswordPage /> },
-          { path: "start", element: <StartPage /> },
         ],
       },
       { path: "*", element: <NotFoundPage /> },
