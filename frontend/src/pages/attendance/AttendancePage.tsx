@@ -41,7 +41,7 @@ const AttendancePage: React.FC = () => {
   const onStartAttendanceClick = useCallback(async () => {
     if (!sessionId || !location) {
       setIsLocationErrorModalOpenModalOpen(true);
-      return;
+      throw "위치 권한이 필요합니다.";
     }
 
     await startAttendance({
@@ -116,6 +116,7 @@ const AttendancePage: React.FC = () => {
                 "https://handy-efraasia-07b.notion.site/49d3d992288b4631bfc74d913c86067b"
               }
               target="_blank"
+              className="underline"
             >
               권한 수정 후 재시도 해주세요.
             </a>
