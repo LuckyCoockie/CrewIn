@@ -23,7 +23,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p from Post p JOIN FETCH p.author WHERE (p.isPublic = true) OR (p.crew.id IN :crews) ORDER BY p.createdAt DESC, p.id DESC")
     Page<Post> findPublicPostsSortedByCreatedAt(List<Long> crews, Pageable pageable);
 
-    @Query("SELECT p FROM Post p WHERE p.crew = :crew AND p.postType = :postType ORDER BY p.createdAt DESC")
+    @Query("SELECT p FROM Post p join fetch p.author WHERE p.crew = :crew AND p.postType = :postType ORDER BY p.createdAt DESC")
     Page<Post> findByCrewAndPostType(Crew crew, PostType postType, Pageable pageable);
 
     // 1. isPublic이 true인 글 (isPublic은 tinyInt형임) or

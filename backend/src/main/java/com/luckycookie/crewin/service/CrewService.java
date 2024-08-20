@@ -305,9 +305,6 @@ public class CrewService {
 
         Crew crew = crewRepository.findById(crewId).orElseThrow(NotFoundCrewException::new);
 
-        // 해당 멤버의 position
-        Position position = memberCrewRepository.findPositionByMemberAndCrew(member, crew).orElseThrow(CrewPositionMismatchException::new);
-
         // 해당 크루의 공지사항 게시물 가져오기
         Page<Post> noticeListPage = postRepository.findByCrewAndPostType(crew, PostType.NOTICE, pageable);
         List<Post> noticeList = noticeListPage.getContent();
@@ -315,7 +312,7 @@ public class CrewService {
 
         List<CrewNoticeItem> crewNoticeItems = noticeList.stream().map(notice -> CrewNoticeItem
                 .builder()
-                .position(position)
+                .position(memberCrewRepository.findPositionByMemberAndCrew(notice.getAuthor(), crew).orElseThrow(CrewPositionMismatchException::new))
                 .title(notice.getTitle())
                 .createdAt(notice.getCreatedAt())
                 .updatedAt(notice.getUpdatedAt())
