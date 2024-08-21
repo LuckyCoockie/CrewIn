@@ -155,16 +155,12 @@ public class AttendanceService {
         }).toList();
 
         AutoCheckStatus status = null;
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now().withNano(0);
         if (session.getAttendanceStart() == null) {
             status = BEFORE;
         } else if (!now.isBefore(session.getAttendanceStart()) && !now.isAfter(session.getAttendanceStart().plusMinutes(AUTO_CHECK_TIME))) {
-            log.info("@@@ during now: {}", now);
-            log.info("@@@ during start: {}", session.getAttendanceStart());
             status = DURING;
         } else {
-            log.info("@@@ after now: {}", now);
-            log.info("@@@ after start: {}", session.getAttendanceStart());
             status = AFTER;
         }
 
