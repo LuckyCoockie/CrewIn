@@ -159,8 +159,12 @@ public class AttendanceService {
         if (session.getAttendanceStart() == null) {
             status = BEFORE;
         } else if (!now.isBefore(session.getAttendanceStart()) && !now.isAfter(session.getAttendanceStart().plusMinutes(AUTO_CHECK_TIME))) {
+            log.info("@@@ during now: {}", now);
+            log.info("@@@ during start: {}", session.getAttendanceStart());
             status = DURING;
         } else {
+            log.info("@@@ after now: {}", now);
+            log.info("@@@ after start: {}", session.getAttendanceStart());
             status = AFTER;
         }
 
@@ -249,7 +253,7 @@ public class AttendanceService {
         // 수정시간은 자동출석 끝난 뒤부터 세션 종료 시간까지
         if (LocalDateTime.now().isBefore(session.getAttendanceStart().plusMinutes(10)) ||
                 LocalDateTime.now().isAfter(session.getEndAt())) {
-            throw new InvalidRequestTimeException();
+            throw new  InvalidRequestTimeException();
         }
 
         // 출석 수정
