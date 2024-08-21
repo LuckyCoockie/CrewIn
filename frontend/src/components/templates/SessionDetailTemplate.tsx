@@ -21,6 +21,7 @@ import { ReactComponent as TrashIcon } from "../../assets/icons/trash.svg";
 import ModalConfirm from "../molecules/ModalConfirmMolecules";
 import Modal from "../molecules/ModalMolecules";
 import { uploadImage } from "../../apis/api/presigned";
+import SpinnerComponent from "../atoms/SpinnerComponent";
 
 type OwnDetailProps = {
   fetchSessionDetailData: (
@@ -38,6 +39,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
   const [selectedImageId, setSelectedImageId] = useState<number | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const { data: detailData, refetch } = useQuery(
     ["detailData", { sessionId }],
@@ -50,13 +52,13 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
     : false;
   const convertRunningType = (runningType: string | undefined) => {
     if (runningType === "THUNDER") {
-      return "번개런"
+      return "번개런";
     } else if (runningType === "STANDARD") {
-      return "정규런"
+      return "정규런";
     } else if (runningType === "OPEN") {
-      return "오픈런"
+      return "오픈런";
     }
-  }
+  };
   const handleDownload = async () => {
     if (selectedImage) {
       try {
@@ -99,6 +101,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
 
   const handleUpload = async (files: FileList) => {
     if (files && files.length > 0) {
+      setIsUploading(true);
       const uploadedUrls = await Promise.all(
         Array.from(files).map((file) => uploadImage(file))
       );
@@ -110,6 +113,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
 
       uploadSessionImages(uploadDto).then(() => {
         queryClient.refetchQueries([`sessionGallery`, `${sessionId}`]);
+        setIsUploading(false);
       });
     }
   };
@@ -127,7 +131,10 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
     setIsErrorModalOpen(false);
   };
 
-  const calculateDuration = (start: string | undefined, end: string | undefined) => {
+  const calculateDuration = (
+    start: string | undefined,
+    end: string | undefined
+  ) => {
     const startDate = new Date(start!.replace(" ", "T"));
     const endDate = new Date(end!.replace(" ", "T"));
     const durationMs = endDate.getTime() - startDate.getTime();
@@ -181,16 +188,22 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
       return;
     }
 
-
     kakao.Link.sendDefault({
       objectType: "feed",
       content: {
-        title: `${detailData?.sessionName} (${convertRunningType(detailData?.sessionType)})` || "Session Details",
-        description: `#${detailData?.spot || "Unknown Area"} #${formatKoreanDate(detailData?.startAt)} (${calculateDuration(
+        title:
+          `${detailData?.sessionName} (${convertRunningType(
+            detailData?.sessionType
+          )})` || "Session Details",
+        description: `#${
+          detailData?.spot || "Unknown Area"
+        } #${formatKoreanDate(detailData?.startAt)} (${calculateDuration(
           detailData?.startAt,
           detailData?.endAt
         )}) #${detailData?.courseDistance}km #페이스 ${minutes}'${seconds}''`,
-        imageUrl: detailData?.sessionPosters ? detailData.sessionPosters[0] : "",
+        imageUrl: detailData?.sessionPosters
+          ? detailData.sessionPosters[0]
+          : "",
         link: {
           mobileWebUrl: window.location.href,
           webUrl: window.location.href,
@@ -222,8 +235,8 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
             (detailData?.isJoined &&
               isSessionStarted &&
               detailData.sessionType === "THUNDER")) && (
-              <AttendanceButton {...detailData} />
-            )}
+            <AttendanceButton {...detailData} />
+          )}
           {detailData?.isSessionHost && !isSessionStarted && (
             <EditDeleteDropdownOrganism
               type="SESSION"
@@ -244,23 +257,32 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
                 showStatus={true}
                 infiniteLoop={false}
                 swipeable={true}
-
               >
                 {detailData.sessionPosters.map((poster, index) => (
-                  <OneToOneImageMolecule key={index} src={poster} alt="poster" />
+                  <OneToOneImageMolecule
+                    key={index}
+                    src={poster}
+                    alt="poster"
+                  />
                 ))}
               </Carousel>
-              {detailData &&
+              {detailData && (
                 <button
                   onClick={handleShare}
                   className="absolute bottom-2 right-2 text-white bg-[#2b2f40] bg-opacity-70 rounded-md py-2 font-bold px-2 text-xs"
                 >
                   세션 공유하기
                 </button>
-              }
+              )}
             </div>
           </>
         )}
+
+      {isUploading && (
+        <div className="fixed left-0 top-0 z-50 h-screen w-screen bg-black opacity-50">
+          <SpinnerComponent />
+        </div>
+      )}
 
       {currentTab === "사진첩" && (
         <div className="relative w-full aspect-w-1 aspect-h-1 flex justify-center items-center bg-gray-100 ">
