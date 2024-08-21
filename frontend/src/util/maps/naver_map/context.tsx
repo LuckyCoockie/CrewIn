@@ -173,7 +173,7 @@ export default function NaverMapReducer(
         action.mapDim
       );
 
-      state.map?.setZoom(zoom + 1);
+      state.map?.setZoom(zoom);
       state.map?.panTo(center, { duration: 0 });
       return state;
     }
