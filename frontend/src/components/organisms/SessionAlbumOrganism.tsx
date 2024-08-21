@@ -45,6 +45,7 @@ const SessionAlbumOrganism = ({
   ) => {
     const files = event.target.files;
     if (files) onUpload(files);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
