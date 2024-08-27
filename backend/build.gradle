@@ -37,6 +37,10 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    // tmap api 호출
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+
     // P6Spy 의존성 추가
     implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.1")
 

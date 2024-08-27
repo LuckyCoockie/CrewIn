@@ -1,8 +1,10 @@
 package com.luckycookie.crewin.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.luckycookie.crewin.dto.CourseRequest;
 import com.luckycookie.crewin.dto.CourseRequest.CourseDetailResponse;
 import com.luckycookie.crewin.dto.CourseResponse;
+import com.luckycookie.crewin.dto.TmapResponse.AddressInfo;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.CourseService;
@@ -50,4 +52,17 @@ public class CourseController {
         CourseDetailResponse courseDetailResponse = courseService.getCourseDetail(courseId);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "해당 경로 상세정보를 조회하는데 성공했습니다.", courseDetailResponse));
     }
+
+    @GetMapping("/reversegeocoding")
+    public ResponseEntity<BaseResponse<AddressInfo>> getAddressInfo(@AuthenticationPrincipal CustomUser customUser, @RequestParam String lat, @RequestParam String lon){
+        try {
+            AddressInfo addressInfo = courseService.getLocationByLatLng(lat, lon);
+            return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "주소를 가져오는데 성공했습니다.", addressInfo));
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.create(HttpStatus.BAD_REQUEST.value(), "요청 도중 문제가 발생했습니다."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponse.create(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage()));
+        }
+    }
+
 }
