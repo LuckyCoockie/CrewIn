@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.luckycookie.crewin.dto.CourseRequest;
 import com.luckycookie.crewin.dto.CourseRequest.CourseDetailResponse;
 import com.luckycookie.crewin.dto.CourseResponse;
+import com.luckycookie.crewin.dto.TmapResponse;
 import com.luckycookie.crewin.dto.TmapResponse.AddressInfo;
+import com.luckycookie.crewin.dto.TmapResponse.RouteResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.CourseService;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -54,15 +57,21 @@ public class CourseController {
     }
 
     @GetMapping("/reversegeocoding")
-    public ResponseEntity<BaseResponse<AddressInfo>> getAddressInfo(@AuthenticationPrincipal CustomUser customUser, @RequestParam String lat, @RequestParam String lon){
-        try {
-            AddressInfo addressInfo = courseService.getLocationByLatLng(lat, lon);
-            return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "주소를 가져오는데 성공했습니다.", addressInfo));
-        } catch (JsonProcessingException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.create(HttpStatus.BAD_REQUEST.value(), "요청 도중 문제가 발생했습니다."));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponse.create(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage()));
-        }
+    public Mono<ResponseEntity<BaseResponse<AddressInfo>>> getAddressInfo(
+            @AuthenticationPrincipal CustomUser customUser,
+            @RequestParam String lat,
+            @RequestParam String lon) {
+
+        return courseService.getLocationByLatLng(lat, lon)
+                .map(addressInfo -> ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "주소를 가져오는데 성공했습니다.", addressInfo)))
+                .onErrorResume(JsonProcessingException.class, e -> Mono.just(
+                        ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.create(HttpStatus.BAD_REQUEST.value(), "요청 도중 문제가 발생했습니다."))))
+                .onErrorResume(Exception.class, e -> Mono.just(
+                        ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponse.create(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage()))));
     }
+
+//    @PostMapping("/pedestrian")
+//    public ResponseEntity<BaseResponse<RouteResponse>> getPedestrianRoute(@AuthenticationPrincipal CustomUser customUser @RequestBody RouteReq0) {}
+
 
 }

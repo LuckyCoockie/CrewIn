@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,35 +38,41 @@ public class CourseService {
     private final S3Service s3Service;
     private final WebClient webClient;
 
-    public AddressInfo getLocationByLatLng(String lat, String lon) throws JsonProcessingException {
-        String stringMono = webClient.get()
-                .uri("/geo/reversegeocoding?lat="+lat+"&lon="+lon+"&addressType=A10&newAddressExtend=Y")
+
+    public Mono<AddressInfo> getLocationByLatLng(String lat, String lon) {
+        return webClient.get()
+                .uri("/geo/reversegeocoding?lat=" + lat + "&lon=" + lon + "&addressType=A10&newAddressExtend=Y")
                 .retrieve()
                 .bodyToMono(String.class)
-                .block();
-        log.info("geocode api : {}", stringMono);
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode rootNode = objectMapper.readTree(stringMono);
-        JsonNode addressInfoNode = rootNode.path("addressInfo");
+                .map(response -> {
+                    try {
+                        log.info("geocode api : {}", response);
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        JsonNode rootNode = objectMapper.readTree(response);
+                        JsonNode addressInfoNode = rootNode.path("addressInfo");
 
-        return AddressInfo.builder()
-                .fullAddress(addressInfoNode.path("fullAddress").asText())
-                .addressType(addressInfoNode.path("addressType").asText())
-                .city_do(addressInfoNode.path("city_do").asText())
-                .gu_gun(addressInfoNode.path("gu_gun").asText())
-                .eup_myun(addressInfoNode.path("eup_myun").asText())
-                .adminDong(addressInfoNode.path("adminDong").asText())
-                .adminDongCode(addressInfoNode.path("adminDongCode").asText())
-                .legalDong(addressInfoNode.path("legalDong").asText())
-                .legalDongCode(addressInfoNode.path("legalDongCode").asText())
-                .ri(addressInfoNode.path("ri").asText())
-                .bunji(addressInfoNode.path("bunji").asText())
-                .roadName(addressInfoNode.path("roadName").asText())
-                .buildingIndex(addressInfoNode.path("buildingIndex").asText())
-                .buildingName(addressInfoNode.path("buildingName").asText())
-                .mappingDistance(addressInfoNode.path("mappingDistance").asDouble())
-                .roadCode(addressInfoNode.path("roadCode").asText())
-                .build();
+                        return AddressInfo.builder()
+                                .fullAddress(addressInfoNode.path("fullAddress").asText())
+                                .addressType(addressInfoNode.path("addressType").asText())
+                                .city_do(addressInfoNode.path("city_do").asText())
+                                .gu_gun(addressInfoNode.path("gu_gun").asText())
+                                .eup_myun(addressInfoNode.path("eup_myun").asText())
+                                .adminDong(addressInfoNode.path("adminDong").asText())
+                                .adminDongCode(addressInfoNode.path("adminDongCode").asText())
+                                .legalDong(addressInfoNode.path("legalDong").asText())
+                                .legalDongCode(addressInfoNode.path("legalDongCode").asText())
+                                .ri(addressInfoNode.path("ri").asText())
+                                .bunji(addressInfoNode.path("bunji").asText())
+                                .roadName(addressInfoNode.path("roadName").asText())
+                                .buildingIndex(addressInfoNode.path("buildingIndex").asText())
+                                .buildingName(addressInfoNode.path("buildingName").asText())
+                                .mappingDistance(addressInfoNode.path("mappingDistance").asDouble())
+                                .roadCode(addressInfoNode.path("roadCode").asText())
+                                .build();
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException("Error processing JSON", e);
+                    }
+                });
     }
 
     public void createCourse(CourseRequest.CreateCourseRequest createCourseRequest, CustomUser customUser) {
