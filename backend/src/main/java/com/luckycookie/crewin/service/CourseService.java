@@ -1,16 +1,17 @@
 package com.luckycookie.crewin.service;
 
+
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.luckycookie.crewin.domain.Course;
 import com.luckycookie.crewin.domain.Member;
 import com.luckycookie.crewin.dto.CourseRequest;
 import com.luckycookie.crewin.dto.CourseRequest.CourseDetailResponse;
 import com.luckycookie.crewin.dto.CourseRequest.UpdateCourseRequest;
 import com.luckycookie.crewin.dto.CourseResponse;
-import com.luckycookie.crewin.dto.TmapResponse;
-import com.luckycookie.crewin.dto.TmapResponse.AddressInfo;
+import com.luckycookie.crewin.dto.TmapRequest.RouteRequest;
 import com.luckycookie.crewin.exception.course.NotFoundCourseException;
 import com.luckycookie.crewin.exception.course.NotMatchMemberCourseException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
@@ -19,9 +20,14 @@ import com.luckycookie.crewin.repository.MemberRepository;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -39,41 +45,8 @@ public class CourseService {
     private final WebClient webClient;
 
 
-    public Mono<AddressInfo> getLocationByLatLng(String lat, String lon) {
-        return webClient.get()
-                .uri("/geo/reversegeocoding?lat=" + lat + "&lon=" + lon + "&addressType=A10&newAddressExtend=Y")
-                .retrieve()
-                .bodyToMono(String.class)
-                .map(response -> {
-                    try {
-                        log.info("geocode api : {}", response);
-                        ObjectMapper objectMapper = new ObjectMapper();
-                        JsonNode rootNode = objectMapper.readTree(response);
-                        JsonNode addressInfoNode = rootNode.path("addressInfo");
 
-                        return AddressInfo.builder()
-                                .fullAddress(addressInfoNode.path("fullAddress").asText())
-                                .addressType(addressInfoNode.path("addressType").asText())
-                                .city_do(addressInfoNode.path("city_do").asText())
-                                .gu_gun(addressInfoNode.path("gu_gun").asText())
-                                .eup_myun(addressInfoNode.path("eup_myun").asText())
-                                .adminDong(addressInfoNode.path("adminDong").asText())
-                                .adminDongCode(addressInfoNode.path("adminDongCode").asText())
-                                .legalDong(addressInfoNode.path("legalDong").asText())
-                                .legalDongCode(addressInfoNode.path("legalDongCode").asText())
-                                .ri(addressInfoNode.path("ri").asText())
-                                .bunji(addressInfoNode.path("bunji").asText())
-                                .roadName(addressInfoNode.path("roadName").asText())
-                                .buildingIndex(addressInfoNode.path("buildingIndex").asText())
-                                .buildingName(addressInfoNode.path("buildingName").asText())
-                                .mappingDistance(addressInfoNode.path("mappingDistance").asDouble())
-                                .roadCode(addressInfoNode.path("roadCode").asText())
-                                .build();
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException("Error processing JSON", e);
-                    }
-                });
-    }
+
 
     public void createCourse(CourseRequest.CreateCourseRequest createCourseRequest, CustomUser customUser) {
 
@@ -149,6 +122,62 @@ public class CourseService {
                 .thumbnailImage(course.getThumbnailImage())
                 .build();
     }
+
+    public Mono<String> getRoutesByRouteRequests(List<RouteRequest> routeRequests, CustomUser customUser) {
+        return Mono.fromCallable(() -> memberRepository.findFirstByEmail(customUser.getEmail())
+                        .orElseThrow(NotFoundMemberException::new))
+                .then(Flux.fromIterable(routeRequests)
+                        .flatMap(this::getRouteByRouteRequest)
+                        .collectList()
+                        .map(responses -> {
+                            ObjectMapper mapper = new ObjectMapper();
+                            ObjectNode result = mapper.createObjectNode();
+                            result.put("count", responses.size());
+                            ArrayNode routesArray = result.putArray("routes");
+                            for (String response : responses) {
+                                try {
+                                    routesArray.add(mapper.readTree(response));
+                                } catch (JsonProcessingException e) {
+                                    throw new RuntimeException("Error processing JSON", e);
+                                }
+                            }
+                            try {
+                                return mapper.writeValueAsString(result);
+                            } catch (JsonProcessingException e) {
+                                throw new RuntimeException("Error creating JSON response", e);
+                            }
+                        }));
+    }
+
+    private Mono<String> getRouteByRouteRequest(RouteRequest routeRequest) {
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("startX", String.valueOf(routeRequest.getStartX()));
+        formData.add("startY", String.valueOf(routeRequest.getStartY()));
+        formData.add("endX", String.valueOf(routeRequest.getEndX()));
+        formData.add("endY", String.valueOf(routeRequest.getEndY()));
+        formData.add("reqCoordType", routeRequest.getReqCoordType());
+        formData.add("resCoordType", routeRequest.getResCoordType());
+        formData.add("startName", routeRequest.getStartName());
+        formData.add("endName", routeRequest.getEndName());
+
+        return webClient.post()
+                .uri("/routes/pedestrian?version=1&format=json&callback=result")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(BodyInserters.fromFormData(formData))
+                .retrieve()
+                .bodyToMono(String.class);
+    }
+
+    public Mono<String> getLocationByLatLon(String lat, String lon, CustomUser customUser) {
+        return Mono.fromCallable(() -> memberRepository.findFirstByEmail(customUser.getEmail())
+                        .orElseThrow(NotFoundMemberException::new))
+                .then(webClient.get()
+                        .uri("/geo/reversegeocoding?lat=" + lat + "&lon=" + lon + "&addressType=A10&newAddressExtend=Y")
+                        .retrieve()
+                        .bodyToMono(String.class))
+                .doOnNext(response -> log.info("geocode api response: {}", response));
+    }
+
 
     private CourseResponse convertToDto(Course course) {
         return CourseResponse.builder()

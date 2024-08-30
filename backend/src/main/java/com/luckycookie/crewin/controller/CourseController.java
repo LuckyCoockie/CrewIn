@@ -1,18 +1,20 @@
 package com.luckycookie.crewin.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.luckycookie.crewin.dto.CourseRequest;
 import com.luckycookie.crewin.dto.CourseRequest.CourseDetailResponse;
 import com.luckycookie.crewin.dto.CourseResponse;
-import com.luckycookie.crewin.dto.TmapResponse.AddressInfo;
+import com.luckycookie.crewin.dto.TmapRequest.RouteRequestWrapper;
 import com.luckycookie.crewin.dto.base.BaseResponse;
+import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -55,21 +57,38 @@ public class CourseController {
     }
 
     @GetMapping("/reversegeocoding")
-    public Mono<ResponseEntity<BaseResponse<AddressInfo>>> getAddressInfo(
+    public Mono<ResponseEntity<String>> getAddressInfo(
             @AuthenticationPrincipal CustomUser customUser,
             @RequestParam String lat,
             @RequestParam String lon) {
 
-        return courseService.getLocationByLatLng(lat, lon)
-                .map(addressInfo -> ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "주소를 가져오는데 성공했습니다.", addressInfo)))
-                .onErrorResume(JsonProcessingException.class, e -> Mono.just(
-                        ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.create(HttpStatus.BAD_REQUEST.value(), "요청 도중 문제가 발생했습니다."))))
-                .onErrorResume(Exception.class, e -> Mono.just(
-                        ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponse.create(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage()))));
+        return courseService.getLocationByLatLon(lat, lon, customUser)
+                .map(response -> ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(response))
+                .onErrorResume(WebClientResponseException.class, e -> Mono.just(
+                        ResponseEntity.status(e.getStatusCode())
+                                .body("외부 API 호출 중 오류가 발생했습니다: " + e.getMessage())))
+                .onErrorResume(MemberNotFoundException.class, e -> Mono.just(
+                        ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body("서버 내부 오류가 발생했습니다: " + e.getMessage())));
     }
 
-//    @PostMapping("/pedestrian")
-//    public ResponseEntity<BaseResponse<RouteResponse>> getPedestrianRoute(@AuthenticationPrincipal CustomUser customUser @RequestBody RouteReq0) {}
+    @PostMapping("/pedestrian")
+    public Mono<ResponseEntity<String>> getPedestrianRoutes(
+            @AuthenticationPrincipal CustomUser customUser,
+            @RequestBody RouteRequestWrapper requestWrapper) {
 
+        return courseService.getRoutesByRouteRequests(requestWrapper.getRoutes(), customUser)
+                .map(response -> ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(response))
+                .onErrorResume(WebClientResponseException.class, e -> Mono.just(
+                        ResponseEntity.status(e.getStatusCode())
+                                .body("외부 API 호출 중 오류가 발생했습니다: " + e.getMessage())))
+                .onErrorResume(MemberNotFoundException.class, e -> Mono.just(
+                        ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body("서버 내부 오류가 발생했습니다: " + e.getMessage())));
+    }
 
 }

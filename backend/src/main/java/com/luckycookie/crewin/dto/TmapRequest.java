@@ -1,9 +1,8 @@
 package com.luckycookie.crewin.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.List;
 
 public class TmapRequest {
 
@@ -30,4 +29,9 @@ public class TmapRequest {
         private String endName = "도착지";
     }
 
+    @Getter
+    @Setter
+    public static class RouteRequestWrapper {
+        private List<RouteRequest> routes;
+    }
 }

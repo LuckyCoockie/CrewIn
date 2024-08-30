@@ -16,7 +16,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsUtils;
 
 
@@ -57,6 +56,7 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.POST, "/member/password").permitAll() // 임시 비밀번호 발급만 접근 허용
                             .requestMatchers("/attendance/**").permitAll()
                             .requestMatchers("/course/reversegeocoding").permitAll()
+                            .requestMatchers("/course/pedestrian").permitAll()
                             .requestMatchers("/health/**").permitAll() // /health 엔드포인트 접근 허용
                             .anyRequest().authenticated();
                 });
