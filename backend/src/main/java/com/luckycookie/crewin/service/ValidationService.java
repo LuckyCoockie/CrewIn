@@ -33,9 +33,10 @@ public class ValidationService {
         }
     }
 
-    private void validateLength(String input, int maxLength) {
+    public void validateLength(String input, int maxLength) {
         if (input.length() < 2 || input.length() > maxLength) {
             throw new ValidationInputException();
         }
     }
+
 }

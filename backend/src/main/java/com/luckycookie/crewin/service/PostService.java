@@ -3,7 +3,9 @@ package com.luckycookie.crewin.service;
 import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.NotificationType;
 import com.luckycookie.crewin.domain.enums.PostType;
+import com.luckycookie.crewin.dto.PostRequest;
 import com.luckycookie.crewin.dto.PostRequest.UpdatePostRequest;
+import com.luckycookie.crewin.dto.PostRequest.WriteCommentRequest;
 import com.luckycookie.crewin.dto.PostRequest.WritePostRequest;
 import com.luckycookie.crewin.dto.PostResponse.PostGalleryItem;
 import com.luckycookie.crewin.dto.PostResponse.PostItem;
@@ -42,8 +44,10 @@ public class PostService {
     private final CrewRepository crewRepository;
     private final HeartRepository heartRepository;
     private final PostImageRepository postImageRepository;
+    private final CommentRepository commentRepository;
     private final MemberCrewRepository memberCrewRepository;
     private final NotificationService notificationService;
+    private final ValidationService validationService;
     private final S3Service s3Service;
 
     public void writePost(WritePostRequest writePostRequest, CustomUser customUser) {
@@ -393,6 +397,24 @@ public class PostService {
         heartRepository.delete(heart);
         // 알림 제거
         notificationService.deleteNotificationByPostId(member.getId(), post.getAuthor().getId(), postId);
+    }
+
+    public void writeComment(Long postId, WriteCommentRequest writeCommentRequest, CustomUser customUser) {
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+
+        //댓글 길이 256자 이내 검증
+        validationService.validateLength(writeCommentRequest.getContent(), 256);
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(NotFoundPostException::new);
+
+        Comment comment = Comment.builder()
+                .member(member)
+                .post(post)
+                .content(writeCommentRequest.getContent())
+                .build();
+        commentRepository.save(comment);
     }
 
 

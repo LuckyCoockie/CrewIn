@@ -1,6 +1,7 @@
 package com.luckycookie.crewin.controller;
 
 import com.luckycookie.crewin.dto.PostRequest;
+import com.luckycookie.crewin.dto.PostRequest.WriteCommentRequest;
 import com.luckycookie.crewin.dto.PostResponse.PostGalleryItem;
 import com.luckycookie.crewin.dto.PostResponse.PostItem;
 import com.luckycookie.crewin.dto.base.BaseResponse;
@@ -107,4 +108,9 @@ public class PostController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "게시글에 좋아요를 취소했습니다."));
     }
 
+    @PostMapping("/comment/{post-id}")
+    public ResponseEntity<BaseResponse<Void>> writeCommentAtPost(@AuthenticationPrincipal CustomUser customUser, @PathVariable("post-id") Long postId, @RequestBody WriteCommentRequest writeCommentRequest) {
+        postService.writeComment(postId, writeCommentRequest, customUser);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "게시글에 댓글을 등록했습니다."));
+    }
 }

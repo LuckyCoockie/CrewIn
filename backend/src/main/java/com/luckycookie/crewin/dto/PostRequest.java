@@ -30,4 +30,12 @@ public class PostRequest {
         private Boolean isPublic;
         List<String> postImages = new ArrayList<>();
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class WriteCommentRequest {
+        private String content;
+    }
 }
