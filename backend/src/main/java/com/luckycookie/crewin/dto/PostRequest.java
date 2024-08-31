@@ -38,4 +38,14 @@ public class PostRequest {
     public static class WriteCommentRequest {
         private String content;
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UpdateCommentRequest {
+        private Long commentId;
+        private String content;
+    }
+
 }

@@ -4,12 +4,15 @@ import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.NotificationType;
 import com.luckycookie.crewin.domain.enums.PostType;
 import com.luckycookie.crewin.dto.PostRequest;
+import com.luckycookie.crewin.dto.PostRequest.UpdateCommentRequest;
 import com.luckycookie.crewin.dto.PostRequest.UpdatePostRequest;
 import com.luckycookie.crewin.dto.PostRequest.WriteCommentRequest;
 import com.luckycookie.crewin.dto.PostRequest.WritePostRequest;
 import com.luckycookie.crewin.dto.PostResponse.PostGalleryItem;
 import com.luckycookie.crewin.dto.PostResponse.PostItem;
 import com.luckycookie.crewin.dto.base.PagingItemsResponse;
+import com.luckycookie.crewin.exception.comment.NotFoundCommentException;
+import com.luckycookie.crewin.exception.comment.NotMatchCommentMemberException;
 import com.luckycookie.crewin.exception.crew.NotFoundCrewException;
 import com.luckycookie.crewin.exception.heart.AlreadyExsistHeartException;
 import com.luckycookie.crewin.exception.heart.NotFoundHeartException;
@@ -414,6 +417,26 @@ public class PostService {
                 .post(post)
                 .content(writeCommentRequest.getContent())
                 .build();
+        commentRepository.save(comment);
+    }
+
+    public void updateComment(Long postId, UpdateCommentRequest updateCommentRequest, CustomUser customUser) {
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+
+        postRepository.findById(postId)
+                .orElseThrow(NotFoundPostException::new);
+
+        Comment comment = commentRepository.findById(updateCommentRequest.getCommentId())
+                .orElseThrow(NotFoundCommentException::new);
+
+        //댓글 길이 256자 이내 검증
+        validationService.validateLength(updateCommentRequest.getContent(), 256);
+
+        if (!comment.getMember().getId().equals(member.getId())) {
+            throw new NotMatchCommentMemberException();
+        }
+        comment.updateComment(updateCommentRequest.getContent());
         commentRepository.save(comment);
     }
 

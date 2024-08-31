@@ -47,4 +47,8 @@ public class Comment {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+
+    public void updateComment(String content) {
+        this.content = content;
+    }
 }

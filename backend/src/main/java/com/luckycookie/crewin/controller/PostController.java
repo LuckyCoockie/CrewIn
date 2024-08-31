@@ -113,4 +113,10 @@ public class PostController {
         postService.writeComment(postId, writeCommentRequest, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "게시글에 댓글을 등록했습니다."));
     }
+
+    @PutMapping("/comment/{post-id}")
+    public ResponseEntity<BaseResponse<Void>> updateCommentAtPost(@AuthenticationPrincipal CustomUser customUser, @PathVariable("post-id") Long postId, @RequestBody PostRequest.UpdateCommentRequest updateCommentRequest) {
+        postService.updateComment(postId, updateCommentRequest, customUser);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "게시글에 댓글을 수정했습니다."));
+    }
 }
