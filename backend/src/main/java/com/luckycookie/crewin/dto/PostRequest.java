@@ -36,6 +36,7 @@ public class PostRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class WriteCommentRequest {
+        private Long postId;
         private String content;
     }
 
@@ -44,7 +45,7 @@ public class PostRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class UpdateCommentRequest {
-        private Long commentId;
+        private Long postId;
         private String content;
     }
 

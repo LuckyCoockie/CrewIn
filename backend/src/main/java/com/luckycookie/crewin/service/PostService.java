@@ -402,14 +402,14 @@ public class PostService {
         notificationService.deleteNotificationByPostId(member.getId(), post.getAuthor().getId(), postId);
     }
 
-    public void writeComment(Long postId, WriteCommentRequest writeCommentRequest, CustomUser customUser) {
+    public void writeComment(WriteCommentRequest writeCommentRequest, CustomUser customUser) {
         Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
         //댓글 길이 256자 이내 검증
         validationService.validateLength(writeCommentRequest.getContent(), 256);
 
-        Post post = postRepository.findById(postId)
+        Post post = postRepository.findById(writeCommentRequest.getPostId())
                 .orElseThrow(NotFoundPostException::new);
 
         Comment comment = Comment.builder()
@@ -420,14 +420,14 @@ public class PostService {
         commentRepository.save(comment);
     }
 
-    public void updateComment(Long postId, UpdateCommentRequest updateCommentRequest, CustomUser customUser) {
+    public void updateComment(Long commentId, UpdateCommentRequest updateCommentRequest, CustomUser customUser) {
         Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
 
-        postRepository.findById(postId)
+        postRepository.findById(updateCommentRequest.getPostId())
                 .orElseThrow(NotFoundPostException::new);
 
-        Comment comment = commentRepository.findById(updateCommentRequest.getCommentId())
+        Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(NotFoundCommentException::new);
 
         //댓글 길이 256자 이내 검증
@@ -438,6 +438,20 @@ public class PostService {
         }
         comment.updateComment(updateCommentRequest.getContent());
         commentRepository.save(comment);
+    }
+
+    public void deleteComment(Long commentId, CustomUser customUser) {
+        Member member = memberRepository.findFirstByEmail(customUser.getEmail())
+                .orElseThrow(NotFoundMemberException::new);
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(NotFoundCommentException::new);
+
+        if (!comment.getMember().getId().equals(member.getId())) {
+            throw new NotMatchCommentMemberException();
+        }
+
+        commentRepository.delete(comment);
     }
 
 

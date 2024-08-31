@@ -108,15 +108,21 @@ public class PostController {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "게시글에 좋아요를 취소했습니다."));
     }
 
-    @PostMapping("/comment/{post-id}")
-    public ResponseEntity<BaseResponse<Void>> writeCommentAtPost(@AuthenticationPrincipal CustomUser customUser, @PathVariable("post-id") Long postId, @RequestBody WriteCommentRequest writeCommentRequest) {
-        postService.writeComment(postId, writeCommentRequest, customUser);
+    @PostMapping("/comment")
+    public ResponseEntity<BaseResponse<Void>> writeCommentAtPost(@AuthenticationPrincipal CustomUser customUser, @RequestBody WriteCommentRequest writeCommentRequest) {
+        postService.writeComment(writeCommentRequest, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "게시글에 댓글을 등록했습니다."));
     }
 
-    @PutMapping("/comment/{post-id}")
-    public ResponseEntity<BaseResponse<Void>> updateCommentAtPost(@AuthenticationPrincipal CustomUser customUser, @PathVariable("post-id") Long postId, @RequestBody PostRequest.UpdateCommentRequest updateCommentRequest) {
-        postService.updateComment(postId, updateCommentRequest, customUser);
+    @PutMapping("/comment/{comment-id}")
+    public ResponseEntity<BaseResponse<Void>> updateCommentAtPost(@AuthenticationPrincipal CustomUser customUser, @PathVariable("comment-id") Long commentId, @RequestBody PostRequest.UpdateCommentRequest updateCommentRequest) {
+        postService.updateComment(commentId, updateCommentRequest, customUser);
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "게시글에 댓글을 수정했습니다."));
+    }
+    
+    @DeleteMapping("/comment/{comment-id}")
+    public ResponseEntity<BaseResponse<Void>> deleteCommentAtPost(@AuthenticationPrincipal CustomUser customUser, @PathVariable("comment-id") Long commentId) {
+        postService.deleteComment(commentId, customUser);
+        return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "게시글에 댓글을 삭제했습니다."));
     }
 }
