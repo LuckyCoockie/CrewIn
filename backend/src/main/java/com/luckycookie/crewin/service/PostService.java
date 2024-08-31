@@ -3,11 +3,11 @@ package com.luckycookie.crewin.service;
 import com.luckycookie.crewin.domain.*;
 import com.luckycookie.crewin.domain.enums.NotificationType;
 import com.luckycookie.crewin.domain.enums.PostType;
-import com.luckycookie.crewin.dto.PostRequest;
 import com.luckycookie.crewin.dto.PostRequest.UpdateCommentRequest;
 import com.luckycookie.crewin.dto.PostRequest.UpdatePostRequest;
 import com.luckycookie.crewin.dto.PostRequest.WriteCommentRequest;
 import com.luckycookie.crewin.dto.PostRequest.WritePostRequest;
+import com.luckycookie.crewin.dto.PostResponse.CommentItem;
 import com.luckycookie.crewin.dto.PostResponse.PostGalleryItem;
 import com.luckycookie.crewin.dto.PostResponse.PostItem;
 import com.luckycookie.crewin.dto.base.PagingItemsResponse;
@@ -140,6 +140,19 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(NotFoundPostException::new);
 
+        // 댓글 조회 및 DTO 변환
+        List<CommentItem> comments = commentRepository.findByPostOrderByIdDesc(post).stream()
+                .map(comment -> CommentItem.builder()
+                        .id(comment.getId())
+                        .authorId(comment.getMember().getId())
+                        .authorName(comment.getMember().getNickname())
+                        .content(comment.getContent())
+                        .createdAt(comment.getCreatedAt())
+                        .updatedAt(comment.getUpdatedAt())
+                        .build())
+                .collect(Collectors.toList());
+
+
         //크루 공지글인 경우
         if (post.getPostType().equals(PostType.NOTICE)) {
             Crew crew = crewRepository.findById(post.getCrew().getId())
@@ -161,6 +174,7 @@ public class PostService {
                     .title(post.getTitle())
                     .createdAt(post.getCreatedAt())
                     .updatedAt(post.getUpdatedAt())
+                    .comments(comments)
                     .build();
         }
         if (!post.getIsPublic()) {
@@ -188,6 +202,7 @@ public class PostService {
                 .title(post.getTitle())
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
+                .comments(comments)
                 .build();
 
 
@@ -221,6 +236,20 @@ public class PostService {
                 authNickName = post.getAuthor().getNickname();
                 authorId = post.getAuthor().getId();
             }
+
+
+            // 댓글 조회 및 DTO 변환
+            List<CommentItem> comments = commentRepository.findByPostOrderByIdDesc(post).stream()
+                    .map(comment -> CommentItem.builder()
+                            .id(comment.getId())
+                            .authorId(comment.getMember().getId())
+                            .authorName(comment.getMember().getNickname())
+                            .content(comment.getContent())
+                            .createdAt(comment.getCreatedAt())
+                            .updatedAt(comment.getUpdatedAt())
+                            .build())
+                    .collect(Collectors.toList());
+
             return PostItem.builder()
                     .id(post.getId())
                     .authorName(authNickName)
@@ -238,6 +267,7 @@ public class PostService {
                     .createdAt(post.getCreatedAt())
                     .updatedAt(post.getUpdatedAt())
                     .title(post.getTitle())
+                    .comments(comments)
                     .build();
         }).toList();
 
@@ -337,39 +367,48 @@ public class PostService {
 
     // Page<Post> 받아서 상세조회 response 반환
     private PagingItemsResponse<PostItem> convertToPostItemsResponse(Page<Post> postListPage, CustomUser customUser) {
-        /*
-         * 1. 하트 테이블에서 게시글 번호로 하트 개수
-         * 2. 하트 테이블에서 isHearted
-         * */
 
         Member member = memberRepository.findFirstByEmail(customUser.getEmail())
                 .orElseThrow(NotFoundMemberException::new);
-
         List<PostItem> postList = postListPage.getContent()
                 .stream()
-                .map(post -> PostItem
-                        .builder()
-                        .id(post.getId())
-                        .authorName(post.getAuthor().getNickname())
-                        .authorId(post.getAuthor().getId())
-                        .content(post.getContent())
-                        .heartCount(post.getHearts().size())
-                        .isPublic(post.getIsPublic())
-                        .postType(post.getPostType())
-                        .title(post.getTitle())
-                        .isHearted(post.getHearts().stream().anyMatch(heart -> heart.getMember().getId().equals(member.getId())))
-                        .profileImage(post.getAuthor().getImageUrl())
-                        .createdAt(post.getCreatedAt())
-                        .updatedAt(post.getUpdatedAt())
-                        .postImages(post.getPostImages().stream().map(PostImage::getImageUrl).toList())
-                        .build())
+                .map(post -> {
+                    // 댓글 조회 및 DTO 변환
+                    List<CommentItem> comments = commentRepository.findByPostOrderByIdDesc(post).stream()
+                            .map(comment -> CommentItem.builder()
+                                    .id(comment.getId())
+                                    .authorId(comment.getMember().getId())
+                                    .authorName(comment.getMember().getNickname())
+                                    .content(comment.getContent())
+                                    .createdAt(comment.getCreatedAt())
+                                    .updatedAt(comment.getUpdatedAt())
+                                    .build())
+                            .collect(Collectors.toList());
+
+                    return PostItem
+                            .builder()
+                            .id(post.getId())
+                            .authorName(post.getAuthor().getNickname())
+                            .authorId(post.getAuthor().getId())
+                            .content(post.getContent())
+                            .heartCount(post.getHearts().size())
+                            .isPublic(post.getIsPublic())
+                            .postType(post.getPostType())
+                            .title(post.getTitle())
+                            .isHearted(post.getHearts().stream().anyMatch(heart -> heart.getMember().getId().equals(member.getId())))
+                            .profileImage(post.getAuthor().getImageUrl())
+                            .createdAt(post.getCreatedAt())
+                            .updatedAt(post.getUpdatedAt())
+                            .postImages(post.getPostImages().stream().map(PostImage::getImageUrl).toList())
+                            .comments(comments) // 댓글 정보 추가
+                            .build();
+                })
                 .collect(Collectors.toList());
 
         return PagingItemsResponse
                 .<PostItem>builder()
                 .items(postList)
                 .build();
-
     }
 
     public void registHeart(Long postId, CustomUser customUser) {

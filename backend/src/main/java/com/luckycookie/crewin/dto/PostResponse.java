@@ -35,6 +35,8 @@ public class PostResponse {
         private String profileImage;
         private String title;
 
+        private List<CommentItem> comments;
+
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime createdAt;
 
@@ -44,5 +46,19 @@ public class PostResponse {
         private List<String> postImages;
     }
 
+    @Getter
+    @Builder
+    public static class CommentItem {
+        private Long id;
+        private Long authorId;
+        private String authorName;
+        private String content;
+
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        private LocalDateTime createdAt;
+
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        private LocalDateTime updatedAt;
+    }
 }
 
