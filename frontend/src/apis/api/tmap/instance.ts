@@ -13,7 +13,7 @@ import {
   runCallback,
 } from "../../modules/callback";
 
-const BASE_URL = import.meta.env.VITE_PROXY_URL;
+const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 export const api = axios.create({ baseURL: BASE_URL });
 
@@ -43,7 +43,7 @@ api.interceptors.response.use(
             accessToken: string;
             memberId: number;
           };
-        }>(`${BASE_URL}/api/member/reissue`, null, { withCredentials: true });
+        }>(`${BASE_URL}/member/reissue`, null, { withCredentials: true });
 
         const { accessToken } = response.data.data;
 

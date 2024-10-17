@@ -35,7 +35,7 @@ export type ReverseGeocodeResponseDto = {
 export const reversGeocodingApi = async (
   dto: ReverseGeocodeRequestDto
 ): Promise<ReverseGeocodeResponseDto> => {
-  const response = await api.get("/reversegeocoding/", {
+  const response = await api.get("/course/reversegeocoding", {
     params: dto,
   });
   return response.data as ReverseGeocodeResponseDto;
