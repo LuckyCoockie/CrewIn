@@ -24,6 +24,7 @@ pipeline {
                     env.MATTERMOST_WEBHOOK_URL = props.MATTERMOST_WEBHOOK_URL
                     env.DOCKER_NETWORK = props.DOCKER_NETWORK
                     env.DEPLOY_LOG_PATH = props.DEPLOY_LOG_PATH
+                    env.CREW_IN_LOG_PATH = props.CREW_IN_LOG_PATH
                 }
             }
         }
@@ -130,7 +131,7 @@ pipeline {
                                                 OLD_NAME=$CONTAINER_NAME_GREEN
                                                 CURRENT_PORT=$GREEN_PORT
                                             fi
-                                            docker run -d --name \$NEW_NAME --network $DOCKER_NETWORK -p \$NEW_PORT:8080 $DOCKER_IMAGE
+                                            docker run -d --name \$NEW_NAME --network $DOCKER_NETWORK -p \$NEW_PORT:8080 -v $CREW_IN_LOG_PATH:/logs $DOCKER_IMAGE
 
                                             sleep 10
                                             if curl -sf -m 5 http://localhost:\$NEW_PORT/health > /dev/null; then
