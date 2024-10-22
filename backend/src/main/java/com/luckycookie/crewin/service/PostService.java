@@ -67,6 +67,8 @@ public class PostService {
             }
         }
 
+        validationService.validateContent(writePostRequest.getContent());
+
         Post post = Post.builder()
                 .crew(crew)
                 .author(member)
@@ -106,6 +108,8 @@ public class PostService {
         if (post.getPostType() == PostType.NOTICE && updatePostRequest.getIsPublic()) {
             throw new InvalidPostException();
         }
+
+        validationService.validateContent(updatePostRequest.getContent());
 
         post.updatePost(updatePostRequest);
     }
@@ -447,6 +451,7 @@ public class PostService {
 
         //댓글 길이 256자 이내 검증
         validationService.validateLength(writeCommentRequest.getContent(), 256);
+        validationService.validateContent(writeCommentRequest.getContent());
 
         Post post = postRepository.findById(writeCommentRequest.getPostId())
                 .orElseThrow(NotFoundPostException::new);
@@ -471,6 +476,7 @@ public class PostService {
 
         //댓글 길이 256자 이내 검증
         validationService.validateLength(updateCommentRequest.getContent(), 256);
+        validationService.validateContent(updateCommentRequest.getContent());
 
         if (!comment.getMember().getId().equals(member.getId())) {
             throw new NotMatchCommentMemberException();
