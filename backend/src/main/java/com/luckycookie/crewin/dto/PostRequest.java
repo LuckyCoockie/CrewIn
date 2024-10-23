@@ -16,6 +16,8 @@ public class PostRequest {
         private Long crewId;
         private String content;
         private Boolean isPublic;
+
+        @Builder.Default
         List<String> postImages = new ArrayList<>();
     }
 
@@ -28,6 +30,8 @@ public class PostRequest {
         private String title;
         private String content;
         private Boolean isPublic;
+
+        @Builder.Default
         List<String> postImages = new ArrayList<>();
     }
 
