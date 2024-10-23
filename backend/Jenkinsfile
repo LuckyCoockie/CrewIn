@@ -10,6 +10,9 @@ pipeline {
                 script {
                     // jenkins_crewin_backend.env 파일 내용을 젠킨스 파일의 환경 변수로 로드
                     def props = readProperties file: "${CREWIN_ENV}"
+                    env.SONAR_PROJECT_KEY = props.SONAR_PROJECT_KEY
+                    env.SONAR_HOST_URL = props.SONAR_HOST_URL
+                    env.SONAR_LOGIN = props.SONAR_LOGIN
                     env.DOCKER_REPO = props.DOCKER_REPO
                     env.DOCKER_TAG = props.DOCKER_TAG
                     env.DOCKER_IMAGE = "${props.DOCKER_REPO}:${props.DOCKER_TAG}"
@@ -82,6 +85,18 @@ pipeline {
                 sh 'cd backend && chmod +x gradlew && ./gradlew clean build'
             }
         }
+       stage('SonarQube analysis') {
+           steps {
+                withSonarQubeEnv('sonarQubeToken') {
+                    sh """
+                    cd backend && ./gradlew sonarqube \
+                        -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+                        -Dsonar.host.url=$SONAR_HOST_URL \
+                        -Dsonar.login=$SONAR_LOGIN
+                    """
+                }
+            }
+       }
         stage('Build Docker Image') {
             steps {
                 script {
