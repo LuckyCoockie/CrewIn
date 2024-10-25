@@ -8,26 +8,25 @@ pipeline {
         stage('Load Environment Variables') {
             steps {
                 script {
-                    // jenkins_crewin_backend.env 파일 내용을 젠킨스 파일의 환경 변수로 로드
-                    def props = readProperties file: "${CREWIN_ENV}"
-                    env.SONAR_PROJECT_KEY = props.SONAR_PROJECT_KEY
-                    env.SONAR_HOST_URL = props.SONAR_HOST_URL
-                    env.SONAR_LOGIN = props.SONAR_LOGIN
-                    env.DOCKER_REPO = props.DOCKER_REPO
-                    env.DOCKER_TAG = props.DOCKER_TAG
-                    env.DOCKER_IMAGE = "${props.DOCKER_REPO}:${props.DOCKER_TAG}"
-                    env.BLUE_PORT = props.BLUE_PORT
-                    env.GREEN_PORT = props.GREEN_PORT
-                    env.CONTAINER_NAME_BLUE = props.CONTAINER_NAME_BLUE
-                    env.CONTAINER_NAME_GREEN = props.CONTAINER_NAME_GREEN
-                    env.CONTAINER_URL = props.CONTAINER_URL
-                    env.NGINX_CONTAINER_NAME = props.NGINX_CONTAINER_NAME
-                    env.NGINX_CONFIG_PATH = props.NGINX_CONFIG_PATH
-                    env.MATTERMOST_CHANNEL_NAME = props.MATTERMOST_CHANNEL_NAME
-                    env.MATTERMOST_WEBHOOK_URL = props.MATTERMOST_WEBHOOK_URL
-                    env.DOCKER_NETWORK = props.DOCKER_NETWORK
-                    env.DEPLOY_LOG_PATH = props.DEPLOY_LOG_PATH
-                    env.CREW_IN_LOG_PATH = props.CREW_IN_LOG_PATH
+                    def props = readProperties(file: env.CREWIN_ENV)
+                    env.SONAR_PROJECT_KEY = props['SONAR_PROJECT_KEY']
+                    env.SONAR_HOST_URL = props['SONAR_HOST_URL']
+                    env.SONAR_LOGIN = props['SONAR_LOGIN']
+                    env.DOCKER_REPO = props['DOCKER_REPO']
+                    env.DOCKER_TAG = props['DOCKER_TAG']
+                    env.DOCKER_IMAGE = props['DOCKER_IMAGE']
+                    env.BLUE_PORT = props['BLUE_PORT']
+                    env.GREEN_PORT = props['GREEN_PORT']
+                    env.CONTAINER_NAME_BLUE = props['CONTAINER_NAME_BLUE']
+                    env.CONTAINER_NAME_GREEN = props['CONTAINER_NAME_GREEN']
+                    env.CONTAINER_URL = props['CONTAINER_URL']
+                    env.NGINX_CONTAINER_NAME = props['NGINX_CONTAINER_NAME']
+                    env.NGINX_CONFIG_PATH = props['NGINX_CONFIG_PATH']
+                    env.MATTERMOST_CHANNEL_NAME = props['MATTERMOST_CHANNEL_NAME']
+                    env.MATTERMOST_WEBHOOK_URL = props['MATTERMOST_WEBHOOK_URL']
+                    env.DOCKER_NETWORK = props['DOCKER_NETWORK']
+                    env.DEPLOY_LOG_PATH = props['DEPLOY_LOG_PATH']
+                    env.CREW_IN_LOG_PATH = props['CREW_IN_LOG_PATH']
                 }
             }
         }
@@ -85,18 +84,20 @@ pipeline {
                 sh 'cd backend && chmod +x gradlew && ./gradlew clean build'
             }
         }
-       stage('SonarQube analysis') {
-           steps {
+        stage('SonarQube analysis') {
+            steps {
                 withSonarQubeEnv('sonarQubeToken') {
-                    sh """
-                    cd backend && ./gradlew sonarqube \
-                        -Dsonar.projectKey=$SONAR_PROJECT_KEY \
-                        -Dsonar.host.url=$SONAR_HOST_URL \
-                        -Dsonar.login=$SONAR_LOGIN
-                    """
+                    sh '''
+                        cd backend
+                        chmod +x gradlew
+                        ./gradlew sonar \
+                            -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+                            -Dsonar.host.url=$SONAR_HOST_URL \
+                            -Dsonar.login=$SONAR_LOGIN
+                    '''
                 }
             }
-       }
+        }
         stage('Build Docker Image') {
             steps {
                 script {
