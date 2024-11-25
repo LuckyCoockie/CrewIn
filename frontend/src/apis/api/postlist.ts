@@ -20,7 +20,7 @@ export type PostDto = {
   isPublic: boolean;
   postType: "STANDARD" | "NOTICE";
   title: string;
-  commentsDto: commentsDto[];
+  comments: commentsDto[];
   createdAt: string;
   updatedAt: string;
   profileImage: string;

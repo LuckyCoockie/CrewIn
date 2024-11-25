@@ -20,7 +20,7 @@ export type PostDetailResponseDto = {
   postType: string;
   profileImage: string;
   title: string;
-  commentsDto: commentsDto[];
+  comments: commentsDto[];
   createdAt: string;
   updatedAt: string;
   postImages: string[];
