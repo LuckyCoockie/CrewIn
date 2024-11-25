@@ -1,5 +1,14 @@
 import api from "../index";
 
+export type commentsDto ={
+  id: number;
+  authorId: number;
+  authorName: string;
+  content: string;
+  createdAt : string;
+  updateAt : string;
+}
+
 export type PostDetailResponseDto = {
   id: number;
   authorName: string;
@@ -11,6 +20,7 @@ export type PostDetailResponseDto = {
   postType: string;
   profileImage: string;
   title: string;
+  comments: commentsDto[];
   createdAt: string;
   updatedAt: string;
   postImages: string[];

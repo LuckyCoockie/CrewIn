@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
+  commentsDto,
   getPostDetail,
   PostDetailResponseDto,
 } from "../../apis/api/postdetail";
@@ -185,9 +187,8 @@ const PostDetailTemplate: React.FC = () => {
             <img
               src={isHeartedState ? filledFire : emptyFire}
               alt="fire-icon"
-              className={`w-7 h-7 object-contain fire-icon ${
-                isAnimating ? "animate" : ""
-              }`}
+              className={`w-7 h-7 object-contain fire-icon ${isAnimating ? "animate" : ""
+                }`}
             />
           </button>
           <button onClick={handleShare} className="flex ml-auto mr-3">
@@ -200,6 +201,43 @@ const PostDetailTemplate: React.FC = () => {
             <span className="font-bold">{postData.authorName}</span>{" "}
             <span style={{ whiteSpace: "pre-line" }}>{postData.content}</span>
           </p>
+        </div>
+      </div>
+      <div className="w-full">
+        <div className="w-full border-t border-gray-300 my-5"></div>
+        {/* 댓글 영역 */}
+        <div className="mt-5 mx-3">
+          <h2 className="text-lg font-bold mb-3">댓글</h2>
+          {postData.comments.length > 0 ? (
+            <ul>
+              {postData.comments.map((comment: commentsDto) => (
+                <li
+                  key={comment.id}
+                  className="flex items-start mb-6 p-3 rounded "
+                >
+                  {/* 프로필 사진 */}
+                  <div className="w-12 h-12 rounded-full bg-black mr-4 flex-shrink-0"></div>
+                  {/* 내용 */}
+                  <div className="flex flex-col justify-between w-full">
+                    <div className="flex justify-between items-center">
+                      {/* 이름, 작성 시간 */}
+                      <p className="font-bold">{comment.authorName}</p>
+                      <span className="text-sm text-gray-500">
+                        {formatDistanceToNow(parseISO(comment.createdAt), {
+                          addSuffix: true,
+                          locale: ko,
+                        })}
+                      </span>
+                    </div>
+                    {/* 본문 */}
+                    <p className="mt-1 text-gray-700">{comment.content}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-500">등록된 댓글이 없습니다.</p>
+          )}
         </div>
       </div>
     </>
