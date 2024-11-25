@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -34,6 +35,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     profileImage,
     postType,
     authorId,
+    // comments,
   } = data;
   const memberId = useSelector((state: RootState) => state.auth.memberId);
 
@@ -81,7 +83,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
       setLikes((prevLikes) => prevLikes + 1);
       setIsHeartedState(true);
     },
-    onError: () => {},
+    onError: () => { },
   });
 
   const unlikeMutation = useMutation(deletePostHeart, {
@@ -90,7 +92,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
       setLikes((prevLikes) => prevLikes - 1);
       setIsHeartedState(false);
     },
-    onError: () => {},
+    onError: () => { },
   });
 
   const handleLike = () => {
@@ -139,7 +141,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
   };
 
   const handleImageClick = () => {
-      navigate(`/post/${id}`);
+    navigate(`/post/${id}`);
   };
 
   const timeAgo = formatDistanceToNow(parseISO(createdAt), {
@@ -204,9 +206,8 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           <img
             src={isHeartedState ? filledFire : emptyFire}
             alt="fire-icon"
-            className={`w-7 h-7 object-contain fire-icon ${
-              isAnimating ? "animate" : ""
-            }`}
+            className={`w-7 h-7 object-contain fire-icon ${isAnimating ? "animate" : ""
+              }`}
           />
         </button>
         <button onClick={handleShare} className="flex ml-auto mr-3">
