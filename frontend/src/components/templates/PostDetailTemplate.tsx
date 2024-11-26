@@ -176,7 +176,8 @@ const PostDetailTemplate: React.FC = () => {
                 <img
                   src={image}
                   alt={`Post ${index}`}
-                  style={{ width: "100%", height: "auto" }}
+                  style={{ width: "100%", aspectRatio: 1 }}
+                  className="object-cover"
                 />
               </div>
             ))}
