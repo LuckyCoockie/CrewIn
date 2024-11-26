@@ -162,8 +162,8 @@ pipeline {
                                             sleep 30
                                             if curl -sf -m 10 http://localhost:\$NEW_PORT/health > /dev/null; then
                                                 # Update Nginx config
-                                                sed -i "s/server \$NEW_NAME:8080 down;/server \$NEW_NAME:8080;/" $NGINX_CONFIG_PATH
-                                                sed -i "s/server \$OLD_NAME:8080;/server \$OLD_NAME:8080 down;/" $NGINX_CONFIG_PATH
+                                                sed -i "s/# server \$NEW_NAME:8080;/server \$NEW_NAME:8080;/" $NGINX_CONFIG_PATH
+                                                sed -i "s/server \$OLD_NAME:8080;/# server \$OLD_NAME:8080;/" $NGINX_CONFIG_PATH
                                                 # Restart Nginx container
                                                 docker restart $NGINX_CONTAINER_NAME
                                                 # Stop old container (not remove)
