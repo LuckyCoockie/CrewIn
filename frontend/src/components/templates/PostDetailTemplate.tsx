@@ -28,9 +28,12 @@ const PostDetailTemplate: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: postData, isLoading, error } = useQuery<PostDetailResponseDto>(
-    ["postDetail", id],
-    () => getPostDetail(Number(id))
+  const {
+    data: postData,
+    isLoading,
+    error,
+  } = useQuery<PostDetailResponseDto>(["postDetail", id], () =>
+    getPostDetail(Number(id))
   );
 
   const [likes, setLikes] = useState<number>(postData?.heartCount || 0);
@@ -103,7 +106,10 @@ const PostDetailTemplate: React.FC = () => {
         content: {
           title: postData?.authorName || "",
           description: postData?.content.substring(0, 100) + "...",
-          imageUrl: postData?.postImages && postData.postImages.length > 0 ? postData.postImages[0] : postData?.profileImage,
+          imageUrl:
+            postData?.postImages && postData.postImages.length > 0
+              ? postData.postImages[0]
+              : postData?.profileImage,
           link: {
             mobileWebUrl: window.location.href,
             webUrl: window.location.href,
@@ -188,8 +194,9 @@ const PostDetailTemplate: React.FC = () => {
             <img
               src={isHeartedState ? filledFire : emptyFire}
               alt="fire-icon"
-              className={`w-7 h-7 object-contain fire-icon ${isAnimating ? "animate" : ""
-                }`}
+              className={`w-7 h-7 object-contain fire-icon ${
+                isAnimating ? "animate" : ""
+              }`}
             />
           </button>
           <button onClick={handleShare} className="flex ml-auto mr-3">
@@ -204,26 +211,25 @@ const PostDetailTemplate: React.FC = () => {
           </p>
         </div>
       </div>
+      {/* 댓글 영역 */}
       <div className="w-full">
-        <div className="w-full border-t border-gray-300 my-5"></div>
-        {/* 댓글 영역 */}
-        <div className="mt-5 mx-3">
-          <h2 className="text-lg font-bold mb-3">댓글</h2>
+        <div className="w-full border-t border-gray-300 my-3"></div>
+        <div className="mt-1 mx-3">
           {postData.comments.length > 0 ? (
             <ul>
               {postData.comments.map((comment: commentsDto) => (
-                <li
-                  key={comment.id}
-                  className="flex items-start mb-6 p-3 rounded "
-                >
+                <li key={comment.id} className="flex mb-2 rounded items-center">
                   {/* 프로필 사진 */}
-                  <div className="w-12 h-12 rounded-full bg-black mr-4 flex-shrink-0"></div>
+                  <img
+                    src={comment.authorImage}
+                    className="w-10 h-10 rounded-full mr-3"
+                  ></img>
                   {/* 내용 */}
                   <div className="flex flex-col justify-between w-full">
                     <div className="flex justify-between items-center">
                       {/* 이름, 작성 시간 */}
                       <p className="font-bold">{comment.authorName}</p>
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm text-gray-400">
                         {formatDistanceToNow(parseISO(comment.createdAt), {
                           addSuffix: true,
                           locale: ko,
@@ -231,7 +237,7 @@ const PostDetailTemplate: React.FC = () => {
                       </span>
                     </div>
                     {/* 본문 */}
-                    <p className="mt-1 text-gray-700">{comment.content}</p>
+                    <p className="text-gray-700">{comment.content}</p>
                   </div>
                 </li>
               ))}
