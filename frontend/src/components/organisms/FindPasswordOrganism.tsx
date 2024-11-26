@@ -13,6 +13,7 @@ import {
   temporarilyPassword,
   temporarilyPasswordDto,
 } from "../../apis/api/findpassword";
+import SpinnerComponent from "../atoms/SpinnerComponent";
 
 const schema = yup.object({
   email: yup
@@ -33,6 +34,7 @@ type FormValues = {
 const FindPasswordOrganism: React.FC = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const {
     control,
     handleSubmit,
@@ -47,10 +49,13 @@ const FindPasswordOrganism: React.FC = () => {
       ...data,
     };
     try {
+      setIsLoading(true)
       await temporarilyPassword(submitData);
       setIsModalOpen(true);
     } catch (error) {
-      window.alert("인증번호를 확인해주세요.");
+      window.alert("정보를 확인해 주세요.");
+    } finally {
+      setIsLoading(false)
     }
   };
 
@@ -98,7 +103,14 @@ const FindPasswordOrganism: React.FC = () => {
             />
           </div>
           {/* 버튼 영역 */}
-          {isValid ? (
+          {isLoading ? (
+            <button
+              className="w-full bg-[#2B2F40] py-4 px-8 text-center rounded-lg text-white font-bold flex items-center justify-center"
+              disabled={isLoading}
+            >
+              <SpinnerComponent />
+            </button>
+          ) : isValid ? (
             <LargeAbleButton text="비밀번호 찾기" />
           ) : (
             <LargeDisableButton text="비밀번호 찾기" />
