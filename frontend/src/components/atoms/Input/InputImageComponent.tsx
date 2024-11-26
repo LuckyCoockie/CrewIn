@@ -59,7 +59,7 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
                 className="w-full h-full rounded-full object-cover"
               />
             </div>
-            <p className="mt-2 text-sm font-medium text-gray-500">
+            <p className="mt-2 text-sm font-medium text-reverse">
               이미지 노출 예시
             </p>
           </div>
@@ -82,7 +82,7 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
             </div>
             <label
               htmlFor={props.id}
-              className="text-center block mt-2 text-sm font-medium text-gray-500 dark:text-white"
+              className="text-center block mt-2 text-sm font-medium text-reverse dark:text-white"
             >
               *{props.placeholder}
             </label>
@@ -92,11 +92,11 @@ const InputImageComponent = React.forwardRef<HTMLInputElement, InputImage>(
           <label htmlFor={props.id} className="w-full mb-1">
             <div className="flex p-2 border border-gray-300 rounded-lg w-full text-end">
               {fileCount > 0 ? (
-                <p className="text-gray-500 font-semibold ml-1">
+                <p className="text-reverse font-semibold ml-1">
                   이미지가 선택되었습니다.
                 </p>
               ) : (
-                <p className="text-gray-500 font-semibold ml-1">{props.text}</p>
+                <p className="text-reverse font-semibold ml-1">{props.text}</p>
               )}
               <p className="ml-auto">
                 <Attach />

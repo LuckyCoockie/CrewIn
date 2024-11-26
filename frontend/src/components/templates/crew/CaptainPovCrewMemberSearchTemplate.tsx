@@ -169,7 +169,7 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
         ) : (
           <select
             defaultValue={member.position}
-            className="border border-gray-400 w-30 h-10 rounded-md text-sm bg-white"
+            className="border border-gray-400 w-30 h-10 rounded-md text-sm bg-background"
             onChange={(e) => handlePositionChange(member.email, e.target.value)}
           >
             {positions.map((position) => (
@@ -196,7 +196,7 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
         <div className="relative flex-1 font-weight-sm">
           <input
             type="search"
-            className="h-6 px-4 pr-12 text-md w-full focus:outline-none focus:ring-0 border-none"
+            className="h-6 px-4 pr-12 text-md w-full focus:outline-none focus:ring-0 border-none bg-background"
             placeholder="크루원 검색"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

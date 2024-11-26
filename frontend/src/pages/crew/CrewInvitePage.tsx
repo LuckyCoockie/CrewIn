@@ -85,7 +85,7 @@ const CrewInvitePage: React.FC = () => {
         <BackHeaderMediumOrganism text="" />
         <div className="relative flex-1 font-weight-sm">
           <input
-            className="h-6 px-4 pr-12 text-md w-full focus:outline-none focus:ring-0 border-none"
+            className="h-6 px-4 pr-12 text-md w-full focus:outline-none focus:ring-0 border-none bg-background"
             type="search"
             placeholder="이름, 닉네임"
             value={query}

@@ -10,8 +10,8 @@ type Title = {
 const NavButton: React.FC<Title> = ({ text, devide, onClick, isActive }) => {
   return (
     <button
-      className={`text-sm py-3 transition duration-300 ease-in-out ${
-        isActive ? "border-b-2 border-black font-black" : "text-gray-300 border-b"
+      className={`text-sm py-3 transition duration-300 ease-in-out bg-background ${
+        isActive ? "border-b-2 border-primary font-black" : "text-gray-300 border-b border-background"
       }`}
       style={{ width: `${100 / devide}%` }}
       onClick={onClick}

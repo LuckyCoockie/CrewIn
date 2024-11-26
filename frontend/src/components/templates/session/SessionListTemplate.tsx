@@ -63,8 +63,8 @@ const SessionListTemplate: React.FC<OwnProps> = ({
         <InfoIcon onClick={handleClickInfoModalConfirm} className="ml-2" />
       </header>
       <main>
-        <div className="flex flex-col items-center max-w-[500px] mt-4 mb-20 relative">
-          <div className="mb-3 xs:mb-5 flex items-center bg-white w-full">
+        <div className="flex flex-col items-center max-w-[500px] mb-20 relative">
+          <div className="mb-3 xs:mb-5 flex items-center bg-background w-full mt-4">
             <DropdownTypeComponent
               id="sessionpaceminutes"
               options={[
@@ -76,7 +76,7 @@ const SessionListTemplate: React.FC<OwnProps> = ({
               ]}
               value={type}
               onChange={handelTypeChange}
-              className="border rounded-md text-white bg-primary"
+              className="border rounded-md bg-background"
             />
           </div>
           <InfiniteScrollComponent

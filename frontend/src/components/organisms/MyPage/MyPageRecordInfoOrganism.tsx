@@ -4,6 +4,7 @@ import BarTitle from "../../atoms/Title/BarTitle";
 import BarContent from "../../atoms/Content/BarContent";
 import { ProfileDto } from "../../../apis/api/mypage";
 import { EditProfileImageOrganism } from "../profile/EditProfileImageOrganism";
+import ThemeToggle from "../../../util/theme/ToggleThemeButton";
 
 type FetchDataProps = {
   profileData: ProfileDto;
@@ -39,7 +40,10 @@ const MyPageRecordInfoOrganism: React.FC<FetchDataProps> = ({
 
   return (
     <>
-      <div className="flex items-center flex-col w-full my-4">
+      <div className="flex items-center flex-col w-full my-4 relative">
+        <div className="absolute top-0 right-0 mt-2 mr-2">
+          <ThemeToggle />
+        </div>
         <MyPageProfileImage
           src={imageUrl}
           onClick={handleOpenEditProfileImageModal}

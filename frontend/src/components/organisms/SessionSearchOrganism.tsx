@@ -78,7 +78,7 @@ const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
 
   return (
     <>
-      <div className="mb-3 xs:mb-5 flex items-center bg-white w-full">
+      <div className="mb-3 xs:mb-5 flex items-center bg-background w-full">
         <DropdownTypeComponent
           id="sessionpaceminutes"
           options={[
@@ -90,9 +90,9 @@ const SessionSearchComponent: React.FC<OwnProps> = ({ onSearch }) => {
           ]}
           value={type}
           onChange={handelTypeChange}
-          className="border rounded-md text-white bg-primary"
+          className="border rounded-md bg-background"
         />
-        <div className="flex items-center flex-grow justify-end ml-2 xs:ml-4">
+        <div className="flex items-center flex-grow justify-end ml-2 xs:ml-4 bg-background">
           <SearchInputMolecule
             hint={"크루명, 지역명, 세션명"}
             onChange={handleInputChange}

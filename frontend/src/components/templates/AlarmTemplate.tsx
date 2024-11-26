@@ -163,7 +163,7 @@ const AlarmTemplate: React.FC = () => {
                     {alarm.notificationType === "LIKE" && (
                       <div
                         className={`flex justify-between items-center w-full h-6 tracking-tighter ${
-                          alarm.isChecked ? "text-gray-500" : ""
+                          alarm.isChecked ? "text-reverse" : ""
                         }`}
                       >
                         <div className="text-sm">
@@ -189,7 +189,7 @@ const AlarmTemplate: React.FC = () => {
                     {alarm.notificationType === "NOTICE" && (
                       <div
                         className={`flex justify-between items-center w-full h-6 tracking-tighter ${
-                          alarm.isChecked ? "text-gray-500" : ""
+                          alarm.isChecked ? "text-reverse" : ""
                         }`}
                       >
                         <div className="text-sm">
@@ -213,7 +213,7 @@ const AlarmTemplate: React.FC = () => {
                       </div>
                     )}
                     <div
-                      className={`text-gray-500 text-xs ${
+                      className={`text-reverse text-xs ${
                         alarm.isChecked && alarm.notificationType === "INVITATION"
                           ? "text-black"
                           : ""
@@ -226,7 +226,7 @@ const AlarmTemplate: React.FC = () => {
               );
             })
         ) : (
-          <div className="p-4 text-gray-500">알림이 없습니다.</div>
+          <div className="p-4 text-reverse">알림이 없습니다.</div>
         )}
       </div>
       {modalMessage && (

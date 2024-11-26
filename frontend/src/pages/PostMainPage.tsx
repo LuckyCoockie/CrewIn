@@ -75,9 +75,9 @@ const PostMainPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center max-w-[500px] mt-4 mb-20 relative">
+    <div className="flex flex-col items-center max-w-[500px] mb-20 relative">
       {isMobile && (
-        <div className="flex items-center w-full mb-5 xs:mb-10">
+        <div className="flex items-center w-full mb-5 xs:mb-10 mt-4">
           <div className="flex items-center ms-3">
             <CrewinLogo />
           </div>
@@ -92,7 +92,7 @@ const PostMainPage: React.FC = () => {
         </div>
       )}
       {isLoading && <SpinnerComponent />}
-      <div className="w-full">
+      <div className="w-full mt-4">
         <InfiniteScrollComponent
           fetchKey="postData"
           fetchData={fetchPostData}

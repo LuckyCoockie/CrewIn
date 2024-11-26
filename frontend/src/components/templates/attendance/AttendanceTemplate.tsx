@@ -159,7 +159,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
           onAttendanceChange={handleAttendanceChange}
         />
         <div className="mx-auto w-full max-w-[500px] md:max-w-[597.93px] lg:max-w-[676px] fixed bottom-0 left-0 right-0 text-center z-50 px-2 pb-4 pt-5 font-bold disable">
-          <div className="md:ml-[97.93px] lg:ml-[176px]">
+          <div className="md:ml-[97.93px] lg:ml-[176px] h-full">
             {!isSessionStarted ? (
               "출석 시작은 세션 시작 후 할 수 있습니다."
             ) : isSessionEnded ? (
@@ -179,7 +179,7 @@ const AttendanceTemplate: React.FC<OwnProps> = ({
                       initSeconds={leftTime}
                       onEnd={() => setAutoCheckStatus("AFTER")}
                       render={(seconds) => (
-                        <div className="w-full bg-[#2b2f401a] py-4 px-8 text-center disable rounded-lg font-bold">
+                        <div className="w-full bg-disable py-4 px-8 text-center disable rounded-lg font-bold">
                           {seconds}
                         </div>
                       )}

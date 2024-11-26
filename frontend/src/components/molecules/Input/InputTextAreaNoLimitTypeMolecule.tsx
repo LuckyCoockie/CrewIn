@@ -51,7 +51,7 @@ const InputTextAreaNoLimitTypeMolecule = React.forwardRef<
       {props.error ? (
         <p className="ps-4 text-sm font-light text-red-500">{props.error}</p>
       ) : (
-        <p className="text-sm text-gray-500 text-end">{charCount}/1000 글자</p>
+        <p className="text-sm text-reverse text-end">{charCount}/1000 글자</p>
       )}
     </div>
   );

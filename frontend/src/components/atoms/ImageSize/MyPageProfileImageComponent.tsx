@@ -17,7 +17,7 @@ const MyPageProfileImageComponent: React.FC<Image> = ({
       <img
         src={src}
         alt="Preview"
-        className="mx-auto border-2 rounded-full object-cover square"
+        className="mx-auto border-2 rounded-full object-cover square bg-white"
       />
       {editable && (
         <div className="absolute bottom-2 right-2">

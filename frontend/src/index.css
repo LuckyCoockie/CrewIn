@@ -30,8 +30,6 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -57,9 +55,6 @@ body {
   font-family: "Pretendard", "Roboto", sans-serif;
   display: flex;
   justify-content: center;
-  padding-bottom: 100px;
-  background-color: white;
-  color: black;
 }
 
 /* 버튼 컬러 */
@@ -154,17 +149,17 @@ header {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: transparent;
+    color: #2B2F40;
+    background-color: #2B2F40;
   }
 
   a:hover {
     color: #213547;
   }
 
-  button {
+  /* button {
     background-color: #ffffff;
-  }
+  } */
 }
 
 .no-background {
@@ -174,24 +169,6 @@ header {
 
 .font-weight-sm {
   font-weight: 400;
-}
-
-.photo-grid {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.photo-item {
-  width: calc(33.333%);
-  height: 120px;
-  object-fit: cover;
-  padding: 1px;
-}
-
-@media (min-width: 500px) {
-  .photo-item {
-    height: 180px; /* 화면 너비가 500px 이상일 때 높이 설정 */
-  }
 }
 
 /* IOS 버전 */
@@ -235,3 +212,62 @@ input[type="number"]::-webkit-inner-spin-button {
 .carousel .control-dots > * {
   pointer-events: auto;
 }
+
+.dark {
+  --background: #2B2F40;
+
+  --primary: #FFFFFF;
+  --primary-50: #F4F4F5; 
+  --primary-100: #EAEBEC;
+  --primary-200: #D5D5D9;
+  --primary-300: #C0C1C6;
+  --primary-400: #AAAC83;
+  --primary-500: #94969F;
+  --primary-600: #80828C;
+  --primary-700: #6B6E7A;
+  --primary-800: #555966;
+  --primary-900: #414454;
+  --primary-1000: #2B2F40;
+
+  --disable: #E9E9E9;
+
+  --highlight: #7E251B;
+
+  --reverse: #cecece;
+
+  color: #FFFFFF
+}
+
+.light {
+  --background: #FFFFFF;
+
+  --primary: #2B2F40;
+  --primary-50: #F4F4F5; 
+  --primary-100: #EAEBEC;
+  --primary-200: #D5D5D9;
+  --primary-300: #C0C1C6;
+  --primary-400: #AAAC83;
+  --primary-500: #94969F;
+  --primary-600: #80828C;
+  --primary-700: #6B6E7A;
+  --primary-800: #555966;
+  --primary-900: #414454;
+  --primary-1000: #2B2F40;
+
+  --disable: #E9E9E9;
+
+  --highlight: #7E251B;
+
+  --reverse: #6b7280;
+
+  color: #000000
+}
+
+/* svg {
+  circle {
+    stroke: currentColor;
+  }
+  path {
+    stroke: currentColor;
+  }  
+} */

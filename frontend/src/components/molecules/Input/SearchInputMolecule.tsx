@@ -42,7 +42,7 @@ const SearchInputMolecule: React.FC<OwnProps> = ({
   return (
     <div className="relative text-gray-600 flex-1">
       <input
-        className="border-2 border-gray-300 bg-white h-10 px-4 pr-12 rounded-lg text-sm focus:outline-none w-full"
+        className="border-2 border-gray-300 bg-background h-10 px-4 pr-12 rounded-lg text-sm focus:outline-none w-full"
         type="search"
         name="search"
         placeholder={hint}

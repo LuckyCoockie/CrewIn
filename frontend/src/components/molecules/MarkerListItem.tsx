@@ -29,13 +29,13 @@ export const MarkerListItem = ({
         <div className="flex flex-col justify-center items-center">
           <div
             className={`h-3 border-l-2 border-dotted ${
-              !first && "border-gray-500"
+              !first && "border-reverse"
             }`}
           />
           <Avatar img={marker} onClick={onClick} />
           <div
             className={`h-3 border-l-2 border-dotted ${
-              !last && "border-gray-500"
+              !last && "border-reverse"
             }`}
           />
         </div>

@@ -17,7 +17,7 @@ const LargeAbleButton: React.FC<Text> = ({
 }) => {
   return (
     <button
-      className="w-full bg-[#2B2F40] py-4 px-8 text-center rounded-lg text-white font-bold flex items-center justify-center"
+      className="w-full bg-primary py-4 px-8 text-center rounded-lg text-white font-bold flex items-center justify-center"
       onClick={onClick}
       disabled={isLoading}
     >

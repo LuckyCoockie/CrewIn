@@ -43,7 +43,7 @@ const AlarmTabMolecule: React.FC<Name> = (props) => {
             ) : (
               <AlarmDeselcted />
             )}
-            <p className="text-center text-xs lg:text-base text-gray-500 lg:pl-2">
+            <p className="text-center text-xs lg:text-base text-reverse lg:pl-2">
               {props.name}
             </p>
           </>

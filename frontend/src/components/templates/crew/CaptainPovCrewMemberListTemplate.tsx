@@ -185,7 +185,7 @@ const CaptainPovCrewMemberListTemplate: React.FC = () => {
             </button>
           ) : (
             <select
-              className="border border-gray-400 w-30 h-10 rounded-md text-sm focus:ring-0 focus:border-black"
+              className="border border-gray-400 w-30 h-10 rounded-md text-sm focus:ring-0 focus:border-black bg-background"
               value={member.position}
               onChange={(e) =>
                 handlePositionChange(member.email, e.target.value)

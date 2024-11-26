@@ -19,27 +19,32 @@ module.exports = {
         ],
       },
       colors: {
+        background: {
+          DEFAULT: "var(--background)",
+        },
         primary: {
-          light: "#2B2F40",
-          DEFAULT: "#2B2F40",
-          dark: "#2B2F40",
-          50: "#F4F4F5",  
-          100: "#EAEBEC",
-          200: "#D5D5D9",
-          300: "#C0C1C6",
-          400: "#AAAC83",
-          500: "#94969F",
-          600: "#80828C",
-          700: "#6B6E7A",
-          800: "#555966",
-          900: "#414454",
-          1000: "#2B2F40",
+          DEFAULT: "var(--primary)",
+          50: "var(--primary-50)",  
+          100: "var(--primary-100)",
+          200: "var(--primary-200)",
+          300: "var(--primary-300)",
+          400: "var(--primary-400)",
+          500: "var(--primary-500)",
+          600: "var(--primary-600)",
+          700: "var(--primary-700)",
+          800: "var(--primary-800)",
+          900: "var(--primary-900)",
+          1000: "var(--primary-1000)",
+        },
+        disable: {
+          DEFAULT: "var(--disable)"
         },
         highlight: {
-          light: "#7E251B",
-          DEFAULT: "#7E251B",
-          dark: "#7E251B",
-        }        
+          DEFAULT: "var(--highlight)",
+        },
+        reverse: {
+          DEFAULT: "var(--reverse)"
+        }
       },
       screens: {
         'xs': '450px',
@@ -55,4 +60,5 @@ module.exports = {
     require("@tailwindcss/aspect-ratio"),
     require("flowbite/plugin"),
   ],
+  darkMode: " "
 };

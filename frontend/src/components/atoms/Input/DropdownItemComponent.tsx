@@ -23,7 +23,7 @@ const DropdownTypeComponent = React.forwardRef<HTMLSelectElement, InputData>(
         value={props.value}
         onChange={props.onChange}
         ref={ref}
-        className={`border-0 focus:ring-0 text-sm ${props.className} ${
+        className={`border-0 focus:ring-0 text-sm bg-background ${props.className} ${
           props.hasError
             ? "border-red-500 focus:border-red-500"
             : "border-gray-300"
