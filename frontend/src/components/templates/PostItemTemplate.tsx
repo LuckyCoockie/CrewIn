@@ -188,7 +188,8 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
                 <img
                   src={image}
                   alt={`Cropped ${index}`}
-                  style={{ width: "100%", height: "100%" }}
+                  style={{ width: "100%", aspectRatio: 1 }}
+                  className="object-cover"
                 />
               </div>
             ))}
