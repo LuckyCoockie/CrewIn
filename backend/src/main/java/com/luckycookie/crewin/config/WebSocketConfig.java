@@ -24,7 +24,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/app") // application으로 메시지 전송시 붙어야 하는 prefix - app에서 처리되는 메시지 라는 것을 나타냄
-                .enableStompBrokerRelay("/topic") // 메시지 라우팅을 위한 목적지 prefix
+                .enableStompBrokerRelay("/topic") // 전송된 메시지 라우팅을 위한 목적지 prefix
                 .setRelayHost(relayHost)
                 .setClientLogin(relayUsername)
                 .setClientPasscode(relayPassword)
@@ -34,7 +34,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws")            // WebSocket 엔드포인트 경로
+        registry.addEndpoint("/ws-connect")            // WebSocket 엔드포인트 경로
                 .setAllowedOrigins("*")              // CORS 설정
                 .withSockJS();                       // SockJS 지원 활성화
     }
