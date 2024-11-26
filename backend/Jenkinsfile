@@ -19,7 +19,6 @@ pipeline {
                     env.GREEN_PORT = props['GREEN_PORT']
                     env.CONTAINER_NAME_BLUE = props['CONTAINER_NAME_BLUE']
                     env.CONTAINER_NAME_GREEN = props['CONTAINER_NAME_GREEN']
-                    env.CONTAINER_URL = props['CONTAINER_URL']
                     env.NGINX_CONTAINER_NAME = props['NGINX_CONTAINER_NAME']
                     env.NGINX_CONFIG_PATH = props['NGINX_CONFIG_PATH']
                     env.MATTERMOST_CHANNEL_NAME = props['MATTERMOST_CHANNEL_NAME']
@@ -134,36 +133,45 @@ pipeline {
                                             set -x  # 디버깅 모드 활성화
                                             exec > >(tee $DEPLOY_LOG_PATH) 2>&1
                                             docker pull $DOCKER_IMAGE
-                                            container_id=\$(docker ps -q --filter name=$CONTAINER_NAME_BLUE)
-                                            echo "컨테이너 ID: \$container_id"
-                                            if [[ \$(docker ps -q --filter name=$CONTAINER_NAME_BLUE) ]]; then
-                                                NEW_PORT=$GREEN_PORT
-                                                NEW_NAME=$CONTAINER_NAME_GREEN
-                                                OLD_NAME=$CONTAINER_NAME_BLUE
-                                                CURRENT_PORT=$BLUE_PORT
-                                            else
-                                                NEW_PORT=$BLUE_PORT
-                                                NEW_NAME=$CONTAINER_NAME_BLUE
-                                                OLD_NAME=$CONTAINER_NAME_GREEN
-                                                CURRENT_PORT=$GREEN_PORT
+
+                                            # 새로 배포할 컨테이너 지정
+                                            if [[ \$(docker ps -aq --filter name=$CONTAINER_NAME_BLUE) ]]; then
+                                                # 블루 컨테이너 상태를 확인
+                                                CONTAINER_STATUS=\$(docker inspect -f '{{.State.Status}}' $CONTAINER_NAME_BLUE)
+
+                                                if [[ "\$CONTAINER_STATUS" == "exited" ]]; then
+                                                    # exited 상태일 경우, 블루 컨테이너를 새 컨테이너로 지정
+                                                    NEW_PORT=$BLUE_PORT
+                                                    NEW_NAME=$CONTAINER_NAME_BLUE
+                                                    OLD_NAME=$CONTAINER_NAME_GREEN
+                                                    CURRENT_PORT=$GREEN_PORT
+                                                    docker rm \$NEW_NAME
+                                                else
+                                                    # 그린 컨테이너를 새 컨테이너로 지정
+                                                    NEW_PORT=$GREEN_PORT
+                                                    NEW_NAME=$CONTAINER_NAME_GREEN
+                                                    OLD_NAME=$CONTAINER_NAME_BLUE
+                                                    CURRENT_PORT=$BLUE_PORT
+                                                    docker rm \$NEW_NAME
+                                                fi
                                             fi
+
+                                            # 새 이미지로 컨테이너 생성
                                             docker run -d --name \$NEW_NAME --network $DOCKER_NETWORK -p \$NEW_PORT:8080 -v $CREW_IN_LOG_PATH:/logs $DOCKER_IMAGE
 
-                                            sleep 10
-                                            if curl -sf -m 5 http://localhost:\$NEW_PORT/health > /dev/null; then
+                                            sleep 30
+                                            if curl -sf -m 10 http://localhost:\$NEW_PORT/health > /dev/null; then
                                                 # Update Nginx config
-                                                sed -i "s/server $CONTAINER_URL:\$NEW_PORT down;/server $CONTAINER_URL:\$NEW_PORT;/" $NGINX_CONFIG_PATH
-                                                sed -i "s/server $CONTAINER_URL:\$CURRENT_PORT;/server $CONTAINER_URL:\$CURRENT_PORT down;/" $NGINX_CONFIG_PATH
+                                                sed -i "s/server \$NEW_NAME:8080 down;/server \$NEW_NAME:8080;/" $NGINX_CONFIG_PATH
+                                                sed -i "s/server \$OLD_NAME:8080;/server \$OLD_NAME:8080 down;/" $NGINX_CONFIG_PATH
                                                 # Restart Nginx container
                                                 docker restart $NGINX_CONTAINER_NAME
-                                                # Stop and remove old container
+                                                # Stop old container (not remove)
                                                 docker stop \$OLD_NAME
-                                                docker rm \$OLD_NAME
                                                 echo "Switched to new version on port \$NEW_PORT and updated Nginx"
                                                 exit 0
                                             else
                                                 docker stop \$NEW_NAME
-                                                docker rm \$NEW_NAME
                                                 echo "Deployment failed, keeping old version"
                                                 exit 1
                                             fi
@@ -176,7 +184,6 @@ pipeline {
                 }
             }
         }
-
     }
     post {
         always {
