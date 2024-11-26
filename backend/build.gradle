@@ -41,7 +41,6 @@ dependencies {
     // tmap api 호출
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
-
     // P6Spy 의존성 추가
     implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.1")
 
@@ -73,6 +72,12 @@ dependencies {
 
     //log 모니터링
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // WebSocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // AMQP - RabbitMQ가 기본 구현체
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
 }
 
 // Querydsl 설정부
