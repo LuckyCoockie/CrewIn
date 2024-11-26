@@ -261,12 +261,20 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
               ))}
             </Carousel>
           </div>
-          <button
-            onClick={handleClearImages}
-            className="mt-2 button-color text-light p-2 rounded"
-          >
-            이미지 초기화
-          </button>
+          {imagePaths.length > 0 && !isCropped && (
+              <p className="mt-2 text-center text-xs text-red-600">
+                *사진 편집을 완료해야 작성이 가능합니다. (체크 버튼을
+                클릭해주세요.)
+              </p>
+            )}
+            <button
+              onClick={() => {
+                handleClearImages();
+              }}
+              className="mt-2 button-color text-light p-2 rounded"
+            >
+              이미지 초기화
+            </button>
         </>
       )}
       <main>
@@ -314,12 +322,12 @@ const ImageCrop: React.FC<ImageCropProps> = ({ onComplete }) => {
         <button
           onClick={handlePost}
           className={`w-full bg-[#2b2f40e6] py-4 px-8 text-center rounded-lg ${
-            imagePaths.length === 0 || (!isPublic && crewId === 0)
+            imagePaths.length === 0 || (!isPublic && crewId === 0) || !isCropped
               ? "opacity-30 cursor-not-allowed"
               : "cursor-pointer"
           } text-white font-bold`}
           disabled={
-            imagePaths.length === 0 || (!isPublic && crewId === 0) || isLoading
+            imagePaths.length === 0 || (!isPublic && crewId === 0) || isLoading || !isCropped
           }
         >
           {isLoading ? <SpinnerComponent /> : "작성"}
