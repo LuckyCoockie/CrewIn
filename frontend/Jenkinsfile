@@ -1,0 +1,160 @@
+pipeline {
+    agent any
+    tools {
+        nodejs 'node 20.2.0'
+    }
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('docker_hub_token')
+        CREWIN_ENV = credentials('jenkins_crewin_frontend.env') // secretfile 가져오기
+    }
+    stages {
+        stage('Load Environment Variables') {
+            steps {
+                script {
+                    // jenkins_crewin_backend.env 파일 내용을 젠킨스 파일의 환경 변수로 로드
+                    def props = readProperties file: "${CREWIN_ENV}"
+                    env.MATTERMOST_CHANNEL_NAME = props.MATTERMOST_CHANNEL_NAME
+                    env.MATTERMOST_WEBHOOK_URL = props.MATTERMOST_WEBHOOK_URL
+                    env.DOCKER_CONTAINER_NAME = props.DOCKER_CONTAINER_NAME
+                    env.DIST_PATH = props.DIST_PATH
+                    env.REMOVE_PREFIX = props.REMOVE_PREFIX
+                    env.HOST_PATH = props.HOST_PATH
+                }
+            }
+        }
+        stage('Notify Build Start') {
+            steps {
+                script {
+                    def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                    def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                    def Commit_Message = sh(script: "git log -1 --pretty=%B", returnStdout: true).trim()
+
+                    def allCommits = sh(script: "git log --pretty=format:'%h - %s (%an)' $env.GIT_PREVIOUS_SUCCESSFUL_COMMIT..HEAD", returnStdout: true).trim()
+                    def formattedCommits = allCommits.split('\\n').collect { line ->
+                        def escapedLine = line.replaceAll("([\\[\\]\\(\\)])", '\\\\$1')
+                        "• ${escapedLine}"
+                    }.join('\\n')
+                    
+                    def message = """
+                        ####  👨‍💻FE 빌드 시작
+                        **빌드 번호** $env.JOB_NAME #$env.BUILD_NUMBER
+                        **브랜치:** $env.GIT_BRANCH
+                        **작성자:** ${Author_ID} (${Author_Name})
+                        **빌드 URL:** [Details]($env.BUILD_URL)
+                        **포함된 커밋:**
+                        $formattedCommits
+                    """.stripIndent()
+
+                    mattermostSend(
+                        color: '#439FE0',
+                        message: message,
+                        endpoint: "$env.MATTERMOST_WEBHOOK_URL",
+                        channel: "$env.MATTERMOST_CHANNEL_NAME",
+                        icon: 'https://jenkins.io/images/logos/jenkins/jenkins.png'
+                    )
+                }
+            }
+        }
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Prepare Config') {
+            steps {
+                withCredentials([file(credentialsId: 'crewin-front-env', variable: 'CONFIG_FILE')]) {
+                    sh '''
+                        chmod -R 755 frontend
+                        cp $CONFIG_FILE frontend/.env
+                    '''
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                script {
+                    sh '''
+                        cd frontend
+                        rm package-lock.json
+                        npm install rollup @rollup/plugin-node-resolve @rollup/plugin-commonjs
+                        npm install esbuild
+                        npm install
+                        npm run build
+                        chmod -R 755 dist
+                        ls -al dist
+                    '''
+                }
+            }
+        }
+        stage('Transfer') {
+            steps {
+                script {
+                    sh '''
+                        cd frontend/dist
+                        ls -la
+                    ''' // 파일이 빌드 디렉토리에 존재하는지 확인
+                }
+                sshPublisher(
+                    publishers: [
+                        sshPublisherDesc(
+                            configName: 'Gumi-Server',
+                            transfers: [
+                                sshTransfer(
+                                    sourceFiles: "${DIST_PATH}",
+                                    removePrefix: "${REMOVE_PREFIX}",
+                                    remoteDirectory: "${HOST_PATH}",
+                                )
+                            ],
+                            usePromotionTimestamp: false,
+                            alwaysPublishFromMaster: false
+                        )
+                    ]
+                )
+            }
+        }
+        stage('Deploy') {
+            steps {
+                script {
+                    sh "docker restart ${DOCKER_CONTAINER_NAME}"
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                def Commit_Message = sh(script: "git log -1 --pretty=%B", returnStdout: true).trim()
+                def Build_Status = currentBuild.result ?: 'SUCCESS'
+                def Status_Color = Build_Status == 'SUCCESS' ? 'good' : (Build_Status == 'UNSTABLE' ? 'warning' : 'danger')
+                def Status_Text = Build_Status == 'SUCCESS' ? '빌드 성공' : (Build_Status == 'UNSTABLE' ? '빌드 불안정' : '빌드 실패')
+                
+                def allCommits = sh(script: "git log --pretty=format:'%h - %s (%an)' $env.GIT_PREVIOUS_SUCCESSFUL_COMMIT..HEAD", returnStdout: true).trim()
+                def formattedCommits = allCommits.split('\\n').collect { line ->
+                    def escapedLine = line.replaceAll("([\\[\\]\\(\\)])", '\\\\$1')
+                    "• ${escapedLine}"
+                }.join('\\n')
+
+                def message = """
+                    ####  👨‍💻FE $Status_Text
+                    **빌드 번호** $env.JOB_NAME #$env.BUILD_NUMBER
+                    **브랜치:** $env.GIT_BRANCH
+                    **작성자:** ${Author_ID} (${Author_Name})
+                    **빌드 URL:** [Details]($env.BUILD_URL)
+                    **포함된 커밋:**
+                    $formattedCommits
+                """.stripIndent()
+
+                mattermostSend(
+                    color: "$Status_Color",
+                    message: message,
+                    endpoint: "$env.MATTERMOST_WEBHOOK_URL",
+                    channel: "$env.MATTERMOST_CHANNEL_NAME",
+                    icon: 'https://jenkins.io/images/logos/jenkins/jenkins.png'
+                )
+            }
+        }
+    }
+}

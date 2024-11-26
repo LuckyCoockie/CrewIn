@@ -1,0 +1,237 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  img {
+    @apply inline-block;
+  }
+}
+
+@media (max-width: 740px) {
+  .logo {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .info-text {
+    font-size: 0.8rem;
+  }
+
+  .info-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+:root {
+  font-family: "Pretendard", "Roboto", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+}
+
+/* 폰트 굵기 예시
+
+400(기본값) : Normal
+600 : Semi Bold
+700 : Bold
+800 : Extra Bold */
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  font-family: "Pretendard", "Roboto", sans-serif;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 100px;
+  background-color: white;
+  color: black;
+}
+
+/* 버튼 컬러 */
+.button-color {
+  color: white;
+  background-color: #2b2f40 !important;
+  border-radius: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border: 1px solid hsla(229, 20%, 21%, 1);
+  font-weight: bold;
+}
+
+/* 텍스트 메인 컬러 */
+.text-color {
+  color: hsla(229, 20%, 21%, 1);
+}
+/* Border 컬러 */
+.border-color {
+  color: hsla(229, 20%, 21%, 1);
+}
+
+/* 라벨 전역 설정 */
+label {
+  font-weight: 900;
+}
+
+/* main 설정 */
+main {
+  width: 100%;
+  padding: 0px 12px;
+}
+
+/* header 설정 */
+header {
+  font-weight: 900;
+  width: 100%;
+  padding-top: 12px;
+  padding-bottom: 6px;
+  padding-left: 12px;
+  padding-right: 12px;
+  display: flex;
+  align-items: center;
+}
+
+/* Data input css */
+.data-input {
+  width: 100%;
+  border-radius: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 14px;
+}
+
+.data-input:focus {
+  border-color: hsla(229, 20%, 21%, 0.902);
+}
+
+.large-data-input {
+  width: 100%;
+  border-radius: 8px;
+  padding-top: 8px;
+  padding-bottom: 50px;
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+.large-data-input:focus {
+  border-color: hsla(229, 20%, 21%, 0.9);
+}
+
+/* Image file input css */
+.image-file-input {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 14px;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+}
+
+.image-file-input::file-selector-button {
+  display: none;
+}
+
+/* text gray */
+.text-gray-color {
+  color: hsla(229, 20%, 21%, 0.4);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: transparent;
+  }
+
+  a:hover {
+    color: #213547;
+  }
+
+  button {
+    background-color: #ffffff;
+  }
+}
+
+.no-background {
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
+
+.font-weight-sm {
+  font-weight: 400;
+}
+
+.photo-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.photo-item {
+  width: calc(33.333%);
+  height: 120px;
+  object-fit: cover;
+  padding: 1px;
+}
+
+@media (min-width: 500px) {
+  .photo-item {
+    height: 180px; /* 화면 너비가 500px 이상일 때 높이 설정 */
+  }
+}
+
+/* IOS 버전 */
+input[type="file"] {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* input type number 화살표 삭제 */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* className에서 사용할 disabled 속성 추가 */
+.disabled {
+  pointer-events: none;
+}
+
+.fire-icon {
+  transition: transform 0.2s ease;
+}
+
+.fire-icon.animate {
+  transform: scale(1.2);
+}
+
+/* 화면의 가로 크기가 500px 이상일 때 FAB 위치 조정 */
+@media (min-width: 500px) {
+  .fab {
+    right: calc(50% - 250px); /* 500px 중앙에 고정 */
+  }
+}
+
+/* 캐로셀 ul 클릭 방지 */
+.carousel .control-dots {
+  pointer-events: none;
+}
+
+.carousel .control-dots > * {
+  pointer-events: auto;
+}

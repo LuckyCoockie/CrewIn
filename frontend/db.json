@@ -1,0 +1,104 @@
+{
+  "crew": [
+    {
+      "id": "1",
+      "crew_id": "2",
+      "crew_name": "두번째 크루",
+      "captin_name": "두번째 캡틴",
+      "slogan": "두번째 슬로건",
+      "area": "서울시 용산구",
+      "introduction": "안녕하세요 두번째 크루입니다.",
+      "crew_img": [
+        {
+          "img_url": "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMDAzMDRfMTA5%2FMDAxNTgzMzA0ODI2ODcw.ld-Is9bI5Lo3UBtwhrlJDtlZ7SrJ34kTOIhEee1meYIg.EXb7QlU4bumzAUVY1a2sG8aPzpvjUqy_RUXmBHP_PPMg.PNG.flyanbbong%2Fimage.png&type=sc960_832",
+          "type": "로고"
+        }
+      ],
+      "details": {
+        "founded": "2020-01-01",
+        "members": 30,
+        "activities": ["Hiking", "Camping", "Community Service"]
+      }
+    },
+    {
+      "id": "2",
+      "crew_id": "3",
+      "crew_name": "세번째 크루",
+      "captin_name": "세번째 캡틴",
+      "slogan": "세번째 슬로건",
+      "area": "서울시 중랑구",
+      "introduction": "안녕하세요 세번째 크루입니다.",
+      "crew_img": [
+        {
+          "img_url": "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMTAyMjFfNjQg%2FMDAxNjEzODM0ODYwMDc1.lNhvgIG-lxeoLlB5T85i5XaBu0dZeqekURa4CN3wvOgg.ootAhTFlntQGF1PDFgkPua4pN2FLwcwI3Zez4Oo5RgEg.JPEG.desm_h%2FRRC_Jacket_B.jpg&type=a340",
+          "type": "로고"
+        }
+      ],
+      "details": {
+        "founded": "2020-01-01",
+        "members": 30,
+        "activities": ["Hiking", "Camping", "Community Service"]
+      }
+    },
+    {
+      "id": "3",
+      "crew_id": "4",
+      "crew_name": "네번째 크루",
+      "captin_name": "네번째 캡틴",
+      "slogan": "네번째 슬로건",
+      "area": "서울시 강동구",
+      "introduction": "안녕하세요 네번째 크루입니다.",
+      "crew_img": [
+        {
+          "img_url": "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMTAyMjFfNjQg%2FMDAxNjEzODM0ODYwMDc1.lNhvgIG-lxeoLlB5T85i5XaBu0dZeqekURa4CN3wvOgg.ootAhTFlntQGF1PDFgkPua4pN2FLwcwI3Zez4Oo5RgEg.JPEG.desm_h%2FRRC_Jacket_B.jpg&type=a340",
+          "type": "로고"
+        }
+      ],
+      "details": {
+        "founded": "2020-01-01",
+        "members": 30,
+        "activities": ["Hiking", "Camping", "Community Service"]
+      }
+    },
+    {
+      "id": "4",
+      "crew_id": "5",
+      "crew_name": "다섯번째 크루",
+      "captin_name": "다섯번째 캡틴",
+      "slogan": "다섯번째 슬로건",
+      "area": "서울시 강서구",
+      "introduction": "안녕하세요 다섯번째 크루입니다.",
+      "crew_img": [
+        {
+          "img_url": "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMTAyMjFfNjQg%2FMDAxNjEzODM0ODYwMDc1.lNhvgIG-lxeoLlB5T85i5XaBu0dZeqekURa4CN3wvOgg.ootAhTFlntQGF1PDFgkPua4pN2FLwcwI3Zez4Oo5RgEg.JPEG.desm_h%2FRRC_Jacket_B.jpg&type=a340",
+          "type": "로고"
+        }
+      ],
+      "details": {
+        "founded": "2020-01-01",
+        "members": 30,
+        "activities": ["Hiking", "Camping", "Community Service"]
+      }
+    },
+    {
+      "id": "5",
+      "crew_id": "6",
+      "crew_name": "여섯번째 크루",
+      "captin_name": "여섯번째 캡틴",
+      "slogan": "여섯번째 슬로건",
+      "area": "서울시 강서구",
+      "introduction": "안녕하세요 여섯번째 크루입니다.",
+      "crew_img": [
+        {
+          "img_url": "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMTAyMjFfNjQg%2FMDAxNjEzODM0ODYwMDc1.lNhvgIG-lxeoLlB5T85i5XaBu0dZeqekURa4CN3wvOgg.ootAhTFlntQGF1PDFgkPua4pN2FLwcwI3Zez4Oo5RgEg.JPEG.desm_h%2FRRC_Jacket_B.jpg&type=a340",
+          "type": "로고"
+        }
+      ],
+      "details": {
+        "founded": "2020-01-01",
+        "members": 30,
+        "activities": ["Hiking", "Camping", "Community Service"]
+      }
+    }
+  ]
+}
