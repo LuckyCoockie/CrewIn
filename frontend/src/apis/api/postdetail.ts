@@ -4,6 +4,7 @@ export type commentsDto ={
   id: number;
   authorId: number;
   authorName: string;
+  authorImage: string;
   content: string;
   createdAt : string;
   updateAt : string;
