@@ -29,7 +29,7 @@ const InputRadioComponent = React.forwardRef<HTMLInputElement, InputData>(
           className={`py-2 px-4 rounded-md border ${
             props.checked
               ? "button-color"
-              : "bg-white text-reverse font-normal border-gray-300"
+              : "bg-white text-sub font-normal border-gray-300"
           } transition duration-150 ease-in-out ${
             props.disabled ? "opacity-50 cursor-not-allowed" : ""
           }`}

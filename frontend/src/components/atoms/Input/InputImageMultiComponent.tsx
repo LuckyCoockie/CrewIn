@@ -32,7 +32,7 @@ const InputImageMultiComponent = React.forwardRef<HTMLInputElement, InputImage>(
                 {fileCount}개의 이미지 선택
               </p>
             ) : (
-              <p className="text-reverse font-normal ml-1">{props.text}</p>
+              <p className="text-sub font-normal ml-1">{props.text}</p>
             )}
             <p className="ml-auto">
               <Attach />

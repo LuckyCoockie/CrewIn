@@ -49,7 +49,7 @@ const InputBannermageComponent = React.forwardRef<HTMLInputElement, InputImage>(
                 alt="Preview"
                 className="border-2 w-60 h-40 object-cover"
               />
-              <p className="mt-2 text-sm font-medium text-reverse">
+              <p className="mt-2 text-sm font-medium text-sub">
                 배너 노출 예시
               </p>
             </div>
@@ -65,7 +65,7 @@ const InputBannermageComponent = React.forwardRef<HTMLInputElement, InputImage>(
             </div>
             <label
               htmlFor={props.id}
-              className="text-center block mt-2 text-sm font-medium text-reverse dark:text-white"
+              className="text-center block mt-2 text-sm font-medium text-sub dark:text-white"
             >
               *{props.placeholder}
             </label>
@@ -75,11 +75,11 @@ const InputBannermageComponent = React.forwardRef<HTMLInputElement, InputImage>(
           <label htmlFor={props.id} className="w-full">
             <div className="flex p-2 border border-gray-300 rounded-lg w-full">
               {fileCount > 0 ? (
-                <p className="text-reverse font-semibold ml-1">
+                <p className="text-sub font-semibold ml-1">
                   이미지가 선택되었습니다.
                 </p>
               ) : (
-                <p className="text-reverse font-semibold ml-1">
+                <p className="text-sub font-semibold ml-1">
                   3:2 비율을 권장합니다.
                 </p>
               )}

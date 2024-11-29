@@ -53,7 +53,7 @@ const LeftBarOrganism: React.FC<Current> = (props) => {
       <div className="mx-auto h-full bg-background fixed top-0 bottom-0 left-0 flex flex-col justify-between border-gray-200 border-r z-50">
         <div>
           <div className="flex items-center lg:ms-2 py-2 py-7 p-4 lg:pr-[100px]">
-            <CrewinLogo className="hidden lg:block" />
+            <CrewinLogo className="hidden lg:block fill-letter" />
           </div>
           <div className="w-full">
             <HomeTabMolecule

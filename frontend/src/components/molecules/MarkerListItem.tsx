@@ -25,17 +25,17 @@ export const MarkerListItem = ({
 }: OwnProps) => {
   return (
     <div>
-      <div className="flex items-center space-x-4 rtl:space-x-reverse">
+      <div className="flex items-center space-x-4 rtl:space-x-sub">
         <div className="flex flex-col justify-center items-center">
           <div
             className={`h-3 border-l-2 border-dotted ${
-              !first && "border-reverse"
+              !first && "border-sub"
             }`}
           />
           <Avatar img={marker} onClick={onClick} />
           <div
             className={`h-3 border-l-2 border-dotted ${
-              !last && "border-reverse"
+              !last && "border-sub"
             }`}
           />
         </div>

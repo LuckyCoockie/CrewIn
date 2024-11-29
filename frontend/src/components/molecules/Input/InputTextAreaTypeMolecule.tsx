@@ -53,7 +53,7 @@ const InputTextAreaTypeMolecule = React.forwardRef<
           {props.error}
         </p>
       ) : (
-        <p className="text-reverse text-end">{charCount}/255 글자</p>
+        <p className="text-sub text-end">{charCount}/255 글자</p>
       )}
     </div>
   );

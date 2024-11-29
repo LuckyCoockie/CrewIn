@@ -223,7 +223,7 @@ const PostDetailTemplate: React.FC = () => {
                     <div className="flex justify-between items-center">
                       {/* 이름, 작성 시간 */}
                       <p className="font-bold">{comment.authorName}</p>
-                      <span className="text-sm text-reverse">
+                      <span className="text-sm text-sub">
                         {formatDistanceToNow(parseISO(comment.createdAt), {
                           addSuffix: true,
                           locale: ko,
@@ -237,7 +237,7 @@ const PostDetailTemplate: React.FC = () => {
               ))}
             </ul>
           ) : (
-            <p className="text-reverse">등록된 댓글이 없습니다.</p>
+            <p className="text-sub">등록된 댓글이 없습니다.</p>
           )}
         </div>
       </div>

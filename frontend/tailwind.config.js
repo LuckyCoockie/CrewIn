@@ -42,8 +42,11 @@ module.exports = {
         highlight: {
           DEFAULT: "var(--highlight)",
         },
-        reverse: {
-          DEFAULT: "var(--reverse)"
+        sub: {
+          DEFAULT: "var(--sub)"
+        },
+        letter: {
+          DEFAULT: "var(--letter)"
         }
       },
       screens: {

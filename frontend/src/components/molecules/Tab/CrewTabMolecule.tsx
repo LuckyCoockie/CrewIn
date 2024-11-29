@@ -1,5 +1,5 @@
 import React from "react";
-import CrewSelected from "../../atoms/Bottombar/CrewSelected";
+import { ReactComponent as CrewSelected } from "../../../assets/icons/crew_selected.svg";
 import CrewDeselected from "../../atoms/Bottombar/CrewDeselected";
 
 type Name = {
@@ -18,13 +18,13 @@ const CrewTabMolecule: React.FC<Name> = (props) => {
       >
         {props.tab ? (
           <>
-            <CrewSelected />
+            <CrewSelected className="fill-letter"/>
             <p className="text-center text-xs lg:text-base font-bold lg:pl-2">{props.name}</p>
           </>
         ) : (
           <>
             <CrewDeselected />
-            <p className="text-center text-xs lg:text-base text-reverse lg:pl-2">{props.name}</p>
+            <p className="text-center text-xs lg:text-base text-sub lg:pl-2">{props.name}</p>
           </>
         )}
       </div>

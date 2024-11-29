@@ -1,5 +1,5 @@
 import React from "react";
-import UserSelected from "../../atoms/Bottombar/UserSelected";
+import { ReactComponent as UserSelected } from "../../../assets/icons/user_selected.svg";
 import UserDeselected from "../../atoms/Bottombar/UserDeselected";
 
 type Name = {
@@ -18,13 +18,13 @@ const ProfileTabMolecule: React.FC<Name> = (props) => {
       >
         {props.tab ? (
           <>
-            <UserSelected />
+            <UserSelected className="fill-letter"/>
             <p className="text-center text-xs lg:text-base font-bold lg:pl-2">{props.name}</p>
           </>
         ) : (
           <>
             <UserDeselected />
-            <p className="text-center text-xs lg:text-base text-reverse lg:pl-2">{props.name}</p>
+            <p className="text-center text-xs lg:text-base text-sub lg:pl-2">{props.name}</p>
           </>
         )}
       </div>

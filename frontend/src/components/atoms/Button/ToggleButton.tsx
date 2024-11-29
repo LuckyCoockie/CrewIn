@@ -16,7 +16,7 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({ isActive, onToggle, classNa
       style={{ cursor: "pointer" }}
     >
       <div
-        className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${isActive ? "translate-x-6 bg-white" : "bg-reverse"}`}
+        className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-200 ease-in-out transform ${isActive ? "translate-x-6 bg-white" : "bg-sub"}`}
       />
     </div>
   );

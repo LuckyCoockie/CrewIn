@@ -140,10 +140,10 @@ const StartPage: React.FC = () => {
           <div className="text-2xl sm:text-4xl ms-3 font-black text-color mt-3">
             다양한 크루
           </div>
-          <div className="mt-3 font-medium sm:font-semibold text-[15px] sm:text-xl text-reverse ms-3">
+          <div className="mt-3 font-medium sm:font-semibold text-[15px] sm:text-xl text-sub ms-3">
             찾아 헤매지 말고 지역, 이름으로 간편한 크루 검색
           </div>
-          <div className="mb-3 font-medium sm:font-semibold text-[15px] sm:text-xl text-reverse ms-3">
+          <div className="mb-3 font-medium sm:font-semibold text-[15px] sm:text-xl text-sub ms-3">
             크루들은 어떻게 활동하고 있을까?
           </div>
           <div
@@ -188,10 +188,10 @@ const StartPage: React.FC = () => {
           <div className="text-2xl sm:text-4xl ms-3 font-black text-color mt-3">
             수 많은 세션
           </div>
-          <div className="mt-3 font-medium sm:font-semibold text-[15px] sm:text-xl text-reverse ms-3">
+          <div className="mt-3 font-medium sm:font-semibold text-[15px] sm:text-xl text-sub ms-3">
             쉽게 세션에 참가신청
           </div>
-          <div className="mb-3 font-medium sm:font-semibold text-[15px] sm:text-xl text-reverse ms-3">
+          <div className="mb-3 font-medium sm:font-semibold text-[15px] sm:text-xl text-sub ms-3">
             번개런, 정규런, 오픈런 총 3가지 선택
           </div>
           <div

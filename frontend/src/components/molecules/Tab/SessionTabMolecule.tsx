@@ -1,5 +1,5 @@
 import React from "react";
-import SessionSelected from "../../atoms/Bottombar/SessionSelected";
+import { ReactComponent as SessionSelected } from "../../../assets/icons/session_selected.svg";
 import SessionDeselected from "../../atoms/Bottombar/SessionDeselected";
 
 type Name = {
@@ -18,7 +18,7 @@ const SessionTabMolecule: React.FC<Name> = (props) => {
       >
         {props.tab ? (
           <>
-            <SessionSelected />
+            <SessionSelected className="fill-letter" />
             <p className="text-center text-xs lg:text-base font-bold lg:pl-2">
               {props.name}
             </p>
@@ -26,7 +26,7 @@ const SessionTabMolecule: React.FC<Name> = (props) => {
         ) : (
           <>
             <SessionDeselected />
-            <p className="text-center text-xs lg:text-base text-reverse lg:pl-2">
+            <p className="text-center text-xs lg:text-base text-sub lg:pl-2">
               {props.name}
             </p>
           </>

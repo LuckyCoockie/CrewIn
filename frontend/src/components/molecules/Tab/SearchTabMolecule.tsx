@@ -18,7 +18,7 @@ const SearchTabMolecule: React.FC<Name> = (props) => {
       >
         {props.tab ? (
           <>
-            <Searchicon />
+            <Searchicon className="fill-letter" />
             <p className="text-center text-xs lg:text-base font-bold lg:pl-2">
               {props.name}
             </p>
@@ -26,7 +26,7 @@ const SearchTabMolecule: React.FC<Name> = (props) => {
         ) : (
           <>
             <SearchDeselected />
-            <p className="text-center text-xs lg:text-base text-reverse lg:pl-2">
+            <p className="text-center text-xs lg:text-base text-sub lg:pl-2">
               {props.name}
             </p>
           </>

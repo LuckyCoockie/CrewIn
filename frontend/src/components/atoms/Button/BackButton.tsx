@@ -11,7 +11,7 @@ const BackButton: React.FC = () => {
   return (
     <>
       <button onClick={handleBack}>
-        <BackArrow />
+        <BackArrow className="fill-letter" />
       </button>
     </>
   );

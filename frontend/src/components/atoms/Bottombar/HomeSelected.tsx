@@ -4,7 +4,7 @@ import { ReactComponent as HomeSelected } from "../../../assets/icons/home_selec
 const BottomBar: React.FC = () => {
   return (
     <div>
-      <HomeSelected />
+      <HomeSelected className="fill-letter" />
     </div>
   );
 };

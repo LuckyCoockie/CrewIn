@@ -7,7 +7,7 @@ const ThemeToggle: React.FC = () => {
 
   return (
     <div
-      className="relative w-10 h-4 bg-reverse rounded-full cursor-pointer transition-colors duration-300"
+      className="relative w-10 h-4 bg-sub rounded-full cursor-pointer transition-colors duration-300"
       onClick={toggleTheme}
       aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
     >
@@ -25,7 +25,7 @@ const ThemeToggle: React.FC = () => {
           {theme === "light" ? (
             <Sun className="text-yellow-500" size={24} strokeWidth={2.5} />
           ) : (
-            <Moon className="text-reverse" size={24} strokeWidth={2.5} />
+            <Moon className="text-sub" size={24} strokeWidth={2.5} />
           )}
         </div>
       </div>
