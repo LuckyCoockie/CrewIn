@@ -108,7 +108,7 @@ const AlarmTemplate: React.FC = () => {
                   key={alarm.notificationId}
                   className={`p-4 border-b border-gray-200 flex items-center ${
                     alarm.isChecked && alarm.notificationType !== "INVITATION"
-                      ? "bg-gray-100"
+                      ? "bg-primary-500"
                       : ""
                   }`}
                 >

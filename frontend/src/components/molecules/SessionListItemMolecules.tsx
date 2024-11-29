@@ -75,19 +75,19 @@ const SessionListItem = ({
             >
               {title.length > 10 ? `${title.substring(0, 9)}...` : title}
             </p>
-            <p className="text-gray-300 text-[10px] xs:text-xs sm:text-sm truncate">
+            <p className="text-sub text-[10px] xs:text-xs sm:text-sm truncate">
               {area}
             </p>
           </div>
           <div className="text-right items-center w-[1/3]">
             <p
-              className="text-gray-300 text-[10px] xs:text-xs sm:text-sm truncate"
+              className="text-sub text-[10px] xs:text-xs sm:text-sm truncate"
               style={{ lineHeight: "1em" }}
             >
               {parsedDate}
             </p>
             <p
-              className="text-gray-300 text-[10px] xs:text-xs sm:text-sm truncate"
+              className="text-sub text-[10px] xs:text-xs sm:text-sm truncate"
               style={{ lineHeight: "1em" }}
             >
               {parsedTime}

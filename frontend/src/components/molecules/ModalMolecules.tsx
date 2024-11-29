@@ -26,7 +26,7 @@ const Modal: React.FC<ModalProps> = ({
           </label>
           <button
             onClick={onClose}
-            className="text-gray-600 no-background items-center"
+            className="text-sub no-background items-center"
           >
             <img src={closeButton} alt="close button z" className="w-3 h-3" />
           </button>

@@ -8,7 +8,7 @@ const DeleteDropdownMolecule: React.FC<Props> = ({ onDelete }) => {
   return (
     <button
       onClick={onDelete}
-      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+      className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-500 w-full text-left"
     >
       삭제
     </button>

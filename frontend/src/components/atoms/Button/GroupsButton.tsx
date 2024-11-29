@@ -19,7 +19,7 @@ const GroupsButton: React.FC<PositionProps> = ({ userPosition }) => {
   };
   return (
     <button onClick={handleNav}>
-      <GroupsIcon />
+      <GroupsIcon className="fill-primary" />
     </button>
   );
 };

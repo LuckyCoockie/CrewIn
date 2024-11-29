@@ -10,7 +10,7 @@ const MemberPlusButton: React.FC = () => {
   };
   return (
     <button onClick={handleNav}>
-      <MemberPlusIcon />
+      <MemberPlusIcon className="fill-primary"/>
     </button>
   );
 };

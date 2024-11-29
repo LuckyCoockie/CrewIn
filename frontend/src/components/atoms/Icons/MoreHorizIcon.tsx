@@ -3,7 +3,7 @@ import { ReactComponent as MoreHorizIcon } from "../../../assets/icons/more_hori
 
 const Icon: React.FC = () => {
   return (
-      <MoreHorizIcon />
+      <MoreHorizIcon className="fill-primary"/>
   );
 };
 

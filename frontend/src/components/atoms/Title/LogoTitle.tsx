@@ -1,8 +1,8 @@
 import React from "react";
-import loginbanner from "../../../assets/images/login-banner.png";
+import { ReactComponent as LoginBanner } from "../../../assets/images/login-banner.svg";
 
 const LogoTitle: React.FC = () => {
-  return <img src={loginbanner} alt="login-banner" />;
+  return <LoginBanner className="fill-primary"/>
 };
 
 export default LogoTitle;

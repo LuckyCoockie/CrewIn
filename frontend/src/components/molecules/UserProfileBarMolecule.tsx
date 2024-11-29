@@ -85,7 +85,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                   onEdit();
                   setIsDropdownOpen(false);
                 }}
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-500 w-full text-left"
               >
                 수정
               </button>
@@ -94,7 +94,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                   handleDelete(); // 삭제 핸들러로 모달 열기
                   setIsDropdownOpen(false);
                 }}
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-sm w-full text-left"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-500 rounded-sm w-full text-left"
               >
                 삭제
               </button>

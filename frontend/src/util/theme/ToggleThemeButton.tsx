@@ -13,7 +13,7 @@ const ThemeToggle: React.FC = () => {
     >
       {/* Sliding toggle */}
       <div
-        className={`absolute top-1/2 -translate-y-1/2 w-9 h-9 bg-background rounded-full shadow-lg transition-all duration-300 ease-in-out
+        className={`absolute top-1/2 -translate-y-1/2 w-9 h-9 bg-background rounded-full shadow-sm shadow-sub transition-all duration-300 ease-in-out
         ${
           theme === "light"
             ? "left-0 -translate-x-1/2"

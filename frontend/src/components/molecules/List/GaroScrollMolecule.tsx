@@ -47,7 +47,7 @@ const GaroScrollMolecule = <T,>({
       {propsData.length > 0 ? (
         propsData.map((data, index) => renderItem(data, index))
       ) : (
-        <div className="text-gray-300 w-full text-center mt-3">{replaceText}</div>
+        <div className="text-sub w-full text-center mt-3">{replaceText}</div>
       )}
     </div>
   );

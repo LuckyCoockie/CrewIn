@@ -26,7 +26,7 @@ const HomeTabMolecule: React.FC<Name> = (props) => {
         ) : (
           <>
             <HomeDeselected />
-            <p className="text-center text-xs lg:text-base text-reverse lg:pl-2">
+            <p className="text-center text-xs lg:text-base text-sub lg:pl-2">
               {props.name}
             </p>
           </>

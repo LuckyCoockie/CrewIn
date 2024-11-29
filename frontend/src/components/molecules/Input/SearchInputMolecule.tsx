@@ -40,7 +40,7 @@ const SearchInputMolecule: React.FC<OwnProps> = ({
   };
 
   return (
-    <div className="relative text-gray-600 flex-1">
+    <div className="relative text-sub flex-1">
       <input
         className="border-2 border-gray-300 bg-background h-10 px-4 pr-12 rounded-lg text-sm focus:outline-none w-full"
         type="search"
@@ -56,7 +56,7 @@ const SearchInputMolecule: React.FC<OwnProps> = ({
         className="absolute inset-y-0 right-0 flex items-center pr-4 bg-transparent"
         onClick={handleSubmit}
       >
-        <Searchbox className="text-gray-600 h-5 w-5 fill-current" />
+        <Searchbox className="text-sub h-5 w-5 fill-current" />
       </button>
     </div>
   );

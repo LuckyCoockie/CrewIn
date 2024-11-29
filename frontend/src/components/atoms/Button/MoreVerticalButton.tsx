@@ -6,7 +6,7 @@ type Props = {
 };
 
 const MoreVerticalButton: React.FC<Props> = ({ onDropdownClick }) => {
-  return <MoreVerticalIcon onClick={onDropdownClick} />;
+  return <MoreVerticalIcon onClick={onDropdownClick} className="fill-primary" />;
 };
 
 export default MoreVerticalButton;

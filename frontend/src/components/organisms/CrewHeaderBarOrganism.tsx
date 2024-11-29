@@ -1,7 +1,7 @@
 import React from "react";
-import crewlistplus from "../../assets/images/morehoriz.png";
 import RoundButtonMolecule from "../molecules/List/RoundButtonMolecule";
 import { CrewDto } from "../../apis/api/mycrew";
+import RoundMoreMolecule from "../molecules/List/RoundMoreMolecule";
 
 type CrewHeaderBarOrganismProps = {
   crewList: CrewDto[];
@@ -28,9 +28,7 @@ const CrewHeaderBarOrganism: React.FC<CrewHeaderBarOrganismProps> = ({
           `}
         </style>
         {crewList.length > 0 && (
-          <RoundButtonMolecule
-            src={crewlistplus}
-            alt="plus"
+          <RoundMoreMolecule
             text="더보기"
             router="/crew/search"
           />

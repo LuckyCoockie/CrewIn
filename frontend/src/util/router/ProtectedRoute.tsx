@@ -44,7 +44,7 @@ const ProtectedRoute = () => {
   if (loading || !isAuthenticated) return <SplashPage />;
 
   return (
-    <div className={"md:ml-[97.93px] lg:ml-[176px] h-full"}>
+    <div className={"md:ml-[97.93px] lg:ml-[176px] h-full mb-[100px]"}>
       {!loading && !isMobile && <LeftBarOrganism current={location.pathname} />}
       <div className="mx-auto w-full max-w-[500px]">
         <Outlet />

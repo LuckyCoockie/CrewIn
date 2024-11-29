@@ -106,7 +106,7 @@ const CrewInvitePage: React.FC = () => {
             ItemComponent={({ data }: { data: CrewSearchMemberDto }) => (
               <li
                 key={data.memberId}
-                className="flex items-center p-2 border-b cursor-pointer hover:bg-gray-100"
+                className="flex items-center p-2 border-b cursor-pointer hover:bg-primary-500"
               >
                 <div
                   className="w-12 h-12 flex-shrink-0"
@@ -116,10 +116,10 @@ const CrewInvitePage: React.FC = () => {
                     <img
                       src={data.imageUrl}
                       alt={data.name}
-                      className="w-full h-full object-cover rounded-full border"
+                      className="w-full h-full object-cover rounded-full border bg-white"
                     />
                   ) : (
-                    <CrewinLogo className="w-full h-full object-cover rounded-full border" />
+                    <CrewinLogo className="w-full h-full object-cover rounded-full border bg-white" />
                   )}
                 </div>
                 <div
@@ -128,11 +128,11 @@ const CrewInvitePage: React.FC = () => {
                 >
                   <div>
                     <span className="font-bold">{data.name + " "}</span>
-                    <span className="text-gray-600 text-sm">
+                    <span className="text-sub text-sm">
                       {data.nickname}
                     </span>
                   </div>
-                  <div className="text-gray-600">
+                  <div className="text-sub">
                     세션 참가 {data.attendanceCount}회
                   </div>
                 </div>

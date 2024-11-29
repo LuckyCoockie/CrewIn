@@ -285,7 +285,7 @@ const SessionDetailTemplate: React.FC<OwnDetailProps> = ({
       )}
 
       {currentTab === "사진첩" && (
-        <div className="relative w-full aspect-w-1 aspect-h-1 flex justify-center items-center bg-gray-100 ">
+        <div className="relative w-full aspect-w-1 aspect-h-1 flex justify-center items-center bg-primary-500 ">
           {selectedImage ? (
             <>
               <img

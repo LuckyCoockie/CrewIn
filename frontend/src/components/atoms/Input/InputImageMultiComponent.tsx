@@ -28,7 +28,7 @@ const InputImageMultiComponent = React.forwardRef<HTMLInputElement, InputImage>(
         <label htmlFor={props.id} className="w-full">
           <div className="flex p-2 border border-gray-300 rounded-lg w-full text-end">
             {fileCount > 0 ? (
-              <p className="text-gray-600 font-semibold ml-1">
+              <p className="text-sub font-semibold ml-1">
                 {fileCount}개의 이미지 선택
               </p>
             ) : (

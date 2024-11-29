@@ -45,7 +45,7 @@ const MyPageAlbumOrganism: React.FC<OwnProps> = ({ onItemClicked }) => {
           className="grid grid-cols-3"
         />
       ) : (
-        <div className="text-center w-full text-gray-300 mt-3">
+        <div className="text-center w-full text-sub mt-3">
           저장된 앨범이 없습니다.
         </div>
       )}

@@ -28,7 +28,7 @@ const MemberListItem: React.FC<OwnProps> = ({
       </div>
       <div className="flex-1 ml-3">
         <div className="font-bold">{name}</div>
-        <div className="text-gray-600">{nickname}</div>
+        <div className="text-sub">{nickname}</div>
       </div>
       <div className="flex gap-2">{children}</div>
     </div>

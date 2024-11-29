@@ -18,7 +18,7 @@ const PaginationMolecule: React.FC<List> = ({ total, page, btn, setPage }) => {
       {currentSet > 1 && (
         <button
           onClick={() => setPage(startPage - 1)}
-          className="text-sm font-medium leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2"
+          className="text-sm font-medium leading-none cursor-pointer text-sub hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2"
         >
           {"이전"}
         </button>
@@ -45,7 +45,7 @@ const PaginationMolecule: React.FC<List> = ({ total, page, btn, setPage }) => {
       {totalSet > currentSet && (
         <button
           onClick={() => setPage(endPage + 1)}
-          className="text-sm font-medium leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2"
+          className="text-sm font-medium leading-none cursor-pointer text-sub hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2"
         >
           {"다음"}
         </button>

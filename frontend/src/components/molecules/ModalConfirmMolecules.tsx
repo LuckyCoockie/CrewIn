@@ -30,7 +30,7 @@ const ModalConfirm: React.FC<ModalProps> = ({
           </label>
           <button
             onClick={onClose}
-            className="text-gray-600 no-background items-center"
+            className="text-sub no-background items-center"
           >
             <img src={closeButton} alt="close button" className="w-3 h-3" />
           </button>
@@ -39,7 +39,7 @@ const ModalConfirm: React.FC<ModalProps> = ({
         <div className="flex justify-end space-x-4 p-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300"
+            className="px-4 py-2 bg-primary-500 rounded-md hover:bg-primary-500"
           >
             취소
           </button>

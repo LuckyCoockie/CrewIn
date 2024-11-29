@@ -135,7 +135,7 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
   const renderMemberItem = (member: CrewMemberDto) => (
     <li
       key={member.email}
-      className="flex items-center p-2 border-b cursor-pointer hover:bg-gray-100"
+      className="flex items-center p-2 border-b cursor-pointer hover:bg-primary-500"
     >
       <div
         className="w-12 h-12 flex-shrink-0 border rounded-full"
@@ -156,8 +156,8 @@ const CaptainPovCrewMemberSearchTemplate: React.FC = () => {
         onClick={() => navigate(`/profile/${member.memberId}`)}
       >
         <span className="font-bold">{member.name + " "}</span>
-        <span className="text-gray-600 text-sm">{member.nickname}</span>
-        <div className="text-gray-600">
+        <span className="text-sub text-sm">{member.nickname}</span>
+        <div className="text-sub">
           세션 참가 {member.attendanceCount}회
         </div>
       </div>

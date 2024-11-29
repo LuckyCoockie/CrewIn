@@ -62,7 +62,7 @@ const CrewMemberListTemplate: React.FC = () => {
   const renderMemberItem = (member: CrewMemberDto) => (
     <li
       key={member.email}
-      className="flex items-center p-2 border-b cursor-pointer hover:bg-gray-100"
+      className="flex items-center p-2 border-b cursor-pointer hover:bg-primary-500"
       onClick={() => navigate(`/profile/${member.memberId}`)}
     >
       <div className="w-12 h-12 flex-shrink-0">
@@ -70,7 +70,7 @@ const CrewMemberListTemplate: React.FC = () => {
           <img
             src={member.imageUrl}
             alt={member.nickname}
-            className="w-full h-full object-cover rounded-full border"
+            className="w-full h-full object-cover rounded-full border bg-white"
           />
         ) : (
           <CrewinLogo className="w-full h-full object-cover rounded-full" />
@@ -81,8 +81,8 @@ const CrewMemberListTemplate: React.FC = () => {
         onClick={() => navigate(`/profile/${member.memberId}`)}
       >
         <span className="font-bold">{member.name + " "}</span>
-        <span className="text-gray-600 text-sm">{member.nickname}</span>
-        <div className="text-gray-600">
+        <span className="text-sub text-sm">{member.nickname}</span>
+        <div className="text-sub">
           세션 참가 {member.attendanceCount}회
         </div>
       </div>
@@ -99,7 +99,7 @@ const CrewMemberListTemplate: React.FC = () => {
       <header className="mb-1">
         <BackHeaderMediumOrganism text="크루원 조회" />
         <div className="flex items-center flex-grow justify-end">
-          <Searchicon className="cursor-pointer" onClick={onSearchClick} />
+          <Searchicon className="cursor-pointer fill-primary" onClick={onSearchClick} />
         </div>
       </header>
       <hr />

@@ -88,7 +88,7 @@ const SessionAlbumOrganism = ({
         )}
         className="grid grid-cols-3"
         EmptyComponent={
-          <div className="text-gray-300 w-full text-center mt-4">
+          <div className="text-sub w-full text-center mt-4">
             등록된 사진이 없습니다.
           </div>
         }

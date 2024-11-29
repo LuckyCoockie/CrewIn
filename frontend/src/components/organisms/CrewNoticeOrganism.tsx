@@ -61,7 +61,7 @@ const CrewNoticeOrganism: React.FC<CrewNoticeOrganismProps> = ({
   return (
     <main>
       {noticeData?.items.length === 0 ? (
-        <div className="text-gray-300 w-full text-center mt-4">
+        <div className="text-sub w-full text-center mt-4">
           등록된 공지사항이 없습니다.
         </div>
       ) : (

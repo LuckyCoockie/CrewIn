@@ -36,7 +36,7 @@ const CrewAlbumOrganism: React.FC<PhotosProps> = ({
 
   if (photos.length === 0) {
     return (
-      <div className="text-gray-300 w-full text-center mt-4">
+      <div className="text-sub w-full text-center mt-4">
         게시된 사진이 없습니다.
       </div>
     );

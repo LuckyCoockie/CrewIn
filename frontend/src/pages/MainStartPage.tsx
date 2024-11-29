@@ -103,7 +103,7 @@ const StartPage: React.FC = () => {
 
   return (
     <>
-      <div className="bg-gray-100 sm:bg-white relative pb-1">
+      <div className="bg-primary-500 sm:bg-white relative pb-1">
         <img
           ref={(el) => el && imagesRef.current.push(el)}
           src={startOne}
