@@ -31,7 +31,7 @@ const AlarmTabMolecule: React.FC<Name> = (props) => {
       >
         {props.tab ? (
           <>
-            {hasCheckedNotifications ? <AlarmOnicon className="fill-letter" /> : <Alarmicon className="fill-letter"/>}
+            {hasCheckedNotifications ? <AlarmOnicon className="fill-primary" /> : <Alarmicon className="fill-primary"/>}
             <p className="text-center text-xs lg:text-base font-bold lg:pl-2">
               {props.name}
             </p>

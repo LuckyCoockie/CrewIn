@@ -6,7 +6,7 @@ type Props = {
 };
 
 const Icon: React.FC<Props> = ({ setting }) => {
-  return <SettingIcon onClick={setting} />;
+  return <SettingIcon onClick={setting} className="fill-primary" />;
 };
 
 export default Icon;

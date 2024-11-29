@@ -23,7 +23,7 @@ const MemberListItem: React.FC<OwnProps> = ({
             className="w-full h-full object-cover rounded-full"
           />
         ) : (
-          <CrewinLogo className="w-full h-full object-cover rounded-full" />
+          <CrewinLogo className="w-full h-full object-cover rounded-full fill-primary" />
         )}
       </div>
       <div className="flex-1 ml-3">

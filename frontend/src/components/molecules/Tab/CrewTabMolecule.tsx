@@ -18,7 +18,7 @@ const CrewTabMolecule: React.FC<Name> = (props) => {
       >
         {props.tab ? (
           <>
-            <CrewSelected className="fill-letter"/>
+            <CrewSelected className="fill-primary"/>
             <p className="text-center text-xs lg:text-base font-bold lg:pl-2">{props.name}</p>
           </>
         ) : (

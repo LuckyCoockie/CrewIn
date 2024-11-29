@@ -10,8 +10,8 @@ import {
 } from "../../apis/api/postdetail";
 import { registerPostHeart } from "../../apis/api/heart";
 import { deletePostHeart } from "../../apis/api/heartdelete";
-import filledFire from "../../assets/images/filledfire.png";
-import emptyFire from "../../assets/images/emptyfire.png";
+import { ReactComponent as EmptyFire } from "../../assets/icons/emptyfire.svg";
+import { ReactComponent as FilledFire } from "../../assets/icons/filledfire.svg";
 import { ReactComponent as ShareIcon } from "../../assets/icons/shareicon.svg";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { formatDistanceToNow, parseISO } from "date-fns";
@@ -28,9 +28,12 @@ const PostDetailTemplate: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: postData, isLoading, error } = useQuery<PostDetailResponseDto>(
-    ["postDetail", id],
-    () => getPostDetail(Number(id))
+  const {
+    data: postData,
+    isLoading,
+    error,
+  } = useQuery<PostDetailResponseDto>(["postDetail", id], () =>
+    getPostDetail(Number(id))
   );
 
   const [likes, setLikes] = useState<number>(postData?.heartCount || 0);
@@ -103,7 +106,10 @@ const PostDetailTemplate: React.FC = () => {
         content: {
           title: postData?.authorName || "",
           description: postData?.content.substring(0, 100) + "...",
-          imageUrl: postData?.postImages && postData.postImages.length > 0 ? postData.postImages[0] : postData?.profileImage,
+          imageUrl:
+            postData?.postImages && postData.postImages.length > 0
+              ? postData.postImages[0]
+              : postData?.profileImage,
           link: {
             mobileWebUrl: window.location.href,
             webUrl: window.location.href,
@@ -185,12 +191,19 @@ const PostDetailTemplate: React.FC = () => {
         )}
         <div className="flex items-center mt-2 mb-2">
           <button onClick={handleLike} className="flex items-center ml-3">
-            <img
-              src={isHeartedState ? filledFire : emptyFire}
-              alt="fire-icon"
-              className={`w-7 h-7 object-contain fire-icon ${isAnimating ? "animate" : ""
-                }`}
-            />
+            {isHeartedState ? (
+              <FilledFire
+                className={`w-7 object-contain fire-icon ${
+                  isAnimating ? "animate" : ""
+                } fill-primary`}
+              />
+            ) : (
+              <EmptyFire
+                className={`w-7 object-contain fire-icon ${
+                  isAnimating ? "animate" : ""
+                } fill-primary`}
+              />
+            )}
           </button>
           <button onClick={handleShare} className="flex ml-auto mr-3">
             <ShareIcon />

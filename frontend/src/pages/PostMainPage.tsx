@@ -79,14 +79,14 @@ const PostMainPage: React.FC = () => {
       {isMobile && (
         <div className="flex items-center w-full mb-5 xs:mb-10 mt-4">
           <div className="flex items-center ms-3">
-            <CrewinLogo />
+            <CrewinLogo className="fill-primary" />
           </div>
           <div className="flex items-center flex-grow justify-end mr-2">
-            <Searchicon className="w-6 h-6 mr-4" onClick={handleSearch} />
+            <Searchicon className="w-6 h-6 mr-4 fill-primary" onClick={handleSearch} />
             {hasCheckedNotifications ? (
-              <AlarmOnicon className="w-6 h-6" onClick={handleAlarm} />
+              <AlarmOnicon className="w-6 h-6 fill-primary" onClick={handleAlarm} />
             ) : (
-              <Alarmicon className="w-6 h-6" onClick={handleAlarm} />
+              <Alarmicon className="w-6 h-6 fill-primary" onClick={handleAlarm} />
             )}
           </div>
         </div>

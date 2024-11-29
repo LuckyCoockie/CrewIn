@@ -7,8 +7,8 @@ import UserProfileBar from "../../components/molecules/UserProfileBarMolecule";
 import UserProfileBarNoMenu from "../../components/molecules/UserProfileBarNoMenuMolecule";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import filledFire from "../../assets/images/filledfire.png";
-import emptyFire from "../../assets/images/emptyfire.png";
+import { ReactComponent as EmptyFire } from "../../assets/icons/emptyfire.svg";
+import { ReactComponent as FilledFire } from "../../assets/icons/filledfire.svg";
 import { ReactComponent as ShareIcon } from "../../assets/icons/shareicon.svg";
 import { PostDto } from "../../apis/api/postlist";
 import { deletePost } from "../../apis/api/postdelete";
@@ -83,7 +83,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
       setLikes((prevLikes) => prevLikes + 1);
       setIsHeartedState(true);
     },
-    onError: () => { },
+    onError: () => {},
   });
 
   const unlikeMutation = useMutation(deletePostHeart, {
@@ -92,7 +92,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
       setLikes((prevLikes) => prevLikes - 1);
       setIsHeartedState(false);
     },
-    onError: () => { },
+    onError: () => {},
   });
 
   const handleLike = () => {
@@ -204,15 +204,22 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
       ) : null}
       <div className="flex items-center mt-2">
         <button onClick={handleLike} className="flex items-center ml-3">
-          <img
-            src={isHeartedState ? filledFire : emptyFire}
-            alt="fire-icon"
-            className={`w-7 h-7 object-contain fire-icon ${isAnimating ? "animate" : ""
-              }`}
-          />
+          {isHeartedState ? (
+            <FilledFire
+              className={`w-7 h-7 object-contain fire-icon ${
+                isAnimating ? "animate" : ""
+              } fill-primary`}
+            />
+          ) : (
+            <EmptyFire
+              className={`w-7 h-7 object-contain fire-icon ${
+                isAnimating ? "animate" : ""
+              } fill-primary`}
+            />
+          )}
         </button>
         <button onClick={handleShare} className="flex ml-auto mr-3">
-          <ShareIcon />
+          <ShareIcon className="fill-primary" />
         </button>
       </div>
       <div>

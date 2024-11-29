@@ -235,8 +235,6 @@ input[type="number"]::-webkit-inner-spin-button {
 
   --sub: #cecece;
 
-  --letter: #ffffff;
-
   color: #ffffff;
 }
 
@@ -261,8 +259,6 @@ input[type="number"]::-webkit-inner-spin-button {
   --highlight: #7e251b;
 
   --sub: #6b7280;
-
-  --letter: #000000;
 
   color: #000000;
 }

@@ -45,9 +45,6 @@ module.exports = {
         sub: {
           DEFAULT: "var(--sub)"
         },
-        letter: {
-          DEFAULT: "var(--letter)"
-        }
       },
       screens: {
         'xs': '450px',

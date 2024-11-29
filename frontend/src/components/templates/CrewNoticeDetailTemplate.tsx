@@ -7,8 +7,8 @@ import {
   CrewNoticeDetailResponseDto,
 } from "../../apis/api/crewdetail";
 import { getCrewInfo } from "../../apis/api/crewdetail";
-import filledFire from "../../assets/images/filledfire.png";
-import emptyFire from "../../assets/images/emptyfire.png";
+import { ReactComponent as EmptyFire } from "../../assets/icons/emptyfire.svg";
+import { ReactComponent as FilledFire } from "../../assets/icons/filledfire.svg";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -77,7 +77,6 @@ const CrewNoticeDetailTemplate: React.FC = () => {
       (window as any).Kakao.init(kakaoAppKey);
     }
   }, []);
-  
 
   const likeMutation = useMutation(registerPostHeart, {
     onSuccess: () => {
@@ -204,11 +203,15 @@ const CrewNoticeDetailTemplate: React.FC = () => {
         )}
         <div className="flex items-center mt-2">
           <button onClick={handleLike} className="flex items-center ml-3">
-            <img
-              src={isHeartedState ? filledFire : emptyFire}
-              alt="fire-icon"
-              className={`w-7 ${isAnimating ? "animate" : ""}`}
-            />
+            {isHeartedState ? (
+              <FilledFire
+                className={`w-7 ${isAnimating ? "animate" : ""} fill-primary`}
+              />
+            ) : (
+              <EmptyFire
+                className={`w-7 ${isAnimating ? "animate" : ""} fill-primary`}
+              />
+            )}
           </button>
           <button onClick={handleShare} className="flex ml-auto mr-3">
             <ShareIcon />

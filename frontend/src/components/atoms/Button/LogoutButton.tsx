@@ -24,7 +24,7 @@ const LogoutButton: React.FC<Props> = ({ logout }) => {
 
   return (
     <>
-      <LogoutIcon onClick={openModal} className="cursor-pointer" />
+      <LogoutIcon onClick={openModal} className="cursor-pointer fill-primary" />
 
       {isModalOpen && (
         <ModalConfirm

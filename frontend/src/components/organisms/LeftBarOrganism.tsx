@@ -53,7 +53,7 @@ const LeftBarOrganism: React.FC<Current> = (props) => {
       <div className="mx-auto h-full bg-background fixed top-0 bottom-0 left-0 flex flex-col justify-between border-gray-200 border-r z-50">
         <div>
           <div className="flex items-center lg:ms-2 py-2 py-7 p-4 lg:pr-[100px]">
-            <CrewinLogo className="hidden lg:block fill-letter" />
+            <CrewinLogo className="hidden lg:block fill-primary" />
           </div>
           <div className="w-full">
             <HomeTabMolecule
@@ -106,7 +106,7 @@ const LeftBarOrganism: React.FC<Current> = (props) => {
               className="p-7 lg:pr-10 flex flex-col lg:flex-row items-center py-2 lg:py-4 hover:scale-105 transform active:scale-90 transition cursor-pointer button"
               onClick={() => navigate("/info")}
             >
-              <SettingIcon />
+              <SettingIcon className="fill-primary"/>
               <p className="text-center text-xs lg:text-base font-bold lg:pl-2">
                 {"Setting"}
               </p>
@@ -117,7 +117,7 @@ const LeftBarOrganism: React.FC<Current> = (props) => {
               className="p-7 lg:pr-10 flex flex-col lg:flex-row items-center py-2 lg:py-4 hover:scale-105 transform active:scale-90 transition cursor-pointer button"
               onClick={() => logout().then(() => clearAuth())}
             >
-              <LogoutIcon />
+              <LogoutIcon className="fill-primary"/>
               <p className="text-center text-xs lg:text-base font-bold lg:pl-2">
                 {"Logout"}
               </p>
