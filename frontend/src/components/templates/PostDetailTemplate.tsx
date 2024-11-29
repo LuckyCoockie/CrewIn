@@ -13,20 +13,55 @@ import { deletePostHeart } from "../../apis/api/heartdelete";
 import filledFire from "../../assets/images/filledfire.png";
 import emptyFire from "../../assets/images/emptyfire.png";
 import { ReactComponent as ShareIcon } from "../../assets/icons/shareicon.svg";
+import { ReactComponent as CommentsIcon } from "../../assets/icons/comments_Icon.svg";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { ko } from "date-fns/locale";
 import BackHeaderMediumOrganism from "../../components/organisms/BackHeaderMediumOrganism";
+import InputTextAreaTypeMolecule from "../molecules/Input/InputTextAreaTypeMolecule";
 import UserProfileBar from "../../components/molecules/UserProfileBarMolecule";
 import { Carousel } from "react-responsive-carousel";
 import { RootState } from "../../modules";
 import { deletePost } from "../../apis/api/postdelete";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import LargeAbleButton from "../atoms/Button/LargeAbleButton";
+import LargeDisableButton from "../atoms/Button/LargeDisableButton";
+import { CreateCommentDto, postCreateComment } from "../../apis/api/comment";
+import ErrorResponseDto from "../../apis/utils/errorCode/ErrorResponseDto";
+
+type FormValues = {
+  comment: string;
+};
 
 const PostDetailTemplate: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const memberId = useSelector((state: RootState) => state.auth.memberId);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const mutation = useMutation(postCreateComment, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["postDetail", id]);
+      setIsSubmitting(false);
+    },
+    onError: (error: ErrorResponseDto) => {
+      alert(error.message);
+      setIsSubmitting(false);
+    },
+  });
+
+  const onSubmit: SubmitHandler<FormValues> = (data) => {
+    setIsSubmitting(true);
+
+    const submitData: CreateCommentDto = {
+      postId: Number(id),
+      content: data.comment,
+    };
+    return mutation.mutate(submitData);
+  };
 
   const {
     data: postData,
@@ -127,6 +162,20 @@ const PostDetailTemplate: React.FC = () => {
       });
     }
   };
+  const schema = yup.object({
+    comment: yup
+      .string()
+      .max(256, "256글자 이내로 입력해주세요.")
+      .required("댓글을 입력해주세요."),
+  });
+  const {
+    control,
+    handleSubmit,
+    formState: { isValid },
+  } = useForm<FormValues>({
+    resolver: yupResolver(schema),
+    mode: "onChange",
+  });
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -199,6 +248,10 @@ const PostDetailTemplate: React.FC = () => {
               }`}
             />
           </button>
+          <button className="flex ml-3 items-center">
+            <CommentsIcon />
+            <p className="ml-2">{postData.comments.length}</p>
+          </button>
           <button onClick={handleShare} className="flex ml-auto mr-3">
             <ShareIcon />
           </button>
@@ -213,7 +266,7 @@ const PostDetailTemplate: React.FC = () => {
       </div>
       {/* 댓글 영역 */}
       <div className="w-full">
-        <div className="w-full border-t border-gray-300 my-3"></div>
+        <div className="w-full border-t border-gray-200 my-3"></div>
         <div className="mt-1 mx-3">
           {postData.comments.length > 0 ? (
             <ul>
@@ -243,10 +296,35 @@ const PostDetailTemplate: React.FC = () => {
               ))}
             </ul>
           ) : (
-            <p className="text-gray-500">등록된 댓글이 없습니다.</p>
+            <p className="text-gray-300 flex justify-center">
+              첫 댓글을 남겨보세요!
+            </p>
           )}
         </div>
       </div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="mt-1 mx-3">
+          <Controller
+            name="comment"
+            control={control}
+            render={({ field }) => (
+              <InputTextAreaTypeMolecule
+                id="comment"
+                title=""
+                placeholder={postData.authorName + "님에게 댓글 남기기"}
+                {...field}
+              />
+            )}
+          />
+        </div>
+        <div className="mt-1 mx-3">
+          {isValid ? (
+            <LargeAbleButton text="작성" isLoading={isSubmitting} />
+          ) : (
+            <LargeDisableButton text="작성" />
+          )}
+        </div>
+      </form>
     </>
   );
 };
