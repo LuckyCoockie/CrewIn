@@ -1,6 +1,7 @@
 package com.luckycookie.crewin.controller;
 
-import com.luckycookie.crewin.dto.ChatDto;
+import com.luckycookie.crewin.dto.ChatRequest;
+import com.luckycookie.crewin.dto.ChatResponse;
 import com.luckycookie.crewin.dto.CrewResponse.MyCrewItemResponse;
 import com.luckycookie.crewin.security.dto.CustomUser;
 import com.luckycookie.crewin.service.ChatService;
@@ -31,8 +32,7 @@ public class ChatController {
 
     @MessageMapping("/send/{crewId}")
     @SendTo("/topic/chat/{crewId}")
-    public void sendMessage(@DestinationVariable Long crewId, ChatDto chatDto) {
-        chatService.createChat();
-        return chatDto;
+    public ChatResponse sendMessage(ChatRequest chatRequest) {
+        return chatService.createChat(chatRequest);
     }
 }

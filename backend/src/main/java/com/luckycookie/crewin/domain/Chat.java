@@ -1,11 +1,12 @@
 package com.luckycookie.crewin.domain;
 
-import com.luckycookie.crewin.dto.MemberResponse;
 import jakarta.persistence.Id;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -18,7 +19,8 @@ public class Chat {
     private Long id;
     private Long crewId;
     private Long senderId;
-    private String content;
+    private String message;
     private LocalDateTime createTime;
-
+    @Builder.Default
+    private List<String> images = new ArrayList<>();
 }
