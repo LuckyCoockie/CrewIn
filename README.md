@@ -1,38 +1,26 @@
-# [CREW-IN](https://crew-in.site/login)
-
-**러닝 크루 통합 관리 플랫폼**
+# 러닝 크루 통합 관리 플랫폼 [CREW-IN](https://crew-in.site/login)
 
 <img src="exec/images/mainLogo.png" alt="Logo" width="300" height="100">
 
 ## 팀 소개
+![team1.png](exec/images/team1.png)
+![team2.png](exec/images/team2.png)
 
-| 이름 | 직책 | 역할 |
-| --- | --- | --- |
-| 김민경 | 팀장 | Backend, PM |
-| 권오윤 | 팀원 | Backend, BE 팀장  |
-| 이문현 | 팀원 | Backend, QA, Infra |
-| 박준식 | 팀원 | Front, FE 팀장 |
-| 박효진 | 팀원 | Front, UCC  |
-| 권윤하 | 팀원 | Front, UI/UX |
-
----
 
 ## 프로젝트 소개
+### 1️⃣ 기획의도
+![introduction1.png](exec/images/introduction1.png)
+![introduction2.png](exec/images/introduction2.png)
 
-### 1️⃣ 주제
-
-- **WHY**
+#### WHY ❓
     
-    ```
     - 기존 크루 운영 방식에는 여러가지 문제점이 있습니다.
     - 매번 새로운 세션을 생성할 때마다 카카오톡 방이 생성되어 관리하기 어렵습니다.
     - 러닝 일정 관리, 러닝 인원 관리 등에 어려움을 겪고 있습니다.
     - 누가 몇번 세션에 참여했는지 수기로 작성하고 있어서 크루원 관리가 번거롭습니다. 
-    ```
     
-- **HOW**
+#### HOW 💡
     
-    ```
     1. 크루 운영 관리
     - 크루 생성, 수정, 권한 부여(캡틴, 페이서, 멤버로 구분)
     
@@ -47,11 +35,9 @@
     - 러닝 기록 및 크루 로고를 통해 유대감 형성
     - 사용자 자체 제작 사진 공유
     - 게시글 태그 기능
-    ```
     
-- **WHAT**
+#### WHAT 🏃‍♀️🏃‍♂️
     
-    ```
     [러닝 크루 통합 관리 플랫폼 CREW-IN]
     
     1. 효율적인 크루 관리
@@ -65,23 +51,23 @@
     3. 러닝 경험 최적화
     - 세션 코스 조회 기능
     - 코스 만들기 기능 
-    ```
+    
     
 
-### 2️⃣ 서비스 소개
+### 2️⃣ 서비스 기능
+![service1.png](exec/images/service1.png)
+![service2.png](exec/images/service2.png)
+![service3.png](exec/images/service3.png)
+![service4.png](exec/images/service4.png)
 
-![KakaoTalk_Photo_2024-08-15-22-57-24 001.png](exec/images/introduction1.png)
+### 3️⃣ 프로토타입
+![prototype.png](exec/images/prototype.png)
 
-![KakaoTalk_Photo_2024-08-15-22-57-24 002.png](exec/images/introduction2.png)
+### 4️⃣ 시스템 구조도 & ERD 
+![system.png](exec/images/system.png)
+![erd.png](exec/images/erd.png)
 
-![KakaoTalk_Photo_2024-08-15-22-57-24 003.png](exec/images/introduction3.png)
+### 5️⃣ 핵심 기술 
+![tech1.png](exec/images/tech1.png)
+![tech2.png](exec/images/tech2.png)
 
-![KakaoTalk_Photo_2024-08-15-22-57-24 004.png](exec/images/introduction4.png)
-
-![KakaoTalk_Photo_2024-08-15-22-57-24 005.png](exec/images/introduction5.png)
-
-![KakaoTalk_Photo_2024-08-15-22-57-24 006.png](exec/images/introduction6.png)
-
-### 3️⃣ 기술 스택
-
-![image.png](exec/images/architecture.png)
