@@ -1,6 +1,5 @@
-# 러닝 크루 통합 관리 플랫폼 [CREW-IN](https://crew-in.site/login)
-
-<img src="exec/images/mainLogo.png" alt="Logo" width="300" height="100">
+## [러닝 크루 통합 관리 플랫폼](https://crew-in.site/login)
+![main.png](exec/images/main.png)
 
 ## 팀 소개
 ![team1.png](exec/images/team1.png)
