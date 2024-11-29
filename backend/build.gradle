@@ -78,6 +78,9 @@ dependencies {
 
     // AMQP - RabbitMQ가 기본 구현체
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+    // MongoDB
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 }
 
 // Querydsl 설정부
