@@ -17,6 +17,7 @@ import { deletePostHeart } from "../../apis/api/heartdelete";
 import { useMutation, useQueryClient } from "react-query";
 import { useSelector } from "react-redux";
 import { RootState } from "../../modules";
+import { ReactComponent as CommentsIcon } from "../../assets/icons/comments_Icon.svg";
 
 export interface ItemComponentProps<T> {
   data: T;
@@ -35,7 +36,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
     profileImage,
     postType,
     authorId,
-    // comments,
+    comments,
   } = data;
   const memberId = useSelector((state: RootState) => state.auth.memberId);
 
@@ -83,7 +84,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
       setLikes((prevLikes) => prevLikes + 1);
       setIsHeartedState(true);
     },
-    onError: () => { },
+    onError: () => {},
   });
 
   const unlikeMutation = useMutation(deletePostHeart, {
@@ -92,7 +93,7 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
       setLikes((prevLikes) => prevLikes - 1);
       setIsHeartedState(false);
     },
-    onError: () => { },
+    onError: () => {},
   });
 
   const handleLike = () => {
@@ -207,9 +208,14 @@ const PostItemComponent: React.FC<ItemComponentProps<PostDto>> = ({ data }) => {
           <img
             src={isHeartedState ? filledFire : emptyFire}
             alt="fire-icon"
-            className={`w-7 h-7 object-contain fire-icon ${isAnimating ? "animate" : ""
-              }`}
+            className={`w-7 h-7 object-contain fire-icon ${
+              isAnimating ? "animate" : ""
+            }`}
           />
+        </button>
+        <button className="flex ml-3 items-center">
+          <CommentsIcon />
+          <p className="ml-2">{comments.length}</p>
         </button>
         <button onClick={handleShare} className="flex ml-auto mr-3">
           <ShareIcon />
