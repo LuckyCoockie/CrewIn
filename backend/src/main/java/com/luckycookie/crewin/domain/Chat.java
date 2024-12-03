@@ -2,6 +2,7 @@ package com.luckycookie.crewin.domain;
 
 import jakarta.persistence.Id;
 import lombok.*;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -16,7 +17,7 @@ import java.util.List;
 @ToString
 public class Chat {
     @Id
-    private Long id;
+    private ObjectId id;
     private Long crewId;
     private Long senderId;
     private String message;

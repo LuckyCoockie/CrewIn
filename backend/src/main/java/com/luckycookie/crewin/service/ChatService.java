@@ -27,15 +27,14 @@ public class ChatService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public ChatResponse createChat(ChatRequest chatRequest) {
+    public ChatResponse createChat(Long crewId, ChatRequest chatRequest) {
         Chat chat = Chat.builder()
-                .crewId(chatRequest.getCrewId())
+                .crewId(crewId)
                 .senderId(chatRequest.getSenderId())
                 .message(chatRequest.getMessage())
                 .images(chatRequest.getImages())
                 .createTime(LocalDateTime.now())
                 .build();
-
         chatRepository.save(chat);
 
         Member sender = memberRepository.findById(chatRequest.getSenderId()).orElseThrow(MemberNotFoundException::new);

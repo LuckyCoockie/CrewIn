@@ -14,7 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class ChatRequest {
-    private Long crewId;         // 채팅방 ID
     private Long senderId;       // 보낸 사람
     private String message;      // 메시지 내용
     @Builder.Default
