@@ -1,5 +1,6 @@
 package com.luckycookie.crewin.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -29,8 +30,7 @@ public class ChatResponse {
         private String message;      // 메시지 내용
         @Builder.Default
         private List<String> images = new ArrayList<>(); // 이미지들
-        @JsonSerialize(using = LocalDateTimeSerializer.class)
-        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime createTime; // 전송 시간
     }
 
@@ -44,6 +44,7 @@ public class ChatResponse {
         private String mainLogo;            // 크루 메인 로고
         private String lastMessageId;       // 마지막 메세지 ID
         private String lastMessage;         // 마지막 메세지
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime createTime;   // 메세지 전송 시간
         private int unreadCount;            // 미확인 메세지 개수
     }
