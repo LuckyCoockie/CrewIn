@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Chat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        #chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        input, button {
+            margin: 5px 0;
+            padding: 5px;
+        }
+        #connection-status, #subscription-status {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="section">
+    <h2>WebSocket 연결</h2>
+    <input type="text" id="websocket-url" value="ws://localhost:8080/ws-connect" placeholder="WebSocket 연결 URL (예: ws://localhost:8080/ws-connect)">
+    <button onclick="connectWebSocket()">연결</button>
+    <div id="connection-status"></div>
+</div>
+
+<div class="section">
+    <h2>채팅방 구독</h2>
+    <input type="text" id="subscribe-url" value="/topic/chat/1" placeholder="구독 URL (예: /topic/chat/{crewId})">
+    <button onclick="subscribeToChatRoom()">구독</button>
+    <div id="subscription-status"></div>
+</div>
+
+<div class="section">
+    <h2>채팅</h2>
+    <div id="chat-messages"></div>
+    <input type="text" id="send-url" value="/app/send/1" placeholder="메시지 전송 URL (예: /app/send/{crewId})">
+    <input type="text" id="sender-id" placeholder="보내는 사람 ID">
+    <input type="text" id="message-input" placeholder="메시지 입력">
+    <button onclick="sendMessage()">메시지 전송</button>
+</div>
+
+<script>
+    let stompClient = null;
+    let crewId = 1; // 기본 크루 ID 설정
+
+    function connectWebSocket() {
+        const websocketUrl = document.getElementById('websocket-url').value;
+        const connectionStatus = document.getElementById('connection-status');
+
+        // STOMP over WebSocket 직접 연결
+        const socket = new WebSocket(websocketUrl);
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function (frame) {
+            connectionStatus.innerHTML = 'WebSocket 연결 성공!';
+            connectionStatus.style.color = 'green';
+            console.log('Connected: ' + frame);
+        }, function (error) {
+            connectionStatus.innerHTML = 'WebSocket 연결 실패: ' + error;
+            connectionStatus.style.color = 'red';
+            console.error('Connection error:', error);
+        });
+    }
+
+    function subscribeToChatRoom() {
+        if (!stompClient) {
+            alert('먼저 WebSocket을 연결해주세요.');
+            return;
+        }
+
+        const subscribeUrl = document.getElementById('subscribe-url').value;
+        const subscriptionStatus = document.getElementById('subscription-status');
+
+        // 채팅방 구독
+        stompClient.subscribe(subscribeUrl, function (message) {
+            showMessage(JSON.parse(message.body));
+        });
+
+        subscriptionStatus.innerHTML = `크루 ID ${crewId}의 채팅방 구독 성공!`;
+        subscriptionStatus.style.color = 'green';
+    }
+
+    function sendMessage() {
+        if (!stompClient) {
+            alert('먼저 WebSocket을 연결해주세요.');
+            return;
+        }
+
+        const sendUrl = document.getElementById('send-url').value;
+        const senderId = document.getElementById('sender-id').value;
+        const messageInput = document.getElementById('message-input');
+        const message = messageInput.value.trim();
+
+        if (message) {
+            const messageRequest = {
+                senderId: senderId,       // 보내는 사람 ID
+                message: message,         // 메시지 내용
+                images: []                // 이미지 배열 (기본 빈 배열)
+            };
+
+            // 실제 전송 URL 조합 (크루 ID 포함)
+            const fullSendUrl = sendUrl.replace('{crewId}', crewId);
+
+            stompClient.send(fullSendUrl, {}, JSON.stringify(messageRequest));
+            messageInput.value = '';  // 메시지 전송 후 입력창 비우기
+        }
+    }
+
+    function showMessage(chatResponse) {
+        const messagesDiv = document.getElementById('chat-messages');
+        const messageDiv = document.createElement('div');
+
+        messageDiv.innerHTML = `
+                <strong>${chatResponse.sender.memberNickName || 'Anonymous'} (ID: ${chatResponse.sender.memberId})</strong><br>
+                ${chatResponse.message}
+            `;
+
+        messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+</script>
+</body>
+</html>
