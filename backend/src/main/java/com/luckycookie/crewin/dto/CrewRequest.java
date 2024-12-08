@@ -46,6 +46,7 @@ public class CrewRequest {
         private Long crewId; // crewId
         private String title; // 공지글 제목
         private String content; // 공지글 내용
+        @Builder.Default
         private List<String> noticeImages = new ArrayList<>(); // 공지 이미지 List
     }
 
