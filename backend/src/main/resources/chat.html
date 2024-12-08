@@ -57,6 +57,14 @@
     <button onclick="sendMessage()">메시지 전송</button>
 </div>
 
+<div class="section">
+    <h2>읽음 처리</h2>
+    <input type="text" id="read-url" value="/app/read/1" placeholder="읽음 처리 URL (예: /app/read/{crewId})">
+    <input type="text" id="reader-id" placeholder="읽은 사람 ID">
+    <input type="text" id="message-id" placeholder="마지막으로 읽은 메시지 ID">
+    <button onclick="readMessage()">읽음 처리</button>
+</div>
+
 <script>
     let stompClient = null;
     let crewId = 1; // 기본 크루 ID 설정
@@ -116,11 +124,30 @@
                 images: []                // 이미지 배열 (기본 빈 배열)
             };
 
-            // 실제 전송 URL 조합 (크루 ID 포함)
-            const fullSendUrl = sendUrl.replace('{crewId}', crewId);
-
-            stompClient.send(fullSendUrl, {}, JSON.stringify(messageRequest));
+            stompClient.send(sendUrl, {}, JSON.stringify(messageRequest));
             messageInput.value = '';  // 메시지 전송 후 입력창 비우기
+        }
+    }
+
+    function readMessage() {
+        if (!stompClient) {
+            alert('먼저 WebSocket을 연결해주세요.');
+            return;
+        }
+
+        const readUrl = document.getElementById('read-url').value;
+        const readerId = document.getElementById('reader-id').value;
+        const messageId = document.getElementById('message-id').value;
+
+        if (readerId && messageId) {
+            const readMessageRequest = {
+                readerId: readerId,       // 읽은 사람 ID
+                messageId: messageId      // 마지막으로 읽은 메시지 ID
+            };
+
+            stompClient.send(readUrl, {}, JSON.stringify(readMessageRequest));
+        } else {
+            alert('읽은 사람 ID와 마지막 메시지 ID를 모두 입력해주세요.');
         }
     }
 
@@ -130,7 +157,8 @@
 
         messageDiv.innerHTML = `
                 <strong>${chatResponse.sender.memberNickName || 'Anonymous'} (ID: ${chatResponse.sender.memberId})</strong><br>
-                ${chatResponse.message}
+                ${chatResponse.message} <br>
+                <small><strong>메시지 ID:</strong> ${chatResponse.messageId}</small>
             `;
 
         messagesDiv.appendChild(messageDiv);

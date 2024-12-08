@@ -4,11 +4,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.luckycookie.crewin.domain.Chat;
-import com.luckycookie.crewin.domain.Crew;
-import com.luckycookie.crewin.domain.Member;
-import com.luckycookie.crewin.domain.MemberCrew;
+import com.luckycookie.crewin.domain.*;
+import com.luckycookie.crewin.dto.ChatRequest;
 import com.luckycookie.crewin.dto.ChatRequest.MessageRequest;
+import com.luckycookie.crewin.dto.ChatRequest.ReadMessageRequest;
 import com.luckycookie.crewin.dto.ChatResponse;
 import com.luckycookie.crewin.dto.ChatResponse.ChatRoomResponse;
 import com.luckycookie.crewin.dto.ChatResponse.MessageResponse;
@@ -16,10 +15,7 @@ import com.luckycookie.crewin.dto.MemberResponse;
 import com.luckycookie.crewin.dto.MemberResponse.MemberItem;
 import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
-import com.luckycookie.crewin.repository.ChatRepository;
-import com.luckycookie.crewin.repository.CrewRepository;
-import com.luckycookie.crewin.repository.MemberCrewRepository;
-import com.luckycookie.crewin.repository.MemberRepository;
+import com.luckycookie.crewin.repository.*;
 import jakarta.persistence.Id;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +42,7 @@ public class ChatService {
     private final MongoTemplate mongoTemplate;
     private final MemberRepository memberRepository;
     private final MemberCrewRepository membercrewRepository;
+    private final ReadStatusRepository readStatusRepository;
 
     @Transactional
     public MessageResponse createChat(Long crewId, MessageRequest messageRequest) {
@@ -67,6 +64,7 @@ public class ChatService {
                 .build();
 
         return MessageResponse.builder()
+                .messageId(chat.getId())
                 .crewId(chat.getCrewId())
                 .sender(memberItem)
                 .message(chat.getMessage())
@@ -126,6 +124,8 @@ public class ChatService {
         return memberCrews.stream().map(mc -> {
             Crew crew = mc.getCrew();
             Chat chat = chatRepository.findFirstByCrewIdOrderByIdDesc(crew.getId()).orElse(Chat.builder().message(null).createTime(null).build());
+            ReadStatus readStatus = readStatusRepository.findByCrewIdAndReaderId(crew.getId(), member.getId()).orElse(null);
+            int unreadCount = readStatus != null ? chatRepository.countByCrewIdAndIdGreaterThan(crew.getId(), readStatus.getLastMessageId()) : chatRepository.countByCrewId(crew.getId());
 
             return ChatRoomResponse.builder()
                     .crewId(crew.getId())
@@ -134,7 +134,22 @@ public class ChatService {
                     .lastMessageId(chat.getId())
                     .lastMessage(chat.getMessage())
                     .createTime(chat.getCreateTime())
+                    .unreadCount(unreadCount)
                     .build();
         }).toList();
+    }
+
+    @Transactional
+    public void readMessage(Long crewId, ReadMessageRequest readMessageRequest) {
+        ReadStatus readStatus = readStatusRepository.findByCrewIdAndReaderId(crewId, readMessageRequest.getReaderId()).orElseGet(() -> {
+            ReadStatus newReadStatus = ReadStatus.builder().crewId(crewId)
+                    .readerId(readMessageRequest.getReaderId()).lastMessageId(readMessageRequest.getMessageId()).build();
+            return readStatusRepository.save(newReadStatus);
+        });
+
+        if (!readStatus.getLastMessageId().equals(readMessageRequest.getMessageId())) {
+            readStatus.setLastMessageId(readMessageRequest.getMessageId());
+            readStatusRepository.save(readStatus); // 변경 사항 명시적으로 저장
+        }
     }
 }

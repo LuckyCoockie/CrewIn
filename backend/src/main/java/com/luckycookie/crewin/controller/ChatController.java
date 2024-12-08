@@ -1,6 +1,8 @@
 package com.luckycookie.crewin.controller;
 
+import com.luckycookie.crewin.dto.ChatRequest;
 import com.luckycookie.crewin.dto.ChatRequest.MessageRequest;
+import com.luckycookie.crewin.dto.ChatRequest.ReadMessageRequest;
 import com.luckycookie.crewin.dto.ChatResponse.ChatRoomResponse;
 import com.luckycookie.crewin.dto.ChatResponse.MessageResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
@@ -34,6 +36,12 @@ public class ChatController {
     public MessageResponse sendMessage(@DestinationVariable Long crewId, MessageRequest messageRequest) {
         log.info("message: {}", messageRequest.getMessage());
         return chatService.createChat(crewId, messageRequest);
+    }
+
+    @MessageMapping("/read/{crewId}")
+    public void readMessage(@DestinationVariable Long crewId, ReadMessageRequest readMessageRequest) {
+        log.info("read message: {}({})", readMessageRequest.getReaderId(), readMessageRequest.getMessageId());
+        chatService.readMessage(crewId, readMessageRequest);
     }
 
     /* 나의 채팅방 목록 조회 */

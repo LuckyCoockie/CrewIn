@@ -23,6 +23,7 @@ public class ChatResponse {
     @Getter
     @NoArgsConstructor
     public static class MessageResponse {
+        private String messageId;    // 메세지 ID
         private Long crewId;         // 채팅방 ID
         private MemberItem sender;   // 보낸 사람
         private String message;      // 메시지 내용
@@ -41,8 +42,9 @@ public class ChatResponse {
         private Long crewId;                // 크루 ID
         private String crewName;            // 크루명
         private String mainLogo;            // 크루 메인 로고
-        private String lastMessageId;     // 마지막 메세지 ID
+        private String lastMessageId;       // 마지막 메세지 ID
         private String lastMessage;         // 마지막 메세지
         private LocalDateTime createTime;   // 메세지 전송 시간
+        private int unreadCount;            // 미확인 메세지 개수
     }
 }
