@@ -1,23 +1,15 @@
 package com.luckycookie.crewin.service;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.luckycookie.crewin.domain.*;
-import com.luckycookie.crewin.dto.ChatRequest;
 import com.luckycookie.crewin.dto.ChatRequest.MessageRequest;
 import com.luckycookie.crewin.dto.ChatRequest.ReadMessageRequest;
-import com.luckycookie.crewin.dto.ChatResponse;
 import com.luckycookie.crewin.dto.ChatResponse.ChatRoomResponse;
 import com.luckycookie.crewin.dto.ChatResponse.MessagePagingResponse;
 import com.luckycookie.crewin.dto.ChatResponse.MessageResponse;
-import com.luckycookie.crewin.dto.MemberResponse;
 import com.luckycookie.crewin.dto.MemberResponse.MemberItem;
 import com.luckycookie.crewin.exception.member.MemberNotFoundException;
 import com.luckycookie.crewin.exception.member.NotFoundMemberException;
 import com.luckycookie.crewin.repository.*;
-import jakarta.persistence.Id;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
@@ -29,9 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -46,7 +36,7 @@ public class ChatService {
     private final ReadStatusRepository readStatusRepository;
 
     @Transactional
-    public MessageResponse createChat(Long crewId, MessageRequest messageRequest) {
+    public MessageResponse createMessage(Long crewId, MessageRequest messageRequest) {
         Chat chat = Chat.builder()
                 .crewId(crewId)
                 .senderId(messageRequest.getSenderId())

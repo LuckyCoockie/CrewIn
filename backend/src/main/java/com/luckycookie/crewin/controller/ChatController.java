@@ -2,7 +2,6 @@ package com.luckycookie.crewin.controller;
 
 import com.luckycookie.crewin.dto.ChatRequest.MessageRequest;
 import com.luckycookie.crewin.dto.ChatRequest.ReadMessageRequest;
-import com.luckycookie.crewin.dto.ChatResponse;
 import com.luckycookie.crewin.dto.ChatResponse.ChatRoomResponse;
 import com.luckycookie.crewin.dto.ChatResponse.MessagePagingResponse;
 import com.luckycookie.crewin.dto.ChatResponse.MessageResponse;
@@ -36,7 +35,7 @@ public class ChatController {
     @SendTo("/topic/chat/{crewId}")
     public MessageResponse sendMessage(@DestinationVariable Long crewId, MessageRequest messageRequest) {
         log.info("message: {}", messageRequest.getMessage());
-        return chatService.createChat(crewId, messageRequest);
+        return chatService.createMessage(crewId, messageRequest);
     }
 
     @MessageMapping("/read/{crewId}")
