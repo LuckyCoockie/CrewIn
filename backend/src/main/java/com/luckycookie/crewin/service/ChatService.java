@@ -147,7 +147,7 @@ public class ChatService {
             return readStatusRepository.save(newReadStatus);
         });
 
-        if (!readStatus.getLastMessageId().equals(readMessageRequest.getMessageId())) {
+        if (readStatus.getLastMessageId().compareTo(readMessageRequest.getMessageId()) < 0) {
             readStatus.setLastMessageId(readMessageRequest.getMessageId());
             readStatusRepository.save(readStatus); // 변경 사항 명시적으로 저장
         }

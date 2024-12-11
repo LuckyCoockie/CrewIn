@@ -1,6 +1,5 @@
 package com.luckycookie.crewin.controller;
 
-import com.luckycookie.crewin.dto.ChatRequest;
 import com.luckycookie.crewin.dto.ChatRequest.MessageRequest;
 import com.luckycookie.crewin.dto.ChatRequest.ReadMessageRequest;
 import com.luckycookie.crewin.dto.ChatResponse.ChatRoomResponse;
