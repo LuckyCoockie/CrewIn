@@ -5,11 +5,6 @@ pipeline {
         CREWIN_ENV = credentials('jenkins_crewin_backend.env') // secretfile 가져오기
     }
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
         stage('Load Environment Variables') {
             steps {
                 script {
