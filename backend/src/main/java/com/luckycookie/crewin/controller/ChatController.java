@@ -2,7 +2,9 @@ package com.luckycookie.crewin.controller;
 
 import com.luckycookie.crewin.dto.ChatRequest.MessageRequest;
 import com.luckycookie.crewin.dto.ChatRequest.ReadMessageRequest;
+import com.luckycookie.crewin.dto.ChatResponse;
 import com.luckycookie.crewin.dto.ChatResponse.ChatRoomResponse;
+import com.luckycookie.crewin.dto.ChatResponse.MessagePagingResponse;
 import com.luckycookie.crewin.dto.ChatResponse.MessageResponse;
 import com.luckycookie.crewin.dto.base.BaseResponse;
 import com.luckycookie.crewin.security.dto.CustomUser;
@@ -52,7 +54,7 @@ public class ChatController {
 
     /* 채팅방 메시지 페이징으로 조회 */
     @GetMapping("/rooms/{crewId}/messages")
-    public ResponseEntity<BaseResponse<List<MessageResponse>>> getChatsByCrewId(@PathVariable("crewId") Long crewId, String lastId, int size) {
+    public ResponseEntity<BaseResponse<MessagePagingResponse>> getChatsByCrewId(@PathVariable("crewId") Long crewId, String lastId, int size) {
         return ResponseEntity.ok(BaseResponse.create(HttpStatus.OK.value(), "채팅 목록을 조회했습니다.", chatService.getChatsByCrewId(crewId, lastId, size)));
     }
 

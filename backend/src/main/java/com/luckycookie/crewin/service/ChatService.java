@@ -10,6 +10,7 @@ import com.luckycookie.crewin.dto.ChatRequest.MessageRequest;
 import com.luckycookie.crewin.dto.ChatRequest.ReadMessageRequest;
 import com.luckycookie.crewin.dto.ChatResponse;
 import com.luckycookie.crewin.dto.ChatResponse.ChatRoomResponse;
+import com.luckycookie.crewin.dto.ChatResponse.MessagePagingResponse;
 import com.luckycookie.crewin.dto.ChatResponse.MessageResponse;
 import com.luckycookie.crewin.dto.MemberResponse;
 import com.luckycookie.crewin.dto.MemberResponse.MemberItem;
@@ -74,7 +75,7 @@ public class ChatService {
     }
 
     // 커서 기반 페이지네이션
-    public List<MessageResponse> getChatsByCrewId(Long crewId, String lastId, int size) {
+    public MessagePagingResponse getChatsByCrewId(Long crewId, String lastId, int size) {
 
         // lastId가 null이면 첫 번째 페이지로, 아니면 ObjectId로 변환
         ObjectId lastObjectId = (lastId != null) ? new ObjectId(lastId) : null;
@@ -92,10 +93,10 @@ public class ChatService {
         query.with(Sort.by(Sort.Order.desc("id")));
 
         // 크기 제한
-        query.limit(size);
+        query.limit(size + 1);
 
         // MongoTemplate을 사용하여 쿼리 실행
-        return mongoTemplate.find(query, Chat.class).stream().map(
+        List<MessageResponse> messages = mongoTemplate.find(query, Chat.class).stream().map(
                 c -> {
                     Member member = memberRepository.findById(c.getSenderId()).orElse(null);
                     MemberItem sender = null;
@@ -115,6 +116,11 @@ public class ChatService {
                             .build();
                 }
         ).toList();
+
+        return MessagePagingResponse.builder()
+                .messages(messages)
+                .isLast(!(messages.size() > size))
+                .build();
     }
 
     public List<ChatRoomResponse> getChatRooms(String email) {

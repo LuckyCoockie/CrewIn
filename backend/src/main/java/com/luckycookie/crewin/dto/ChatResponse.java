@@ -38,6 +38,7 @@ public class ChatResponse {
     @NoArgsConstructor
     public static class MessagePagingResponse {
         List<MessageResponse> messages = new ArrayList<>();
+        Boolean isLast;
     }
 
     @Builder
