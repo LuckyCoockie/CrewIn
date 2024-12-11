@@ -25,6 +25,7 @@ public class SessionRequest {
         private SessionType sessionType;
         private String name; // 세션 이름
         // 한 세션에 포스터 여러장 가능
+        @Builder.Default
         private List<String> images = new ArrayList<>();
         // 평균 페이스
         private int pace;
@@ -64,6 +65,7 @@ public class SessionRequest {
         private SessionType sessionType;
         private String name; // 세션 이름
         // 한 세션에 포스터 여러장 가능
+        @Builder.Default
         private List<String> images = new ArrayList<>();
         // 평균 페이스
         private int pace;

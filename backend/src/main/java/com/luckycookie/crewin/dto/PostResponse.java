@@ -52,6 +52,7 @@ public class PostResponse {
         private Long id;
         private Long authorId;
         private String authorName;
+        private String authorImage;
         private String content;
 
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

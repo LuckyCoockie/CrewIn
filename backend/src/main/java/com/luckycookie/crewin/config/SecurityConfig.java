@@ -58,6 +58,7 @@ public class SecurityConfig {
                             .requestMatchers("/course/reversegeocoding").permitAll()
                             .requestMatchers("/course/pedestrian").permitAll()
                             .requestMatchers("/health/**").permitAll() // /health 엔드포인트 접근 허용
+                            .requestMatchers("/ws-connect").permitAll()
                             .anyRequest().authenticated();
                 });
 
