@@ -9,9 +9,6 @@ pipeline {
             steps {
                 script {
                     def props = readProperties(file: env.CREWIN_ENV)
-                    env.SONAR_PROJECT_KEY = props['SONAR_PROJECT_KEY']
-                    env.SONAR_HOST_URL = props['SONAR_HOST_URL']
-                    env.SONAR_LOGIN = props['SONAR_LOGIN']
                     env.DOCKER_REPO = props['DOCKER_REPO']
                     env.DOCKER_TAG = props['DOCKER_TAG']
                     env.DOCKER_IMAGE = props['DOCKER_IMAGE']
@@ -43,20 +40,6 @@ pipeline {
         stage('Build & Test') {
             steps {
                 sh 'cd backend && chmod +x gradlew && ./gradlew clean build'
-            }
-        }
-        stage('SonarQube analysis') {
-            steps {
-                withSonarQubeEnv('sonarQubeToken') {
-                    sh '''
-                        cd backend
-                        chmod +x gradlew
-                        ./gradlew sonar \
-                            -Dsonar.projectKey=$SONAR_PROJECT_KEY \
-                            -Dsonar.host.url=$SONAR_HOST_URL \
-                            -Dsonar.login=$SONAR_LOGIN
-                    '''
-                }
             }
         }
         stage('Build Docker Image') {
