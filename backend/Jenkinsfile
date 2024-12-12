@@ -45,6 +45,20 @@ pipeline {
                 sh 'cd backend && chmod +x gradlew && ./gradlew clean build'
             }
         }
+        stage('SonarQube analysis') {
+            steps {
+                withSonarQubeEnv('sonarQubeToken') {
+                    sh '''
+                        cd backend
+                        chmod +x gradlew
+                        ./gradlew sonar \
+                            -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+                            -Dsonar.host.url=$SONAR_HOST_URL \
+                            -Dsonar.login=$SONAR_LOGIN
+                    '''
+                }
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 script {
@@ -130,6 +144,29 @@ pipeline {
                         ]
                     )
                 }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                def Build_Status = currentBuild.result ?: 'SUCCESS'
+                def Status_Color = Build_Status == 'SUCCESS' ? 'good' : (Build_Status == 'UNSTABLE' ? 'warning' : 'danger')
+                def Status_Text = Build_Status == 'SUCCESS' ? '빌드 성공' : (Build_Status == 'UNSTABLE' ? '빌드 불안정' : '빌드 실패')
+                def message = """
+                    #### 🌐BE $Status_Text
+                    **빌드 번호** $env.JOB_NAME #$env.BUILD_NUMBER
+                    **작성자:** $Author_ID ($Author_Name)
+                    **빌드 URL:** [Details]($env.BUILD_URL)
+                """.stripIndent()
+                mattermostSend(
+                    color: Status_Color,
+                    message: message,
+                    endpoint: "$env.MATTERMOST_WEBHOOK_URL",
+                    channel: "$env.MATTERMOST_CHANNEL_NAME",
+                )
             }
         }
     }
