@@ -27,6 +27,12 @@ bin/
 *.ipr
 *.yml
 
+# application.yml은 추적, .env로 환경변수 분리
+!**/src/main/resources/application.yml
+.env
+
+
+
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
