@@ -28,11 +28,11 @@ pipeline {
         }
         stage('Prepare Config') {
             steps {
-                withCredentials([file(credentialsId: 'crewin-application-yml', variable: 'CONFIG_FILE')]) {
+                withCredentials([file(credentialsId: 'spring-env', variable: 'CONFIG_FILE')]) {
                     sh '''
-                        mkdir -p backend/src/main/resources
-                        chmod -R 755 backend/src/main/resources
-                        cp $CONFIG_FILE backend/src/main/resources/application.yml
+                        chmod -R 755 backend
+                        cp $CONFIG_FILE backend/.env
+                        chmod 600 backend/.env
                     '''
                 }
             }
